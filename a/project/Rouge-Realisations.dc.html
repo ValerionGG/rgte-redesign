@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rouge — Réalisations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Instrument+Sans:wdth,wght@75..100,400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F5F2EC}
+sc-for,sc-if{display:contents}
+.rg{--red:#D42A20;--redd:#B8231A;--paper:#F5F2EC;--ink:#121212;--pink:#F2D6D0;--line:2px solid #121212;background:var(--paper);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.rg *,.rg *::before,.rg *::after{box-sizing:border-box}
+.rg a{color:inherit}
+.rg img{display:block;max-width:100%}
+.rg button{font:inherit;color:inherit;cursor:pointer;border-radius:0}
+.rg h1,.rg h2,.rg h3,.rg p{margin:0}
+.d{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-stretch:75%;font-variation-settings:"wdth" 75,"opsz" 96;font-weight:800;letter-spacing:-.025em;line-height:.88}
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s9{grid-column:span 9}.s12{grid-column:1/-1}
+.ey{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.redt{color:var(--redd)}
+.top{background:var(--ink);color:var(--paper);font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px}
+.top a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;min-height:44px}
+.top a:hover{text-decoration:underline}
+.hd{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:var(--line)}
+.hd-in{display:flex;align-items:center;gap:24px;min-height:84px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.logo-w{background:var(--red);color:#fff;font-size:34px;padding:9px 10px 5px;line-height:.9;letter-spacing:-.01em}
+.logo-s{font-size:12px;font-weight:700;line-height:1.15;letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nl{display:flex;align-items:baseline;gap:6px;padding:12px;min-height:44px;text-decoration:none;font-weight:600;font-size:15px;position:relative}
+.nl span{font-size:11px;color:var(--redd);font-weight:700}
+.nl::after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.7,0,.2,1)}
+.nl:hover::after,.nl[aria-current="page"]::after{transform:scaleX(1)}
+.tel{display:flex;align-items:center;gap:10px;text-decoration:none;min-height:44px}
+.tel b{display:block;font-size:16px;line-height:1.1}
+.tel small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--redd);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 22px;font-weight:600;font-size:15px;text-decoration:none;border:2px solid var(--ink);background:transparent;color:var(--ink);transition:background .25s,color .25s,border-color .25s;white-space:nowrap}
+.btn svg{transition:transform .3s}
+.btn:hover svg{transform:translateX(4px)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn-red{background:var(--red);border-color:var(--red);color:#fff}
+.btn-red:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-paper{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.btn-paper:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.burger{display:none;width:48px;height:48px;border:2px solid var(--ink);background:transparent;align-items:center;justify-content:center;margin-left:auto}
+.mnav{display:none}
+.rg :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.on-red :focus-visible{outline-color:#fff}
+.ft{background:var(--ink);color:var(--paper);padding-top:72px;overflow:hidden}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ft-claim{font-size:clamp(32px,4vw,56px);max-width:720px}
+.ft-big{color:var(--red);font-size:clamp(96px,38vw,560px);line-height:.74;letter-spacing:-.04em;margin:56px 0 0 -.03em;overflow-wrap:anywhere}
+.ft-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:32px;padding:48px 0;border-top:1px solid #3a3a3a;margin-top:40px}
+.ft-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#bdb8b0;margin-bottom:14px!important;font-weight:700}
+.ft p{font-size:15px}
+.ft-tel{font-size:36px;text-decoration:none;color:#fff}
+.ft-mut{color:#bdb8b0;margin-top:8px!important}
+.ft-l a{display:flex;align-items:center;min-height:44px;text-decoration:none;font-size:15px;border-bottom:1px solid #2a2a2a;transition:padding .2s}
+.ft-l a:hover{color:#fff;padding-left:6px}
+.ft-b{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 0 24px;border-top:1px solid #3a3a3a;font-size:13px;color:#bdb8b0}
+.ft-b a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes up{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.12)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.dl2{animation-delay:.16s}
+
+/* réalisations */
+.ph{padding:48px 0 40px;align-items:end}
+.crumb{display:flex;gap:10px;font-size:13px;font-weight:600;margin-bottom:24px}
+.crumb a{text-decoration:none;border-bottom:2px solid var(--red)}
+.ph-t{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;animation:up 1s cubic-bezier(.7,0,.2,1) both}
+.ph-n{font-size:clamp(120px,19vw,300px);line-height:.76;color:var(--red)}
+.ph-w{font-size:clamp(56px,8vw,128px);line-height:.8;padding-bottom:.06em}
+.feat{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);border:var(--line);animation:wipe .7s cubic-bezier(.7,0,.2,1) both}
+.feat-img{position:relative;overflow:hidden;background:var(--ink);border-right:var(--line)}
+.feat-img img{width:100%;height:520px;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
+.feat-img small{position:absolute;left:0;bottom:0;background:var(--paper);font-size:12px;font-weight:600;padding:6px 10px}
+.feat-i{background:var(--red);color:#fff;padding:28px;display:flex;flex-direction:column;gap:16px}
+.feat-n{font-size:clamp(110px,12vw,190px);line-height:.78}
+.feat-t{font-size:clamp(36px,3.6vw,58px)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,.6);font-size:15px}
+.kv span:first-child{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.mchips{display:flex;flex-wrap:wrap;gap:6px}
+.mchips a{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border:2px solid #fff;text-decoration:none;font-size:14px;font-weight:600;transition:background .2s,color .2s}
+.mchips a:hover{background:#fff;color:var(--ink)}
+.nav2{display:flex;gap:8px;margin-top:auto}
+.nav2 button{width:52px;height:52px;border:2px solid #fff;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.nav2 button:hover{background:#fff;color:var(--ink)}
+.bar{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;padding:28px 0 20px;border-bottom:var(--line);margin-top:56px;position:sticky;top:86px;background:var(--paper);z-index:5}
+.fgrp{display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{min-height:44px;padding:0 14px;border:2px solid var(--ink);background:transparent;font-size:14px;font-weight:600;transition:background .2s,color .2s}
+.fchip:hover{background:var(--pink)}
+.fchip span{font-size:12px;margin-left:6px;opacity:.8}
+.cnt{font-size:clamp(40px,4vw,64px);line-height:.9}
+.toggle{display:flex;border:2px solid var(--ink)}
+.toggle button{min-height:44px;padding:0 14px;border:0;background:transparent;font-weight:600;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:24px;padding-top:28px}
+.card{display:flex;flex-direction:column;width:100%;border:var(--line);background:var(--paper);padding:0;text-align:left;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1);animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.card:hover{transform:translateY(-6px)}
+.card-img{position:relative;overflow:hidden;border-bottom:var(--line);background:var(--ink)}
+.card-img img{width:100%;height:260px;object-fit:cover;transition:transform 1s cubic-bezier(.2,.8,.2,1),filter .5s;filter:grayscale(.2)}
+.card:hover .card-img img{transform:scale(1.07);filter:none}
+.card-n{position:absolute;left:0;top:0;background:var(--red);color:#fff;font-size:40px;padding:8px 12px 2px;line-height:.9}
+.card-b{padding:16px;display:flex;flex-direction:column;gap:6px;min-height:150px;transition:background .3s,color .3s}
+.card:hover .card-b{background:var(--pink)}
+.card-t{font-size:30px;line-height:.95}
+.card-l{display:flex;justify-content:space-between;align-items:center;margin-top:auto;font-size:13px;font-weight:700}
+.tagl{background:var(--ink);color:var(--paper);padding:3px 8px;letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+.list{border-top:var(--line);margin-top:28px}
+.lrow{display:grid;grid-template-columns:64px minmax(0,2fr) minmax(0,1.2fr) minmax(0,.8fr) minmax(0,2.4fr);gap:16px;align-items:center;width:100%;min-height:76px;padding:10px 16px;border:0;border-bottom:var(--line);background:transparent;text-align:left;transition:background .2s,color .2s}
+.lrow:hover{background:var(--pink)}
+.lrow b{font-size:30px}
+.empty{padding:56px 24px;border:var(--line);border-top:0;text-align:center}
+.empty b{display:block;font-size:48px;margin-bottom:12px}
+.band{background:var(--red);color:#fff;margin-top:104px;padding:72px 0}
+.band-t{font-size:clamp(48px,7vw,112px);line-height:.84}
+@media (max-width:1100px){.nav,.tel,.hd-in>.btn{display:none}.burger{display:flex}.mnav{display:grid;border-top:var(--line)}.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 24px;border-bottom:1px solid var(--ink);text-decoration:none;font-weight:600;font-size:18px}.bar{position:static}}
+@media (max-width:900px){.g12>*{grid-column:1/-1}.feat{grid-template-columns:1fr}.feat-img{border-right:0;border-bottom:var(--line)}.feat-img img{height:340px}.lrow{grid-template-columns:48px 1fr}.lrow span:nth-child(n+3){grid-column:2}}
+@media (max-width:640px){.top-r{display:none}}
+@media (prefers-reduced-motion:reduce){.rg *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="rg" style="{{ rootStyle }}">
+
+<div class="top"><div class="wrap top-in">
+<a href="Main.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Toutes les propositions</a>
+<span>Proposition 05 — Rouge</span>
+<span class="top-r">Bureau d’études &amp; show-room · Puget-sur-Argens (Var)</span>
+</div></div>
+
+<header class="hd">
+<div class="wrap hd-in">
+<a class="logo" href="Rouge-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w d">RGTE</span><span class="logo-s">R.G.<br>Technologies</span></a>
+<nav class="nav" aria-label="Navigation principale">
+<a class="nl" href="Rouge-Lignes.dc.html"><span>01</span>Lignes</a>
+<a class="nl" href="Rouge-Secteurs.dc.html"><span>02</span>Secteurs</a>
+<a class="nl" href="Rouge-Realisations.dc.html" aria-current="page"><span>03</span>Réalisations</a>
+<a class="nl" href="Rouge-Contact.dc.html"><span>04</span>Showroom &amp; contact</a>
+</nav>
+<a class="tel" href="tel:0800951313"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+<a class="btn btn-red" href="Rouge-Contact.dc.html">Plan 3D offert</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
+</div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="mnav" aria-label="Navigation mobile">
+<a href="Rouge-Lignes.dc.html">Lignes d’agencement <span class="redt">01</span></a>
+<a href="Rouge-Secteurs.dc.html">Secteurs d’activité <span class="redt">02</span></a>
+<a href="Rouge-Realisations.dc.html">Réalisations <span class="redt">03</span></a>
+<a href="Rouge-Contact.dc.html">Showroom &amp; contact <span class="redt">04</span></a>
+<a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+<a href="Rouge-Contact.dc.html" style="background:#D42A20;color:#fff">Plan 3D offert</a>
+</nav>
+</sc-if>
+</header>
+
+<main>
+<section class="wrap">
+<div class="g12 ph">
+<div class="s8">
+<nav class="crumb" aria-label="Fil d’Ariane"><a href="Rouge-Accueil.dc.html">Accueil</a><span>/</span><span>Réalisations</span></nav>
+<h1 class="ph-t"><span class="ph-n d">14</span><span class="ph-w d">réalisations.</span></h1>
+</div>
+<div class="s4 rise dl2"><p style="font-size:18px">De Paris 4e à La Réunion, de la pâtisserie au bar à couscous : filtrez par ligne ou par métier, ouvrez un projet.</p></div>
+</div>
+
+<sc-for list="{{ items }}" as="r" hint-placeholder-count="1">
+<sc-if value="{{ r.isSel }}" hint-placeholder-val="{{ true }}">
+<article class="feat" aria-live="polite">
+<div class="feat-img"><img src="{{ r.img }}" alt="{{ r.alt }}"><small>Visuel d’illustration — photo projet [PHOTOS PROJET]</small></div>
+<div class="feat-i on-red">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px"><span class="feat-n d">{{ r.n }}</span><span class="ey">Projet sélectionné</span></div>
+<h2 class="feat-t d">{{ r.type }}</h2>
+<div>
+<div class="kv"><span>Lieu</span><span>{{ r.lieu }}</span></div>
+<div class="kv"><span>Ligne</span><span>{{ r.ligneLabel }}</span></div>
+<div class="kv"><span>Modules</span><div class="mchips"><sc-for list="{{ r.mods }}" as="m" hint-placeholder-count="3"><a href="Rouge-Module.dc.html">{{ m.nom }}</a></sc-for></div></div>
+</div>
+<div class="nav2">
+<button type="button" aria-label="Projet précédent" onClick="{{ prev }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+<button type="button" aria-label="Projet suivant" onClick="{{ next }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+<a class="btn btn-paper" href="Rouge-Contact.dc.html">Un projet similaire ?</a>
+</div>
+</div>
+</article>
+</sc-if>
+</sc-for>
+
+<div class="bar">
+<div class="fgrp"><p class="ey">Ligne</p><div class="chips">
+<sc-for list="{{ fl }}" as="c" hint-placeholder-count="4"><button type="button" class="fchip" style="{{ c.style }}" aria-pressed="{{ c.aria }}" onClick="{{ c.pick }}">{{ c.label }}<span>{{ c.count }}</span></button></sc-for>
+</div></div>
+<div class="fgrp"><p class="ey">Métier</p><div class="chips">
+<sc-for list="{{ ft }}" as="c" hint-placeholder-count="5"><button type="button" class="fchip" style="{{ c.style }}" aria-pressed="{{ c.aria }}" onClick="{{ c.pick }}">{{ c.label }}<span>{{ c.count }}</span></button></sc-for>
+</div></div>
+<div style="display:flex;align-items:flex-end;gap:18px">
+<p aria-live="polite"><span class="cnt d">{{ countLabel }}</span></p>
+<div class="toggle" role="group" aria-label="Affichage">
+<button type="button" style="{{ vg }}" aria-pressed="{{ vga }}" onClick="{{ setGrid }}">Grille</button>
+<button type="button" style="{{ vl }}" aria-pressed="{{ vla }}" onClick="{{ setList }}">Liste</button>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+<div class="grid">
+<sc-for list="{{ shown }}" as="r" hint-placeholder-count="14">
+<button type="button" class="card" style="{{ r.cardStyle }}" aria-pressed="{{ r.aria }}" onClick="{{ r.pick }}">
+<span class="card-img"><img src="{{ r.img }}" alt="{{ r.alt }}"><span class="card-n d">{{ r.n }}</span></span>
+<span class="card-b"><span class="card-t d">{{ r.type }}</span><span>{{ r.lieu }}</span><span style="font-size:14px">{{ r.modsTxt }}</span><span class="card-l"><span class="tagl">{{ r.ligneLabel }}</span><span>Ouvrir</span></span></span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+<div class="list">
+<sc-for list="{{ shown }}" as="r" hint-placeholder-count="14">
+<button type="button" class="lrow" style="{{ r.rowStyle }}" aria-pressed="{{ r.aria }}" onClick="{{ r.pick }}"><b class="d">{{ r.n }}</b><span style="font-weight:600;font-size:18px">{{ r.type }}</span><span>{{ r.lieu }}</span><span>{{ r.ligneLabel }}</span><span>{{ r.modsTxt }}</span></button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+<div class="empty"><b class="d">Aucun projet.</b><p style="margin-bottom:18px">Cette combinaison ligne × métier n’a pas encore de réalisation publiée.</p><button type="button" class="btn btn-red" onClick="{{ resetF }}">Réinitialiser les filtres</button></div>
+</sc-if>
+</section>
+
+<section class="band on-red" aria-labelledby="t-band">
+<div class="wrap g12" style="align-items:end">
+<h2 id="t-band" class="s8 d band-t">La quinzième, c’est la vôtre.</h2>
+<div class="s4"><p style="font-size:18px;margin-bottom:22px">Vos dimensions, votre métier, vos matières : le bureau d’études élabore votre plan 3D d’agencement, offert.</p><a class="btn btn-paper" href="Rouge-Contact.dc.html">Plan 3D offert <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+</div>
+</section>
+</main>
+
+<footer class="ft">
+<div class="wrap">
+<div class="ft-top">
+<p class="ft-claim d">Agencement de vitrines réfrigérées sur mesure.</p>
+<a class="btn btn-red" href="Rouge-Contact.dc.html">Demande de devis <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div class="ft-big d" aria-hidden="true">RGTE</div>
+<div class="ft-cols">
+<div><p class="ft-h">Bureau d’études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+<div><p class="ft-h">Numéro vert</p><p><a class="ft-tel d" href="tel:0800951313">0 800 95 13 13</a></p><p class="ft-mut">Appel gratuit · Horaires [HORAIRES]</p></div>
+<div class="ft-l"><p class="ft-h">Navigation</p><a href="Rouge-Lignes.dc.html">Lignes d’agencement</a><a href="Rouge-Secteurs.dc.html">Secteurs d’activité</a><a href="Rouge-Realisations.dc.html">Réalisations</a><a href="Rouge-Contact.dc.html">Showroom &amp; contact</a></div>
+<div class="ft-l"><p class="ft-h">Informations</p><a href="#mentions">Mentions légales</a><a href="#cgv">Conditions de vente</a><a href="#plan">Plan du site</a><a href="#cookies">Gestion des cookies</a></div>
+</div>
+<div class="ft-b"><span>RGTE — R.G. Technologies</span><a href="Main.dc.html">Toutes les propositions</a><span>Proposition de refonte — concept, non officiel</span></div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4700},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#B8231A","#121212"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, sel:1, fLigne:"all", fType:"all", view:"grid" };
+  }
+  renderVals(){
+    const s = this.state;
+    const accent = (this.props && this.props.accent) || "#D42A20";
+    const ON = "background:var(--red);color:#fff;border-color:var(--red)";
+    const INK = "background:#121212;color:#F5F2EC";
+    const R = [
+      {id:1, type:"Pâtisserie", lieu:"Paris 4e", ligne:"stone", mods:"Vitrine réfrigérée Plane & Caisse", cat:"patis", img:"vitrine-cakes", alt:"Gâteaux en vitrine"},
+      {id:2, type:"Bar à salades", lieu:"Département 13", ligne:"stone", mods:"Saladette & Caisse & Panorama", cat:"bar", img:"saladette-bacs", alt:"Bacs gastronormes colorés"},
+      {id:3, type:"Chocolatier", lieu:"Gap & Grenoble", ligne:"stone", mods:"Plane & Caisse", cat:"patis", img:"chocolate-display", alt:"Présentoir de chocolats"},
+      {id:4, type:"Sandwicherie", lieu:"Chamonix", ligne:"basique", mods:"Panoramique & Basse & Murale self-service", cat:"trait", img:"bakery-counter-bright", alt:"Boutique claire avec comptoir"},
+      {id:5, type:"Bar à olives", lieu:"Nice", ligne:"stone", mods:"Saladette sur mesure avec trous arrondis", cat:"bar", img:"vitrine-wood", alt:"Vitrine bois et verre"},
+      {id:6, type:"Bar à yogourt glacé (chaîne)", lieu:"Toute la France", ligne:"stone", mods:"Saladette sur mesure trous arrondis & Surface plane", cat:"bar", img:"topping-bar", alt:"Bar à toppings"},
+      {id:7, type:"Boulangerie pâtisserie", lieu:"La Réunion", ligne:"basique", mods:"Amandine & Caisse", cat:"boul", img:"vitrine-bakery-tall", alt:"Vitrine haute de boulangerie"},
+      {id:8, type:"Boulangerie", lieu:"Département 33", ligne:"legno", mods:"Réfrigérée statique & Neutre & Module arrière", cat:"boul", img:"bakery-shelves", alt:"Étagères à pains"},
+      {id:9, type:"Pizza sur composition", lieu:"Paris", ligne:"stone", mods:"Saladette & Caisse & Plane", cat:"trait", img:"baker-table", alt:"Plan de travail, pains et rouleau"},
+      {id:10, type:"Pâtissier chocolatier", lieu:"Département 69", ligne:"stone", mods:"Centrale & Caisse & Plane", cat:"patis", img:"vitrine-colorful", alt:"Entremets colorés étagés"},
+      {id:11, type:"Traiteur asiatique (chaîne)", lieu:"Marseille", ligne:"stone", mods:"Plane & Caisse & Saladette & Comptoir bar", cat:"trait", img:"bakery-hall-dark", alt:"Grande halle sombre"},
+      {id:12, type:"Bar à couscous", lieu:"Isère", ligne:"stone", mods:"Bain-marie avec trous arrondis sur mesure", cat:"bar", img:"bakery-window", alt:"Vitrine de rue"},
+      {id:13, type:"Traiteur poissonnier", lieu:"Département 92", ligne:"stone", mods:"Panorama & Surface plane & Caisse", cat:"trait", img:"fish-ice", alt:"Poissons sur glace"},
+      {id:14, type:"Pâtissier chocolatier Canet", lieu:"Nice 06", ligne:"stone", mods:"Plane pâtissière +2/+8 et chocolats +14/+18", cat:"patis", img:"chocolates-dark", alt:"Bonbons de chocolat"}
+    ];
+    const LIG = { stone:"Ligne Stone", basique:"Ligne Basique", legno:"Ligne Legno" };
+    const items = R.map(r => {
+      const on = r.id === s.sel;
+      return {
+        id:r.id, n:(r.id < 10 ? "0" : "") + r.id, type:r.type, lieu:r.lieu, ligne:r.ligne, cat:r.cat,
+        ligneLabel: LIG[r.ligne],
+        img:"assets/" + r.img + ".webp", alt: r.alt + " (visuel d’illustration)",
+        mods: r.mods.split(" & ").map(nom => ({ nom })),
+        modsTxt: r.mods,
+        isSel:on, aria:on ? "true" : "false",
+        cardStyle: on ? "outline:4px solid var(--red);outline-offset:-4px" : "",
+        rowStyle: on ? ON : "",
+        pick: () => this.setState({ sel:r.id })
+      };
+    });
+    const match = r => (s.fLigne === "all" || r.ligne === s.fLigne) && (s.fType === "all" || r.cat === s.fType);
+    const shown = items.filter(match);
+    const chip = (key, val, label, count) => {
+      const on = s[key] === val;
+      const o = {}; o[key] = val;
+      return { label, count:String(count), style:on ? ON : "", aria:on ? "true" : "false", pick: () => this.setState(o) };
+    };
+    const cl = v => R.filter(r => v === "all" || r.ligne === v).length;
+    const ct = v => R.filter(r => v === "all" || r.cat === v).length;
+    const fl = [chip("fLigne","all","Toutes",cl("all")), chip("fLigne","stone","Stone",cl("stone")), chip("fLigne","basique","Basique",cl("basique")), chip("fLigne","legno","Legno",cl("legno"))];
+    const ft = [chip("fType","all","Tous",ct("all")), chip("fType","patis","Pâtisserie & chocolat",ct("patis")), chip("fType","boul","Boulangerie",ct("boul")), chip("fType","trait","Snacking & traiteur",ct("trait")), chip("fType","bar","Bars",ct("bar"))];
+    const idx = R.map(r => r.id).indexOf(s.sel);
+    const go = d => () => this.setState({ sel: R[(idx + d + R.length) % R.length].id });
+    const isGrid = s.view === "grid";
+    return {
+      rootStyle: "--red:" + accent,
+      menuOpen: s.menuOpen, menuAria: s.menuOpen ? "true" : "false",
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      items, shown, fl, ft,
+      countLabel: shown.length + (shown.length > 1 ? " projets" : " projet"),
+      isGrid: isGrid && shown.length > 0, isList: !isGrid && shown.length > 0, isEmpty: shown.length === 0,
+      vg: isGrid ? INK : "", vl: isGrid ? "" : INK, vga: isGrid ? "true" : "false", vla: isGrid ? "false" : "true",
+      setGrid: () => this.setState({ view:"grid" }), setList: () => this.setState({ view:"list" }),
+      prev: go(-1), next: go(1),
+      resetF: () => this.setState({ fLigne:"all", fType:"all" })
+    };
+  }
+}
+</script>
+</body>
+</html>

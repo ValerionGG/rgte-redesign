@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cryo — Showroom &amp; contact</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F1F5F7}
+.cx,.cx *{box-sizing:border-box}
+.cx{font-family:'Sora',system-ui,sans-serif;color:#0F1C24;background:#F1F5F7;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cx a{color:inherit}
+.cx h1,.cx h2,.cx h3,.cx p{margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.tnum{font-variant-numeric:tabular-nums}
+.navl{position:relative;text-decoration:none;font-size:14px;font-weight:500;display:inline-flex;align-items:center;min-height:44px}
+.navl::after{content:"";position:absolute;left:0;right:0;bottom:8px;height:1px;background:#3A7CA5;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font:600 14px/1 'Sora',sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s}
+.btn-red{background:#D42A20;color:#fff!important;box-shadow:0 12px 26px -14px rgba(212,42,32,.75)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 18px 32px -14px rgba(212,42,32,.85)}
+.btn-ghost{background:rgba(255,255,255,.62);color:#0F1C24;border:1px solid rgba(15,28,36,.16)}
+.btn-ghost:hover{background:#fff;border-color:#3A7CA5}
+.btn-dark{background:#0F1C24;color:#fff!important}
+.btn-dark:hover{transform:translateY(-2px);background:#1B2F3B}
+.frost{background:linear-gradient(160deg,rgba(255,255,255,.80),rgba(255,255,255,.46));backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 30px 60px -32px rgba(15,28,36,.32)}
+.dew{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,.95) 0 1.1px,transparent 1.7px),radial-gradient(circle,rgba(15,28,36,.10) 0 1.6px,transparent 2.2px),radial-gradient(circle,rgba(255,255,255,.85) 0 2.2px,transparent 3px),radial-gradient(circle,rgba(58,124,165,.16) 0 .8px,transparent 1.3px);background-size:23px 19px,47px 41px,71px 63px,13px 17px;background-position:0 0,12px 9px,30px 22px,5px 3px}
+.gridbg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(15,28,36,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,28,36,.05) 1px,transparent 1px);background-size:64px 64px}
+.lab{font-size:12px;color:#2B6688;display:flex;gap:12px;align-items:center;text-transform:uppercase}
+.lab i{display:inline-block;width:40px;height:1px;background:#3A7CA5}
+.h2{font-size:clamp(30px,3.8vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(15,28,36,.14);background:rgba(255,255,255,.8);font-size:13.5px;cursor:pointer;font-family:'Sora',sans-serif;color:#0F1C24;transition:border-color .25s,background .25s,color .25s,transform .25s}
+.chip:hover{border-color:#3A7CA5;transform:translateY(-1px)}
+.tab{cursor:pointer;border:0;font-family:'Sora',sans-serif;transition:background .3s,color .3s}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:#4A5D69;text-transform:uppercase}
+.fld input,.fld textarea{font:400 15px/1.4 'Sora',sans-serif;color:#0F1C24;background:rgba(255,255,255,.88);border:1px solid rgba(15,28,36,.18);border-radius:14px;padding:12px 14px;min-height:48px;transition:border-color .25s,box-shadow .25s}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:#3A7CA5;box-shadow:0 0 0 4px rgba(58,124,165,.18)}
+.chk{display:flex;align-items:center;gap:12px;min-height:48px;cursor:pointer;font-size:15px}
+.chk input{width:22px;height:22px;accent-color:#2B6688}
+.faq{cursor:pointer;border:0;width:100%;font-family:'Sora',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:64px;padding:0 4px;background:transparent;color:#0F1C24;font-size:18px;font-weight:500}
+.faq svg{transition:transform .35s}
+.layer{cursor:pointer}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fade{animation:fade .5s ease both}
+@keyframes ring{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+.ring{transform-box:fill-box;transform-origin:center;animation:ring 2.2s ease-out infinite}
+@keyframes dash{to{stroke-dashoffset:-60}}
+.road{stroke-dasharray:14 10;animation:dash 3s linear infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.live{animation:pulse 1.6s ease-in-out infinite}
+:focus-visible{outline:2px solid #3A7CA5;outline-offset:3px}
+.burger{display:none!important}
+@media(max-width:980px){.navd{display:none!important}.burger{display:inline-flex!important}}
+@media(max-width:640px){.wrap{padding:0 18px}.hide-sm{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cx *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="cx">
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(241,245,247,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(15,28,36,.08)">
+  <div class="mono" style="background:#0F1C24;color:#C9D7DF;font-size:11.5px">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;min-height:34px;align-items:center">
+      <span class="hide-sm">BUREAU D'ÉTUDES &amp; SHOW-ROOM · PUGET-SUR-ARGENS (83)</span>
+      <a href="tel:0800951313" style="text-decoration:none;color:#fff;display:inline-flex;align-items:center;min-height:34px">N° VERT 0 800 95 13 13 · APPEL GRATUIT</a>
+    </div>
+  </div>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px">
+    <a href="Cryo-Accueil.dc.html" aria-label="RGTE, retour à l'accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-height:44px">
+      <span style="font-weight:700;font-size:26px;letter-spacing:.08em">RGTE</span>
+      <span style="width:1px;height:30px;background:rgba(15,28,36,.25)"></span>
+      <span class="mono" style="font-size:10.5px;line-height:1.3;color:#4A5D69">R.G.<br>TECHNOLOGIES</span>
+    </a>
+    <nav class="navd" aria-label="Navigation principale" style="display:flex;gap:32px">
+      <a class="navl" href="Cryo-Lignes.dc.html">Lignes</a>
+      <a class="navl" href="Cryo-Secteurs.dc.html">Secteurs</a>
+      <a class="navl" href="Cryo-Realisations.dc.html">Réalisations</a>
+      <a class="navl on" href="Cryo-Contact.dc.html" aria-current="page">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn btn-ghost navd" href="tel:0800951313" style="font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+      <a class="btn btn-red navd" href="#devis" style="{{ ctaStyle }}">Demande de devis</a>
+      <button type="button" class="btn btn-ghost burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}" style="width:48px;padding:0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:1px solid rgba(15,28,36,.08);background:#F1F5F7">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:8px;padding-bottom:20px">
+        <a class="navl" href="Cryo-Lignes.dc.html">Lignes</a>
+        <a class="navl" href="Cryo-Secteurs.dc.html">Secteurs</a>
+        <a class="navl" href="Cryo-Realisations.dc.html">Réalisations</a>
+        <a class="navl" href="Cryo-Contact.dc.html">Showroom &amp; contact</a>
+        <a class="btn btn-red" href="#devis" style="margin-top:12px">Demande de devis</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- EN-TÊTE -->
+<section style="position:relative;overflow:hidden;background:#E3EDF2">
+  <div aria-hidden="true" class="gridbg"></div>
+  <div aria-hidden="true" class="dew" style="opacity:.6"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px;align-items:end">
+    <div>
+      <div class="mono rise" style="font-size:11.5px;color:#4A5D69"><a href="Cryo-Accueil.dc.html" style="text-decoration:none">ACCUEIL</a> / SHOWROOM &amp; CONTACT</div>
+      <h1 class="rise d1" style="font-size:clamp(44px,7vw,108px);font-weight:200;letter-spacing:-.045em;line-height:.95;margin-top:26px;overflow-wrap:anywhere">Parlons<br><span style="font-weight:600">de votre froid.</span></h1>
+      <p class="rise d2" style="font-size:17px;color:#33454F;max-width:520px;margin-top:22px">Décrivez votre métier et votre local : le bureau d'études de Puget-sur-Argens vous répond et élabore votre plan 3D d'agencement, offert.</p>
+    </div>
+    <div class="frost rise d2" style="position:relative;border-radius:28px;padding:28px 30px;overflow:hidden">
+      <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#4A5D69"><span style="display:inline-flex;align-items:center;gap:8px"><span class="live" style="width:7px;height:7px;border-radius:50%;background:#D42A20;display:inline-block"></span>NUMÉRO VERT</span><span>APPEL GRATUIT</span></div>
+      <a href="tel:0800951313" class="tnum" style="display:block;text-decoration:none;font-size:clamp(38px,4.6vw,64px);font-weight:200;letter-spacing:-.03em;line-height:1.05;margin-top:12px">0 800 95 13 13</a>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:rgba(15,28,36,.1);border-radius:16px;overflow:hidden;margin-top:20px;border:1px solid rgba(15,28,36,.1)">
+        <div style="background:rgba(255,255,255,.8);padding:14px 16px"><div class="mono" style="font-size:10.5px;color:#4A5D69">HORAIRES</div><div style="font-weight:500;margin-top:2px">[HORAIRES]</div></div>
+        <div style="background:rgba(255,255,255,.8);padding:14px 16px"><div class="mono" style="font-size:10.5px;color:#4A5D69">SHOW-ROOM</div><div style="font-weight:500;margin-top:2px">Puget-sur-Argens (83)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULAIRE DE DEVIS EN ÉTAPES -->
+<section id="devis" style="padding:90px 0">
+  <div class="wrap">
+    <div class="lab mono"><span>DEVIS</span><i></i><span>Demande de devis &amp; plan 3D</span></div>
+    <h2 class="h2" style="margin-top:20px">Trois étapes, aucune obligation.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(520px,100%),1fr));gap:24px;margin-top:40px;align-items:start">
+      <div class="frost" style="border-radius:30px;padding:30px">
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+                <button type="button" class="tab" style="{{ st.st }}" onClick="{{ st.pick }}" aria-current="{{ st.cur }}">
+                  <span class="mono" style="display:block;font-size:10.5px;opacity:.75">ÉTAPE {{ st.k }}</span>
+                  <span style="display:block;font-size:14px;font-weight:600;margin-top:2px">{{ st.n }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="position:relative;height:3px;border-radius:2px;background:rgba(15,28,36,.1);margin-top:14px"><div style="{{ progStyle }}"></div></div>
+
+            <form onSubmit="{{ submit }}" novalidate="novalidate" style="margin-top:26px">
+              <div class="fade" style="{{ p1 }}">
+                  <div class="mono" style="font-size:11px;color:#4A5D69">SECTEUR D'ACTIVITÉ *</div>
+                  <div role="radiogroup" aria-label="Secteur d'activité" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+                    <sc-for list="{{ sects }}" as="c" hint-placeholder-count="13">
+                      <button type="button" role="radio" class="chip" style="{{ c.st }}" onClick="{{ c.pick }}" aria-checked="{{ c.on }}">{{ c.n }}</button>
+                    </sc-for>
+                  </div>
+                  <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:24px">LIGNE ENVISAGÉE</div>
+                  <div role="radiogroup" aria-label="Ligne envisagée" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+                    <sc-for list="{{ lignes }}" as="c" hint-placeholder-count="6">
+                      <button type="button" role="radio" class="chip" style="{{ c.st }}" onClick="{{ c.pick }}" aria-checked="{{ c.on }}">{{ c.n }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+
+              <div class="fade" style="{{ p2 }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:14px">
+                  <label class="fld"><span>Longueur disponible (cm)</span><input name="long" type="number" min="0" inputmode="numeric" onInput="{{ setF }}"></label>
+                  <label class="fld"><span>Profondeur disponible (cm)</span><input name="prof" type="number" min="0" inputmode="numeric" onInput="{{ setF }}"></label>
+                  <label class="chk" style="grid-column:1/-1"><input type="checkbox" name="plan3d" checked="checked" onChange="{{ togglePlan }}"><span>Je souhaite recevoir mon plan 3D d'agencement offert</span></label>
+                  <label class="fld" style="grid-column:1/-1"><span>Votre projet</span><textarea name="msg" rows="5" onInput="{{ setF }}" placeholder="Produits exposés, ouverture, contraintes du local…"></textarea></label>
+                </div>
+                </div>
+
+              <div class="fade" style="{{ p3 }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:14px">
+                  <label class="fld"><span>Nom *</span><input name="nom" type="text" autocomplete="name" onInput="{{ setF }}"></label>
+                  <label class="fld"><span>Téléphone *</span><input name="tel" type="tel" autocomplete="tel" onInput="{{ setF }}"></label>
+                  <label class="fld"><span>Email *</span><input name="email" type="email" autocomplete="email" onInput="{{ setF }}"></label>
+                  <label class="fld"><span>Code postal</span><input name="cp" type="text" inputmode="numeric" autocomplete="postal-code" onInput="{{ setF }}"></label>
+                  <label class="fld" style="grid-column:1/-1"><span>Ville</span><input name="ville" type="text" autocomplete="address-level2" onInput="{{ setF }}"></label>
+                </div>
+                </div>
+
+              <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+                <p role="alert" class="mono" style="margin-top:16px;font-size:12px;color:#B3241B;background:rgba(212,42,32,.08);border-radius:12px;padding:12px 14px">{{ err }}</p>
+              </sc-if>
+
+              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:26px">
+                <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" class="btn btn-ghost" onClick="{{ back }}">← Retour</button>
+                </sc-if>
+                <span class="mono" style="font-size:11px;color:#4A5D69">* CHAMPS OBLIGATOIRES</span>
+                <sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" class="btn btn-dark" onClick="{{ forward }}">Étape suivante →</button>
+                </sc-if>
+                <sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}">
+                  <button type="submit" class="btn btn-red" style="{{ ctaStyle }}">Envoyer ma demande</button>
+                </sc-if>
+              </div>
+            </form>
+          </div>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div class="fade" role="status" style="text-align:center;padding:40px 10px">
+            <svg width="64" height="64" viewBox="0 0 56 56" fill="none" stroke="#2B6688" stroke-width="1.5" aria-hidden="true"><circle cx="28" cy="28" r="26"></circle><path d="M17 29l7 7 15-16"></path></svg>
+            <h3 style="font-size:28px;font-weight:500;margin-top:16px;letter-spacing:-.02em">Demande enregistrée — en prototype.</h3>
+            <p style="margin-top:12px;color:#33454F;max-width:440px;margin-left:auto;margin-right:auto">Prototype — rien n'est envoyé. Sur le site final, le bureau d'études recevrait votre demande de devis{{ planTxt }}.</p>
+            <button type="button" class="btn btn-ghost" onClick="{{ restart }}" style="margin-top:22px">Nouvelle demande</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <aside style="position:relative;border-radius:30px;background:#0F1C24;color:#E6EEF2;padding:28px;overflow:hidden" aria-label="Fiche de demande">
+        <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(127,179,211,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,179,211,.07) 1px,transparent 1px);background-size:32px 32px"></div>
+        <div style="position:relative">
+          <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#7FB3D3"><span>FICHE DE DEMANDE · LIVE</span><span class="tnum">{{ pctTxt }}</span></div>
+          <div style="position:relative;height:6px;border-radius:3px;background:rgba(127,179,211,.18);margin-top:12px"><div style="{{ pctBar }}"></div></div>
+          <div class="mono" style="font-size:11px;color:#9FB4C1;margin-top:26px">PLAGE ASSOCIÉE</div>
+          <div class="tnum" style="{{ sumTempSt }}">{{ sumTemp }}</div>
+          <div style="margin-top:20px">
+            <sc-for list="{{ summary }}" as="r" hint-placeholder-count="6">
+              <div style="display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed rgba(127,179,211,.2);font-size:14px"><span class="mono" style="font-size:11px;color:#9FB4C1">{{ r.k }}</span><span style="{{ r.st }}">{{ r.v }}</span></div>
+            </sc-for>
+          </div>
+          <p class="mono" style="margin-top:18px;font-size:11px;color:#9FB4C1">RIEN N'EST TRANSMIS : PROTOTYPE DE DÉMONSTRATION.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- CARTE -->
+<section style="background:#fff;padding:90px 0">
+  <div class="wrap">
+    <div class="lab mono"><span>83480</span><i></i><span>Accès au show-room</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(520px,100%),1fr));gap:24px;margin-top:30px;align-items:stretch">
+      <div style="position:relative;border-radius:30px;overflow:hidden;background:#E3EDF2;border:1px solid rgba(15,28,36,.08)">
+        <svg viewBox="0 0 720 480" role="img" aria-label="Carte schématique de Puget-sur-Argens et de ses environs" style="width:100%;height:auto;display:block">
+          <defs>
+            <pattern id="cr-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(15,28,36,.06)"></path></pattern>
+          </defs>
+          <rect width="720" height="480" fill="#EEF3F5"></rect>
+          <rect width="720" height="480" fill="url(#cr-grid)"></rect>
+          <path d="M720 300 C640 310 600 350 560 370 C520 392 470 400 430 430 C410 446 400 466 396 480 L720 480 Z" fill="#CFE0EA"></path>
+          <text x="600" y="440" fill="#2B6688" font-family="IBM Plex Mono" font-size="12">MER MÉDITERRANÉE</text>
+          <g style="{{ lyRiver }}">
+            <path d="M0 360 C80 350 140 380 210 362 C280 344 320 372 380 380 C430 388 450 410 470 404" fill="none" stroke="#7FB3D3" stroke-width="5" stroke-linecap="round"></path>
+            <text x="150" y="398" fill="#2B6688" font-family="IBM Plex Mono" font-size="12">L'ARGENS</text>
+          </g>
+          <g style="{{ lyRoad }}">
+            <path d="M0 150 C120 160 220 190 300 196 C380 202 480 180 560 190 C620 196 680 210 720 214" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"></path>
+            <path class="road" d="M0 150 C120 160 220 190 300 196 C380 202 480 180 560 190 C620 196 680 210 720 214" fill="none" stroke="#D42A20" stroke-width="3"></path>
+            <rect x="60" y="124" width="40" height="22" rx="4" fill="#D42A20"></rect>
+            <text x="80" y="140" text-anchor="middle" fill="#FFFFFF" font-family="IBM Plex Mono" font-size="12" font-weight="600">A8</text>
+          </g>
+          <g style="{{ lyTown }}" font-family="Sora" font-size="13" fill="#33454F">
+            <circle cx="150" cy="300" r="4" fill="#4A5D69"></circle><text x="162" y="304">Roquebrune-sur-Argens</text>
+            <circle cx="520" cy="290" r="4" fill="#4A5D69"></circle><text x="532" y="294">Fréjus</text>
+            <circle cx="640" cy="262" r="4" fill="#4A5D69"></circle><text x="574" y="250">Saint-Raphaël</text>
+          </g>
+          <circle class="ring" cx="330" cy="262" r="14" fill="rgba(212,42,32,.35)"></circle>
+          <circle cx="330" cy="262" r="9" fill="#D42A20" stroke="#FFFFFF" stroke-width="3"></circle>
+          <rect x="350" y="232" width="210" height="58" rx="12" fill="#0F1C24"></rect>
+          <text x="364" y="256" fill="#FFFFFF" font-family="Sora" font-size="14" font-weight="600">RGTE · Show-room</text>
+          <text x="364" y="276" fill="#A8D2EA" font-family="IBM Plex Mono" font-size="11">PUGET-SUR-ARGENS</text>
+          <text x="20" y="466" fill="#4A5D69" font-family="IBM Plex Mono" font-size="11">CARTE SCHÉMATIQUE · NON À L'ÉCHELLE</text>
+        </svg>
+        <div role="group" aria-label="Repères de la carte" style="position:absolute;top:14px;left:14px;display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ layers }}" as="ly" hint-placeholder-count="3">
+            <button type="button" class="chip" style="{{ ly.st }}" onClick="{{ ly.pick }}" aria-pressed="{{ ly.on }}">{{ ly.n }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div class="frost" style="border-radius:30px;padding:32px;display:flex;flex-direction:column;background:#F6F9FA">
+        <h2 style="font-size:30px;font-weight:400;letter-spacing:-.02em;line-height:1.1">Bureau d'études &amp; show-room</h2>
+        <p style="font-size:17px;margin-top:16px">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+        <div style="margin-top:20px">
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">TÉLÉPHONE</span><a href="tel:0800951313" class="mono" style="font-weight:600;text-decoration:none">0 800 95 13 13</a></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">TARIF</span><span>Numéro vert, appel gratuit</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">HORAIRES</span><span>[HORAIRES]</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">ACCÈS</span><span>[ACCÈS / PARKING]</span></div>
+        </div>
+        <div style="margin-top:auto;padding-top:26px;display:flex;flex-wrap:wrap;gap:10px">
+          <a class="btn btn-dark" href="#devis">Préparer ma visite</a>
+          <a class="btn btn-ghost" href="tel:0800951313">Appeler</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN 3D -->
+<section style="padding:90px 0">
+  <div class="wrap">
+    <div style="position:relative;border-radius:30px;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));background:#0F1C24;color:#E6EEF2">
+      <div style="position:relative;min-height:420px">
+        <img src="assets/bakery-window.webp" alt="Vitrine de boulangerie vue de la rue" style="width:100%;height:420px;object-fit:cover;display:block;opacity:.85">
+      </div>
+      <div style="padding:48px;position:relative">
+        <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(127,179,211,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,179,211,.07) 1px,transparent 1px);background-size:32px 32px"></div>
+        <div style="position:relative">
+          <div class="lab mono" style="color:#7FB3D3"><span>3D</span><i style="background:#7FB3D3"></i><span>Plan d'agencement</span></div>
+          <h2 class="h2" style="margin-top:20px">Voir le comptoir avant qu'il existe.</h2>
+          <p style="font-size:16px;color:#C9D7DF;margin-top:18px">L'élaboration de votre plan 3D d'agencement est offerte : modules, matières, dimensions de votre local. Cochez l'option dans la demande de devis.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:26px">
+            <a class="btn btn-red" href="#devis" style="{{ ctaStyle }}">Demander mon plan 3D</a>
+            <a class="btn" href="Cryo-Lignes.dc.html" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(127,179,211,.3)">Voir les lignes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:#fff;padding:90px 0">
+  <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:40px;align-items:start">
+    <div>
+      <div class="lab mono"><span>FAQ</span><i></i><span>Questions fréquentes</span></div>
+      <h2 class="h2" style="margin-top:20px">L'essentiel, avant d'appeler.</h2>
+    </div>
+    <div style="border-top:1px solid rgba(15,28,36,.12)">
+      <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="6">
+        <div style="border-bottom:1px solid rgba(15,28,36,.12)">
+          <button type="button" class="faq" onClick="{{ q.pick }}" aria-expanded="{{ q.on }}">
+            <span>{{ q.q }}</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0F1C24" stroke-width="1.6" style="{{ q.ico }}" aria-hidden="true"><path d="M10 4v12M4 10h12"></path></svg>
+          </button>
+          <sc-if value="{{ q.on }}" hint-placeholder-val="{{ false }}">
+            <p class="fade" style="padding:0 4px 22px;font-size:15.5px;color:#33454F;max-width:620px">{{ q.a }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0F1C24;color:#C9D7DF;padding:84px 0 28px;position:relative;overflow:hidden">
+  <div aria-hidden="true" class="mono" style="position:absolute;right:-20px;top:20px;font-size:180px;line-height:1;color:rgba(127,179,211,.06);white-space:nowrap">−2 / +90</div>
+  <div class="wrap" style="position:relative">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:40px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;color:#fff"><span style="font-weight:700;font-size:24px;letter-spacing:.08em">RGTE</span><span class="mono" style="font-size:10px;line-height:1.3;color:#9FB4C1">R.G.<br>TECHNOLOGIES</span></div>
+        <p style="margin-top:16px;font-size:14px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">SHOW-ROOM</div>
+        <p style="margin-top:12px;font-size:14px">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">CONTACT</div>
+        <p style="margin-top:12px;font-size:14px"><a href="tel:0800951313" style="color:#fff;text-decoration:none;font-family:'IBM Plex Mono',monospace">0 800 95 13 13</a><br>Numéro vert, appel gratuit<br>Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">NAVIGATION</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="Cryo-Lignes.dc.html">Lignes d'agencement</a>
+          <a class="navl" href="Cryo-Secteurs.dc.html">Secteurs d'activité</a>
+          <a class="navl" href="Cryo-Realisations.dc.html">Réalisations</a>
+          <a class="navl" href="Cryo-Contact.dc.html">Showroom &amp; contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">INFORMATIONS</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="#">Mentions légales</a>
+          <a class="navl" href="#">Conditions de vente</a>
+          <a class="navl" href="#">Plan du site</a>
+          <a class="navl" href="#">Gestion des cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="mono" style="margin-top:60px;padding-top:20px;border-top:1px solid rgba(201,215,223,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:11.5px;color:#9FB4C1">
+      <span>© RGTE — R.G. Technologies</span>
+      <a href="Main.dc.html" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px">← Toutes les propositions</a>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3800},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#0F1C24","#3A7CA5"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { step:0, sent:false, err:'', faq:0, menuOpen:false, ly:{ road:true, river:true, town:true },
+      f:{ secteur:'', ligne:'', long:'', prof:'', plan3d:true, msg:'', nom:'', tel:'', email:'', cp:'', ville:'' } };
+  }
+  renderVals(){
+    const s=this.state, f=s.f, accent=this.props.accent || '#D42A20';
+    const setField = (k,v) => this.setState({ f: Object.assign({}, this.state.f, { [k]: v }), err:'' });
+    const TEMP = { 'Pâtisserie':'+2 / +8 °C', 'Chocolats':'+14 / +18 °C', 'Poissonnerie':'−2 / 0 °C', 'Bar à salades':'+2 / +8 °C', 'Bar à couscous':'+30 / +90 °C' };
+    const SECTS = ['Boulangerie','Pâtisserie','Chocolats','Sandwichs','Traiteur','Poissonnerie','Bar à salades','Bar à couscous','Fromagerie','Bar','Bar à topping','Coffee shop / Café','Pizza al taglio'];
+    const LIGNES = ['Basique','Stone','Legno','Encastrable','Industry','Je ne sais pas'];
+    const on = 'background:#0F1C24;color:#fff;border-color:#0F1C24';
+    const sects = SECTS.map(n => ({ n, on: f.secteur===n, st: f.secteur===n ? on : '', pick: () => setField('secteur', n) }));
+    const lignes = LIGNES.map(n => ({ n, on: f.ligne===n, st: f.ligne===n ? on : '', pick: () => setField('ligne', n) }));
+
+    const okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim());
+    const check = st => {
+      if (st===0 && !f.secteur) return 'Choisissez votre secteur d’activité.';
+      if (st===2) { const m=[]; if(!f.nom.trim()) m.push('nom'); if(!f.tel.trim()) m.push('téléphone'); if(!okMail) m.push('email valide'); if(m.length) return 'À compléter : ' + m.join(', ') + '.'; }
+      return '';
+    };
+    const NAMES = ['Votre métier','Votre local','Coordonnées'];
+    const steps = NAMES.map((n,i) => { const cur=i===s.step, done=i<s.step; return { n, k:'0' + (i+1), cur: cur ? 'step' : 'false',
+      st: 'padding:12px 14px;border-radius:16px;min-height:60px;text-align:left;background:' + (cur ? '#0F1C24' : (done ? '#DDE7EC' : 'rgba(255,255,255,.7)')) + ';color:' + (cur ? '#fff' : '#0F1C24') + ';border:1px solid ' + (cur ? 'transparent' : 'rgba(15,28,36,.1)'),
+      pick: () => { if (i<=s.step) this.setState({ step:i, err:'' }); else { const e=check(s.step); if (e) this.setState({ err:e }); else if (i===s.step+1) this.setState({ step:i, err:'' }); } } }; });
+
+    const filled = [f.secteur, f.ligne, f.long, f.prof, f.msg, f.nom, f.tel, okMail ? 'x' : '', f.cp, f.ville].filter(Boolean).length;
+    const pct = Math.round(filled/10*100);
+    const dims = (f.long || f.prof) ? (f.long || '—') + ' × ' + (f.prof || '—') + ' cm' : '—';
+    const tmp = TEMP[f.secteur];
+    const sv = v => 'text-align:right;color:' + (v==='—' ? '#7C8E99' : '#FFFFFF');
+    const summary = [
+      ['SECTEUR', f.secteur || '—'], ['LIGNE', f.ligne || '—'], ['LOCAL (L × P)', dims],
+      ['PLAN 3D OFFERT', f.plan3d ? 'Oui' : 'Non'], ['CONTACT', f.nom || '—'], ['VILLE', [f.cp, f.ville].filter(Boolean).join(' ') || '—']
+    ].map(r => ({ k:r[0], v:r[1], st:sv(r[1]) }));
+
+    const LY = [['road','Autoroute A8'],['river','L’Argens'],['town','Communes']];
+    const layers = LY.map(l => ({ n:l[1], on: s.ly[l[0]], st: s.ly[l[0]] ? 'background:#0F1C24;color:#fff;border-color:#0F1C24' : 'background:rgba(255,255,255,.9)',
+      pick: () => this.setState({ ly: Object.assign({}, s.ly, { [l[0]]: !s.ly[l[0]] }) }) }));
+    const lyS = k => 'opacity:' + (s.ly[k] ? 1 : 0) + ';transition:opacity .4s';
+
+    const FAQ = [
+      ['Le plan 3D est-il payant ?', 'Non : l’élaboration de votre plan 3D d’agencement est offerte. Cochez l’option à l’étape 2 de la demande de devis.'],
+      ['Les vitrines sont-elles faites sur mesure ?', 'Oui. Les vitrines sont adaptées à votre local et à vos dimensions ; le module Gourmandise, par exemple, existe en 101, 117, 146, 169, 191 et 222 cm, ou sur mesure.'],
+      ['Quelles plages de température proposez-vous ?', '−2 / 0 °C pour la poissonnerie, +2 / +8 °C pour la pâtisserie, +14 / +18 °C pour le chocolat, et +30 / +90 °C pour le bain-marie.'],
+      ['Quelles matières pour l’habillage ?', 'Pierre acrylique type Corian (Ligne Stone), granit pour le plan de travail et la plinthe (Ligne Basique), bois mélaminé avec moulures, verre avec sérigraphie du client.'],
+      ['Combien coûte une vitrine ?', 'Exemple : le module Gourmandise de 101 cm est à 5 800,00 € HT. Les autres longueurs et compositions sont sur devis.'],
+      ['Où voir les vitrines ?', 'Au bureau d’études et show-room : 423, Chemin des Vernèdes, Espace Vernèdes 3, 83480 Puget-sur-Argens. Horaires : [HORAIRES].']
+    ];
+    const faqs = FAQ.map((q,i) => ({ q:q[0], a:q[1], on: s.faq===i,
+      ico: 'flex:none;transform:rotate(' + (s.faq===i ? 45 : 0) + 'deg)',
+      pick: () => this.setState({ faq: s.faq===i ? -1 : i }) }));
+
+    return {
+      f, sects, lignes, steps, summary, layers, faqs,
+      p1: s.step===0 ? '' : 'display:none', p2: s.step===1 ? '' : 'display:none', p3: s.step===2 ? '' : 'display:none',
+      canBack: s.step>0, notLast: s.step<2, isLast: s.step===2,
+      notSent: !s.sent, sent: s.sent, hasErr: !!s.err, err: s.err,
+      progStyle: 'position:absolute;left:0;top:0;height:3px;border-radius:2px;background:#2B6688;width:' + ((s.step+1)/3*100).toFixed(1) + '%;transition:width .5s cubic-bezier(.2,.7,.2,1)',
+      pctTxt: pct + ' %',
+      pctBar: 'position:absolute;left:0;top:0;height:6px;border-radius:3px;background:#7FB3D3;width:' + pct + '%;transition:width .5s',
+      sumTemp: tmp || (f.secteur ? '[T°] à définir' : '— — °C'),
+      sumTempSt: 'font-size:' + (tmp ? '52px' : '30px') + ';font-weight:200;letter-spacing:-.03em;line-height:1.1;margin-top:4px;color:' + (tmp && tmp.indexOf('+30')===0 ? '#FF9C8E' : (tmp ? '#A8D2EA' : '#7C8E99')),
+      planTxt: f.plan3d ? ' et votre demande de plan 3D offert' : '',
+      setF: e => setField(e.target.name, e.target.value),
+      togglePlan: () => setField('plan3d', !this.state.f.plan3d),
+      back: () => this.setState({ step: Math.max(0, s.step-1), err:'' }),
+      forward: () => { const e=check(s.step); if (e) this.setState({ err:e }); else this.setState({ step: s.step+1, err:'' }); },
+      submit: e => { e.preventDefault(); const er=check(2); if (er) this.setState({ err:er }); else this.setState({ sent:true, err:'' }); },
+      restart: () => this.setState({ sent:false, step:0, err:'', f:{ secteur:'', ligne:'', long:'', prof:'', plan3d:true, msg:'', nom:'', tel:'', email:'', cp:'', ville:'' } }),
+      lyRoad: lyS('road'), lyRiver: lyS('river'), lyTown: lyS('town'),
+      ctaStyle: 'background:' + accent,
+      menuOpen: s.menuOpen, toggleMenu: () => this.setState({ menuOpen: !s.menuOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

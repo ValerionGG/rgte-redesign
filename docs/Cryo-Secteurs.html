@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cryo — Secteurs</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F1F5F7}
+.cx,.cx *{box-sizing:border-box}
+.cx{font-family:'Sora',system-ui,sans-serif;color:#0F1C24;background:#F1F5F7;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cx a{color:inherit}
+.cx h1,.cx h2,.cx h3,.cx p{margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.tnum{font-variant-numeric:tabular-nums}
+.navl{position:relative;text-decoration:none;font-size:14px;font-weight:500;display:inline-flex;align-items:center;min-height:44px}
+.navl::after{content:"";position:absolute;left:0;right:0;bottom:8px;height:1px;background:#3A7CA5;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font:600 14px/1 'Sora',sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s}
+.btn-red{background:#D42A20;color:#fff!important;box-shadow:0 12px 26px -14px rgba(212,42,32,.75)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 18px 32px -14px rgba(212,42,32,.85)}
+.btn-ghost{background:rgba(255,255,255,.62);color:#0F1C24;border:1px solid rgba(15,28,36,.16)}
+.btn-ghost:hover{background:#fff;border-color:#3A7CA5}
+.btn-dark{background:#0F1C24;color:#fff!important}
+.btn-dark:hover{transform:translateY(-2px);background:#1B2F3B}
+.frost{background:linear-gradient(160deg,rgba(255,255,255,.80),rgba(255,255,255,.46));backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 30px 60px -32px rgba(15,28,36,.32)}
+.dew{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,.95) 0 1.1px,transparent 1.7px),radial-gradient(circle,rgba(15,28,36,.10) 0 1.6px,transparent 2.2px),radial-gradient(circle,rgba(255,255,255,.85) 0 2.2px,transparent 3px),radial-gradient(circle,rgba(58,124,165,.16) 0 .8px,transparent 1.3px);background-size:23px 19px,47px 41px,71px 63px,13px 17px;background-position:0 0,12px 9px,30px 22px,5px 3px;transition:opacity .6s}
+.gridbg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(15,28,36,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,28,36,.05) 1px,transparent 1px);background-size:64px 64px}
+.ruler{background-image:repeating-linear-gradient(90deg,rgba(15,28,36,.3) 0 1px,transparent 1px 12px)}
+.lab{font-size:12px;color:#2B6688;display:flex;gap:12px;align-items:center;text-transform:uppercase}
+.lab i{display:inline-block;width:40px;height:1px;background:#3A7CA5}
+.h2{font-size:clamp(30px,3.8vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(15,28,36,.14);background:rgba(255,255,255,.8);font-size:13.5px;text-decoration:none;transition:border-color .25s,background .25s,transform .25s}
+.chip:hover{border-color:#3A7CA5;background:#fff;transform:translateY(-1px)}
+.srow{cursor:pointer;border:0;width:100%;font-family:'Sora',sans-serif;text-align:left;display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;min-height:58px;padding:0 16px;border-radius:16px;transition:background .3s,color .3s,transform .3s}
+.srow:hover{transform:translateX(4px)}
+.mk{cursor:pointer;border:0;font-family:'Sora',sans-serif;white-space:nowrap;transition:transform .3s,box-shadow .3s,background .3s,color .3s}
+.mk:hover{transform:translate(-50%,-3px)!important}
+.card{text-decoration:none;display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;border-radius:18px;overflow:hidden;background:#fff;border:1px solid rgba(15,28,36,.08);padding:8px;transition:transform .35s,box-shadow .35s}
+.card:hover{transform:translateY(-3px);box-shadow:0 20px 36px -24px rgba(15,28,36,.45)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+@keyframes swap{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.swap{animation:swap .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.1)}}
+.kb{animation:kb 14s ease-in-out infinite alternate}
+:focus-visible{outline:2px solid #3A7CA5;outline-offset:3px}
+.burger{display:none!important}
+@media(max-width:980px){.navd{display:none!important}.burger{display:inline-flex!important}}
+@media(max-width:640px){.wrap{padding:0 18px}.hide-sm{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cx *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="cx">
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(241,245,247,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(15,28,36,.08)">
+  <div class="mono" style="background:#0F1C24;color:#C9D7DF;font-size:11.5px">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;min-height:34px;align-items:center">
+      <span class="hide-sm">BUREAU D'ÉTUDES &amp; SHOW-ROOM · PUGET-SUR-ARGENS (83)</span>
+      <a href="tel:0800951313" style="text-decoration:none;color:#fff;display:inline-flex;align-items:center;min-height:34px">N° VERT 0 800 95 13 13 · APPEL GRATUIT</a>
+    </div>
+  </div>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px">
+    <a href="Cryo-Accueil.html" aria-label="RGTE, retour à l'accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-height:44px">
+      <span style="font-weight:700;font-size:26px;letter-spacing:.08em">RGTE</span>
+      <span style="width:1px;height:30px;background:rgba(15,28,36,.25)"></span>
+      <span class="mono" style="font-size:10.5px;line-height:1.3;color:#4A5D69">R.G.<br>TECHNOLOGIES</span>
+    </a>
+    <nav class="navd" aria-label="Navigation principale" style="display:flex;gap:32px">
+      <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+      <a class="navl on" href="Cryo-Secteurs.html" aria-current="page">Secteurs</a>
+      <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+      <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn btn-ghost navd" href="tel:0800951313" style="font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+      <a class="btn btn-red navd" href="Cryo-Contact.html" style="{{ ctaStyle }}">Plan 3D offert</a>
+      <button type="button" class="btn btn-ghost burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}" style="width:48px;padding:0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:1px solid rgba(15,28,36,.08);background:#F1F5F7">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:8px;padding-bottom:20px">
+        <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+        <a class="navl" href="Cryo-Secteurs.html">Secteurs</a>
+        <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+        <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        <a class="btn btn-red" href="Cryo-Contact.html" style="margin-top:12px">Plan 3D offert</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- EN-TÊTE + CARTE THERMIQUE -->
+<section style="position:relative;overflow:hidden;background:#E3EDF2">
+  <div aria-hidden="true" class="gridbg"></div>
+  <div aria-hidden="true" class="dew" style="opacity:.6"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:64px">
+    <div class="mono rise" style="font-size:11.5px;color:#4A5D69"><a href="Cryo-Accueil.html" style="text-decoration:none">ACCUEIL</a> / SECTEURS D'ACTIVITÉ</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:40px;align-items:end;margin-top:26px">
+      <h1 class="rise d1" style="font-size:clamp(44px,7vw,108px);font-weight:200;letter-spacing:-.045em;line-height:.95;overflow-wrap:anywhere">13 métiers,<br><span style="font-weight:600">13 climats.</span></h1>
+      <p class="rise d2" style="font-size:17px;color:#33454F;max-width:520px">Chaque produit a sa plage : la poissonnerie sous zéro, la pâtisserie entre +2 et +8 °C, le chocolat entre +14 et +18 °C, le bain-marie jusqu'à +90 °C. Choisissez votre métier, nous indiquons les modules.</p>
+    </div>
+
+    <div class="frost rise d3" style="position:relative;border-radius:26px;padding:24px 28px 26px;margin-top:44px">
+      <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#4A5D69"><span>CARTE THERMIQUE · SECTEURS À PLAGE CONNUE</span><span class="hide-sm">ÉCHELLE NON LINÉAIRE</span></div>
+      <div style="position:relative;height:118px;margin:16px 40px 0">
+        <sc-for list="{{ markers }}" as="mk" hint-placeholder-count="5">
+          <button type="button" class="mk" style="{{ mk.st }}" onClick="{{ mk.pick }}" aria-pressed="{{ mk.on }}">{{ mk.n }}</button>
+        </sc-for>
+      </div>
+      <div style="position:relative;height:30px;margin:0 40px">
+        <div class="ruler" aria-hidden="true" style="position:absolute;left:0;right:0;top:0;height:10px;opacity:.6"></div>
+        <sc-for list="{{ bands }}" as="b" hint-placeholder-count="4">
+          <div aria-hidden="true" style="{{ b.st }}"></div>
+        </sc-for>
+      </div>
+      <div class="mono" style="position:relative;height:16px;margin:4px 40px 0;font-size:11px;color:#4A5D69">
+        <span style="position:absolute;left:0;transform:translateX(-30%)">−2</span>
+        <span style="position:absolute;left:20%;transform:translateX(-50%)">0</span>
+        <span class="hide-sm" style="position:absolute;left:25%;transform:translateX(-50%)">+2</span>
+        <span style="position:absolute;left:45%;transform:translateX(-50%)">+8</span>
+        <span class="hide-sm" style="position:absolute;left:55%;transform:translateX(-50%)">+14</span>
+        <span style="position:absolute;left:72%;transform:translateX(-50%)">+18</span>
+        <span style="position:absolute;left:80%;transform:translateX(-50%);color:#B3241B">+30</span>
+        <span style="position:absolute;left:100%;transform:translateX(-80%);color:#B3241B">+90 °C</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SÉLECTEUR + DÉTAIL -->
+<section style="padding:80px 0 100px">
+  <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:28px;align-items:start">
+    <div>
+      <div class="lab mono"><span>LISTE</span><i></i><span>Choisir un secteur</span></div>
+      <div role="listbox" aria-label="Secteurs d'activité" style="display:flex;flex-direction:column;gap:6px;margin-top:22px">
+        <sc-for list="{{ sects }}" as="sc" hint-placeholder-count="13">
+          <button type="button" role="option" class="srow" style="{{ sc.st }}" onClick="{{ sc.pick }}" aria-selected="{{ sc.on }}">
+            <span class="mono" style="font-size:11px;opacity:.7">{{ sc.k }}</span>
+            <span style="font-size:15.5px;font-weight:500">{{ sc.n }}</span>
+            <span class="mono tnum" style="{{ sc.tst }}">{{ sc.t }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="{{ panelStyle }}">
+      <div aria-hidden="true" class="dew" style="{{ dewStyle }}"></div>
+      <div class="swap" style="position:relative">
+        <div style="position:relative;height:320px;border-radius:22px;overflow:hidden;background:#0F1C24">
+          <img class="kb" src="{{ sec.img }}" alt="{{ sec.alt }}" style="width:100%;height:320px;object-fit:cover;display:block">
+          <span class="mono" style="position:absolute;top:14px;left:14px;padding:6px 10px;border-radius:999px;background:rgba(15,28,36,.65);color:#fff;font-size:11px">SECTEUR {{ sec.k }} / 13</span>
+        </div>
+        <div style="padding:26px 10px 8px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+            <h2 style="font-size:clamp(32px,3.6vw,48px);font-weight:400;letter-spacing:-.03em;line-height:1">{{ sec.n }}</h2>
+            <div style="text-align:right">
+              <div class="mono" style="font-size:11px;color:#4A5D69">{{ sec.tLab }}</div>
+              <div class="tnum" style="{{ sec.bigSt }}">{{ sec.t }}</div>
+            </div>
+          </div>
+          <p style="font-size:16px;color:#33454F;margin-top:18px;max-width:620px">{{ sec.d }}</p>
+
+          <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:26px">MODULES CONSEILLÉS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <sc-for list="{{ sec.mods }}" as="m" hint-placeholder-count="5">
+              <a class="chip" href="Cryo-Module.html">{{ m.n }} <span class="mono" style="font-size:10.5px;color:#4A5D69">{{ m.l }}</span></a>
+            </sc-for>
+          </div>
+          <sc-if value="{{ sec.v }}" hint-placeholder-val="{{ false }}">
+            <p class="mono" style="margin-top:12px;font-size:11.5px;color:#8A4A12;display:flex;gap:8px;align-items:center">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8A4A12" stroke-width="1.4" aria-hidden="true"><circle cx="7" cy="7" r="6"></circle><path d="M7 4v3.5M7 9.6v.4"></path></svg>
+              SÉLECTION INDICATIVE — À VALIDER PAR LE BUREAU D'ÉTUDES
+            </p>
+          </sc-if>
+
+          <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:28px">RÉALISATIONS LIÉES · {{ sec.rc }}</div>
+          <sc-if value="{{ sec.hasReals }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:10px;margin-top:10px">
+              <sc-for list="{{ sec.reals }}" as="r" hint-placeholder-count="2">
+                <a class="card" href="Cryo-Realisations.html">
+                  <img src="{{ r.img }}" alt="{{ r.n }}" style="width:96px;height:80px;object-fit:cover;border-radius:12px;display:block">
+                  <span>
+                    <span class="mono" style="display:block;font-size:10.5px;color:#4A5D69">{{ r.k }} · {{ r.l }}</span>
+                    <span style="display:block;font-size:15px;font-weight:600;margin-top:2px">{{ r.n }}</span>
+                    <span style="display:block;font-size:13px;color:#33454F">{{ r.w }}</span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ sec.noReals }}" hint-placeholder-val="{{ false }}">
+            <p style="margin-top:10px;font-size:14.5px;color:#33454F">Pas encore de réalisation présentée pour ce secteur. [RÉALISATIONS À VENIR]</p>
+          </sc-if>
+
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px">
+            <a class="btn btn-red" href="Cryo-Contact.html" style="{{ ctaStyle }}">Devis {{ sec.n }}</a>
+            <a class="btn btn-ghost" href="Cryo-Lignes.html">Voir les lignes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BANDEAU -->
+<section style="background:#0F1C24;color:#E6EEF2;padding:90px 0;position:relative;overflow:hidden">
+  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(127,179,211,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,179,211,.07) 1px,transparent 1px);background-size:48px 48px"></div>
+  <div class="wrap" style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:32px;align-items:center">
+    <div>
+      <div class="lab mono" style="color:#7FB3D3"><span>SUR MESURE</span><i style="background:#7FB3D3"></i><span>Votre métier</span></div>
+      <h2 class="h2" style="margin-top:20px">Un produit, un local, une plage : on dessine à partir de là.</h2>
+    </div>
+    <div>
+      <p style="font-size:16px;color:#C9D7DF">Vitrines adaptées à votre local et à vos dimensions. Envoyez vos contraintes, le bureau d'études propose les modules et élabore votre plan 3D d'agencement.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px">
+        <a class="btn btn-red" href="Cryo-Contact.html" style="{{ ctaStyle }}">Plan 3D offert</a>
+        <a class="btn" href="tel:0800951313" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(127,179,211,.3);font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0B161D;color:#C9D7DF;padding:84px 0 28px;position:relative;overflow:hidden">
+  <div aria-hidden="true" class="mono" style="position:absolute;right:-20px;top:20px;font-size:180px;line-height:1;color:rgba(127,179,211,.06);white-space:nowrap">−2 / +90</div>
+  <div class="wrap" style="position:relative">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:40px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;color:#fff"><span style="font-weight:700;font-size:24px;letter-spacing:.08em">RGTE</span><span class="mono" style="font-size:10px;line-height:1.3;color:#9FB4C1">R.G.<br>TECHNOLOGIES</span></div>
+        <p style="margin-top:16px;font-size:14px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">SHOW-ROOM</div>
+        <p style="margin-top:12px;font-size:14px">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">CONTACT</div>
+        <p style="margin-top:12px;font-size:14px"><a href="tel:0800951313" style="color:#fff;text-decoration:none;font-family:'IBM Plex Mono',monospace">0 800 95 13 13</a><br>Numéro vert, appel gratuit<br>Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">NAVIGATION</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="Cryo-Lignes.html">Lignes d'agencement</a>
+          <a class="navl" href="Cryo-Secteurs.html">Secteurs d'activité</a>
+          <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+          <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">INFORMATIONS</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="#">Mentions légales</a>
+          <a class="navl" href="#">Conditions de vente</a>
+          <a class="navl" href="#">Plan du site</a>
+          <a class="navl" href="#">Gestion des cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="mono" style="margin-top:60px;padding-top:20px;border-top:1px solid rgba(201,215,223,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:11.5px;color:#9FB4C1">
+      <span>© RGTE — R.G. Technologies</span>
+      <a href="index.html" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px">← Toutes les propositions</a>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2700},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#0F1C24","#3A7CA5"]},"givre":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { sect:1, menuOpen:false }; }
+  pos(t){ const P=[[0,-2],[20,0],[25,2],[45,8],[55,14],[72,18],[80,30],[100,90]]; for(let i=1;i<P.length;i++){ if(t<=P[i][1]){ const a=P[i-1], b=P[i]; return a[0] + (b[0]-a[0])*(t-a[1])/(b[1]-a[1]); } } return 100; }
+  renderVals(){
+    const s=this.state, accent=this.props.accent || '#D42A20', givre=this.props.givre !== false;
+    const REAL = {
+      1:['Pâtisserie','Paris 4e','Stone','assets/vitrine-cakes.webp'], 2:['Bar à salades','Département 13','Stone','assets/saladette-bacs.webp'],
+      3:['Chocolatier','Gap & Grenoble','Stone','assets/chocolates-dark.webp'], 4:['Sandwicherie','Chamonix','Basique','assets/bakery-counter-bright.webp'],
+      5:['Bar à olives','Nice','Stone','assets/counter-domes.webp'], 6:['Bar à yogourt glacé (chaîne)','Toute la France','Stone','assets/topping-bar.webp'],
+      7:['Boulangerie pâtisserie','La Réunion','Basique','assets/vitrine-viennoiserie.webp'], 8:['Boulangerie','Département 33','Legno','assets/bakery-shelves.webp'],
+      9:['Pizza sur composition','Paris','Stone','assets/baker-table.webp'], 10:['Pâtissier chocolatier','Département 69','Stone','assets/vitrine-colorful.webp'],
+      11:['Traiteur asiatique (chaîne)','Marseille','Stone','assets/bakery-hall-dark.webp'], 12:['Bar à couscous','Isère','Stone','assets/saladette-bacs.webp'],
+      13:['Traiteur poissonnier','Département 92','Stone','assets/fish-ice.webp'], 14:['Pâtissier chocolatier Canet','Nice 06','Stone','assets/vitrine-slice.webp']
+    };
+    // t: [min,max] connue ou null ; tl : libellé de la source de la plage
+    const SECT=[
+      { n:'Boulangerie', t:null, img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées', d:'Viennoiseries, pains et pâtisseries de boulangerie : modules à plaques et vitrines statiques.', mods:[['Amandine','Basique'],['Pastry Show','Basique'],['Statique','Basique'],['Loire','Industry'],['Réfrigérée statique','Legno'],['Vitrine neutre','Legno']], v:true, r:[7,8] },
+      { n:'Pâtisserie', t:[2,8], img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine', d:'Entremets, tartes et macarons exposés entre +2 et +8 °C. Huit modules conseillés, de la Plane à l’Amandine.', mods:[['Plane','Stone'],['Vision','Stone'],['Panorama','Stone'],['Centrale','Stone'],['Gourmandise','Stone'],['Pastry Show','Basique'],['Cube','Basique'],['Amandine','Basique']], v:false, r:[1,7,10,14] },
+      { n:'Chocolats', t:[14,18], img:'assets/chocolates-dark.webp', alt:'Bonbons de chocolat', d:'Le chocolat se garde plus haut : les modules Plane, Vision, Centrale, Gourmandise et Panorama existent en version +14 / +18 °C.', mods:[['Plane','Stone'],['Vision','Stone'],['Centrale','Stone'],['Gourmandise','Stone'],['Panorama','Stone']], v:false, r:[3,10,14] },
+      { n:'Sandwichs', t:null, img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir', d:'La vitrine Plane expose pâtisseries, sandwichs ou chocolats ; en self-service, la murale complète le comptoir.', mods:[['Plane','Stone'],['Panoramique','Basique'],['Basse','Basique'],['Murale self-service','Basique'],['Nepal','Industry']], v:true, r:[4] },
+      { n:'Traiteur', t:null, img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre', d:'Plats exposés, ingrédients en bacs et service au comptoir : la composition suit l’offre.', mods:[['Plane','Stone'],['Saladette','Stone'],['Panorama','Stone'],['Surface plane','Stone'],['Comptoir bar','Stone'],['Comptoir caisse','Stone']], v:false, r:[11,13] },
+      { n:'Poissonnerie', t:[-2,0], img:'assets/fish-ice.webp', alt:'Poissons sur glace', d:'Réfrigérée Poissonnerie : froid statique avec serpentin de cuve, de −2 à 0 °C, et vidange de cuve.', mods:[['Réfrigérée Poissonnerie','Stone'],['Hanoi','Industry'],['Panorama','Stone'],['Surface plane','Stone']], v:false, r:[13] },
+      { n:'Bar à salades', t:[2,8], tl:'SALADETTE', img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes colorés', d:'Ingrédients en bacs gastronormes dans la Saladette, à +2 / +8 °C (bacs non fournis).', mods:[['Saladette','Stone'],['Panorama','Stone'],['Comptoir caisse','Stone']], v:false, r:[2] },
+      { n:'Bar à couscous', t:[30,90], tl:'BAIN-MARIE', img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox', d:'Le Chaud bain-marie maintient les préparations de +30 à +90 °C, en bacs gastronormes ; trous arrondis sur mesure.', mods:[['Chaud bain-marie','Stone'],['Chaud','Basique'],['Saladette','Stone']], v:false, r:[12] },
+      { n:'Fromagerie', t:null, img:'assets/fromagerie.webp', alt:'Meules de fromage sur étagères', d:'Meules et pièces à la coupe : une vitrine statique ou panoramique, selon le volume exposé.', mods:[['Statique','Basique'],['Panorama','Stone'],['Vitrine rétro','Basique']], v:true, r:[] },
+      { n:'Bar', t:null, img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc', d:'Le Comptoir bar existe en version neutre ou réfrigérée ; le Comptoir caisse, avec ou sans tablette PMR.', mods:[['Comptoir bar','Stone'],['Comptoir caisse','Stone']], v:true, r:[] },
+      { n:'Bar à topping', t:null, img:'assets/topping-bar.webp', alt:'Bar à toppings', d:'Saladette sur mesure à trous arrondis et surface plane, comme pour la chaîne de bars à yogourt glacé.', mods:[['Saladette sur mesure','Stone'],['Surface plane','Stone']], v:false, r:[6] },
+      { n:'Coffee shop / Café', t:null, img:'assets/vitrine-cookies.webp', alt:'Vitrine de cookies', d:'Comptoir, caisse et une vitrine à gâteaux à hauteur de comptoir.', mods:[['Comptoir bar','Stone'],['Comptoir caisse','Stone'],['Cube','Basique'],['Pastry Show','Basique']], v:true, r:[] },
+      { n:'Pizza al taglio', t:null, img:'assets/baker-table.webp', alt:'Pains et plan de travail', d:'Garnitures en bacs, exposition plane et caisse, sur le modèle de la pizzeria sur composition à Paris.', mods:[['Saladette','Stone'],['Plane','Stone'],['Comptoir caisse','Stone']], v:true, r:[9] }
+    ];
+    const f = v => (v<0 ? '−' + Math.abs(v) : (v===0 ? '0' : '+' + v));
+    const tTxt = x => x.t ? f(x.t[0]) + ' / ' + f(x.t[1]) + ' °C' : '[T°]';
+    const tCol = x => !x.t ? '#4A5D69' : (x.t[0]>=30 ? '#B3241B' : (x.t[0]>=14 ? '#6B4430' : '#2B6688'));
+    const sects = SECT.map((x,i) => { const on=i===s.sect; return { n:x.n, on, k:String(i+1).padStart(2,'0'), t:tTxt(x),
+      st:'background:' + (on ? '#0F1C24' : 'rgba(255,255,255,.65)') + ';color:' + (on ? '#fff' : '#0F1C24') + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.08)'),
+      tst:'font-size:11.5px;white-space:nowrap;color:' + (on ? (x.t && x.t[0]>=30 ? '#FF9C8E' : (x.t ? '#A8D2EA' : '#9FB4C1')) : tCol(x)),
+      pick: () => this.setState({ sect:i }) }; });
+
+    const ROWS = { 'Bar à salades':1 };
+    const markers = SECT.map((x,i) => ({ x, i })).filter(o => o.x.t).map(o => { const x=o.x, i=o.i, on=i===s.sect;
+      const mid = (this.pos(x.t[0]) + this.pos(x.t[1]))/2; const row = ROWS[x.n] || 0; const hot = x.t[0]>=30;
+      return { n:x.n, on,
+        st:'position:absolute;left:' + mid.toFixed(1) + '%;bottom:' + (8 + row*52) + 'px;transform:translateX(-50%);min-height:44px;padding:0 16px;border-radius:999px;font-size:13.5px;font-weight:600;background:' + (on ? (hot ? '#B3241B' : '#0F1C24') : '#fff') + ';color:' + (on ? '#fff' : tCol(x)) + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.14)') + ';box-shadow:' + (on ? '0 14px 28px -14px rgba(15,28,36,.6)' : 'none'),
+        pick: () => this.setState({ sect:i }) }; });
+    const BANDS = [[-2,0,'#3A7CA5'],[2,8,'#7FB3D3'],[14,18,'#B9A08C'],[30,90,'#E8644F']];
+    const S0 = SECT[s.sect];
+    const bands = BANDS.map(b => { const x=this.pos(b[0]), y=this.pos(b[1]); const on = S0.t && S0.t[0]===b[0];
+      return { st:'position:absolute;top:14px;height:14px;border-radius:7px;left:' + x.toFixed(1) + '%;width:' + (y-x).toFixed(1) + '%;background:' + b[2] + ';opacity:' + (on ? 1 : .4) + ';transition:opacity .4s' }; });
+
+    const cold = S0.t ? (S0.t[0] < 10 ? 1 : (S0.t[0] < 30 ? .35 : 0)) : .25;
+    const tint = !S0.t ? '#F6F9FA' : (S0.t[0]>=30 ? '#F8ECE7' : (S0.t[0]>=14 ? '#F5F1EC' : '#E6F0F5'));
+    const reals = S0.r.map(id => { const r=REAL[id]; return { k:'R-' + String(id).padStart(2,'0'), n:r[0], w:r[1], l:r[2].toUpperCase(), img:r[3] }; });
+    const sec = { n:S0.n, img:S0.img, alt:S0.alt, d:S0.d, v:S0.v, k:String(s.sect+1).padStart(2,'0'),
+      t: S0.t ? tTxt(S0) : '[T°]',
+      tLab: S0.t ? 'PLAGE' + (S0.tl ? ' · ' + S0.tl : '') : 'PLAGE À DÉFINIR',
+      bigSt: 'font-size:' + (S0.t ? 'clamp(40px,4.6vw,64px)' : '36px') + ';font-weight:200;letter-spacing:-.03em;line-height:1;color:' + tCol(S0),
+      mods: S0.mods.map(m => ({ n:m[0], l:m[1].toUpperCase() })),
+      reals, hasReals: reals.length>0, noReals: reals.length===0, rc: String(reals.length).padStart(2,'0') };
+
+    return {
+      sects, markers, bands, sec,
+      panelStyle: 'position:relative;overflow:hidden;border-radius:30px;padding:16px;border:1px solid rgba(255,255,255,.9);box-shadow:0 30px 60px -32px rgba(15,28,36,.32);background-color:' + tint + ';transition:background-color .6s',
+      dewStyle: 'opacity:' + (givre ? (0.1 + cold*0.6).toFixed(2) : 0),
+      ctaStyle: 'background:' + accent,
+      menuOpen: s.menuOpen, toggleMenu: () => this.setState({ menuOpen: !s.menuOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

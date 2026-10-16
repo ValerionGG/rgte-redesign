@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Studio — Showroom &amp; contact</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#FAFAF8}
+sc-for,sc-if{display:contents}
+.st{--acc:#D42A20;font-family:'Onest',system-ui,sans-serif;color:#16181A;background:#FAFAF8;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.st *,.st *::before,.st *::after{box-sizing:border-box}
+.st img{display:block;max-width:100%}
+.st h1,.st h2,.st h3,.st h4,.st p{margin:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.topbar{background:#16181A;color:#B9BCB7;font-size:12px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.topbar a{color:#FAFAF8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:38px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(250,250,248,.9);-webkit-backdrop-filter:saturate(1.3) blur(14px);backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid #E2E3DF}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#16181A;min-height:44px}
+.logo-glyph{display:flex;align-items:flex-end;gap:2px;height:24px}
+.logo-glyph i{display:block;width:7px;border-radius:1px;background:#16181A}
+.logo-word{display:block;font-weight:800;font-size:25px;letter-spacing:-.045em;line-height:1}
+.logo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-top:4px;line-height:1}
+.nav{display:flex;gap:2px;background:#ECEDEA;padding:4px;border-radius:999px}
+.nav-a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;color:#5B6066;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+.nav-a:hover{color:#16181A;background:rgba(255,255,255,.65)}
+.nav-a.on{background:#fff;color:#16181A;box-shadow:0 1px 3px rgba(22,24,26,.1)}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#16181A;min-height:44px}
+.tel-ico{width:38px;height:38px;border-radius:50%;background:#D8EDE3;display:grid;place-items:center;flex:none}
+.tel b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;line-height:1.15}
+.tel small{display:block;font-size:11px;color:#5B6066;line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:0;font:600 15px/1 'Onest',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,color .2s}
+.btn svg{transition:transform .25s ease;flex:none}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 12px 26px -12px var(--acc)}
+.btn-ink{background:#16181A;color:#FAFAF8}
+.btn-ink:hover{transform:translateY(-1px);box-shadow:0 12px 26px -14px #16181A}
+.btn-ghost{background:transparent;color:#16181A;box-shadow:inset 0 0 0 1px #C4C6C1}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px #16181A}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid #D5D7D2;background:#fff;align-items:center;justify-content:center;cursor:pointer;color:#16181A}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:0 16px;border-radius:12px;background:#ECEDEA;text-decoration:none;color:#16181A;font-weight:600}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6066}
+.eyebrow i{width:8px;height:8px;border-radius:2px;background:var(--acc);display:block}
+.h2{font-size:clamp(32px,4.4vw,60px);line-height:1.02;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.4vw,19px);color:#5B6066;line-height:1.55}
+.sec{padding:120px 0}
+.ftr{background:#ECEDEA;padding:80px 0 28px}
+.ftr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr-h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-bottom:14px;font-weight:500}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#16181A;font-size:15px}
+.ftr-links a:hover{color:var(--acc)}
+.ftr-tel{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;text-decoration:none;letter-spacing:-.02em;display:inline-block;color:#16181A}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:64px;padding-top:14px;border-top:1px solid #D5D7D2;font-size:13px;color:#5B6066}
+.ftr-bot a{color:#5B6066;font-size:13px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#16181A}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.st :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@media(max-width:1080px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 16px 16px}}
+@media(max-width:720px){.wrap{padding:0 16px}.sec{padding:80px 0}.topbar-note{display:none}.hdr-cta{display:none}}
+@media (prefers-reduced-motion:reduce){.st *{animation:none !important;transition:none !important}}
+
+/* ---- Contact ---- */
+.phero{padding:64px 0 44px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:end}
+.h1{font-size:clamp(44px,7vw,104px);line-height:.92;letter-spacing:-.055em;font-weight:800;margin-top:18px;overflow-wrap:anywhere}
+.h1 em{font-style:normal;color:var(--acc)}
+.green{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#D8EDE3;border-radius:24px;padding:22px 24px;text-decoration:none;color:#16181A;transition:transform .25s,box-shadow .25s}
+.green:hover{transform:translateY(-2px);box-shadow:0 20px 40px -30px rgba(22,24,26,.6)}
+.green b{font-family:'JetBrains Mono',monospace;font-size:clamp(26px,3vw,38px);font-weight:600;letter-spacing:-.04em;line-height:1}
+.wiz{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:8px;background:#ECEDEA;border-radius:30px;padding:8px;align-items:start}
+.wbody{background:#FAFAF8;border-radius:24px;padding:30px;min-height:560px;display:flex;flex-direction:column}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:30px}
+.sbtn{display:flex;flex-direction:column;align-items:flex-start;gap:8px;border:0;background:transparent;padding:0;cursor:pointer;text-align:left;font:600 14px/1.2 'Onest',sans-serif;color:#16181A;min-height:44px}
+.sbtn .bar{display:block;width:100%;height:4px;border-radius:4px;background:#D5D7D2;overflow:hidden}
+.sbtn .bar i{display:block;height:4px;background:var(--acc);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.sbtn .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B6066;font-weight:500}
+.stitle{font-size:clamp(26px,2.6vw,36px);font-weight:700;letter-spacing:-.035em;line-height:1.05}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:12px;font:500 14px/1.2 'Onest',sans-serif;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s,transform .15s}
+.chip:hover{box-shadow:inset 0 0 0 1.5px #16181A}
+.chip:active{transform:scale(.96)}
+.lab{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5B6066;margin:26px 0 10px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:64px;padding:12px 16px;border:0;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px #E2E3DF;cursor:pointer;text-align:left;font:500 15px/1.3 'Onest',sans-serif;color:#16181A;margin-top:24px}
+.sw{position:relative;width:52px;height:30px;border-radius:999px;flex:none;transition:background .25s}
+.sw i{position:absolute;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .25s cubic-bezier(.2,.7,.2,1)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:12px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:13px;font-weight:600}
+.fld input,.fld textarea{font:500 15px/1.4 'Onest',sans-serif;color:#16181A;background:#fff;border:0;border-radius:14px;min-height:50px;padding:12px 14px;outline:0;box-shadow:inset 0 0 0 1px #E2E3DF;transition:box-shadow .2s}
+.fld textarea{min-height:110px;resize:vertical}
+.fld input:focus,.fld textarea:focus{box-shadow:inset 0 0 0 2px #16181A}
+.unit{position:relative}
+.unit input{width:100%;padding-right:46px}
+.unit span{position:absolute;right:14px;top:15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#5B6066}
+.err{font-size:12px;color:#B3241B}
+.wfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:30px}
+.panel{display:flex;flex-direction:column;gap:22px}
+.anim{animation:slide .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes slide{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.summ{background:#fff;border-radius:24px;padding:26px;position:sticky;top:92px}
+.srow{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid #F0F1EE;font-size:14px}
+.srow span{color:#5B6066}
+.srow b{text-align:right;font-weight:600}
+.prog{height:6px;border-radius:6px;background:#ECEDEA;overflow:hidden;margin:16px 0 18px}
+.prog i{display:block;height:6px;background:var(--acc);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.done{display:flex;flex-direction:column;gap:14px;animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.mapw{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:8px;background:#ECEDEA;border-radius:30px;padding:8px;margin-top:40px}
+.map{position:relative;border-radius:24px;overflow:hidden;background:#E4E6E2;height:500px}
+.map svg{display:block;width:100%;height:500px}
+.mg{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.zoom{position:absolute;right:14px;top:14px;display:grid;gap:6px}
+.zoom button{width:44px;height:44px;border-radius:12px;border:0;background:#fff;cursor:pointer;display:grid;place-items:center;color:#16181A;box-shadow:0 2px 6px rgba(22,24,26,.12)}
+.zoom button:hover{background:#16181A;color:#fff}
+.pulse{animation:pulse 2.2s ease-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes pulse{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.mapcap{position:absolute;left:14px;bottom:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(250,250,248,.92);border-radius:8px;padding:6px 10px}
+.info{background:#FAFAF8;border-radius:24px;padding:30px;display:flex;flex-direction:column;gap:18px}
+.irow{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:start;padding-top:16px;border-top:1px solid #E2E3DF}
+.irow .ic{width:40px;height:40px;border-radius:12px;background:#ECEDEA;display:grid;place-items:center}
+.irow span{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066}
+.irow b{display:block;font-size:16px;font-weight:600;margin-top:2px;line-height:1.35}
+.faq{display:grid;gap:8px;margin-top:40px;max-width:980px}
+.qa{background:#fff;border-radius:20px;box-shadow:0 0 0 1px #E6E7E3;overflow:hidden;transition:box-shadow .25s}
+.qa button{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;min-height:68px;padding:0 22px;border:0;background:transparent;cursor:pointer;text-align:left;font:600 17px/1.3 'Onest',sans-serif;color:#16181A}
+.qa .pl{width:32px;height:32px;border-radius:50%;background:#ECEDEA;display:grid;place-items:center;flex:none;transition:transform .3s,background .3s,color .3s}
+.qa .ans{padding:0 22px 22px;color:#5B6066;font-size:15px;max-width:760px;animation:fade .35s ease both}
+@media(max-width:1080px){.wiz,.mapw{grid-template-columns:minmax(0,1fr)}.summ{position:static}}
+@media(max-width:960px){.phero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.wbody{padding:20px;min-height:0}.map,.map svg{height:380px}.info{padding:22px}.steps .t{display:none}}
+</style>
+</helmet>
+<div class="st" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="mono topbar-note">Proposition 06 · Studio — configurateur</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Studio-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span>
+      <span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="nav-a" href="Studio-Lignes.dc.html">Lignes</a>
+      <a class="nav-a" href="Studio-Secteurs.dc.html">Secteurs</a>
+      <a class="nav-a" href="Studio-Realisations.dc.html">Réalisations</a>
+      <a class="nav-a on" href="Studio-Contact.dc.html" aria-current="page">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16181A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="#devis">Demande de devis</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Studio-Lignes.dc.html">Lignes <span class="mono">01</span></a>
+      <a href="Studio-Secteurs.dc.html">Secteurs <span class="mono">02</span></a>
+      <a href="Studio-Realisations.dc.html">Réalisations <span class="mono">03</span></a>
+      <a href="Studio-Contact.dc.html">Showroom &amp; contact <span class="mono">04</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span class="mono">Gratuit</span></a>
+      <a href="#devis" style="background:var(--acc);color:#fff">Demande de devis <span class="mono">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="wrap">
+  <div class="phero">
+    <div class="rise">
+      <span class="eyebrow"><i></i>Showroom &amp; contact</span>
+      <h1 class="h1">Parlons de<br><em>votre linéaire.</em></h1>
+    </div>
+    <div class="rise d2">
+      <p class="lead">Trois étapes pour décrire votre métier et votre local. Le bureau d'études vous rappelle et élabore votre plan 3D d'agencement — offert.</p>
+      <a class="green" href="tel:0800951313" style="margin-top:22px"><span><span class="mono" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#2F4F3F;display:block;margin-bottom:8px">Numéro vert · appel gratuit</span><b>0 800 95 13 13</b></span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+    </div>
+  </div>
+
+  <div class="wiz rise d3" id="devis">
+    <div class="wbody">
+      <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+        <div class="steps">
+          <sc-for list="{{ stepper }}" as="p" hint-placeholder-count="3">
+            <button type="button" class="sbtn" onClick="{{ p.go }}" aria-current="{{ p.cur }}"><span class="bar"><i style="{{ p.bar }}"></i></span><span class="n">ÉTAPE {{ p.n }}</span><span class="t">{{ p.name }}</span></button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ s1 }}" hint-placeholder-val="{{ true }}">
+          <div class="anim">
+            <h2 class="stitle">Quel est votre métier&nbsp;?</h2>
+            <span class="lab">Secteur d'activité *</span>
+            <div class="chips" role="group" aria-label="Secteur d'activité">
+              <sc-for list="{{ sectors }}" as="c" hint-placeholder-count="13">
+                <button type="button" class="chip" style="{{ c.style }}" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.name }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ eSector }}" hint-placeholder-val="{{ false }}"><p class="err" style="margin-top:10px">Choisissez un secteur pour continuer.</p></sc-if>
+            <span class="lab">Ligne envisagée</span>
+            <div class="chips" role="group" aria-label="Ligne envisagée">
+              <sc-for list="{{ lines }}" as="c" hint-placeholder-count="6">
+                <button type="button" class="chip" style="{{ c.style }}" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}">{{ c.name }}</button>
+              </sc-for>
+            </div>
+            <button type="button" class="toggle" onClick="{{ togglePlan }}" aria-pressed="{{ planOn }}">
+              <span><b style="display:block">Je souhaite mon plan 3D d'agencement</b><span style="font-size:13px;color:#5B6066">Offert, élaboré par le bureau d'études</span></span>
+              <span class="sw" style="{{ swBg }}"><i style="{{ swKnob }}"></i></span>
+            </button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+          <div class="anim">
+            <h2 class="stitle">Et votre local&nbsp;?</h2>
+            <p style="color:#5B6066;margin-top:8px;font-size:15px">Des cotes approximatives suffisent. Les vitrines sont adaptées à votre local et à vos dimensions.</p>
+            <span class="lab">Dimensions du local</span>
+            <div class="grid2">
+              <div class="fld"><label for="c-l">Longueur</label><div class="unit"><input id="c-l" type="text" inputmode="decimal" value="{{ f.lon }}" onInput="{{ inLon }}" placeholder="ex. 8"><span>m</span></div></div>
+              <div class="fld"><label for="c-w">Largeur</label><div class="unit"><input id="c-w" type="text" inputmode="decimal" value="{{ f.lar }}" onInput="{{ inLar }}" placeholder="ex. 5"><span>m</span></div></div>
+              <div class="fld"><label for="c-lin">Linéaire de vitrines souhaité</label><div class="unit"><input id="c-lin" type="text" inputmode="numeric" value="{{ f.lin }}" onInput="{{ inLin }}" placeholder="ex. 420"><span>cm</span></div></div>
+            </div>
+            <div class="fld" style="margin-top:12px"><label for="c-ctr">Contraintes du local (accès, piliers, alimentation…)</label><textarea id="c-ctr" value="{{ f.ctr }}" onInput="{{ inCtr }}"></textarea></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+          <div class="anim">
+            <h2 class="stitle">Comment vous joindre&nbsp;?</h2>
+            <span class="lab">Coordonnées</span>
+            <div class="grid2">
+              <div class="fld"><label for="c-nom">Nom *</label><input id="c-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ inNom }}" style="{{ eNomS }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+              <div class="fld"><label for="c-tel">Téléphone *</label><input id="c-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ inTel }}" style="{{ eTelS }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+              <div class="fld"><label for="c-mail">Email *</label><input id="c-mail" type="email" autocomplete="email" value="{{ f.mail }}" onInput="{{ inMail }}" style="{{ eMailS }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide.</span></sc-if></div>
+              <div class="fld"><label for="c-cp">Code postal</label><input id="c-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ inCp }}"></div>
+              <div class="fld"><label for="c-ville">Ville</label><input id="c-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
+              <div class="fld full"><label for="c-msg">Message</label><textarea id="c-msg" value="{{ f.msg }}" onInput="{{ inMsg }}"></textarea></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div class="wfoot">
+          <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-ghost" onClick="{{ back }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>Retour</button></sc-if>
+          <span class="mono" style="font-size:12px;color:#5B6066">* obligatoire · prototype, rien n'est envoyé</span>
+          <button type="button" class="btn btn-acc" onClick="{{ next }}">{{ nextLabel }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+        <div class="done" role="status">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1E6B48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3 3 7-7"></path></svg>
+          <h2 class="stitle">Merci {{ f.nom }}.</h2>
+          <p style="color:#5B6066;font-size:16px">Votre demande est prête. <b style="color:#16181A">Prototype — rien n'est envoyé.</b> Dans la version en ligne, le bureau d'études vous rappellerait pour préparer votre plan 3D.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <button type="button" class="btn btn-ink" onClick="{{ restart }}">Nouvelle demande</button>
+            <a class="btn btn-ghost" href="Studio-Accueil.dc.html#composer">Composer mon linéaire</a>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <aside class="summ" aria-label="Récapitulatif de la demande">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b style="font-size:18px;letter-spacing:-.02em">Votre demande</b><span class="mono" style="font-size:12px;color:#5B6066">{{ pct }} %</span></div>
+      <div class="prog"><i style="{{ progStyle }}"></i></div>
+      <div class="srow" style="border-top:0"><span>Secteur</span><b>{{ sumSector }}</b></div>
+      <div class="srow"><span>Ligne</span><b>{{ sumLine }}</b></div>
+      <div class="srow"><span>Plan 3D</span><b>{{ sumPlan }}</b></div>
+      <div class="srow"><span>Local</span><b class="mono">{{ sumLocal }}</b></div>
+      <div class="srow"><span>Linéaire</span><b class="mono">{{ sumLin }}</b></div>
+      <div class="srow"><span>Contact</span><b>{{ sumContact }}</b></div>
+      <p style="font-size:12px;color:#5B6066;margin-top:16px">Vous préférez parler à quelqu'un&nbsp;? <a href="tel:0800951313" style="color:#16181A;font-weight:600">0 800 95 13 13</a>, appel gratuit.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:110px">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Bureau d'études &amp; show-room</span>
+    <h2 class="h2" style="margin-top:16px;max-width:860px">Puget-sur-Argens, dans le Var.</h2>
+    <div class="mapw">
+      <div class="map">
+        <svg viewBox="0 0 640 500" role="img" aria-label="Plan stylisé : show-room RGTE, Espace Vernèdes 3, Chemin des Vernèdes, Puget-sur-Argens">
+          <rect width="640" height="500" fill="#E4E6E2"></rect>
+          <g class="mg" style="{{ mapT }}">
+            <g fill="#EEEFEC">
+              <rect x="30" y="30" width="150" height="110" rx="10"></rect><rect x="200" y="30" width="120" height="80" rx="10"></rect><rect x="350" y="20" width="130" height="100" rx="10"></rect><rect x="510" y="40" width="110" height="120" rx="10"></rect>
+              <rect x="30" y="180" width="110" height="130" rx="10"></rect><rect x="170" y="150" width="140" height="90" rx="10"></rect><rect x="470" y="200" width="150" height="90" rx="10"></rect>
+              <rect x="40" y="350" width="160" height="120" rx="10"></rect><rect x="230" y="370" width="120" height="100" rx="10"></rect><rect x="380" y="340" width="110" height="130" rx="10"></rect><rect x="520" y="330" width="100" height="140" rx="10"></rect>
+            </g>
+            <g fill="#DCE9E1"><rect x="200" y="265" width="110" height="70" rx="14"></rect><circle cx="560" cy="110" r="26"></circle></g>
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M-20 160 C 120 150 220 130 330 140 S 560 170 680 150" stroke="#D2D5D0" stroke-width="26"></path>
+              <path d="M-20 160 C 120 150 220 130 330 140 S 560 170 680 150" stroke="#FFFFFF" stroke-width="20"></path>
+              <path id="vern" d="M160 520 C 200 420 260 360 340 320 S 470 250 520 180" stroke="#D2D5D0" stroke-width="18"></path>
+              <path d="M160 520 C 200 420 260 360 340 320 S 470 250 520 180" stroke="#FFFFFF" stroke-width="13"></path>
+              <path d="M330 140 L 340 320 L 360 520" stroke="#FFFFFF" stroke-width="9"></path>
+              <path d="M-20 330 L 340 320 L 680 310" stroke="#FFFFFF" stroke-width="7"></path>
+            </g>
+            <text font-family="JetBrains Mono, monospace" font-size="11" fill="#5B6066"><textPath href="#vern" startOffset="18%">CHEMIN DES VERNÈDES</textPath></text>
+            <text x="30" y="250" font-family="Onest, sans-serif" font-size="30" font-weight="800" fill="#16181A" opacity=".1" letter-spacing="-1">PUGET-SUR-ARGENS</text>
+            <g transform="translate(420 262)">
+              <rect x="-42" y="-30" width="84" height="54" rx="8" fill="#16181A"></rect>
+              <rect x="-34" y="-22" width="20" height="38" fill="#2A2D30"></rect><rect x="-10" y="-22" width="20" height="38" fill="#2A2D30"></rect><rect x="14" y="-22" width="20" height="38" fill="#2A2D30"></rect>
+            </g>
+            <g transform="translate(420 210)">
+              <circle class="pulse" r="22" fill="#D42A20" opacity=".35"></circle>
+              <path d="M0 18 C -14 2 -16 -6 -16 -12 a16 16 0 0 1 32 0 c0 6 -2 14 -16 30z" fill="#D42A20" transform="translate(0 -14)"></path>
+              <circle r="6" cy="-26" fill="#fff"></circle>
+            </g>
+            <g transform="translate(442 168)">
+              <rect width="168" height="46" rx="10" fill="#FFFFFF"></rect>
+              <text x="12" y="20" font-family="Onest, sans-serif" font-size="13" font-weight="700" fill="#16181A">RGTE · show-room</text>
+              <text x="12" y="36" font-family="JetBrains Mono, monospace" font-size="10" fill="#5B6066">Espace Vernèdes 3</text>
+            </g>
+          </g>
+          <g transform="translate(40 44)"><circle r="18" fill="#FFFFFF"></circle><path d="M0 -11 L5 4 L0 1 L-5 4z" fill="#16181A"></path><text y="14" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#16181A">N</text></g>
+        </svg>
+        <div class="zoom">
+          <button type="button" aria-label="Zoomer sur le plan" onClick="{{ zoomIn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+          <button type="button" aria-label="Dézoomer le plan" onClick="{{ zoomOut }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+        </div>
+        <span class="mapcap">Plan stylisé, non à l'échelle · zoom ×{{ zoomTxt }}</span>
+      </div>
+      <div class="info">
+        <h3 style="font-size:26px;font-weight:700;letter-spacing:-.03em">Voir et toucher les matières avant votre plan 3D.</h3>
+        <div class="irow"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><div><span>Adresse</span><b>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</b></div></div>
+        <div class="irow"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><span>Horaires</span><b>[HORAIRES]</b></div></div>
+        <div class="irow"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><div><span>Numéro vert</span><b class="mono">0 800 95 13 13</b></div></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:auto">
+          <a class="btn btn-acc" href="tel:0800951313">Appeler avant ma visite</a>
+          <a class="btn btn-ghost" href="#devis">Demander mon plan 3D</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Questions fréquentes</span>
+    <h2 class="h2" style="margin-top:16px">Avant d'appeler.</h2>
+    <div class="faq">
+      <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
+        <div class="qa" style="{{ q.style }}">
+          <button type="button" aria-expanded="{{ q.open }}" onClick="{{ q.toggle }}">{{ q.q }}<span class="pl" style="{{ q.plStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+          <sc-if value="{{ q.isOpen }}" hint-placeholder-val="{{ false }}"><p class="ans">{{ q.a }}</p></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a class="logo" href="Studio-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span><span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span></a>
+        <p style="color:#5B6066;margin-top:16px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#5B6066;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Studio-Lignes.dc.html">Lignes d'agencement</a>
+        <a href="Studio-Secteurs.dc.html">Secteurs d'activité</a>
+        <a href="Studio-Realisations.dc.html">Réalisations</a>
+        <a href="Studio-Contact.dc.html">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span class="mono" style="font-size:12px">Proposition de refonte — concept, non officiel · <a href="Main.dc.html" style="font-size:12px;min-height:0;display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3200},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#16181A","#1E6B48"]},"faqOuverte":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.SECT = ['Boulangerie','Pâtisserie','Chocolats','Sandwichs','Traiteur','Poissonnerie','Bar à salades','Bar à couscous','Fromagerie','Bar','Bar à topping','Coffee shop / Café','Pizza al taglio'];
+    this.LINES = ['Basique','Stone','Legno','Encastrable','Industry','Je ne sais pas encore'];
+    this.FAQ = [
+      ['Le plan 3D est-il payant ?','Non. L\'élaboration de votre plan 3D d\'agencement est offerte : le bureau d\'études le prépare à partir de votre métier, de vos produits et des dimensions de votre local.'],
+      ['Les vitrines s\'adaptent-elles à mon local ?','Oui. Les vitrines sont adaptées à votre local et à vos dimensions. Le Module Gourmandise, par exemple, existe en 101, 117, 146, 169, 191 et 222 cm, ou sur mesure.'],
+      ['Quelles matières proposez-vous ?','Des matières tendance : pierre acrylique type Corian, granit, bois mélaminé avec moulures et verre avec sérigraphie du client, selon la ligne choisie.'],
+      ['Quelles plages de température ?','+2 °C / +8 °C pour la pâtisserie, +14 °C / +18 °C pour les chocolats, −2 °C / 0 °C pour la poissonnerie et +30 °C / +90 °C pour le chaud bain-marie.'],
+      ['Peut-on voir les vitrines avant de commander ?','Oui, au bureau d\'études et show-room : 423, Chemin des Vernèdes, Espace Vernèdes 3, 83480 Puget-sur-Argens. Horaires : [HORAIRES].'],
+      ['Combien coûte une vitrine ?','Le Module Gourmandise 101 cm en pierre acrylique blanche est à 5 800,00 € HT. Les autres modules et longueurs sont chiffrés sur devis.']
+    ];
+    this.state = { menuOpen:false, step:1, done:false, sector:'', line:'', plan:true, zoom:1, open: (props && props.faqOuverte === false) ? -1 : 0,
+      f:{ lon:'', lar:'', lin:'', ctr:'', nom:'', tel:'', mail:'', cp:'', ville:'', msg:'' }, err:{} };
+  }
+  setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
+  next(){
+    const s = this.state;
+    if (s.step === 1) { if (!s.sector) { this.setState({ err:{ sector:true } }); return; } this.setState({ step:2, err:{} }); return; }
+    if (s.step === 2) { this.setState({ step:3 }); return; }
+    const f = s.f;
+    const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()) };
+    if (err.nom || err.tel || err.mail) { this.setState({ err }); return; }
+    this.setState({ done:true, err:{} });
+  }
+  renderVals(){
+    const s = this.state, f = s.f, e = s.err || {};
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const on = 'background:#16181A;color:#fff';
+    const off = 'background:#fff;color:#16181A;box-shadow:inset 0 0 0 1px #E2E3DF';
+    const stepper = [['1','Votre métier'],['2','Votre local'],['3','Coordonnées']].map((p, i) => ({ n:p[0], name:p[1], cur: s.step === i + 1 ? 'step' : 'false',
+      bar: 'width:' + (s.step > i + 1 ? '100%' : s.step === i + 1 ? '50%' : '0%'),
+      go: () => { if (i + 1 < s.step) this.setState({ step:i + 1 }); } }));
+    const sectors = this.SECT.map(n => ({ name:n, on: s.sector === n ? 'true' : 'false', style: s.sector === n ? on : off, pick: () => this.setState({ sector:n, err:{} }) }));
+    const lines = this.LINES.map(n => ({ name:n, on: s.line === n ? 'true' : 'false', style: s.line === n ? 'background:#D8EDE3;color:#16181A;box-shadow:inset 0 0 0 1.5px #16181A' : off, pick: () => this.setState({ line: s.line === n ? '' : n }) }));
+    const filled = [!!s.sector, !!s.line, !!(f.lon || f.lar), !!f.lin, !!f.nom.trim(), !!f.tel.trim(), !!f.mail.trim()].filter(Boolean).length;
+    const pct = s.done ? 100 : Math.round(filled / 7 * 100);
+    const bad = 'box-shadow:inset 0 0 0 2px #B3241B';
+    const z = s.zoom;
+    const faq = this.FAQ.map((q, i) => { const o = s.open === i; return { q:q[0], a:q[1], isOpen:o, open: o ? 'true' : 'false',
+      style: o ? 'box-shadow:0 0 0 2px #16181A' : '',
+      plStyle: o ? 'transform:rotate(45deg);background:var(--acc);color:#fff' : '',
+      toggle: () => this.setState({ open: o ? -1 : i }) }; });
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      notDone: !s.done, done: s.done,
+      stepper, s1: s.step === 1, s2: s.step === 2, s3: s.step === 3,
+      sectors, lines, eSector: !!e.sector,
+      planOn: s.plan ? 'true' : 'false',
+      togglePlan: () => this.setState({ plan: !s.plan }),
+      swBg: 'background:' + (s.plan ? '#1E6B48' : '#C4C6C1'),
+      swKnob: 'left:' + (s.plan ? '25px' : '3px'),
+      f,
+      inLon: (ev) => this.setF('lon', ev), inLar: (ev) => this.setF('lar', ev), inLin: (ev) => this.setF('lin', ev), inCtr: (ev) => this.setF('ctr', ev),
+      inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev),
+      inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev), inMsg: (ev) => this.setF('msg', ev),
+      eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail,
+      eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '',
+      canBack: s.step > 1,
+      back: () => this.setState({ step: Math.max(1, s.step - 1) }),
+      next: () => this.next(),
+      nextLabel: s.step === 3 ? 'Envoyer ma demande' : 'Continuer',
+      restart: () => this.setState({ done:false, step:1, sector:'', line:'', plan:true, f:{ lon:'', lar:'', lin:'', ctr:'', nom:'', tel:'', mail:'', cp:'', ville:'', msg:'' }, err:{} }),
+      pct, progStyle: 'width:' + pct + '%',
+      sumSector: s.sector || '—',
+      sumLine: s.line || '—',
+      sumPlan: s.plan ? 'Oui, offert' : 'Non',
+      sumLocal: (f.lon || f.lar) ? (f.lon || '?') + ' × ' + (f.lar || '?') + ' m' : '—',
+      sumLin: f.lin ? f.lin + ' cm' : '—',
+      sumContact: f.nom.trim() || '—',
+      mapT: 'transform:scale(' + z + ');transform-origin:420px 210px',
+      zoomTxt: String(z).replace('.', ','),
+      zoomIn: () => this.setState({ zoom: Math.min(2.2, Math.round((z + 0.4) * 10) / 10) }),
+      zoomOut: () => this.setState({ zoom: Math.max(1, Math.round((z - 0.4) * 10) / 10) }),
+      faq
+    };
+  }
+}
+</script>
+</body>
+</html>

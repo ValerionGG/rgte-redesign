@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio — Réalisations</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#FAFAF8}
+sc-for,sc-if{display:contents}
+.st{--acc:#D42A20;font-family:'Onest',system-ui,sans-serif;color:#16181A;background:#FAFAF8;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.st *,.st *::before,.st *::after{box-sizing:border-box}
+.st img{display:block;max-width:100%}
+.st h1,.st h2,.st h3,.st h4,.st p{margin:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.topbar{background:#16181A;color:#B9BCB7;font-size:12px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.topbar a{color:#FAFAF8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:38px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(250,250,248,.9);-webkit-backdrop-filter:saturate(1.3) blur(14px);backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid #E2E3DF}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#16181A;min-height:44px}
+.logo-glyph{display:flex;align-items:flex-end;gap:2px;height:24px}
+.logo-glyph i{display:block;width:7px;border-radius:1px;background:#16181A}
+.logo-word{display:block;font-weight:800;font-size:25px;letter-spacing:-.045em;line-height:1}
+.logo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-top:4px;line-height:1}
+.nav{display:flex;gap:2px;background:#ECEDEA;padding:4px;border-radius:999px}
+.nav-a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;color:#5B6066;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+.nav-a:hover{color:#16181A;background:rgba(255,255,255,.65)}
+.nav-a.on{background:#fff;color:#16181A;box-shadow:0 1px 3px rgba(22,24,26,.1)}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#16181A;min-height:44px}
+.tel-ico{width:38px;height:38px;border-radius:50%;background:#D8EDE3;display:grid;place-items:center;flex:none}
+.tel b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;line-height:1.15}
+.tel small{display:block;font-size:11px;color:#5B6066;line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:0;font:600 15px/1 'Onest',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,color .2s}
+.btn svg{transition:transform .25s ease;flex:none}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 12px 26px -12px var(--acc)}
+.btn-ink{background:#16181A;color:#FAFAF8}
+.btn-ink:hover{transform:translateY(-1px);box-shadow:0 12px 26px -14px #16181A}
+.btn-ghost{background:transparent;color:#16181A;box-shadow:inset 0 0 0 1px #C4C6C1}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px #16181A}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid #D5D7D2;background:#fff;align-items:center;justify-content:center;cursor:pointer;color:#16181A}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:0 16px;border-radius:12px;background:#ECEDEA;text-decoration:none;color:#16181A;font-weight:600}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6066}
+.eyebrow i{width:8px;height:8px;border-radius:2px;background:var(--acc);display:block}
+.h2{font-size:clamp(32px,4.4vw,60px);line-height:1.02;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.4vw,19px);color:#5B6066;line-height:1.55}
+.sec{padding:120px 0}
+.ftr{background:#ECEDEA;padding:80px 0 28px}
+.ftr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr-h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-bottom:14px;font-weight:500}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#16181A;font-size:15px}
+.ftr-links a:hover{color:var(--acc)}
+.ftr-tel{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;text-decoration:none;letter-spacing:-.02em;display:inline-block;color:#16181A}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:64px;padding-top:14px;border-top:1px solid #D5D7D2;font-size:13px;color:#5B6066}
+.ftr-bot a{color:#5B6066;font-size:13px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#16181A}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.st :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@media(max-width:1080px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 16px 16px}}
+@media(max-width:720px){.wrap{padding:0 16px}.sec{padding:80px 0}.topbar-note{display:none}.hdr-cta{display:none}}
+@media (prefers-reduced-motion:reduce){.st *{animation:none !important;transition:none !important}}
+
+/* ---- Réalisations ---- */
+.phero{padding:64px 0 40px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:end}
+.h1{font-size:clamp(44px,7vw,104px);line-height:.92;letter-spacing:-.055em;font-weight:800;margin-top:18px;overflow-wrap:anywhere}
+.h1 em{font-style:normal;color:var(--acc)}
+.fbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;background:#ECEDEA;border-radius:22px;padding:8px;position:sticky;top:86px;z-index:20}
+.fgroup{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.flab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5B6066;padding:0 8px 0 10px}
+.fchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:12px;font:500 14px/1 'Onest',sans-serif;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.fchip:hover{box-shadow:inset 0 0 0 1px #16181A}
+.fchip .c{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
+.vt{display:flex;background:#fff;border-radius:12px;padding:3px;gap:2px}
+.vt button{width:44px;height:40px;border:0;border-radius:9px;cursor:pointer;display:grid;place-items:center}
+.lay{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;margin-top:20px;align-items:start}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:12px}
+.card{display:flex;flex-direction:column;text-align:left;border:0;padding:0;background:#fff;border-radius:22px;overflow:hidden;cursor:pointer;font-family:'Onest',sans-serif;color:#16181A;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s;animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+.card:hover{transform:translateY(-4px)}
+.card .im{display:block;width:100%;height:200px;overflow:hidden;background:#ECEDEA}
+.card img{width:100%;height:200px;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover img{transform:scale(1.07)}
+.card .bd{display:block;padding:14px 16px 16px;width:100%}
+.card .top{display:flex;width:100%;justify-content:space-between;gap:8px;align-items:center}
+.card .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B6066}
+.card b{display:block;font-size:17px;letter-spacing:-.02em;line-height:1.2;margin-top:8px}
+.card .pl{display:block;font-size:13px;color:#5B6066;margin-top:4px}
+.badge{display:inline-flex;align-items:center;min-height:24px;padding:0 9px;border-radius:999px;background:#16181A;color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px}
+.list{display:grid;gap:6px}
+.lrow{display:grid;grid-template-columns:50px 64px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:76px;padding:6px 14px 6px 6px;border:0;border-radius:18px;text-align:left;cursor:pointer;font-family:'Onest',sans-serif;color:#16181A;transition:background .2s,box-shadow .2s,transform .2s;animation:fade .4s ease both}
+.lrow:hover{transform:translateX(4px)}
+.lrow img{width:64px;height:64px;object-fit:cover;border-radius:12px}
+.lrow .n{font-family:'JetBrains Mono',monospace;font-size:12px;color:#5B6066;text-align:center}
+.insp{position:sticky;top:170px;background:#ECEDEA;border-radius:28px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.ihero{position:relative;border-radius:22px;overflow:hidden;height:280px;background:#16181A}
+.ihero img{width:100%;height:280px;object-fit:cover;animation:kb 8s ease-out both}
+@keyframes kb{from{transform:scale(1.1)}to{transform:scale(1)}}
+.inav{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+.inav button{width:44px;height:44px;border-radius:50%;border:0;background:rgba(250,250,248,.92);cursor:pointer;display:grid;place-items:center;color:#16181A;transition:background .2s}
+.inav button:hover{background:#fff}
+.icap{position:absolute;left:12px;bottom:12px;font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(250,250,248,.9);border-radius:8px;padding:5px 8px}
+.ibody{background:#FAFAF8;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.ibody h2{font-size:clamp(28px,3vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.kv div{background:#fff;border-radius:14px;padding:12px 14px}
+.kv span{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066}
+.kv b{display:block;font-size:15px;margin-top:4px}
+.mchips{display:flex;flex-wrap:wrap;gap:6px}
+.mchip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:999px;background:#D8EDE3;font-size:13px;font-weight:500}
+.mini{position:relative;background:#fff;border-radius:18px;padding:110px 56px 34px 26px;background-image:linear-gradient(#F0F1EE 1px,transparent 1px),linear-gradient(90deg,#F0F1EE 1px,transparent 1px);background-size:16px 16px}
+.mini .tag{position:absolute;top:12px;left:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B6066}
+.counter{position:relative;z-index:0;display:flex;align-items:flex-end;width:100%}
+.blk{animation:blkIn .5s cubic-bezier(.2,.9,.3,1.15) both}
+.blk:nth-child(2){animation-delay:.08s}.blk:nth-child(3){animation-delay:.16s}.blk:nth-child(4){animation-delay:.24s}
+@keyframes blkIn{from{opacity:0;transform:translateY(-26px)}to{opacity:1;transform:none}}
+.floor{position:absolute;left:-10px;right:-40px;bottom:-12px;height:16px;background:radial-gradient(ellipse at center,rgba(22,24,26,.18),transparent 70%);z-index:-1}
+.empty{padding:48px;border-radius:22px;border:1.5px dashed #C4C6C1;text-align:center;color:#5B6066}
+.ctaband{background:#16181A;color:#FAFAF8;border-radius:32px;padding:56px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:32px;align-items:center}
+@media(max-width:1080px){.lay{grid-template-columns:minmax(0,1fr)}.insp{position:static;order:-1}.fbar{position:static}}
+@media(max-width:960px){.phero,.ctaband{grid-template-columns:minmax(0,1fr)}.ctaband{padding:36px}}
+@media(max-width:720px){.lrow{grid-template-columns:40px 56px minmax(0,1fr)}.lrow .badge{display:none}.lrow img{width:56px;height:56px}.kv{grid-template-columns:minmax(0,1fr)}.mini{padding:100px 50px 30px 18px}}
+</style>
+</helmet>
+<div class="st" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="mono topbar-note">Proposition 06 · Studio — configurateur</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Studio-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span>
+      <span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="nav-a" href="Studio-Lignes.html">Lignes</a>
+      <a class="nav-a" href="Studio-Secteurs.html">Secteurs</a>
+      <a class="nav-a on" href="Studio-Realisations.html" aria-current="page">Réalisations</a>
+      <a class="nav-a" href="Studio-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16181A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Studio-Contact.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Studio-Lignes.html">Lignes <span class="mono">01</span></a>
+      <a href="Studio-Secteurs.html">Secteurs <span class="mono">02</span></a>
+      <a href="Studio-Realisations.html">Réalisations <span class="mono">03</span></a>
+      <a href="Studio-Contact.html">Showroom &amp; contact <span class="mono">04</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span class="mono">Gratuit</span></a>
+      <a href="Studio-Contact.html" style="background:var(--acc);color:#fff">Plan 3D offert <span class="mono">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="wrap">
+  <div class="phero">
+    <div class="rise">
+      <span class="eyebrow"><i></i>Réalisations</span>
+      <h1 class="h1">14 linéaires,<br><em>module par module.</em></h1>
+    </div>
+    <p class="lead rise d2">De Paris à La Réunion, chaque projet est décomposé en modules. Filtrez par ligne ou par métier, ouvrez un projet : son linéaire se redessine dans l'inspecteur.</p>
+  </div>
+
+  <div class="fbar rise d3">
+    <div class="fgroup" role="group" aria-label="Filtrer par ligne">
+      <span class="flab">Ligne</span>
+      <sc-for list="{{ lineF }}" as="f" hint-placeholder-count="4">
+        <button type="button" class="fchip" style="{{ f.style }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.name }}<span class="c">{{ f.count }}</span></button>
+      </sc-for>
+    </div>
+    <div class="fgroup" role="group" aria-label="Filtrer par type">
+      <span class="flab">Type</span>
+      <sc-for list="{{ typeF }}" as="f" hint-placeholder-count="6">
+        <button type="button" class="fchip" style="{{ f.style }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.name }}</button>
+      </sc-for>
+    </div>
+    <div class="vt" role="group" aria-label="Affichage">
+      <button type="button" aria-label="Affichage en grille" style="{{ gridBtn }}" onClick="{{ setGrid }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg></button>
+      <button type="button" aria-label="Affichage en liste" style="{{ listBtn }}" onClick="{{ setList }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></button>
+    </div>
+  </div>
+
+  <div class="lay">
+    <div>
+      <p class="mono" style="font-size:12px;color:#5B6066;margin:6px 0 14px">{{ countTxt }} · images d'ambiance, photos des projets à intégrer</p>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div class="empty fade">Aucune réalisation pour cette combinaison.<br><button type="button" class="btn btn-ink" style="margin-top:18px" onClick="{{ resetF }}">Réinitialiser les filtres</button></div>
+      </sc-if>
+      <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+        <div class="grid">
+          <sc-for list="{{ items }}" as="r" hint-placeholder-count="6">
+            <button type="button" class="card" style="{{ r.style }}" onClick="{{ r.pick }}" aria-pressed="{{ r.on }}">
+              <span class="im"><img src="{{ r.img }}" alt="{{ r.alt }}"></span>
+              <span class="bd">
+                <span class="top"><span class="n">N° {{ r.n }}</span><span class="badge">{{ r.line }}</span></span>
+                <b>{{ r.title }}</b>
+                <span class="pl">{{ r.place }}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+        <div class="list">
+          <sc-for list="{{ items }}" as="r" hint-placeholder-count="6">
+            <button type="button" class="lrow" style="{{ r.rowStyle }}" onClick="{{ r.pick }}" aria-pressed="{{ r.on }}">
+              <span class="n">{{ r.n }}</span>
+              <img src="{{ r.img }}" alt="{{ r.alt }}">
+              <span><b style="font-size:16px">{{ r.title }}</b><br><span style="font-size:13px;color:#5B6066">{{ r.place }} · {{ r.modsTxt }}</span></span>
+              <span class="badge">{{ r.line }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ true }}">
+      <aside class="insp" aria-label="Projet sélectionné">
+        <div class="ihero">
+          <sc-for list="{{ selImg }}" as="i" hint-placeholder-count="1"><img src="{{ i.img }}" alt="{{ i.alt }}"></sc-for>
+          <div class="inav">
+            <button type="button" aria-label="Projet précédent" onClick="{{ prev }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+            <button type="button" aria-label="Projet suivant" onClick="{{ next }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+          </div>
+          <span class="icap">Image d'ambiance</span>
+        </div>
+        <div class="ibody">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="mono" style="font-size:12px;color:#5B6066">RÉALISATION {{ sel.n }} / 14 · {{ posTxt }}</span><span class="badge">Ligne {{ sel.line }}</span></div>
+          <h2>{{ sel.title }}</h2>
+          <div class="kv">
+            <div><span>Lieu</span><b>{{ sel.place }}</b></div>
+            <div><span>Métier</span><b>{{ sel.typeName }}</b></div>
+          </div>
+          <div>
+            <p class="mono" style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-bottom:8px">Modules</p>
+            <div class="mchips">
+              <sc-for list="{{ selMods }}" as="m" hint-placeholder-count="3"><span class="mchip">{{ m.name }}</span></sc-for>
+            </div>
+          </div>
+          <div class="mini">
+            <span class="tag">LINÉAIRE · MODULES SANS COTE</span>
+            <div class="counter" style="{{ miniW }}">
+              <sc-for list="{{ selBlocks }}" as="b" hint-placeholder-count="3">
+                <div class="blk" style="{{ b.wStyle }}">
+                  <span style="{{ b.topStyle }}"></span>
+                  <sc-if value="{{ b.hasGlass }}" hint-placeholder-val="{{ true }}">
+                    <span style="{{ b.glassStyle }}"><span style="{{ b.glassTopStyle }}"></span><span style="{{ b.shelfStyle }}"></span><span style="{{ b.treat2Style }}"></span><span style="{{ b.treatStyle }}"></span></span>
+                  </sc-if>
+                  <sc-if value="{{ b.isCaisse }}" hint-placeholder-val="{{ false }}"><span style="{{ b.regStyle }}"></span></sc-if>
+                  <span style="{{ b.edgeStyle }}"></span>
+                  <span style="{{ b.panelStyle }}"></span>
+                  <span style="{{ b.plinthStyle }}"></span>
+                </div>
+              </sc-for>
+              <span style="{{ selSide }}"></span>
+              <span class="floor"></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn-acc btn-sm" href="Studio-Accueil.html#composer">Recomposer ce linéaire</a>
+            <a class="btn btn-ghost btn-sm" href="Studio-Contact.html">Projet similaire : devis</a>
+          </div>
+        </div>
+      </aside>
+    </sc-if>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="ctaband">
+      <div>
+        <span class="eyebrow" style="color:#B9BCB7"><i></i>Votre projet</span>
+        <h2 class="h2" style="margin-top:16px;color:#FAFAF8">La quinzième réalisation pourrait être la vôtre.</h2>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn-acc" href="Studio-Contact.html">Plan 3D offert</a>
+        <a class="btn" href="tel:0800951313" style="background:#FAFAF8;color:#16181A">0 800 95 13 13</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a class="logo" href="Studio-Accueil.html" aria-label="RGTE — accueil"><span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span><span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span></a>
+        <p style="color:#5B6066;margin-top:16px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#5B6066;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Studio-Lignes.html">Lignes d'agencement</a>
+        <a href="Studio-Secteurs.html">Secteurs d'activité</a>
+        <a href="Studio-Realisations.html">Réalisations</a>
+        <a href="Studio-Contact.html">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span class="mono" style="font-size:12px">Proposition de refonte — concept, non officiel · <a href="index.html" style="font-size:12px;min-height:0;display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3600},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#16181A","#1E6B48"]},"affichage":{"editor":"enum","default":"grille","options":["grille","liste"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.MAT = {
+      basique:{front:'repeating-linear-gradient(90deg,#DCCBAE 0 16px,#D4C2A3 16px 17px)',top:'radial-gradient(circle at 30% 40%,#62666A 0 1px,transparent 1.6px) 0 0/7px 7px,#3E4245',edge:'#2B2E31',plinth:'#2B2E31',side:'#C4B08F',panel:'border:1px solid rgba(22,24,26,.16);box-shadow:inset 0 0 0 4px rgba(255,255,255,.2)'},
+      stone:{front:'#F2F1EC',top:'#FFFFFF',edge:'#E2E1DB',plinth:'#D9D8D2',side:'#DEDDD7',panel:'background:linear-gradient(180deg,rgba(206,226,234,.6),rgba(206,226,234,.25));border:1px solid rgba(22,24,26,.14)'},
+      legno:{front:'repeating-linear-gradient(90deg,#BE9268 0 10px,#B7895E 10px 11px,#C29770 11px 23px)',top:'#4A4E53',edge:'#3A3D41',plinth:'#2F3236',side:'#9C744C',panel:'border:1px solid rgba(22,24,26,.2);box-shadow:inset 0 0 0 4px rgba(255,255,255,.12)'}
+    };
+    this.TYPES = { patisserie:'Pâtisserie & chocolat', boulangerie:'Boulangerie', snacking:'Snacking & pizza', traiteur:'Traiteur', bars:'Bars à composer' };
+    this.R = [
+      { id:1, title:'Pâtisserie', place:'Paris 4e', line:'Stone', type:'patisserie', mods:[['Vitrine réfrigérée Plane','p'],['Caisse','c']], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés en vitrine' },
+      { id:2, title:'Bar à salades', place:'Département 13', line:'Stone', type:'bars', mods:[['Saladette','b'],['Caisse','c'],['Panorama','h']], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox colorés' },
+      { id:3, title:'Chocolatier', place:'Gap & Grenoble', line:'Stone', type:'patisserie', mods:[['Plane','p'],['Caisse','c']], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs' },
+      { id:4, title:'Sandwicherie', place:'Chamonix', line:'Basique', type:'snacking', mods:[['Panoramique','h'],['Basse','b'],['Murale self-service','h']], img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir' },
+      { id:5, title:'Bar à olives', place:'Nice', line:'Stone', type:'bars', mods:[['Saladette sur mesure avec trous arrondis','b']], img:'assets/vitrine-wood.webp', alt:'Vitrine bois et verre' },
+      { id:6, title:'Bar à yogourt glacé (chaîne)', place:'Toute la France', line:'Stone', type:'bars', mods:[['Saladette sur mesure trous arrondis','b'],['Surface plane','p']], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:7, title:'Boulangerie pâtisserie', place:'La Réunion', line:'Basique', type:'boulangerie', mods:[['Amandine','h'],['Caisse','c']], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:8, title:'Boulangerie', place:'Département 33', line:'Legno', type:'boulangerie', mods:[['Réfrigérée statique','h'],['Neutre','h'],['Module arrière','c']], img:'assets/bakery-shelves.webp', alt:'Étagères de pains' },
+      { id:9, title:'Pizza sur composition', place:'Paris', line:'Stone', type:'snacking', mods:[['Saladette','b'],['Caisse','c'],['Plane','p']], img:'assets/baker-table.webp', alt:'Pains et rouleau sur un plan de travail' },
+      { id:10, title:'Pâtissier chocolatier', place:'Département 69', line:'Stone', type:'patisserie', mods:[['Centrale','h'],['Caisse','c'],['Plane','p']], img:'assets/vitrine-slice.webp', alt:'Parts de gâteaux derrière une vitre' },
+      { id:11, title:'Traiteur asiatique (chaîne)', place:'Marseille', line:'Stone', type:'traiteur', mods:[['Plane','p'],['Caisse','c'],['Saladette','b'],['Comptoir bar','c']], img:'assets/counter-domes.webp', alt:'Comptoir en marbre avec cloches de verre' },
+      { id:12, title:'Bar à couscous', place:'Isère', line:'Stone', type:'bars', mods:[['Bain-marie avec trous arrondis sur mesure','b']], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre' },
+      { id:13, title:'Traiteur poissonnier', place:'Département 92', line:'Stone', type:'traiteur', mods:[['Panorama','h'],['Surface plane','p'],['Caisse','c']], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:14, title:'Pâtissier chocolatier Canet', place:'Nice 06', line:'Stone', type:'patisserie', mods:[['Plane pâtissière +2/+8','p'],['Plane chocolats +14/+18','p']], img:'assets/macarons-rows.webp', alt:'Rangées de macarons' }
+    ];
+    this.state = { menuOpen:false, line:'all', type:'all', sel:1, view: props && props.affichage === 'liste' ? 'list' : 'grid' };
+  }
+  blocks(list, key, o){
+    const M = this.MAT[key], H = o.H, D = o.D, k = H / 110, lift = Math.round(D * 0.3), r = Math.max(2, Math.round(4 * k));
+    const G = { c:0, p:22, b:40, h:74 };
+    const treats = (h, bottom, show) => 'position:absolute;left:4px;right:4px;bottom:' + bottom + 'px;height:' + h + 'px;background:radial-gradient(circle at 8px 60%,#E9A99C 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/28px 100% repeat-x,radial-gradient(circle at 18px 60%,#B5D19B 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/28px 100% repeat-x,radial-gradient(circle at 24px 60%,#6B4A3A 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/28px 100% repeat-x;' + (show ? '' : 'display:none;');
+    return list.map(m => {
+      const g = Math.round(G[m.kind] * k);
+      return Object.assign({}, m, {
+        wStyle: 'position:relative;flex:1 1 0;min-width:0;height:' + H + 'px;background:' + M.front + ';box-shadow:inset -1px 0 0 rgba(22,24,26,.22);',
+        topStyle: 'position:absolute;left:0;bottom:100%;width:100%;height:' + D + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:' + M.top + ';box-shadow:inset -1px 0 0 rgba(22,24,26,.1);',
+        edgeStyle: 'position:absolute;left:0;top:0;width:100%;height:' + Math.max(4, Math.round(9 * k)) + 'px;background:' + M.edge,
+        plinthStyle: 'position:absolute;left:0;bottom:0;width:100%;height:' + Math.round(14 * k) + 'px;background:' + M.plinth,
+        panelStyle: 'position:absolute;left:' + Math.round(10 * k) + 'px;right:' + Math.round(10 * k) + 'px;top:' + Math.round(20 * k) + 'px;bottom:' + Math.round(24 * k) + 'px;' + M.panel,
+        hasGlass: g > 0,
+        glassStyle: 'position:absolute;left:' + (Math.round(8 * k) + lift) + 'px;right:' + (Math.round(6 * k) - lift) + 'px;bottom:calc(100% + ' + lift + 'px);height:' + g + 'px;background:linear-gradient(180deg,rgba(206,226,234,.62),rgba(206,226,234,.2));border:1px solid rgba(22,24,26,.32);border-bottom:0;',
+        glassTopStyle: 'position:absolute;left:-1px;right:-1px;bottom:100%;height:' + Math.round(D * 0.5) + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:rgba(206,226,234,.42);border:1px solid rgba(22,24,26,.26);border-bottom:0;',
+        shelfStyle: 'position:absolute;left:0;right:0;top:' + Math.round(g * 0.42) + 'px;height:2px;background:rgba(22,24,26,.28);' + (m.kind === 'h' ? '' : 'display:none;'),
+        treat2Style: treats(Math.round(12 * k), Math.round(g * 0.58), m.kind === 'h'),
+        treatStyle: treats(Math.round(12 * k), 0, true),
+        isCaisse: /caisse/i.test(m.name) && m.kind === 'c',
+        regStyle: 'position:absolute;left:30%;bottom:calc(100% + ' + (lift + 2) + 'px);width:' + Math.round(26 * k) + 'px;height:' + Math.round(18 * k) + 'px;border-radius:3px;background:#2A2D30;box-shadow:inset 0 3px 0 #5B6066;'
+      });
+    });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const on = 'background:#16181A;color:#fff';
+    const off = 'background:#fff;color:#16181A';
+    const filtered = this.R.filter(r => (s.line === 'all' || r.line === s.line) && (s.type === 'all' || r.type === s.type));
+    const selR = filtered.find(r => r.id === s.sel) || filtered[0] || null;
+    const pos = selR ? filtered.indexOf(selR) : -1;
+    const go = (d) => { if (!filtered.length) return; const i = (pos + d + filtered.length) % filtered.length; this.setState({ sel: filtered[i].id }); };
+    const lineF = [['all','Toutes'],['Stone','Stone'],['Basique','Basique'],['Legno','Legno']].map(([id, name]) => ({ name, count: id === 'all' ? 14 : this.R.filter(r => r.line === id).length, on: s.line === id ? 'true' : 'false', style: s.line === id ? on : off, pick: () => this.setState({ line:id }) }));
+    const typeF = [['all','Tous']].concat(Object.keys(this.TYPES).map(k => [k, this.TYPES[k]])).map(([id, name]) => ({ name, on: s.type === id ? 'true' : 'false', style: s.type === id ? on : off, pick: () => this.setState({ type:id }) }));
+    const items = filtered.map((r, i) => {
+      const isSel = selR && r.id === selR.id;
+      return { n:String(r.id).padStart(2, '0'), title:r.title, place:r.place, line:r.line, img:r.img, alt:r.alt,
+        modsTxt: r.mods.map(m => m[0]).join(' · '),
+        on: isSel ? 'true' : 'false',
+        style: (isSel ? 'box-shadow:0 0 0 2px #16181A,0 24px 40px -30px rgba(22,24,26,.6);' : 'box-shadow:0 0 0 1px #E6E7E3;') + 'animation-delay:' + (i * 0.04) + 's',
+        rowStyle: isSel ? 'background:#fff;box-shadow:0 0 0 2px #16181A' : 'background:#fff;box-shadow:0 0 0 1px #E6E7E3',
+        pick: () => this.setState({ sel:r.id }) };
+    });
+    const key = selR ? selR.line.toLowerCase() : 'stone';
+    const selList = selR ? selR.mods.map(m => ({ name:m[0], kind:m[1] })) : [];
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      lineF, typeF, items,
+      countTxt: filtered.length + (filtered.length > 1 ? ' réalisations' : ' réalisation'),
+      isEmpty: filtered.length === 0,
+      showGrid: s.view === 'grid' && filtered.length > 0,
+      showList: s.view === 'list' && filtered.length > 0,
+      gridBtn: s.view === 'grid' ? 'background:#16181A;color:#fff' : 'background:transparent;color:#5B6066',
+      listBtn: s.view === 'list' ? 'background:#16181A;color:#fff' : 'background:transparent;color:#5B6066',
+      setGrid: () => this.setState({ view:'grid' }), setList: () => this.setState({ view:'list' }),
+      resetF: () => this.setState({ line:'all', type:'all' }),
+      hasSel: !!selR,
+      sel: selR ? { n:String(selR.id).padStart(2, '0'), title:selR.title, place:selR.place, line:selR.line, typeName:this.TYPES[selR.type] } : {},
+      selImg: selR ? [{ img:selR.img, alt:selR.alt }] : [],
+      selMods: selList,
+      selBlocks: this.blocks(selList, key, { H:84, D:28 }),
+      selSide: 'position:absolute;left:100%;bottom:0;width:28px;height:84px;transform:skewY(-45deg);transform-origin:bottom left;background:' + this.MAT[key].side,
+      miniW: 'max-width:' + Math.min(420, selList.length * 120) + 'px',
+      posTxt: (pos + 1) + ' sur ' + filtered.length,
+      prev: () => go(-1), next: () => go(1)
+    };
+  }
+}
+</script>
+</body>
+</html>

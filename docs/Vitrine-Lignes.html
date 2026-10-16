@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vitrine — Lignes</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Manrope:wght@300;400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#101010}
+.vt{font-family:'Manrope',system-ui,sans-serif;color:#EEE9E1;background:#101010;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6;font-size:15px}
+.vt *{box-sizing:border-box}
+.vt a{color:inherit;text-decoration:none}
+.vt img{display:block;max-width:100%}
+.vt button,.vt input{font-family:inherit}
+.vt-wrap{max-width:1320px;margin:0 auto;padding:0 48px}
+.vt-d{font-family:'Libre Caslon Display',Georgia,serif;font-weight:400;line-height:1.04;letter-spacing:-.005em;margin:0}
+.vt-sc{font-size:11px;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:#A8A39A}
+.vt-brass{color:var(--brass)}
+.vt-h2{font-size:clamp(34px,4.6vw,68px)}
+.vt-lead{font-size:17px;color:#A8A39A;max-width:560px;margin:0}
+.vt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D42A20;flex:none}
+.vt-sec{padding:130px 0}
+.vt-sechead{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:28px 80px;align-items:end;margin-bottom:64px}
+.vt-kicker{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.vt-kicker::before{content:"";width:40px;height:1px;background:var(--brass)}
+.vt-strip{border-bottom:1px solid rgba(238,233,225,.08);font-size:12px;color:#A8A39A}
+.vt-stripin{display:flex;justify-content:space-between;align-items:center;min-height:40px;gap:16px;flex-wrap:wrap}
+.vt-stripin a{display:inline-flex;align-items:center;gap:8px;min-height:40px;transition:color .3s}
+.vt-stripin a:hover{color:#EEE9E1}
+.vt-head{position:sticky;top:0;z-index:60;background:rgba(16,16,16,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(176,141,87,.22)}
+.vt-headin{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:84px}
+.vt-logo{display:inline-flex;align-items:center;gap:12px;min-height:48px}
+.vt-logo b{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:28px;letter-spacing:.18em;line-height:1}
+.vt-logo small{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#A8A39A;font-weight:600;padding-left:12px;border-left:1px solid rgba(176,141,87,.5);line-height:1.3}
+.vt-nav{display:flex;gap:36px}
+.vt-nav a{position:relative;display:inline-flex;align-items:center;min-height:48px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#A8A39A;transition:color .3s}
+.vt-nav a::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:1px;background:var(--brass);transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.2,.7,.1,1)}
+.vt-nav a:hover,.vt-nav a.on{color:#EEE9E1}
+.vt-nav a:hover::after,.vt-nav a.on::after{transform:scaleX(1);transform-origin:left}
+.vt-headr{display:flex;align-items:center;gap:22px}
+.vt-tel{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.25;min-height:44px}
+.vt-tel .vt-sc{font-size:10px;letter-spacing:.26em}
+.vt-tel strong{font-size:15px;font-weight:600;letter-spacing:.06em}
+.vt-burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(238,233,225,.2);color:#EEE9E1;cursor:pointer}
+.vt-mnav{display:none}
+.vt-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:0 28px;border:1px solid var(--brass);background:transparent;color:#EEE9E1;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;cursor:pointer;position:relative;overflow:hidden;transition:color .5s,border-color .5s;z-index:0;white-space:nowrap}
+.vt-btn::before{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:#EEE9E1;transform:translateY(101%);transition:transform .55s cubic-bezier(.2,.7,.1,1);z-index:-1}
+.vt-btn:hover{color:#101010;border-color:#EEE9E1}
+.vt-btn:hover::before{transform:none}
+.vt-btn.solid{background:#EEE9E1;color:#101010;border-color:#EEE9E1}
+.vt-btn.solid::before{background:var(--brass)}
+.vt-btn.solid:hover{border-color:var(--brass)}
+.vt-link{display:inline-flex;align-items:center;gap:14px;min-height:44px;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#EEE9E1;background:none;border:0;cursor:pointer;padding:0}
+.vt-link span{padding-bottom:5px;border-bottom:1px solid var(--brass)}
+.vt-link svg{transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.vt-link:hover svg{transform:translateX(6px)}
+.vt-foot{border-top:1px solid rgba(176,141,87,.35);padding:96px 0 36px;background:#0C0C0C}
+.vt-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:48px}
+.vt-foot h4{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--brass);margin:0 0 18px;font-weight:600}
+.vt-foot p{font-size:14px;color:#A8A39A;margin:0}
+.vt-footlinks{display:flex;flex-direction:column}
+.vt-footlinks a{min-height:44px;display:flex;align-items:center;font-size:14px;color:#A8A39A;transition:color .3s}
+.vt-footlinks a:hover{color:#EEE9E1}
+.vt-footbot{margin-top:64px;padding-top:24px;border-top:1px solid rgba(238,233,225,.08);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;color:#A8A39A}
+.vt-footbot a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes vtRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes vtUnveil{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.vt-rise{animation:vtRise 1.2s cubic-bezier(.2,.7,.1,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}.d4{animation-delay:.5s}
+.vt :focus-visible{outline:1px solid #EEE9E1;outline-offset:4px}
+
+/* hero collection */
+.vt-phero{padding:110px 0 0;position:relative;overflow:hidden}
+.vt-phero h1{font-size:clamp(46px,7vw,108px);overflow-wrap:anywhere}
+.vt-phero h1 span{color:var(--brass)}
+.vt-crumb{display:flex;gap:10px;align-items:center;margin-bottom:34px}
+.vt-crumb a{min-height:44px;display:inline-flex;align-items:center;color:#A8A39A;transition:color .3s}
+.vt-crumb a:hover{color:#EEE9E1}
+.vt-gallery{position:relative;margin-top:80px;padding:0 0 0;background:linear-gradient(180deg,#101010,#151515)}
+.vt-gallery::before{content:"";position:absolute;left:0;right:0;bottom:118px;height:1px;background:rgba(176,141,87,.4)}
+.vt-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:end;position:relative}
+.vt-cell{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:420px;padding:0 10px 0;background:transparent;border:0;color:inherit;cursor:pointer;transition:opacity .7s,transform .8s cubic-bezier(.2,.7,.1,1)}
+.vt-cone{position:absolute;left:50%;top:0;width:340px;height:420px;margin-left:-170px;background:linear-gradient(180deg,rgba(238,224,200,.12),rgba(238,224,200,0) 85%);clip-path:polygon(42% 0,58% 0,92% 100%,8% 100%);opacity:0;transition:opacity .8s;pointer-events:none}
+.vt-cell:hover .vt-cone{opacity:.55}
+.vt-sil{position:relative;width:100%;max-width:210px;display:flex;flex-direction:column;align-items:stretch}
+.vt-sil .g{position:relative;border:1px solid rgba(238,233,225,.35);border-bottom:0;background:linear-gradient(180deg,rgba(238,233,225,.08),rgba(238,233,225,.02));overflow:hidden}
+.vt-sil .g::after{content:"";position:absolute;top:-10px;bottom:-10px;left:0;width:36%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,247,232,.2),rgba(255,255,255,0));transform:translateX(-160%) skewX(-16deg);transition:transform 1.2s cubic-bezier(.2,.7,.1,1)}
+.vt-cell:hover .vt-sil .g::after{transform:translateX(380%) skewX(-16deg)}
+.vt-sil .t{height:6px;background:#D9D3C8;border-top:1px solid var(--brass)}
+.vt-sil .b{height:88px;position:relative}
+.vt-sil .p{height:12px}
+.vt-cellname{height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.vt-cellname .n{font-family:'Libre Caslon Display',serif;font-size:16px;color:var(--brass)}
+.vt-cellname .nm{font-family:'Libre Caslon Display',serif;font-size:28px;line-height:1.1}
+
+/* détail ligne */
+.vt-detail{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:80px;align-items:start}
+.vt-dleft{position:sticky;top:120px}
+.vt-dleft h2{font-size:clamp(60px,7vw,112px);margin:12px 0 26px}
+.vt-dimg{margin-top:36px;position:relative;height:300px;overflow:hidden;border:1px solid rgba(176,141,87,.3)}
+.vt-dimg img{width:100%;height:300px;object-fit:cover;filter:brightness(.8);animation:vtUnveil 1.2s cubic-bezier(.7,0,.2,1) both}
+.vt-dimg span{position:absolute;left:16px;bottom:12px}
+.vt-specs{margin:34px 0 0;border-top:1px solid rgba(238,233,225,.1)}
+.vt-spec{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(238,233,225,.08);font-size:14.5px}
+.vt-tools{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.vt-search{display:flex;flex-direction:column;gap:8px;min-width:min(320px,100%)}
+.vt-search input{min-height:50px;background:transparent;border:0;border-bottom:1px solid rgba(238,233,225,.3);color:#EEE9E1;font-size:16px;padding:0 2px;outline:none;transition:border-color .4s}
+.vt-search input:focus{border-bottom-color:var(--brass)}
+.vt-search input::placeholder{color:#8E897F}
+.vt-pieces{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:1px;background:rgba(238,233,225,.08);border:1px solid rgba(238,233,225,.08)}
+.vt-piece{position:relative;display:flex;flex-direction:column;min-height:210px;padding:26px 24px 22px;background:#101010;overflow:hidden;transition:background .5s;animation:vtRise .9s cubic-bezier(.2,.7,.1,1) both}
+.vt-piece::before{content:"";position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:radial-gradient(circle,rgba(238,224,200,.10),rgba(238,224,200,0) 60%);opacity:0;transform:scale(.6);transition:opacity .7s,transform .9s cubic-bezier(.2,.7,.1,1);pointer-events:none}
+.vt-piece:hover{background:#161616}
+.vt-piece:hover::before{opacity:1;transform:scale(1)}
+.vt-piece .no{display:flex;justify-content:space-between;align-items:center}
+.vt-piece h3{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:27px;line-height:1.1;margin:22px 0 10px;position:relative}
+.vt-piece p{margin:0;font-size:13.5px;color:#A8A39A;position:relative}
+.vt-piece .go{margin-top:auto;padding-top:18px;display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#A8A39A;transition:color .4s}
+.vt-piece:hover .go{color:#EEE9E1}
+.vt-piece .go svg{transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.vt-piece:hover .go svg{transform:translateX(6px)}
+.vt-badge{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#101010;background:var(--brass);padding:4px 8px}
+.vt-empty{padding:60px 24px;text-align:center;background:#101010;color:#A8A39A}
+
+/* comparateur */
+.vt-cmpwrap{overflow-x:auto;border:1px solid rgba(238,233,225,.1)}
+.vt-cmp{min-width:980px}
+.vt-cmprow{display:grid;grid-template-columns:200px repeat(5,minmax(0,1fr));border-bottom:1px solid rgba(238,233,225,.08)}
+.vt-cmprow:last-child{border-bottom:0}
+.vt-cmprow:hover .vt-cmplab{color:#EEE9E1}
+.vt-cmplab{padding:22px 20px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:600;color:#A8A39A;transition:color .3s}
+.vt-cmpcell{padding:22px 20px;font-size:14px;line-height:1.5;transition:background .6s,color .6s}
+.vt-cmphead{width:100%;min-height:96px;padding:22px 20px;text-align:left;background:transparent;border:0;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:background .5s}
+.vt-cmphead:hover{background:rgba(238,233,225,.04)}
+.vt-cmphead .n{font-family:'Libre Caslon Display',serif;color:var(--brass);font-size:15px}
+.vt-cmphead .nm{font-family:'Libre Caslon Display',serif;font-size:26px}
+
+.vt-cta{text-align:center;padding:140px 0;border-top:1px solid rgba(238,233,225,.06);position:relative;overflow:hidden}
+.vt-cta::before{content:"";position:absolute;left:50%;top:-260px;width:900px;height:900px;margin-left:-450px;border-radius:50%;background:radial-gradient(circle,rgba(176,141,87,.14),rgba(176,141,87,0) 62%);pointer-events:none}
+.vt-cta .vt-d{font-size:clamp(40px,5.6vw,84px);position:relative}
+.vt-cta p{position:relative;color:#A8A39A;max-width:560px;margin:24px auto 40px;font-size:17px}
+.vt-ctarow{position:relative;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+
+@media (max-width:1100px){
+  .vt-nav,.vt-tel{display:none}
+  .vt-burger{display:inline-flex}
+  .vt-mnav{display:flex;flex-direction:column;padding:8px 24px 28px;border-top:1px solid rgba(238,233,225,.08)}
+  .vt-mnav a{min-height:54px;display:flex;align-items:center;font-family:'Libre Caslon Display',serif;font-size:26px;border-bottom:1px solid rgba(238,233,225,.06)}
+  .vt-mnav .vt-btn{margin-top:20px;font-family:'Manrope',sans-serif;font-size:11.5px}
+  .vt-detail{grid-template-columns:minmax(0,1fr);gap:56px}
+  .vt-dleft{position:relative;top:0}
+  .vt-row{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
+  .vt-cell{scroll-snap-align:center}
+}
+@media (max-width:640px){
+  .vt-wrap{padding:0 20px}
+  .vt-headcta{display:none}
+  .vt-logo small{display:none}
+  .vt-sec{padding:90px 0}
+  .vt-spec{grid-template-columns:1fr;gap:4px}
+  .vt-cell{min-height:340px}
+}
+@media (prefers-reduced-motion:reduce){.vt *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="vt" style="{{ rootStyle }}">
+
+  <div class="vt-strip">
+    <div class="vt-wrap vt-stripin">
+      <a href="index.html"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M16 5H2M6 1L2 5l4 4"></path></svg>Toutes les propositions</a>
+      <span>Direction 1 · Vitrine — proposition de refonte, concept non officiel</span>
+    </div>
+  </div>
+
+  <header class="vt-head">
+    <div class="vt-wrap vt-headin">
+      <a href="Vitrine-Accueil.html" class="vt-logo" aria-label="RGTE, retour à l’accueil"><b>RGTE</b><span class="vt-dot"></span><small>R.G. Technologies</small></a>
+      <nav class="vt-nav" aria-label="Navigation principale">
+        <a href="Vitrine-Lignes.html" class="on" aria-current="page">Lignes</a>
+        <a href="Vitrine-Secteurs.html">Secteurs</a>
+        <a href="Vitrine-Realisations.html">Réalisations</a>
+        <a href="Vitrine-Contact.html">Showroom &amp; contact</a>
+      </nav>
+      <div class="vt-headr">
+        <a class="vt-tel" href="tel:0800951313"><span class="vt-sc">Appel gratuit</span><strong>0 800 95 13 13</strong></a>
+        <a class="vt-btn vt-headcta" href="Vitrine-Contact.html">Plan 3D offert</a>
+        <button type="button" class="vt-burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuExpanded }}" onClick="{{ toggleMenu }}"><svg width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 1h20M0 6h20M0 11h20"></path></svg></button>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav class="vt-mnav" aria-label="Navigation mobile">
+        <a href="Vitrine-Lignes.html">Lignes</a>
+        <a href="Vitrine-Secteurs.html">Secteurs</a>
+        <a href="Vitrine-Realisations.html">Réalisations</a>
+        <a href="Vitrine-Contact.html">Showroom &amp; contact</a>
+        <a href="tel:0800951313">0 800 95 13 13</a>
+        <a class="vt-btn solid" href="Vitrine-Contact.html">Plan 3D offert</a>
+      </nav>
+    </sc-if>
+  </header>
+
+  <!-- ===== HERO : la collection alignée ===== -->
+  <section class="vt-phero" aria-labelledby="t-lignes">
+    <div class="vt-wrap">
+      <div class="vt-crumb vt-sc"><a href="Vitrine-Accueil.html">Accueil</a><span>/</span><span>Lignes d’agencement</span></div>
+      <div class="vt-sechead" style="margin-bottom:0">
+        <h1 id="t-lignes" class="vt-d vt-rise">La collection<br><span>en cinq lignes.</span></h1>
+        <p class="vt-lead vt-rise d2">Chaque ligne est une famille de modules, avec sa matière, son panneau frontal et son plan de travail. Choisissez une pièce dans la vitrine pour la mettre en lumière.</p>
+      </div>
+    </div>
+    <div class="vt-gallery">
+      <div class="vt-wrap">
+        <div class="vt-row" role="tablist" aria-label="Choisir une ligne">
+          <sc-for list="{{ lines }}" as="l" hint-placeholder-count="5">
+            <button type="button" role="tab" class="vt-cell" style="{{ l.cellStyle }}" aria-selected="{{ l.pressed }}" onClick="{{ l.pick }}">
+              <span class="vt-cone" style="{{ l.coneStyle }}"></span>
+              <div class="vt-sil" aria-hidden="true">
+                <div class="g" style="{{ l.glassStyle }}"></div>
+                <div class="t"></div>
+                <div class="b" style="{{ l.bodyStyle }}"></div>
+                <div class="p" style="{{ l.plinthStyle }}"></div>
+              </div>
+              <div class="vt-cellname"><span class="n">{{ l.n }}</span><span class="nm">{{ l.name }}</span><span class="vt-sc">{{ l.count }} modules</span></div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DÉTAIL ===== -->
+  <section class="vt-sec" aria-label="Détail de la ligne sélectionnée">
+    <div class="vt-wrap vt-detail">
+      <sc-for list="{{ lines }}" as="l" hint-placeholder-count="1">
+        <div class="vt-dleft" style="{{ l.paneStyle }}">
+          <div class="vt-sc vt-brass vt-rise">Ligne {{ l.n }} / V</div>
+          <h2 class="vt-d vt-rise d1">{{ l.name }}</h2>
+          <p class="vt-lead vt-rise d2">{{ l.desc }}</p>
+          <div class="vt-specs vt-rise d3">
+            <div class="vt-spec"><span class="vt-sc">Principe</span><span>{{ l.principle }}</span></div>
+            <div class="vt-spec"><span class="vt-sc">Structure</span><span>{{ l.struct }}</span></div>
+            <div class="vt-spec"><span class="vt-sc">Panneau frontal</span><span>{{ l.front }}</span></div>
+            <div class="vt-spec"><span class="vt-sc">Plan de travail</span><span>{{ l.top }}</span></div>
+          </div>
+          <div class="vt-dimg"><img src="{{ l.img }}" alt="{{ l.alt }}"><span class="vt-sc">Ambiance d’illustration</span></div>
+        </div>
+      </sc-for>
+
+      <div>
+        <div class="vt-tools">
+          <div>
+            <div class="vt-sc">Les pièces de la ligne {{ cur.name }}</div>
+            <div class="vt-d" style="font-size:34px;margin-top:8px">{{ countLabel }}</div>
+          </div>
+          <div class="vt-search">
+            <label class="vt-sc" for="vt-q">Rechercher un module</label>
+            <input id="vt-q" type="search" placeholder="ex. Saladette, Plane…" value="{{ q }}" onInput="{{ setQ }}">
+          </div>
+        </div>
+        <div class="vt-pieces">
+          <sc-for list="{{ pieces }}" as="m" hint-placeholder-count="6">
+            <a class="vt-piece" href="Vitrine-Module.html" style="{{ m.delay }}">
+              <div class="no"><span class="vt-sc">Pièce n° {{ m.num }}</span><sc-if value="{{ m.ref }}" hint-placeholder-val="{{ false }}"><span class="vt-badge">Fiche complète</span></sc-if></div>
+              <h3>{{ m.name }}</h3>
+              <p>{{ m.spec }}</p>
+              <span class="go">Voir la pièce <svg width="18" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"></path></svg></span>
+            </a>
+          </sc-for>
+          <sc-if value="{{ noPieces }}" hint-placeholder-val="{{ false }}">
+            <div class="vt-empty">Aucune pièce ne correspond à « {{ q }} » dans cette ligne. <button type="button" class="vt-link" onClick="{{ clearQ }}"><span>Effacer la recherche</span></button></div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPARATEUR ===== -->
+  <section class="vt-sec" style="background:#141414;padding-top:120px" aria-labelledby="t-cmp">
+    <div class="vt-wrap">
+      <div class="vt-sechead">
+        <div>
+          <div class="vt-sc vt-kicker">Comparateur</div>
+          <h2 id="t-cmp" class="vt-d vt-h2">Les cinq lignes,<br>côte à côte.</h2>
+        </div>
+        <p class="vt-lead">Matières, panneau frontal, plan de travail : la colonne éclairée suit la ligne choisie. Cliquez un en-tête pour changer de ligne.</p>
+      </div>
+      <div class="vt-cmpwrap">
+        <div class="vt-cmp">
+          <div class="vt-cmprow">
+            <div class="vt-cmplab">Ligne</div>
+            <sc-for list="{{ lines }}" as="l" hint-placeholder-count="5">
+              <div style="{{ l.colStyle }}"><button type="button" class="vt-cmphead" aria-pressed="{{ l.pressed }}" onClick="{{ l.pick }}"><span class="n">{{ l.n }}</span><span class="nm">{{ l.name }}</span></button></div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="5">
+            <div class="vt-cmprow">
+              <div class="vt-cmplab">{{ r.label }}</div>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5"><div class="vt-cmpcell" style="{{ c.style }}">{{ c.v }}</div></sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vt-cta" aria-labelledby="t-cta">
+    <div class="vt-wrap">
+      <div class="vt-sc" style="position:relative">Sur mesure</div>
+      <h2 id="t-cta" class="vt-d" style="margin-top:22px">Votre ligne,<br>à vos dimensions.</h2>
+      <p>Combinez les modules d’une ligne, choisissez coloris et matières : nous élaborons le plan 3D de votre agencement.</p>
+      <div class="vt-ctarow">
+        <a class="vt-btn solid" href="Vitrine-Contact.html">Demander mon plan 3D</a>
+        <a class="vt-btn" href="Vitrine-Module.html">Configurer le Module Gourmandise</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="vt-foot">
+    <div class="vt-wrap">
+      <div class="vt-footgrid">
+        <div>
+          <a href="Vitrine-Accueil.html" class="vt-logo" aria-label="RGTE, accueil"><b>RGTE</b><span class="vt-dot"></span></a>
+          <p style="margin-top:14px">R.G. Technologies — agencement de vitrines réfrigérées sur mesure.</p>
+        </div>
+        <div>
+          <h4>Bureau d’études &amp; show-room</h4>
+          <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <div class="vt-footlinks">
+            <a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+            <a href="Vitrine-Contact.html">Demande de devis</a>
+            <a href="Vitrine-Contact.html">Plan 3D offert</a>
+          </div>
+        </div>
+        <div>
+          <h4>Explorer</h4>
+          <div class="vt-footlinks">
+            <a href="Vitrine-Lignes.html">Lignes d’agencement</a>
+            <a href="Vitrine-Secteurs.html">Secteurs d’activité</a>
+            <a href="Vitrine-Realisations.html">Réalisations</a>
+          </div>
+        </div>
+        <div>
+          <h4>Informations</h4>
+          <div class="vt-footlinks">
+            <a href="#">Mentions légales</a>
+            <a href="#">Conditions de vente</a>
+            <a href="#">Plan du site</a>
+            <a href="#">Gestion des cookies</a>
+          </div>
+        </div>
+      </div>
+      <div class="vt-footbot">
+        <span>© RGTE — R.G. Technologies</span>
+        <span>Proposition de refonte — concept, non officiel</span>
+        <a href="index.html">Toutes les propositions</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#B08D57","options":["#B08D57","#D42A20","#EEE9E1"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, ligne:'stone', q:'' };
+    this.SPECS = {
+      'Réfrigérée Plane':'Exposition à hauteur du plan de travail · prof. 53 ou 60 cm · +2/+8 ou +14/+18 °C',
+      'Vision':'Exposition 8 cm sous le plan de travail · prof. 53 ou 60 cm · +2/+8 ou +14/+18 °C',
+      'Saladette':'Bacs gastronormes (non fournis) · +2/+8 °C',
+      'Saladette réfrigérée':'Bacs gastronormes · +2/+8 °C',
+      'Chaud bain-marie':'Bacs gastronormes · +30/+90 °C',
+      'Centrale':'Vitrages coulissants des 2 côtés · prof. 60 cm · +2/+8 ou +14/+18 °C',
+      'Gourmandise':'Exposition centrale · 101 à 222 cm ou sur mesure · dès 5 800 € HT',
+      'Comptoir caisse':'Tout commerce · avec ou sans tablette PMR',
+      'Comptoir bar':'Neutre ou réfrigéré',
+      'Poissonnerie':'Froid statique, serpentin de cuve · −2/0 °C · vidange',
+      'Panorama':'2 ou 3 étagères réfrigérées +4/+8 · +2/+8 ou +14/+18 °C',
+      'Pastry Show':'Froid ventilé, vitrage droit · plaques 600×400 mm',
+      'Vitrine réfrigérée Cube':'Vitrage cubique · 2 ou 3 étagères verre',
+      'Amandine':'Montants modernes · cuve 600×400 · froid ventilé',
+      'Chaud (bain-marie ou plaque chaude)':'Bain-marie ou plaque chaude',
+      'Cuve froid ventilé':'Module brut prêt à habiller',
+      'Cuve froid statique':'Module brut prêt à habiller',
+      'Hanoi (poissonnerie)':'Vitrine standardisée, indépendante',
+      'Loire (boulangerie)':'Vitrine standardisée, indépendante'
+    };
+    this.LINES = [
+      { id:'basique', n:'I', name:'Basique', principle:'Association de modules différents', desc:'L’association libre de modules différents, avec le choix du coloris et des matériaux selon votre souhait.', struct:'Coloris et matériaux au choix du client', front:'Bois mélaminé, ou verre en option', top:'Granit, plinthe en granit', img:'assets/vitrine-glass-pastry.webp', alt:'Vitrine vitrée garnie de pâtisseries',
+        glass:'height:74px', body:'background:radial-gradient(circle,rgba(255,255,255,.18) 1px,rgba(0,0,0,0) 1.4px) 0 0/7px 7px,#2E2D2B;border:1px solid rgba(238,233,225,.18)', plinth:'background:#3B3936',
+        mods:['Comptoir bar','Comptoir caisse','Saladette réfrigérée','Vitrine réfrigérée Cube','Pastry Show','Statique','Basse','Murale self-service','Panoramique','Chaud (bain-marie ou plaque chaude)','Vitrine rétro','Amandine'] },
+      { id:'stone', n:'II', name:'Stone', principle:'Association de modules', desc:'Une structure en pierre acrylique type Corian et un panneau frontal en verre portant la sérigraphie de votre maison.', struct:'Pierre acrylique type Corian', front:'Verre avec sérigraphie du client', top:'Pierre acrylique', img:'assets/vitrine-slice.webp', alt:'Parts de gâteaux derrière le verre d’une vitrine',
+        glass:'height:62px', body:'background:linear-gradient(90deg,#CFC9BE,#ECE7DF 45%,#D8D2C7)', plinth:'background:#BDB7AC',
+        mods:['Réfrigérée Plane','Vision','Saladette','Chaud bain-marie','Centrale','Gourmandise','Comptoir caisse','Comptoir bar','Poissonnerie','Panorama','Surface plane'] },
+      { id:'legno', n:'III', name:'Legno', principle:'Association de modules', desc:'La chaleur du bois : une association de modules sous un panneau frontal en bois mélaminé.', struct:'[À PRÉCISER]', front:'Bois mélaminé', top:'[À PRÉCISER]', img:'assets/vitrine-wood.webp', alt:'Vitrine en bois et verre',
+        glass:'height:70px;border-top-left-radius:46px', body:'background:repeating-linear-gradient(92deg,#5A3E27 0 3px,#6B4A2F 3px 9px,#5F422A 9px 11px,#73513A 11px 19px)', plinth:'background:#3A281A',
+        mods:['Plane','Arrière neutre','Caisse et vitrine neutre','Comptoir bar','Réfrigérée statique','Vitrine réfrigérée ventilée plane','Vitrine neutre','Réfrigéré ventilé','Vitrine chauffante sèche'] },
+      { id:'encastrable', n:'IV', name:'Encastrable', principle:'Module brut à habiller', desc:'Le module brut, prêt à être habillé : en version comptoir ou en meuble entier sur pied.', struct:'Module brut', front:'Habillage libre', top:'Version comptoir ou meuble entier sur pied', img:'assets/marble-veins.webp', alt:'Pierre veinée grise, matière d’habillage',
+        glass:'height:54px;border-style:dashed', body:'background:transparent;border:1px dashed rgba(238,233,225,.45)', plinth:'background:transparent;border:1px dashed rgba(238,233,225,.3);border-top:0',
+        mods:['Cuve froid ventilé','Cuve froid statique'] },
+      { id:'industry', n:'V', name:'Industry', principle:'Vitrines standardisées, indépendantes', desc:'Des vitrines standardisées en longueurs et indépendantes, chacune pensée pour un métier.', struct:'Vitrines indépendantes, longueurs standardisées', front:'[À PRÉCISER]', top:'[À PRÉCISER]', img:'assets/vitrine-bakery-tall.webp', alt:'Haute vitrine de boulangerie',
+        glass:'height:108px;border-top-left-radius:60px;border-top-right-radius:6px', body:'background:linear-gradient(180deg,#6E7173,#4C4F51)', plinth:'background:#2C2E2F',
+        mods:['Olympe (murale)','Nepal (snack)','Aramis (boucherie)','Rubis','Argentine','Hanoi (poissonnerie)','Loire (boulangerie)','Argent (murale froid)','Sugar (hauteur comptoir)','Hawaii (supermarché)','4 faces vitrées'] }
+    ];
+    this.CMP = [
+      { label:'Principe', k:'principle' },
+      { label:'Structure', k:'struct' },
+      { label:'Panneau frontal', k:'front' },
+      { label:'Plan de travail', k:'top' },
+      { label:'Modules', k:'count' }
+    ];
+  }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#B08D57';
+    const s = this.state;
+    const lines = this.LINES.map((l) => {
+      const sel = l.id === s.ligne;
+      return Object.assign({}, l, {
+        count: l.mods.length,
+        pressed: sel ? 'true' : 'false',
+        pick: () => this.setState({ ligne: l.id, q: '' }),
+        coneStyle: sel ? 'opacity:1' : '',
+        cellStyle: sel ? 'opacity:1;transform:translateY(-10px)' : 'opacity:.5',
+        glassStyle: l.glass,
+        bodyStyle: l.body,
+        plinthStyle: l.plinth,
+        paneStyle: sel ? 'display:block' : 'display:none',
+        colStyle: sel ? 'background:rgba(176,141,87,.12);box-shadow:inset 0 2px 0 ' + accent : 'background:transparent'
+      });
+    });
+    const cur = lines.filter((l) => l.id === s.ligne)[0];
+    const q = (s.q || '').trim().toLowerCase();
+    const pieces = cur.mods
+      .map((m, i) => ({ name: m, num: (i < 9 ? '0' : '') + (i + 1), spec: this.SPECS[m] || 'Caractéristiques : [À PRÉCISER]', ref: m === 'Gourmandise', delay: 'animation-delay:' + (i * 0.05).toFixed(2) + 's' }))
+      .filter((m) => !q || m.name.toLowerCase().indexOf(q) !== -1);
+    const cmpRows = this.CMP.map((r) => ({
+      label: r.label,
+      cells: lines.map((l) => ({ v: r.k === 'count' ? l.mods.length + ' modules' : l[r.k], style: l.id === s.ligne ? 'background:rgba(176,141,87,.12);color:#EEE9E1' : 'background:transparent;color:#A8A39A' }))
+    }));
+    return {
+      rootStyle: '--brass:' + accent,
+      menuOpen: s.menuOpen,
+      menuExpanded: s.menuOpen ? 'true' : 'false',
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      lines: lines,
+      cur: cur,
+      q: s.q,
+      setQ: (e) => this.setState({ q: e.target.value }),
+      clearQ: () => this.setState({ q: '' }),
+      pieces: pieces,
+      noPieces: pieces.length === 0,
+      countLabel: pieces.length + (pieces.length > 1 ? ' pièces' : ' pièce') + (q ? ' trouvée' + (pieces.length > 1 ? 's' : '') : ''),
+      cmpRows: cmpRows
+    };
+  }
+}
+</script>
+</body>
+</html>

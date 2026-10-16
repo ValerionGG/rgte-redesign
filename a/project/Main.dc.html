@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE — 10 propositions</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;600&amp;family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Epilogue:wght@800&amp;family=Gilda+Display&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Libre+Caslon+Display&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;1,6..72,300&amp;family=Onest:wght@500;700&amp;family=Playfair+Display:ital,wght@1,500&amp;family=Red+Hat+Display:wght@700&amp;family=Sora:wght@600&amp;family=Young+Serif&amp;display=swap">
+<style>
+body{margin:0;background:#F2F0EC}
+a{color:#141414}a:hover{color:#D42A20}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes mask{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zoom{from{transform:scale(1.1)}to{transform:scale(1)}}
+@keyframes sheen{0%{transform:translateX(-120%) skewX(-18deg)}100%{transform:translateX(320%) skewX(-18deg)}}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.1,1) both}
+.mask{animation:mask 1.1s cubic-bezier(.7,0,.2,1) both}
+.zoom{animation:zoom 2.2s cubic-bezier(.2,.7,.1,1) both}
+.glass{position:relative;overflow:hidden}
+.glass::after{content:"";position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.28),rgba(255,255,255,0));animation:sheen 4.5s cubic-bezier(.6,0,.2,1) infinite 1s;pointer-events:none}
+.dir{transition:background .35s ease,padding .35s ease}
+.dir:hover{background:#E7E3DC}
+.dir:focus-visible,.card:focus-visible,.pg:focus-visible,.cta:focus-visible{outline:2px solid #D42A20;outline-offset:3px}
+.card img{transition:transform 1.2s cubic-bezier(.2,.7,.1,1)}
+.card:hover img{transform:scale(1.06)}
+.card .arr{transition:transform .5s}
+.card:hover .arr{transform:translate(4px,-4px)}
+.pg{transition:background .3s}
+.pg:hover{background:rgba(127,127,127,.16)}
+@media (max-width:900px){.split{flex-direction:column}.big{font-size:54px !important}}
+</style>
+</helmet>
+<div style="font-family:'Hanken Grotesk',system-ui,sans-serif;color:#141414;background:#F2F0EC;min-height:1900px">
+  <div style="max-width:1320px;margin:0 auto;padding:40px 40px 96px;display:flex;flex-direction:column;gap:56px">
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:12px;letter-spacing:.18em;text-transform:uppercase">
+      <span style="display:flex;align-items:center;gap:12px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;letter-spacing:.02em;color:#D42A20">RGTE</span>Proposition de refonte</span>
+      <span style="color:#5A5752">rgte.eu · Vitrines réfrigérées · Octobre 2026</span>
+    </header>
+
+    <section style="display:flex;flex-direction:column;gap:20px">
+      <h1 class="big mask" style="margin:0;font-family:'Libre Caslon Display',serif;font-weight:400;font-size:108px;line-height:.96;letter-spacing:-.015em">Dix directions <span style="font-style:italic;color:#D42A20">pour mettre en scène</span> le froid.</h1>
+      <p class="rise" style="margin:0;max-width:780px;font-size:18px;line-height:1.6;color:#45423E;animation-delay:.3s">Chaque proposition redessine le site complet de RGTE — accueil, lignes d'agencement, fiche module avec configurateur, secteurs d'activité, réalisations, showroom et devis — avec les vrais contenus et des interactions qui fonctionnent. Choisissez une direction pour la prévisualiser, puis ouvrez-la.</p>
+    </section>
+
+    <section class="split" style="display:flex;gap:40px;align-items:stretch">
+      <nav aria-label="Directions" style="flex:0 0 360px;display:flex;flex-direction:column;border-top:1px solid #CFCAC1">
+        <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="10">
+          <button type="button" class="dir" onClick="{{ d.pick }}" style="{{ d.rowStyle }}">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6A665F;padding-top:4px;min-width:22px">{{ d.num }}</span>
+            <span style="display:flex;flex-direction:column;gap:3px;text-align:left">
+              <span style="{{ d.nameStyle }}">{{ d.name }}</span>
+              <span style="font-size:13.5px;line-height:1.4;color:#57534D">{{ d.tag }}</span>
+            </span>
+          </button>
+        </sc-for>
+      </nav>
+
+      <article style="{{ cur.panelStyle }}">
+        <div class="glass" style="position:relative;height:440px;overflow:hidden">
+          <img class="zoom" src="{{ cur.img }}" alt="{{ cur.alt }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.64) 100%)"></div>
+          <div style="position:absolute;left:40px;right:40px;bottom:30px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+            <h2 style="{{ cur.titleStyle }}">{{ cur.name }}</h2>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#F5F2EC">Proposition {{ cur.num }} / 10</span>
+          </div>
+        </div>
+        <div style="padding:34px 40px 40px;display:flex;flex-direction:column;gap:26px">
+          <p style="margin:0;font-size:17px;line-height:1.6;max-width:660px">{{ cur.desc }}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:24px">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.75">Palette</span>
+              <div style="display:flex;gap:8px">
+                <sc-for list="{{ cur.swatches }}" as="s" hint-placeholder-count="4">
+                  <span style="{{ s.style }}" title="{{ s.hex }}"></span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.75">Typographie</span>
+              <span style="font-size:15px">{{ cur.fonts }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.75">Moment-signature</span>
+              <span style="font-size:15px;line-height:1.5">{{ cur.moment }}</span>
+            </div>
+          </div>
+          <sc-if value="{{ cur.local }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ cur.pages }}" as="p" hint-placeholder-count="6">
+                <a class="pg" href="{{ p.href }}" style="{{ cur.pillStyle }}">{{ p.label }}</a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ cur.remote }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;font-size:14px;line-height:1.5;opacity:.85">Cette direction se trouve sur le second canvas (propositions {{ cur.range }}) : le lien ci-dessous l'ouvre dans un nouvel onglet.</p>
+          </sc-if>
+          <a class="cta" href="{{ cur.home }}" style="{{ cur.ctaStyle }}">Ouvrir la proposition {{ cur.name }}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:24px">
+      <h2 style="margin:0;font-family:'Libre Caslon Display',serif;font-weight:400;font-size:44px">Les dix, côte à côte</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px">
+        <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="10">
+          <a class="card" href="{{ d.home }}" style="display:flex;flex-direction:column;gap:12px;text-decoration:none;color:#141414">
+            <span style="display:block;height:280px;overflow:hidden;position:relative;background:#DAD5CC">
+              <img src="{{ d.img }}" alt="{{ d.alt }}" style="width:100%;height:100%;object-fit:cover;display:block">
+              <span style="{{ d.chipStyle }}">{{ d.num }}</span>
+            </span>
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span style="{{ d.nameStyle }}">{{ d.name }}</span>
+              <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+            </span>
+            <span style="font-size:13.5px;line-height:1.45;color:#57534D">{{ d.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <footer style="border-top:1px solid #CFCAC1;padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#57534D">
+      <span>Concepts de refonte — non officiels. RGTE · R.G. Technologies · Puget-sur-Argens.</span>
+      <span>Photographies d'illustration · contenus et produits repris de rgte.eu</span>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 0 }; }
+  renderVals() {
+    const HERE = 'a';
+    const LOCAL_ALL = false;
+    const URL = { a: 'https://claude.ai/artifact/6o6ohaMAo7Xxz9PoRoFZkM', b: 'https://claude.ai/artifact/BCLB1NQR4MTS8UFPux7SC4' };
+    const PAGES = [['Accueil', 'Accueil'], ['Lignes', 'Lignes'], ['Module Gourmandise', 'Module'], ['Secteurs', 'Secteurs'], ['Réalisations', 'Realisations'], ['Showroom & contact', 'Contact']];
+    const D = [
+      { g: 'a', k: 'Vitrine', name: 'Vitrine', font: "'Libre Caslon Display',serif", size: 30, tag: 'La haute joaillerie de la pâtisserie : galerie sombre, lumière de musée.', desc: 'La vitrine traitée comme un écrin : fond graphite, éclairage de musée, reflets sur le verre et produits présentés comme des pièces de collection. Un luxe silencieux pour les pâtissiers et chocolatiers exigeants.', img: 'assets/counter-domes.webp', alt: 'Comptoir en marbre avec cloches en verre', bg: '#101010', fg: '#EEE9E1', dark: true, sw: ['#101010', '#1A1A1A', '#EEE9E1', '#B08D57'], fonts: 'Libre Caslon Display · Manrope', moment: 'Une vitrine dessinée dont le verre est balayé par un reflet, sous un projecteur.' },
+      { g: 'a', k: 'Mineral', name: 'Minéral', font: "'Newsreader',serif", size: 32, italic: true, tag: 'La matière d’abord : pierre acrylique blanche, granit, verre.', desc: 'Une direction d’architecte : lumière du jour, ombres douces et grands blancs. La pierre acrylique, le granit et le verre sérigraphié deviennent le récit ; les nuanciers recolorent la vitrine en direct.', img: 'assets/marble-veins.webp', alt: 'Marbre veiné gris', bg: '#F4F2EE', fg: '#2B2926', accent: '#D42A20', sw: ['#F4F2EE', '#E6E2DB', '#2B2926', '#D42A20'], fonts: 'Newsreader · Hanken Grotesk', moment: 'Un bloc de pierre blanche qui se pose et devient le plan de travail de la vitrine.' },
+      { g: 'a', k: 'Atelier', name: 'Atelier', font: "'Young Serif',serif", size: 30, tag: 'L’univers de l’artisan : farine, bois, papier kraft, aube au fournil.', desc: 'Chaleureux et tactile : la journée du boulanger rythme le processus RGTE, les modules ont des étiquettes kraft, le bois de la Ligne Legno et la farine qui flotte donnent une âme artisanale haut de gamme.', img: 'assets/baker-table.webp', alt: 'Pains et rouleau à pâtisserie sur le plan de travail', bg: '#F3ECE1', fg: '#4A3426', accent: '#D42A20', sw: ['#F3ECE1', '#D9C6A5', '#4A3426', '#D42A20'], fonts: 'Young Serif · Manrope', moment: 'Une pluie de farine animée sur une étagère de boulangerie, titre en étiquette tamponnée.' },
+      { g: 'a', k: 'Cryo', name: 'Cryo', font: "'Sora',sans-serif", size: 28, weight: 600, tag: 'La science du froid : la température en héroïne, givre et précision.', desc: 'Une esthétique d’instrument de précision : la température pilote tout, du −2 °C de la poissonnerie aux +90 °C du bain-marie. Verre givré, flux d’air animés et fiches techniques transformées en tableaux de bord élégants.', img: 'assets/vitrine-slice.webp', alt: 'Parts de gâteaux derrière une vitrine', bg: '#0F1C24', fg: '#F1F5F7', dark: true, sw: ['#F1F5F7', '#DDE7EC', '#0F1C24', '#3A7CA5'], fonts: 'Sora · IBM Plex Mono', moment: 'Un curseur de −2 °C à +90 °C qui change la famille de modules et la couleur du héros.' },
+      { g: 'a', k: 'Rouge', name: 'Rouge', font: "'Bricolage Grotesque',sans-serif", size: 30, weight: 800, upper: true, tag: 'La marque amplifiée : affiche suisse, rouge RGTE, typographie géante.', desc: 'Le rouge RGTE devient une identité forte : grille stricte, aplats rouges, lettres géantes qui servent de fenêtres sur les produits. Énergique et mémorable, pour se démarquer des fabricants concurrents.', img: 'assets/macarons-stack.webp', alt: 'Macarons empilés sur fond rose', bg: '#D42A20', fg: '#FFFFFF', dark: true, sw: ['#D42A20', '#F5F2EC', '#121212', '#F2D6D0'], fonts: 'Bricolage Grotesque · Instrument Sans', moment: 'Les lettres R G T E en plein écran, chacune une fenêtre sur une photo qui change au survol.' },
+      { g: 'b', k: 'Studio', name: 'Studio', font: "'Onest',sans-serif", size: 30, weight: 700, tag: 'Composez votre linéaire : le site devient un configurateur.', desc: 'Comme un configurateur de mobilier premium : on choisit une ligne, on ajoute ses modules, le comptoir se dessine en direct et le récapitulatif mène à la demande de plan 3D. Clair, utile, très produit.', img: 'assets/bakery-counter-bright.webp', alt: 'Boutique claire avec comptoir', bg: '#FAFAF8', fg: '#16181A', accent: '#D42A20', sw: ['#FAFAF8', '#ECEDEA', '#16181A', '#D42A20'], fonts: 'Onest · JetBrains Mono', moment: 'Un constructeur de linéaire qui dessine le comptoir module par module.' },
+      { g: 'b', k: 'Maison', name: 'Maison', font: "'Gilda Display',serif", size: 32, tag: 'L’élégance de la haute pâtisserie parisienne : pastels et filets d’or.', desc: 'Ivoire, pistache et rose poudré, filets dorés et bords festonnés : une boutique digne du Paris 4e, pour les pâtissiers et chocolatiers. Les modules se lisent comme une carte de pâtisserie.', img: 'assets/macarons-rows.webp', alt: 'Rangées de macarons colorés', bg: '#FBF7F2', fg: '#3B2A26', accent: '#D42A20', sw: ['#FBF7F2', '#C9D8B6', '#EBC9C6', '#3B2A26'], fonts: 'Gilda Display · Karla', moment: 'L’ouverture d’une boîte à pâtisserie qui révèle la vitrine dans un cadre festonné.' },
+      { g: 'b', k: 'Cacao', name: 'Cacao', font: "'Playfair Display',serif", size: 32, italic: true, tag: 'Chocolat noir, cuivre et brillance : sensuel et cinématographique.', desc: 'L’univers du chocolat à +14 °C/+18 °C comme porte d’entrée émotionnelle : reflets de chocolat tempéré, cuivre, mouvements lents. Puis tous les secteurs, avec la même richesse.', img: 'assets/chocolates-dark.webp', alt: 'Bonbons au chocolat', bg: '#1B110D', fg: '#F1E6DA', dark: true, sw: ['#1B110D', '#2A1B15', '#F1E6DA', '#C07A4A'], fonts: 'Playfair Display · Albert Sans', moment: 'Un reflet brillant qui glisse sur les chocolats et un titre révélé comme du chocolat fondu.' },
+      { g: 'b', k: 'Plan', name: 'Plan', font: "'Red Hat Display',sans-serif", size: 30, weight: 700, tag: 'Le bureau d’études en vedette : du plan technique au rendu réel.', desc: 'Le plan 3D offert devient le héros : plan de boutique dessiné trait par trait, zones survolables, cotes en millimètres, puis bascule vers la photo de la réalisation. Rassurant et expert.', img: 'assets/patisserie-interior.webp', alt: 'Intérieur de pâtisserie', bg: '#0E2A47', fg: '#E8EEF4', dark: true, sw: ['#0E2A47', '#F4F3EF', '#8FB3CF', '#D42A20'], fonts: 'Red Hat Display · Red Hat Mono', moment: 'Un plan de pâtisserie qui se dessine puis bascule en photo réelle.' },
+      { g: 'b', k: 'Halles', name: 'Halles', font: "'Epilogue',sans-serif", size: 28, weight: 800, tag: 'Les halles gourmandes : treize métiers, une couleur par secteur.', desc: 'RGTE équipe treize métiers de bouche, pas seulement la pâtisserie. Une grille bento vivante où chaque secteur a sa couleur, s’agrandit au clic et montre température, modules et réalisations.', img: 'assets/fromagerie.webp', alt: 'Meules de fromage sur étagères', bg: '#F7F5F0', fg: '#1C1B19', accent: '#D42A20', sw: ['#F7F5F0', '#3F6C8C', '#E3B85C', '#5E8C4A'], fonts: 'Epilogue · Lora', moment: 'Un mur de 13 tuiles secteurs qui se réorganise quand on en choisit une.' },
+    ];
+    const sel = this.state.sel;
+    const isLocal = (d) => LOCAL_ALL || d.g === HERE;
+    const home = (d) => (isLocal(d) ? d.k + '-Accueil.dc.html' : URL[d.g]);
+    const nameCss = (d, size) => 'font-family:' + d.font + ';font-size:' + size + 'px;line-height:1.08;font-weight:' + (d.weight || 400) + (d.italic ? ';font-style:italic' : '') + (d.upper ? ';text-transform:uppercase;letter-spacing:.02em' : '');
+    const dirs = D.map((d, i) => ({
+      ...d, num: String(i + 1).padStart(2, '0'), home: home(d),
+      pick: () => this.setState({ sel: i }),
+      rowStyle: 'display:flex;gap:16px;align-items:flex-start;width:100%;min-height:44px;padding:16px ' + (i === sel ? '18px' : '8px') + ';border:0;border-bottom:1px solid #CFCAC1;cursor:pointer;font:inherit;color:#141414;background:' + (i === sel ? '#E7E3DC' : 'transparent'),
+      nameStyle: nameCss(d, Math.round(d.size * 0.82)),
+      chipStyle: 'position:absolute;top:12px;left:12px;font-family:JetBrains Mono,monospace;font-size:11px;padding:6px 9px;background:' + d.bg + ';color:' + d.fg,
+    }));
+    const c = D[sel];
+    const dark = !!c.dark;
+    const ctaBg = c.k === 'Rouge' ? '#FFFFFF' : dark ? '#F2EDE4' : '#D42A20';
+    const ctaFg = c.k === 'Rouge' ? '#B8231A' : dark ? '#141414' : '#FFFFFF';
+    const cur = {
+      ...c, num: String(sel + 1).padStart(2, '0'), home: home(c), local: isLocal(c), remote: !isLocal(c), range: c.g === 'a' ? '1 à 5' : '6 à 10',
+      pages: PAGES.map(([label, f]) => ({ label, href: c.k + '-' + f + '.dc.html' })),
+      swatches: c.sw.map((h) => ({ hex: h, style: 'width:40px;height:40px;border-radius:50%;background:' + h + ';border:1px solid ' + (dark ? 'rgba(255,255,255,.3)' : 'rgba(0,0,0,.15)') })),
+      panelStyle: 'flex:999 1 560px;min-width:0;display:flex;flex-direction:column;background:' + c.bg + ';color:' + c.fg + ';transition:background .6s,color .6s',
+      titleStyle: 'margin:0;color:#F5F2EC;' + nameCss(c, c.size * 2.7),
+      pillStyle: 'display:inline-flex;align-items:center;min-height:44px;padding:0 16px;font-size:14px;text-decoration:none;color:' + c.fg + ';border:1px solid ' + (dark ? 'rgba(255,255,255,.32)' : 'rgba(20,20,20,.22)') + ';border-radius:999px',
+      ctaStyle: 'align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:0 26px;font-size:15px;font-weight:600;text-decoration:none;border-radius:999px;background:' + ctaBg + ';color:' + ctaFg,
+    };
+    return { dirs, cur };
+  }
+}
+</script>
+</body>
+</html>

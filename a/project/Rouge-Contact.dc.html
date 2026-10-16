@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rouge — Showroom &amp; contact</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Instrument+Sans:wdth,wght@75..100,400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F5F2EC}
+sc-for,sc-if{display:contents}
+.rg{--red:#D42A20;--redd:#B8231A;--paper:#F5F2EC;--ink:#121212;--pink:#F2D6D0;--line:2px solid #121212;background:var(--paper);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.rg *,.rg *::before,.rg *::after{box-sizing:border-box}
+.rg a{color:inherit}
+.rg img{display:block;max-width:100%}
+.rg button,.rg input,.rg textarea{font:inherit;color:inherit;border-radius:0}
+.rg button{cursor:pointer}
+.rg h1,.rg h2,.rg h3,.rg p{margin:0}
+.d{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-stretch:75%;font-variation-settings:"wdth" 75,"opsz" 96;font-weight:800;letter-spacing:-.025em;line-height:.88}
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s9{grid-column:span 9}.s12{grid-column:1/-1}
+.ey{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.redt{color:var(--redd)}
+.top{background:var(--ink);color:var(--paper);font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px}
+.top a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;min-height:44px}
+.top a:hover{text-decoration:underline}
+.hd{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:var(--line)}
+.hd-in{display:flex;align-items:center;gap:24px;min-height:84px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.logo-w{background:var(--red);color:#fff;font-size:34px;padding:9px 10px 5px;line-height:.9;letter-spacing:-.01em}
+.logo-s{font-size:12px;font-weight:700;line-height:1.15;letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nl{display:flex;align-items:baseline;gap:6px;padding:12px;min-height:44px;text-decoration:none;font-weight:600;font-size:15px;position:relative}
+.nl span{font-size:11px;color:var(--redd);font-weight:700}
+.nl::after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.7,0,.2,1)}
+.nl:hover::after,.nl[aria-current="page"]::after{transform:scaleX(1)}
+.tel{display:flex;align-items:center;gap:10px;text-decoration:none;min-height:44px}
+.tel b{display:block;font-size:16px;line-height:1.1}
+.tel small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--redd);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 22px;font-weight:600;font-size:15px;text-decoration:none;border:2px solid var(--ink);background:transparent;color:var(--ink);transition:background .25s,color .25s,border-color .25s;white-space:nowrap}
+.btn svg{transition:transform .3s}
+.btn:hover svg{transform:translateX(4px)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn-red{background:var(--red);border-color:var(--red);color:#fff}
+.btn-red:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-paper{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.btn-paper:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.burger{display:none;width:48px;height:48px;border:2px solid var(--ink);background:transparent;align-items:center;justify-content:center;margin-left:auto}
+.mnav{display:none}
+.rg :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.on-red :focus-visible{outline-color:#fff}
+.ft{background:var(--ink);color:var(--paper);padding-top:72px;overflow:hidden}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ft-claim{font-size:clamp(32px,4vw,56px);max-width:720px}
+.ft-big{color:var(--red);font-size:clamp(96px,38vw,560px);line-height:.74;letter-spacing:-.04em;margin:56px 0 0 -.03em;overflow-wrap:anywhere}
+.ft-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:32px;padding:48px 0;border-top:1px solid #3a3a3a;margin-top:40px}
+.ft-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#bdb8b0;margin-bottom:14px!important;font-weight:700}
+.ft p{font-size:15px}
+.ft-tel{font-size:36px;text-decoration:none;color:#fff}
+.ft-mut{color:#bdb8b0;margin-top:8px!important}
+.ft-l a{display:flex;align-items:center;min-height:44px;text-decoration:none;font-size:15px;border-bottom:1px solid #2a2a2a;transition:padding .2s}
+.ft-l a:hover{color:#fff;padding-left:6px}
+.ft-b{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 0 24px;border-top:1px solid #3a3a3a;font-size:13px;color:#bdb8b0}
+.ft-b a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes up{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.dl2{animation-delay:.16s}
+
+/* contact */
+.ph{padding:48px 0 44px;align-items:end;border-bottom:var(--line)}
+.crumb{display:flex;gap:10px;font-size:13px;font-weight:600;margin-bottom:24px}
+.crumb a{text-decoration:none;border-bottom:2px solid var(--red)}
+.ph-t{font-size:clamp(60px,9.4vw,150px);line-height:.8;overflow-wrap:anywhere;animation:up 1s cubic-bezier(.7,0,.2,1) both}
+.ph-t span{color:var(--red)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:var(--line);margin-top:40px}
+.stp{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:84px;padding:12px 16px;border:0;border-right:var(--line);background:transparent;text-align:left;transition:background .3s,color .3s}
+.stp:last-child{border-right:0}
+.stp b{font-size:36px;line-height:.9}
+.stp span{font-size:13px;font-weight:600}
+.stp[disabled]{cursor:default}
+.pane{border:var(--line);border-top:0;padding:28px;background:#fff;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.pane-t{font-size:clamp(34px,3.4vw,52px);margin-bottom:20px!important}
+.lbl{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:22px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 14px;border:2px solid var(--ink);background:transparent;font-size:14px;font-weight:600;transition:background .2s,color .2s,transform .2s}
+.chip:hover{background:var(--pink);transform:translateY(-2px)}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl label{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.fl input,.fl textarea{border:2px solid var(--ink);background:var(--paper);min-height:52px;padding:0 14px;font-size:16px;width:100%}
+.fl textarea{min-height:120px;padding:12px 14px;resize:vertical}
+.fl input:focus,.fl textarea:focus{outline:3px solid var(--red);outline-offset:1px}
+.unit{display:flex;align-items:stretch}
+.unit input{flex:1}
+.unit span{display:flex;align-items:center;padding:0 14px;border:2px solid var(--ink);border-left:0;font-weight:700;background:var(--pink)}
+.tgl{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 16px;border:2px solid var(--ink);background:transparent;text-align:left;margin-top:22px;transition:background .25s,color .25s}
+.tgl-box{width:52px;height:28px;border:2px solid currentColor;position:relative;flex-shrink:0}
+.tgl-dot{position:absolute;top:3px;left:3px;width:18px;height:18px;background:currentColor;transition:transform .3s cubic-bezier(.7,0,.2,1)}
+.err{display:block;font-size:13px;font-weight:600;color:var(--redd);margin-top:8px}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:20px;border-top:1px solid var(--ink)}
+.ok{background:var(--ink);color:var(--paper);padding:36px;border:var(--line);border-top:0;animation:wipe .7s cubic-bezier(.7,0,.2,1) both}
+.ok-t{font-size:clamp(44px,5vw,80px);color:var(--red)}
+.rec{display:grid;grid-template-columns:150px 1fr;gap:8px 16px;margin:22px 0;font-size:15px}
+.rec span:nth-child(odd){color:#bdb8b0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding-top:3px}
+.side{display:flex;flex-direction:column;gap:24px;margin-top:40px}
+.vert{background:var(--red);color:#fff;padding:28px;text-decoration:none;display:block;transition:background .3s}
+.vert:hover{background:var(--ink)}
+.vert b{display:block;font-size:clamp(52px,5.4vw,84px);line-height:.85;margin:10px 0}
+.box{border:var(--line);padding:24px}
+.box-t{font-size:36px;margin-bottom:12px!important}
+.mapsec{background:var(--pink);border-top:var(--line);border-bottom:var(--line);margin-top:104px}
+.map{width:100%;height:auto;display:block;border:var(--line);background:var(--paper);animation:rise .6s both}
+.mk-p{transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out infinite}
+.mtog{display:flex;border:2px solid var(--ink);align-self:flex-start}
+.mtog button{min-height:48px;padding:0 18px;border:0;background:transparent;font-weight:600}
+.sh{padding:104px 0 36px;align-items:end}
+.h2{font-size:clamp(40px,5.8vw,92px);overflow-wrap:anywhere}
+.faq{border-top:var(--line)}
+.q{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;min-height:84px;padding:14px 16px;border:0;border-bottom:var(--line);background:transparent;text-align:left;transition:background .25s,color .25s}
+.q:hover{background:var(--pink)}
+.q b{font-size:clamp(24px,2.4vw,36px);line-height:1}
+.q-i{width:40px;height:40px;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .35s cubic-bezier(.7,0,.2,1)}
+.a{padding:20px 16px 28px;border-bottom:var(--line);font-size:18px;max-width:900px;animation:rise .4s both}
+@media (max-width:1100px){.nav,.tel,.hd-in>.btn{display:none}.burger{display:flex}.mnav{display:grid;border-top:var(--line)}.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 24px;border-bottom:1px solid var(--ink);text-decoration:none;font-weight:600;font-size:18px}}
+@media (max-width:900px){.g12>*{grid-column:1/-1}}
+@media (max-width:640px){.top-r{display:none}.row2{grid-template-columns:1fr}.pane{padding:20px}.stp span{display:none}.rec{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.rg *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="rg" style="{{ rootStyle }}">
+
+<div class="top"><div class="wrap top-in">
+<a href="Main.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Toutes les propositions</a>
+<span>Proposition 05 — Rouge</span>
+<span class="top-r">Bureau d’études &amp; show-room · Puget-sur-Argens (Var)</span>
+</div></div>
+
+<header class="hd">
+<div class="wrap hd-in">
+<a class="logo" href="Rouge-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w d">RGTE</span><span class="logo-s">R.G.<br>Technologies</span></a>
+<nav class="nav" aria-label="Navigation principale">
+<a class="nl" href="Rouge-Lignes.dc.html"><span>01</span>Lignes</a>
+<a class="nl" href="Rouge-Secteurs.dc.html"><span>02</span>Secteurs</a>
+<a class="nl" href="Rouge-Realisations.dc.html"><span>03</span>Réalisations</a>
+<a class="nl" href="Rouge-Contact.dc.html" aria-current="page"><span>04</span>Showroom &amp; contact</a>
+</nav>
+<a class="tel" href="tel:0800951313"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+<a class="btn btn-red" href="#devis">Demande de devis</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
+</div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="mnav" aria-label="Navigation mobile">
+<a href="Rouge-Lignes.dc.html">Lignes d’agencement <span class="redt">01</span></a>
+<a href="Rouge-Secteurs.dc.html">Secteurs d’activité <span class="redt">02</span></a>
+<a href="Rouge-Realisations.dc.html">Réalisations <span class="redt">03</span></a>
+<a href="Rouge-Contact.dc.html">Showroom &amp; contact <span class="redt">04</span></a>
+<a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+<a href="#devis" style="background:#D42A20;color:#fff">Demande de devis</a>
+</nav>
+</sc-if>
+</header>
+
+<main>
+<section class="wrap">
+<div class="g12 ph">
+<div class="s8">
+<nav class="crumb" aria-label="Fil d’Ariane"><a href="Rouge-Accueil.dc.html">Accueil</a><span>/</span><span>Showroom &amp; contact</span></nav>
+<h1 class="ph-t d">Showroom <span>&amp;</span> contact.</h1>
+</div>
+<div class="s4 rise dl2"><p style="font-size:18px">Trois étapes pour décrire votre projet ; le bureau d’études élabore votre plan 3D d’agencement. Ou appelez le numéro vert.</p></div>
+</div>
+
+<div class="g12" id="devis">
+<div class="s7">
+<div class="steps" role="list" aria-label="Étapes du formulaire">
+<sc-for list="{{ steps }}" as="t" hint-placeholder-count="3"><button type="button" role="listitem" class="stp" style="{{ t.style }}" aria-current="{{ t.cur }}" onClick="{{ t.go }}"><b class="d">{{ t.n }}</b><span>{{ t.label }}</span></button></sc-for>
+</div>
+
+<sc-if value="{{ st.s1 }}" hint-placeholder-val="{{ true }}">
+<div class="pane">
+<h2 class="pane-t d">Votre métier</h2>
+<span class="lbl">Secteur d’activité *</span>
+<div class="chips" role="radiogroup" aria-label="Secteur d’activité">
+<sc-for list="{{ sects }}" as="c" hint-placeholder-count="13"><button type="button" role="radio" class="chip" style="{{ c.style }}" aria-checked="{{ c.aria }}" onClick="{{ c.pick }}">{{ c.nom }}</button></sc-for>
+</div>
+<sc-if value="{{ err.sect }}" hint-placeholder-val="{{ false }}"><span class="err">Choisissez votre secteur pour continuer.</span></sc-if>
+<span class="lbl">Type de projet</span>
+<div class="chips" role="radiogroup" aria-label="Type de projet">
+<sc-for list="{{ ptypes }}" as="c" hint-placeholder-count="3"><button type="button" role="radio" class="chip" style="{{ c.style }}" aria-checked="{{ c.aria }}" onClick="{{ c.pick }}">{{ c.nom }}</button></sc-for>
+</div>
+<div class="actions"><p style="font-size:13px">Étape 1 sur 3 · * obligatoire</p><button type="button" class="btn btn-red" onClick="{{ next1 }}">Continuer <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ st.s2 }}" hint-placeholder-val="{{ false }}">
+<div class="pane">
+<h2 class="pane-t d">Votre local</h2>
+<div class="row2">
+<div class="fl"><label for="c-len">Longueur disponible *</label><div class="unit"><input id="c-len" type="text" inputmode="decimal" placeholder="ex. 4,20" value="{{ fv.len }}" onInput="{{ set.len }}"><span>m</span></div></div>
+<div class="fl"><label for="c-dep">Profondeur disponible</label><div class="unit"><input id="c-dep" type="text" inputmode="decimal" placeholder="ex. 2,50" value="{{ fv.dep }}" onInput="{{ set.dep }}"><span>m</span></div></div>
+</div>
+<sc-if value="{{ err.len }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez au moins la longueur disponible (même approximative).</span></sc-if>
+<span class="lbl">Ligne envisagée</span>
+<div class="chips" role="radiogroup" aria-label="Ligne envisagée">
+<sc-for list="{{ lignes }}" as="c" hint-placeholder-count="6"><button type="button" role="radio" class="chip" style="{{ c.style }}" aria-checked="{{ c.aria }}" onClick="{{ c.pick }}">{{ c.nom }}</button></sc-for>
+</div>
+<button type="button" class="tgl" style="{{ p3d.style }}" aria-pressed="{{ p3d.aria }}" onClick="{{ p3d.toggle }}"><span class="tgl-box"><span class="tgl-dot" style="{{ p3d.dot }}"></span></span><span><strong>Je souhaite mon plan 3D d’agencement</strong><br><span style="font-size:14px">{{ p3d.label }}</span></span></button>
+<div class="fl" style="margin-top:22px"><label for="c-msg">Message</label><textarea id="c-msg" placeholder="Produits exposés, contraintes du local, calendrier…" onInput="{{ set.msg }}">{{ fv.msg }}</textarea></div>
+<div class="actions"><button type="button" class="btn" onClick="{{ back }}">Retour</button><button type="button" class="btn btn-red" onClick="{{ next2 }}">Continuer <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ st.s3 }}" hint-placeholder-val="{{ false }}">
+<form class="pane" onSubmit="{{ submit }}" novalidate="novalidate">
+<h2 class="pane-t d">Vos coordonnées</h2>
+<div class="row2">
+<div class="fl"><label for="c-nom">Nom *</label><input id="c-nom" type="text" autocomplete="name" value="{{ fv.nom }}" onInput="{{ set.nom }}"><sc-if value="{{ err.nom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+<div class="fl"><label for="c-tel">Téléphone *</label><input id="c-tel" type="tel" autocomplete="tel" value="{{ fv.tel }}" onInput="{{ set.tel }}"><sc-if value="{{ err.tel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+<div class="fl"><label for="c-mail">Email *</label><input id="c-mail" type="email" autocomplete="email" value="{{ fv.mail }}" onInput="{{ set.mail }}"><sc-if value="{{ err.mail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide.</span></sc-if></div>
+<div class="fl"><label for="c-cp">Code postal</label><input id="c-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ fv.cp }}" onInput="{{ set.cp }}"></div>
+<div class="fl"><label for="c-ville">Ville</label><input id="c-ville" type="text" autocomplete="address-level2" value="{{ fv.ville }}" onInput="{{ set.ville }}"></div>
+</div>
+<div class="actions"><button type="button" class="btn" onClick="{{ back }}">Retour</button><button type="submit" class="btn btn-red">Envoyer ma demande <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+<p style="font-size:13px;margin-top:12px">Prototype : aucune donnée n’est transmise.</p>
+</form>
+</sc-if>
+
+<sc-if value="{{ st.s4 }}" hint-placeholder-val="{{ false }}">
+<div class="ok" role="status">
+<p class="ok-t d">Demande prête.</p>
+<p style="font-size:18px;margin-top:12px">Prototype — rien n’est envoyé.</p>
+<div class="rec">
+<span>Secteur</span><span>{{ rec.sect }}</span>
+<span>Projet</span><span>{{ rec.ptype }}</span>
+<span>Local</span><span>{{ rec.local }}</span>
+<span>Ligne</span><span>{{ rec.ligne }}</span>
+<span>Plan 3D</span><span>{{ rec.p3d }}</span>
+<span>Contact</span><span>{{ rec.contact }}</span>
+</div>
+<button type="button" class="btn btn-paper" onClick="{{ restart }}">Nouvelle demande</button>
+</div>
+</sc-if>
+</div>
+
+<aside class="s5">
+<div class="side">
+<a class="vert on-red" href="tel:0800951313"><span class="ey">Numéro vert — appel gratuit</span><b class="d">0 800 95 13 13</b><span style="display:flex;align-items:center;gap:10px;font-weight:600">Appeler le bureau d’études <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+<div class="box">
+<p class="ey redt">Show-room</p>
+<p class="box-t d" style="margin-top:10px">Espace Vernèdes 3</p>
+<p style="font-size:18px">423, Chemin des Vernèdes<br>83480 Puget-sur-Argens</p>
+<p style="margin-top:14px;padding-top:14px;border-top:1px solid #121212"><strong>Horaires :</strong> [HORAIRES]</p>
+</div>
+<div class="box" style="background:var(--pink)">
+<p class="ey redt">Plan 3D offert</p>
+<p class="box-t d" style="margin-top:10px">Voir avant de fabriquer.</p>
+<p>Indiquez vos dimensions et votre métier : le bureau d’études élabore votre plan 3D d’agencement, avec la ligne, les modules et les matières choisis.</p>
+</div>
+</div>
+</aside>
+</div>
+</section>
+
+<section class="mapsec" aria-labelledby="t-map">
+<div class="wrap g12" style="padding-top:72px;padding-bottom:72px">
+<div class="s4" style="display:flex;flex-direction:column;gap:20px">
+<p class="ey redt">Accès</p>
+<h2 id="t-map" class="d h2">Puget-sur-Argens, Var.</h2>
+<p style="font-size:18px">Bureau d’études et show-room au 423, Chemin des Vernèdes, Espace Vernèdes 3. Itinéraire détaillé : [ACCÈS].</p>
+<div class="mtog" role="group" aria-label="Échelle du plan">
+<button type="button" style="{{ mz.region }}" aria-pressed="{{ mza.region }}" onClick="{{ mzp.region }}">Région</button>
+<button type="button" style="{{ mz.zone }}" aria-pressed="{{ mza.zone }}" onClick="{{ mzp.zone }}">Espace Vernèdes</button>
+</div>
+</div>
+<div class="s8">
+<sc-if value="{{ mshow.region }}" hint-placeholder-val="{{ true }}">
+<svg class="map" viewBox="0 0 760 440" role="img" aria-label="Plan schématique régional : Puget-sur-Argens entre Roquebrune-sur-Argens et Fréjus, au sud de l’A8">
+<path d="M380 440 C440 386 510 362 580 354 C650 346 700 322 760 296 L760 440 Z" fill="#F2D6D0" stroke="#121212" stroke-width="2"></path>
+<text x="600" y="414" font-family="Instrument Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#121212">MÉDITERRANÉE</text>
+<path d="M0 276 C130 262 230 318 340 322 C410 326 440 352 470 404" fill="none" stroke="#121212" stroke-width="2" stroke-dasharray="6 5"></path>
+<text x="80" y="258" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">L’Argens</text>
+<path d="M0 146 C170 160 300 120 440 140 C560 158 660 122 760 108" fill="none" stroke="#121212" stroke-width="9"></path>
+<rect x="600" y="112" width="42" height="26" fill="#121212"></rect><text x="609" y="130" font-family="Instrument Sans, sans-serif" font-size="14" font-weight="700" fill="#F5F2EC">A8</text>
+<path d="M40 348 C220 272 370 246 510 236 C610 230 690 252 760 244" fill="none" stroke="#121212" stroke-width="3"></path>
+<circle cx="120" cy="314" r="5" fill="#121212"></circle><text x="70" y="338" font-family="Instrument Sans, sans-serif" font-size="13" fill="#121212">Roquebrune-sur-Argens</text>
+<circle cx="290" cy="238" r="5" fill="#121212"></circle><text x="196" y="226" font-family="Instrument Sans, sans-serif" font-size="15" font-weight="700" fill="#121212">Puget-sur-Argens</text>
+<circle cx="530" cy="312" r="5" fill="#121212"></circle><text x="542" y="317" font-family="Instrument Sans, sans-serif" font-size="13" fill="#121212">Fréjus</text>
+<circle cx="660" cy="330" r="5" fill="#121212"></circle><text x="636" y="302" font-family="Instrument Sans, sans-serif" font-size="13" fill="#121212">Saint-Raphaël</text>
+<circle class="mk-p" cx="346" cy="206" r="14" fill="#D42A20"></circle>
+<rect x="335" y="195" width="22" height="22" fill="#D42A20" stroke="#121212" stroke-width="2"></rect>
+<rect x="366" y="166" width="214" height="32" fill="#121212"></rect>
+<text x="378" y="187" font-family="Instrument Sans, sans-serif" font-size="14" font-weight="700" fill="#F5F2EC">RGTE · Espace Vernèdes 3</text>
+<text x="16" y="424" font-family="Instrument Sans, sans-serif" font-size="11" fill="#121212">Schéma non contractuel — positions indicatives</text>
+</svg>
+</sc-if>
+<sc-if value="{{ mshow.zone }}" hint-placeholder-val="{{ false }}">
+<svg class="map" viewBox="0 0 760 440" role="img" aria-label="Plan schématique rapproché : Chemin des Vernèdes et Espace Vernèdes 3">
+<rect x="0" y="0" width="760" height="440" fill="#F5F2EC"></rect>
+<path d="M0 300 C200 290 420 250 760 210" fill="none" stroke="#121212" stroke-width="26"></path>
+<path d="M0 300 C200 290 420 250 760 210" fill="none" stroke="#F5F2EC" stroke-width="2" stroke-dasharray="14 12"></path>
+<text x="520" y="214" font-family="Instrument Sans, sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#121212" transform="rotate(-6 520 214)">CHEMIN DES VERNÈDES</text>
+<rect x="250" y="120" width="120" height="120" fill="#ffffff" stroke="#121212" stroke-width="2"></rect>
+<rect x="390" y="96" width="150" height="110" fill="#D42A20" stroke="#121212" stroke-width="2"></rect>
+<text x="465" y="146" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="34" font-weight="800" fill="#ffffff">RGTE</text>
+<text x="465" y="172" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="700" fill="#ffffff">N° 423 · SHOW-ROOM</text>
+<rect x="560" y="80" width="110" height="100" fill="#ffffff" stroke="#121212" stroke-width="2"></rect>
+<rect x="250" y="330" width="200" height="80" fill="#ffffff" stroke="#121212" stroke-width="2"></rect>
+<text x="260" y="112" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="700" fill="#121212">ESPACE VERNÈDES 3</text>
+<path d="M465 206 L465 250" stroke="#121212" stroke-width="2" stroke-dasharray="4 4"></path>
+<circle class="mk-p" cx="465" cy="262" r="10" fill="#D42A20"></circle>
+<rect x="457" y="254" width="16" height="16" fill="#D42A20" stroke="#121212" stroke-width="2"></rect>
+<text x="16" y="424" font-family="Instrument Sans, sans-serif" font-size="11" fill="#121212">Schéma non contractuel — implantation indicative [À VALIDER]</text>
+</svg>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section class="wrap" aria-labelledby="t-faq" style="padding-bottom:104px">
+<div class="g12 sh">
+<p class="s3 ey redt">Questions fréquentes</p>
+<h2 id="t-faq" class="s9 d h2">Avant d’appeler.</h2>
+</div>
+<div class="faq">
+<sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+<button type="button" class="q" style="{{ f.style }}" aria-expanded="{{ f.aria }}" onClick="{{ f.toggle }}"><b class="d">{{ f.q }}</b><span class="q-i" style="{{ f.icon }}" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+<sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div class="a">{{ f.a }}</div></sc-if>
+</sc-for>
+</div>
+</section>
+</main>
+
+<footer class="ft">
+<div class="wrap">
+<div class="ft-top">
+<p class="ft-claim d">Agencement de vitrines réfrigérées sur mesure.</p>
+<a class="btn btn-red" href="#devis">Demande de devis <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div class="ft-big d" aria-hidden="true">RGTE</div>
+<div class="ft-cols">
+<div><p class="ft-h">Bureau d’études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+<div><p class="ft-h">Numéro vert</p><p><a class="ft-tel d" href="tel:0800951313">0 800 95 13 13</a></p><p class="ft-mut">Appel gratuit · Horaires [HORAIRES]</p></div>
+<div class="ft-l"><p class="ft-h">Navigation</p><a href="Rouge-Lignes.dc.html">Lignes d’agencement</a><a href="Rouge-Secteurs.dc.html">Secteurs d’activité</a><a href="Rouge-Realisations.dc.html">Réalisations</a><a href="Rouge-Contact.dc.html">Showroom &amp; contact</a></div>
+<div class="ft-l"><p class="ft-h">Informations</p><a href="#mentions">Mentions légales</a><a href="#cgv">Conditions de vente</a><a href="#plan">Plan du site</a><a href="#cookies">Gestion des cookies</a></div>
+</div>
+<div class="ft-b"><span>RGTE — R.G. Technologies</span><a href="Main.dc.html">Toutes les propositions</a><span>Proposition de refonte — concept, non officiel</span></div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#B8231A","#121212"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = {
+      menuOpen:false, step:1, maxStep:1, tried:false,
+      sect:"", ptype:"Création", ligne:"Je ne sais pas encore", p3d:true,
+      len:"", dep:"", msg:"", nom:"", tel:"", mail:"", cp:"", ville:"",
+      mapZ:"region", faq:0
+    };
+  }
+  renderVals(){
+    const s = this.state;
+    const accent = (this.props && this.props.accent) || "#D42A20";
+    const ON = "background:var(--red);color:#fff;border-color:var(--red)";
+    const INK = "background:#121212;color:#F5F2EC";
+    const radio = (key, list) => list.map(nom => {
+      const on = s[key] === nom;
+      const o = {}; o[key] = nom;
+      return { nom, style:on ? ON : "", aria:on ? "true" : "false", pick: () => this.setState(o) };
+    });
+    const SECT = ["Boulangerie","Pâtisserie","Chocolats","Sandwichs","Traiteur","Poissonnerie","Bar à salades","Bar à couscous","Fromagerie","Bar","Bar à topping","Coffee shop / Café","Pizza al taglio"];
+    const STEPS = ["Votre métier","Votre local","Vos coordonnées"];
+    const steps = STEPS.map((label,i) => {
+      const n = i + 1;
+      const cur = s.step === n;
+      const done = n < s.step || s.step === 4;
+      return {
+        n:"0" + n, label,
+        style: cur ? ON : (done ? INK : ""),
+        cur: cur ? "step" : "false",
+        go: () => { if (n <= s.maxStep && s.step !== 4) this.setState({ step:n, tried:false }); }
+      };
+    });
+    const t = s.tried;
+    const mailOk = s.mail.indexOf("@") > 0 && s.mail.indexOf(".") > 0;
+    const err = {
+      sect: t && s.step === 1 && !s.sect,
+      len: t && s.step === 2 && !s.len.trim(),
+      nom: t && s.step === 3 && !s.nom.trim(),
+      tel: t && s.step === 3 && !s.tel.trim(),
+      mail: t && s.step === 3 && !mailOk
+    };
+    const field = k => e => { const o = {}; o[k] = e.target.value; this.setState(o); };
+    const goStep = n => this.setState({ step:n, maxStep: Math.max(s.maxStep, n), tried:false });
+    const MZ = ["region","zone"];
+    const mz = {}, mza = {}, mzp = {}, mshow = {};
+    MZ.forEach(k => { const on = s.mapZ === k; mz[k] = on ? INK : ""; mza[k] = on ? "true" : "false"; mzp[k] = () => this.setState({ mapZ:k }); mshow[k] = on; });
+    const FAQ = [
+      {q:"Le plan 3D est-il payant ?", a:"Non : l’élaboration de votre plan 3D d’agencement est offerte. Il suffit de nous transmettre votre métier et les dimensions de votre local."},
+      {q:"Fabriquez-vous sur mesure ?", a:"Oui. Les vitrines sont adaptées à votre local et à vos dimensions. Exemple : le module Gourmandise existe en 101, 117, 146, 169, 191 et 222 cm, ou sur mesure."},
+      {q:"Quelles matières proposez-vous ?", a:"Corian (pierre acrylique), granit, bois mélaminé avec moulures, et panneau frontal en verre sérigraphié au nom du client sur la Ligne Stone."},
+      {q:"Quelles plages de température ?", a:"+2 °C / +8 °C pour la pâtisserie, +14 °C / +18 °C pour le chocolat, −2 °C / 0 °C pour la poissonnerie, +30 °C / +90 °C pour le chaud bain-marie."},
+      {q:"Combien coûte une vitrine ?", a:"Le module Gourmandise 101 cm en pierre acrylique blanche est affiché à 5 800,00 € HT. Les autres longueurs et configurations sont chiffrées sur devis."},
+      {q:"Peut-on visiter le show-room ?", a:"Oui : bureau d’études et show-room au 423, Chemin des Vernèdes, Espace Vernèdes 3, 83480 Puget-sur-Argens. Horaires : [HORAIRES]. Numéro vert : 0 800 95 13 13 (appel gratuit)."}
+    ];
+    const faqs = FAQ.map((f,i) => {
+      const open = s.faq === i;
+      return { q:f.q, a:f.a, open, aria: open ? "true" : "false", style: open ? ON : "", icon: open ? "transform:rotate(45deg)" : "", toggle: () => this.setState({ faq: open ? -1 : i }) };
+    });
+    return {
+      rootStyle: "--red:" + accent,
+      menuOpen: s.menuOpen, menuAria: s.menuOpen ? "true" : "false",
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      steps,
+      st: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: s.step === 4 },
+      sects: radio("sect", SECT),
+      ptypes: radio("ptype", ["Création","Rénovation","Agrandissement"]),
+      lignes: radio("ligne", ["Je ne sais pas encore","Basique","Stone","Legno","Encastrable","Industry"]),
+      p3d: {
+        style: s.p3d ? ON : "", aria: s.p3d ? "true" : "false",
+        dot: s.p3d ? "transform:translateX(24px)" : "",
+        label: s.p3d ? "Oui — plan 3D offert, élaboré par le bureau d’études" : "Non, devis seul",
+        toggle: () => this.setState({ p3d: !s.p3d })
+      },
+      fv: { len:s.len, dep:s.dep, msg:s.msg, nom:s.nom, tel:s.tel, mail:s.mail, cp:s.cp, ville:s.ville },
+      set: { len:field("len"), dep:field("dep"), msg:field("msg"), nom:field("nom"), tel:field("tel"), mail:field("mail"), cp:field("cp"), ville:field("ville") },
+      err,
+      next1: () => s.sect ? goStep(2) : this.setState({ tried:true }),
+      next2: () => s.len.trim() ? goStep(3) : this.setState({ tried:true }),
+      back: () => this.setState({ step: Math.max(1, s.step - 1), tried:false }),
+      submit: e => {
+        if (e && e.preventDefault) e.preventDefault();
+        if (s.nom.trim() && s.tel.trim() && mailOk) goStep(4); else this.setState({ tried:true });
+      },
+      restart: () => this.setState({ step:1, maxStep:1, tried:false, sect:"", len:"", dep:"", msg:"", nom:"", tel:"", mail:"", cp:"", ville:"" }),
+      rec: {
+        sect: s.sect || "—", ptype: s.ptype,
+        local: (s.len ? s.len + " m" : "—") + (s.dep ? " × " + s.dep + " m" : ""),
+        ligne: s.ligne, p3d: s.p3d ? "Oui, offert" : "Non",
+        contact: s.nom + " · " + s.tel + " · " + s.mail + (s.ville ? " · " + s.ville : "")
+      },
+      mz, mza, mzp, mshow, faqs
+    };
+  }
+}
+</script>
+</body>
+</html>

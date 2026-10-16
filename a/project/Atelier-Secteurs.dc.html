@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Atelier — Secteurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Young+Serif&amp;display=swap">
+<style>
+body{margin:0;background:#F3ECE1}
+*,*::before,*::after{box-sizing:border-box}
+sc-for,sc-if{display:contents}
+.at{font-family:'Manrope',system-ui,sans-serif;color:#4A3426;background:#F3ECE1;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.at img{display:block;max-width:100%}
+.at a{color:inherit}
+.at button{font:inherit;color:inherit}
+.at h1,.at h2,.at h3,.at h4,.at p{margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.serif{font-family:'Young Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+.sc{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800}
+.crust{color:#8A4F22}
+.kraft{background-color:#D9C6A5;background-image:radial-gradient(rgba(74,52,38,.11) 1px,transparent 1.4px),radial-gradient(rgba(255,255,255,.3) 1px,transparent 1.6px);background-size:7px 7px,13px 13px;background-position:0 0,4px 6px}
+.wood{background-color:#4A3426;background-image:repeating-linear-gradient(179.4deg,rgba(255,232,200,.05) 0 2px,transparent 2px 6px,rgba(0,0,0,.12) 6px 7px,transparent 7px 15px,rgba(168,100,46,.18) 15px 16px,transparent 16px 27px),repeating-linear-gradient(90deg,transparent 0 359px,rgba(0,0,0,.28) 359px 361px),linear-gradient(180deg,#56402F,#3E2B1F)}
+.at :focus-visible{outline:3px solid #4A3426;outline-offset:3px}
+.on-dark :focus-visible{outline-color:#F3ECE1}
+.topbar{font-size:13px}
+.topbar-in{display:flex;align-items:center;justify-content:space-between;gap:0 24px;min-height:44px;flex-wrap:wrap}
+.topbar a{text-decoration:none;font-weight:700;min-height:44px;display:inline-flex;align-items:center}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:relative;z-index:20;background:#F3ECE1;border-bottom:1px solid rgba(74,52,38,.16)}
+.hdr-in{display:flex;align-items:center;gap:20px;min-height:86px}
+.logo{display:inline-flex;flex-direction:column;text-decoration:none;line-height:1;margin-right:auto;padding:6px 0}
+.logo-w{font-family:'Young Serif',Georgia,serif;font-size:34px;letter-spacing:.06em;position:relative;display:inline-block;padding-right:14px}
+.logo-w::after{content:'';position:absolute;right:0;top:3px;width:9px;height:9px;border-radius:50%;background:var(--ac)}
+.logo-s{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;font-weight:800;margin-top:7px}
+.nav{display:flex;align-items:center;gap:2px}
+.navlink{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;text-decoration:none;font-weight:600;font-size:15px}
+.navlink::after{content:'';position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:#A8642E;transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.navlink:hover::after,.navlink.on::after{transform:scaleX(1)}
+.tel-h{display:inline-flex;flex-direction:column;line-height:1.15;text-decoration:none;padding:4px 0 4px 18px;border-left:1px solid rgba(74,52,38,.2);min-height:44px;justify-content:center}
+.tel-h b{font-size:16px;font-weight:800;letter-spacing:.02em}
+.tel-h span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#8A4F22}
+.btn-stamp{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:0;border-radius:2px;background:var(--ac);color:#fff;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 0 3px #F3ECE1,0 0 0 4.5px var(--ac);cursor:pointer;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.btn-stamp:hover{transform:rotate(-1.5deg) translateY(-2px);box-shadow:0 0 0 4px #F3ECE1,0 0 0 5.5px var(--ac),0 12px 22px -8px rgba(42,29,21,.5)}
+.at .btn-stamp{color:#fff}
+.btn-line{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:1.5px solid currentColor;border-radius:2px;background:transparent;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+.btn-line:hover{background:#4A3426;color:#F3ECE1;border-color:#4A3426}
+.burger{display:none;width:48px;height:48px;border:1.5px solid rgba(74,52,38,.35);border-radius:2px;background:transparent;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.ft{color:#F3ECE1;padding:72px 0 24px}
+.ft-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ft h4{margin:0 0 14px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:#D9C6A5;font-weight:800}
+.ft a{text-decoration:none}
+.ft a:hover{text-decoration:underline;text-underline-offset:3px}
+.ft-links{display:flex;flex-direction:column}
+.ft-links a{min-height:44px;display:inline-flex;align-items:center}
+.ft-bot{display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;align-items:center;margin-top:48px;padding-top:12px;border-top:1px solid rgba(243,236,225,.2);font-size:13.5px}
+.ft-legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.ft-legal a{min-height:44px;display:inline-flex;align-items:center}
+.ft-note{color:#D9C6A5;font-size:12.5px;letter-spacing:.08em}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.12)}}
+.rv{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.fade{animation:fade .6s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.15s}.d2{animation-delay:.3s}
+.sec{padding:96px 0}
+.kick{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.kick::before{content:'';width:34px;height:1.5px;background:#A8642E}
+.h1{font-size:clamp(40px,5.8vw,86px);line-height:1;overflow-wrap:anywhere}
+.h2{font-size:clamp(30px,3.6vw,48px);line-height:1.06}
+
+/* thermomètre */
+.thermo{display:grid;grid-template-columns:repeat(4,1fr);margin-top:56px;border:1.5px solid #4A3426}
+.zone{position:relative;padding:22px 20px 20px;border-left:1px solid rgba(74,52,38,.3);transition:background .5s,color .5s}
+.zone:first-child{border-left:0}
+.zone-t{font-family:'Young Serif',Georgia,serif;font-size:clamp(24px,2.4vw,34px);line-height:1;display:block}
+.zone-bar{position:absolute;left:0;right:0;bottom:0;height:6px;transition:background .5s}
+
+/* étiquettes secteurs */
+.labels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:12px;margin-top:40px}
+.lab{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:118px;padding:16px 18px;border:0;text-align:left;cursor:pointer;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,background .35s,color .35s}
+.lab::after{content:'';position:absolute;inset:6px;border:1px solid currentColor;opacity:.3;pointer-events:none}
+.lab:hover{transform:translateY(-5px) rotate(-.8deg);box-shadow:0 18px 26px -16px rgba(74,52,38,.6)}
+.lab-n{font-size:11px;letter-spacing:.16em;font-weight:800}
+.lab-name{font-family:'Young Serif',Georgia,serif;font-size:22px;line-height:1.1}
+.lab-t{font-size:12.5px;font-weight:700}
+
+/* détail */
+.detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0;margin-top:56px;border:1px solid rgba(74,52,38,.2);background:#FBF7F0}
+.d-ph{position:relative;min-height:600px;overflow:hidden}
+.d-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
+.d-cap{position:absolute;left:14px;bottom:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;background:rgba(243,236,225,.92);padding:4px 8px}
+.d-in{padding:48px}
+.tstamp{display:inline-flex;align-items:center;justify-content:center;min-height:60px;padding:0 22px;border:3px double var(--ac);color:#B8231A;font-weight:800;font-size:20px;letter-spacing:.04em;transform:rotate(-3deg);animation:stampin .55s cubic-bezier(.3,1.5,.5,1) .15s both}
+@keyframes stampin{0%{opacity:0;transform:rotate(-14deg) scale(1.6)}100%{opacity:1;transform:rotate(-3deg) scale(1)}}
+.mods{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tagm{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;text-decoration:none;font-weight:700;font-size:14px;transition:transform .3s,box-shadow .3s}
+.tagm:hover{transform:translateY(-2px) rotate(-1deg);box-shadow:0 10px 16px -10px rgba(74,52,38,.6)}
+.tagm::before{content:'';width:7px;height:7px;border-radius:50%;background:#F3ECE1;box-shadow:inset 0 0 0 1.5px rgba(74,52,38,.5)}
+.reals{margin-top:14px;border-top:1px solid rgba(74,52,38,.2)}
+.real{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;padding:10px 0;border-bottom:1px solid rgba(74,52,38,.2);text-decoration:none;transition:padding .35s,background .35s}
+.real:hover{padding-left:10px;background:rgba(217,198,165,.35)}
+.flag{display:inline-block;margin-top:18px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border:1px dashed #4A3426}
+
+.ticket{position:relative;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;padding:60px}
+.perf{position:absolute;left:0;right:0;height:14px;background:radial-gradient(circle at 7px 0,#F3ECE1 6px,transparent 6.5px) 0 0/14px 14px repeat-x}
+.perf-t{top:0}.perf-b{bottom:0;transform:rotate(180deg)}
+
+@media (max-width:1080px){.tel-h{display:none}}
+@media (max-width:900px){.nav{display:none}.burger{display:inline-flex}.mnav{display:flex;flex-direction:column;padding-bottom:16px;border-top:1px solid rgba(74,52,38,.14)}.mnav a{min-height:48px;display:flex;align-items:center;text-decoration:none;font-weight:700;border-bottom:1px dashed rgba(74,52,38,.25)}.detail{grid-template-columns:1fr}.d-ph{min-height:320px}.ticket{grid-template-columns:1fr;padding:44px 26px}}
+@media (max-width:640px){.thermo{grid-template-columns:repeat(2,1fr)}.zone:nth-child(3){border-left:0}.zone:nth-child(n+3){border-top:1px solid rgba(74,52,38,.3)}.d-in{padding:28px 22px}.sec{padding:70px 0}}
+@media (max-width:560px){.wrap{padding:0 16px}.hdr .btn-stamp{display:none}}
+@media (prefers-reduced-motion:reduce){.at *,.at *::before,.at *::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="at" style="{{ rootStyle }}">
+
+<div class="topbar kraft">
+  <div class="wrap topbar-in">
+    <span class="sc" style="font-size:11px">Bureau d’études &amp; show-room · Puget-sur-Argens, Var</span>
+    <div style="display:flex;gap:0 22px;flex-wrap:wrap">
+      <a href="Main.dc.html">Toutes les propositions</a>
+      <a href="tel:0800951313">0 800 95 13 13 · appel gratuit</a>
+    </div>
+  </div>
+</div>
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a href="Atelier-Accueil.dc.html" class="logo" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="navlink" href="Atelier-Lignes.dc.html">Lignes</a>
+      <a class="navlink on" href="Atelier-Secteurs.dc.html" aria-current="page">Secteurs</a>
+      <a class="navlink" href="Atelier-Realisations.dc.html">Réalisations</a>
+      <a class="navlink" href="Atelier-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <a class="tel-h" href="tel:0800951313"><b>0 800 95 13 13</b><span>Numéro vert</span></a>
+    <a class="btn-stamp" href="Atelier-Contact.dc.html">Plan 3D offert</a>
+    <button type="button" class="burger" aria-label="Ouvrir le menu" aria-expanded="{{ menuExp }}" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></button>
+  </div>
+  <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav wrap fade" aria-label="Navigation mobile">
+      <a href="Atelier-Lignes.dc.html">Lignes d’agencement</a>
+      <a href="Atelier-Secteurs.dc.html">Secteurs d’activité</a>
+      <a href="Atelier-Realisations.dc.html">Réalisations</a>
+      <a href="Atelier-Contact.dc.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313">Numéro vert 0 800 95 13 13</a>
+      <a href="Atelier-Contact.dc.html">Plan 3D offert</a>
+    </nav>
+  </sc-if>
+</header>
+
+<section style="padding:80px 0 0">
+  <div class="wrap">
+    <p class="sc crust kick rv">Secteurs d’activité</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:28px">
+      <h1 class="serif h1 rv d1" style="max-width:920px">Treize métiers, treize façons de garder le froid.</h1>
+      <p class="rv d2" style="max-width:380px;font-size:17px">Choisissez votre métier : nous affichons sa plage de température, les modules conseillés et les réalisations liées.</p>
+    </div>
+    <div class="thermo rv d2" aria-label="Plages de température">
+      <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+        <div class="zone" style="{{ z.style }}">
+          <span class="sc" style="font-size:10.5px">{{ z.use }}</span>
+          <span class="zone-t" style="margin-top:10px">{{ z.t }}</span>
+          <span class="zone-bar" style="{{ z.bar }}"></span>
+        </div>
+      </sc-for>
+    </div>
+    <div class="labels" role="group" aria-label="Choisir un secteur">
+      <sc-for list="{{ sects }}" as="S" hint-placeholder-count="13">
+        <button type="button" class="lab" aria-pressed="{{ S.sel }}" style="{{ S.card }}" onClick="{{ S.pick }}">
+          <span class="lab-n">N° {{ S.n }}</span>
+          <span class="lab-name">{{ S.name }}</span>
+          <span class="lab-t">{{ S.temp }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 96px">
+  <div class="wrap">
+    <sc-for list="{{ sects }}" as="S" hint-placeholder-count="1">
+      <sc-if value="{{ S.on }}" hint-placeholder-val="{{ true }}">
+        <div class="detail fade" aria-live="polite">
+          <div class="d-ph"><img src="{{ S.img }}" alt="{{ S.alt }}"><span class="d-cap">Visuel d’ambiance</span></div>
+          <div class="d-in">
+            <p class="sc crust">Secteur n° {{ S.n }} sur 13</p>
+            <h2 class="serif" style="font-size:clamp(40px,4.6vw,66px);line-height:1;margin-top:10px">{{ S.name }}</h2>
+            <div style="margin-top:22px"><span class="tstamp">{{ S.temp }}</span></div>
+            <p style="margin-top:22px;font-size:17px">{{ S.desc }}</p>
+            <p class="sc" style="margin-top:30px">Modules conseillés</p>
+            <div class="mods">
+              <sc-for list="{{ S.mods }}" as="m" hint-placeholder-count="4"><a class="tagm kraft" href="Atelier-Module.dc.html">{{ m.m }}</a></sc-for>
+            </div>
+            <sc-if value="{{ S.v }}" hint-placeholder-val="{{ false }}"><span class="flag">Sélection indicative — à valider</span></sc-if>
+            <p class="sc" style="margin-top:30px">Réalisations liées</p>
+            <div class="reals">
+              <sc-for list="{{ S.reals }}" as="r" hint-placeholder-count="2">
+                <a class="real" href="Atelier-Realisations.dc.html">
+                  <span><span class="sc crust" style="font-size:10.5px;display:block">Bon n° {{ r.n }} · Ligne {{ r.ligne }}</span><span style="font-weight:700">{{ r.type }} — {{ r.lieu }}</span></span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                </a>
+              </sc-for>
+              <sc-if value="{{ S.noReal }}" hint-placeholder-val="{{ false }}"><p style="padding:16px 0;border-bottom:1px solid rgba(74,52,38,.2)">Pas encore de réalisation publiée pour ce métier — [RÉALISATION].</p></sc-if>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px">
+              <a class="btn-stamp" href="Atelier-Contact.dc.html">Un projet en {{ S.short }} ?</a>
+              <a class="btn-line" href="Atelier-Realisations.dc.html">Toutes les réalisations</a>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </sc-for>
+  </div>
+</section>
+
+<section style="padding:0 0 100px">
+  <div class="wrap">
+    <div class="ticket kraft">
+      <span class="perf perf-t" aria-hidden="true"></span><span class="perf perf-b" aria-hidden="true"></span>
+      <div>
+        <p class="sc">Votre métier n’entre dans aucune case ?</p>
+        <h2 class="serif h2" style="margin-top:12px;max-width:680px">Le sur-mesure commence là : envoyez-nous vos dimensions.</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:240px">
+        <a class="btn-stamp" href="Atelier-Contact.dc.html">Plan 3D offert</a>
+        <a class="btn-line" href="tel:0800951313">0 800 95 13 13</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="ft wood on-dark">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <a href="Atelier-Accueil.dc.html" class="logo" style="color:#F3ECE1"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></a>
+        <p style="margin-top:18px;max-width:280px;color:#E6D9C4">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div><h4>Bureau d’études &amp; show-room</h4><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p><p style="margin-top:10px;color:#E6D9C4">Horaires : [HORAIRES]</p></div>
+      <div><h4>Numéro vert</h4><a href="tel:0800951313" class="serif" style="font-size:30px;line-height:1.1;display:inline-flex;min-height:44px;align-items:center">0 800 95 13 13</a><p style="color:#E6D9C4">Appel gratuit</p></div>
+      <div><h4>L’atelier</h4><div class="ft-links"><a href="Atelier-Lignes.dc.html">Lignes d’agencement</a><a href="Atelier-Secteurs.dc.html">Secteurs d’activité</a><a href="Atelier-Realisations.dc.html">Réalisations</a><a href="Atelier-Contact.dc.html">Showroom &amp; contact</a></div></div>
+    </div>
+    <div class="ft-bot"><div class="ft-legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div><span class="ft-note">Proposition de refonte — concept, non officiel</span></div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3900},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#A8642E","#4A3426"]},"secteur":{"editor":"enum","default":"patisserie","options":["boulangerie","patisserie","chocolats","sandwichs","traiteur","poissonnerie","salades","couscous","fromagerie","bar","topping","cafe","pizza"]}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu: false, sect: (props && props.secteur) || "patisserie" }; }
+  renderVals() {
+    const p = this.props || {};
+    const ac = p.accent || "#D42A20";
+    const st = this.state;
+    const REAL = {
+      1: ["Stone", "Pâtisserie", "Paris 4e"], 2: ["Stone", "Bar à salades", "Département 13"], 3: ["Stone", "Chocolatier", "Gap & Grenoble"],
+      4: ["Basique", "Sandwicherie", "Chamonix"], 5: ["Stone", "Bar à olives", "Nice"], 6: ["Stone", "Bar à yogourt glacé (chaîne)", "Toute la France"],
+      7: ["Basique", "Boulangerie pâtisserie", "La Réunion"], 8: ["Legno", "Boulangerie", "Département 33"], 9: ["Stone", "Pizza sur composition", "Paris"],
+      10: ["Stone", "Pâtissier chocolatier", "Département 69"], 11: ["Stone", "Traiteur asiatique (chaîne)", "Marseille"], 12: ["Stone", "Bar à couscous", "Isère"],
+      13: ["Stone", "Traiteur poissonnier", "Département 92"], 14: ["Stone", "Pâtissier chocolatier Canet", "Nice 06"]
+    };
+    const SECT = [
+      { id: "boulangerie", name: "Boulangerie", short: "boulangerie", temp: "[TEMPÉRATURE]", z: [], v: true, img: "assets/vitrine-viennoiserie.webp", alt: "Vitrine de viennoiseries étiquetées",
+        desc: "Viennoiseries, pâtisseries boulangères, snacking : une vitrine qui se garnit à l’aube et se vide avant midi. Modules à plaques 600 × 400, froid statique ou ventilé, et la chaleur du bois Legno.",
+        mods: ["Pastry Show", "Amandine", "Réfrigérée statique", "Vitrine chauffante sèche"], r: [7, 8] },
+      { id: "patisserie", name: "Pâtisserie", short: "pâtisserie", temp: "+2 °C / +8 °C", z: [1], v: false, img: "assets/vitrine-colorful.webp", alt: "Entremets colorés étagés en vitrine",
+        desc: "Entremets, parts, macarons : des produits fragiles qui demandent +2 °C/+8 °C, une exposition à hauteur de comptoir ou sur étagères, et un vitrage qui sublime la couleur.",
+        mods: ["Plane", "Vision", "Panorama", "Centrale", "Gourmandise", "Pastry Show", "Cube", "Amandine"], r: [1, 7, 10, 14] },
+      { id: "chocolats", name: "Chocolats", short: "chocolaterie", temp: "+14 °C / +18 °C", z: [2], v: false, img: "assets/chocolates-dark.webp", alt: "Bonbons de chocolat sur fond blanc",
+        desc: "Le chocolat se conserve entre +14 °C et +18 °C. Les modules Plane, Centrale et Gourmandise proposent cette plage, à côté de la pâtisserie à +2/+8 °C dans la même boutique.",
+        mods: ["Plane", "Centrale", "Gourmandise"], r: [3, 10, 14] },
+      { id: "sandwichs", name: "Sandwichs", short: "sandwicherie", temp: "+2 °C / +8 °C", z: [1], v: true, img: "assets/bakery-counter-bright.webp", alt: "Boutique claire avec comptoir",
+        desc: "Exposition à hauteur de comptoir, libre-service mural, vitrines panoramiques : un parcours client fluide pour la pause de midi.",
+        mods: ["Plane", "Panoramique", "Basse", "Murale self-service"], r: [4] },
+      { id: "traiteur", name: "Traiteur", short: "traiteur", temp: "+2 °C / +8 °C", z: [1], v: true, img: "assets/counter-domes.webp", alt: "Comptoir en marbre avec cloches de verre",
+        desc: "Plats, salades composées, bouchées : un comptoir réfrigéré qui associe exposition plane, saladette et panorama.",
+        mods: ["Plane", "Saladette", "Panorama", "Comptoir bar"], r: [11, 13] },
+      { id: "poissonnerie", name: "Poissonnerie", short: "poissonnerie", temp: "−2 °C / 0 °C", z: [0], v: false, img: "assets/fish-ice.webp", alt: "Poissons sur glace",
+        desc: "Froid statique avec serpentin de cuve, de −2 °C à 0 °C, et vidange de cuve : la Réfrigérée Poissonnerie de la Ligne Stone, ou Hanoi en Ligne Industry.",
+        mods: ["Réfrigérée Poissonnerie", "Hanoi (Industry)", "Surface plane"], r: [13] },
+      { id: "salades", name: "Bar à salades", short: "bar à salades", temp: "+2 °C / +8 °C", z: [1], v: false, img: "assets/saladette-bacs.webp", alt: "Bacs gastronormes inox colorés",
+        desc: "Ingrédients en bacs gastronormes à +2 °C/+8 °C, composés devant le client. Les bacs ne sont pas fournis.",
+        mods: ["Saladette", "Panorama", "Comptoir caisse"], r: [2, 5] },
+      { id: "couscous", name: "Bar à couscous", short: "bar à couscous", temp: "+30 °C / +90 °C", z: [3], v: false, img: "assets/bakery-hall-dark.webp", alt: "Grande halle sombre",
+        desc: "Le chaud a aussi sa vitrine : bain-marie en bacs gastronormes de +30 °C à +90 °C, avec trous arrondis sur mesure.",
+        mods: ["Chaud bain-marie"], r: [12] },
+      { id: "fromagerie", name: "Fromagerie", short: "fromagerie", temp: "[TEMPÉRATURE]", z: [], v: true, img: "assets/fromagerie.webp", alt: "Meules de fromage sur étagères",
+        desc: "Meules, pâtes molles, plateaux : une vitrine dont la plage de température est à définir avec le bureau d’études.",
+        mods: ["Panorama", "Plane"], r: [] },
+      { id: "bar", name: "Bar", short: "bar", temp: "Neutre ou réfrigéré", z: [], v: false, img: "assets/coffee-counter.webp", alt: "Comptoir de café en noir et blanc",
+        desc: "Le comptoir bar se décline neutre ou réfrigéré, avec un comptoir caisse avec ou sans tablette PMR.",
+        mods: ["Comptoir bar", "Comptoir caisse"], r: [] },
+      { id: "topping", name: "Bar à topping", short: "bar à topping", temp: "+2 °C / +8 °C", z: [1], v: false, img: "assets/topping-bar.webp", alt: "Bar à toppings",
+        desc: "Saladette sur mesure à trous arrondis et surface plane : la configuration d’une chaîne de yogourt glacé présente dans toute la France.",
+        mods: ["Saladette sur mesure", "Surface plane"], r: [6] },
+      { id: "cafe", name: "Coffee shop / Café", short: "coffee shop", temp: "[TEMPÉRATURE]", z: [], v: true, img: "assets/patisserie-interior.webp", alt: "Intérieur de pâtisserie avec suspensions",
+        desc: "Comptoir bar, vitrine Cube pour les gâteaux du jour, Pastry Show pour les plaques : l’équilibre entre service et gourmandise.",
+        mods: ["Comptoir bar", "Cube", "Pastry Show"], r: [] },
+      { id: "pizza", name: "Pizza al taglio", short: "pizza al taglio", temp: "+2 °C / +8 °C", z: [1], v: true, img: "assets/baker-table.webp", alt: "Pains et rouleau sur un plan de travail",
+        desc: "Ingrédients en saladette, exposition plane et caisse : la configuration d’une pizzeria sur composition à Paris, à adapter à la découpe.",
+        mods: ["Saladette", "Plane", "Comptoir caisse"], r: [9] }
+    ];
+    const cur = SECT.find(s => s.id === st.sect) || SECT[1];
+    const sects = SECT.map((s, i) => {
+      const on = s.id === st.sect;
+      return Object.assign({}, s, {
+        n: String(i + 1).padStart(2, "0"), on: on, sel: on ? "true" : "false",
+        card: on ? "background:#4A3426;color:#F3ECE1;transform:translateY(-4px) rotate(-.8deg)" : (i % 3 === 1 ? "background:#D9C6A5;color:#4A3426" : "background:#FBF7F0;color:#4A3426"),
+        mods: s.mods.map(m => ({ m: m })),
+        reals: s.r.map(k => ({ n: String(k).padStart(2, "0"), ligne: REAL[k][0], type: REAL[k][1], lieu: REAL[k][2] })),
+        noReal: s.r.length === 0,
+        pick: () => this.setState({ sect: s.id })
+      });
+    });
+    const ZONES = [["−2 / 0 °C", "Poissonnerie"], ["+2 / +8 °C", "Pâtisserie, frais"], ["+14 / +18 °C", "Chocolats"], ["+30 / +90 °C", "Chaud bain-marie"]];
+    const zones = ZONES.map((z, i) => {
+      const on = cur.z.indexOf(i) > -1;
+      return { t: z[0], use: z[1], style: on ? "background:#4A3426;color:#F3ECE1" : "background:transparent;color:#4A3426", bar: on ? "background:" + ac : "background:transparent" };
+    });
+    return {
+      rootStyle: "--ac:" + ac,
+      menu: st.menu, menuExp: st.menu ? "true" : "false",
+      toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      sects: sects, zones: zones
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-16T10:00:00Z"
+ },
+ "title": "RGTE — propositions de refonte 6 à 10",
+ "launch": {
+  "view": "focused",
+  "file": "Main.dc.html"
+ },
+ "pages": [
+  {
+   "id": "capa",
+   "name": "Couverture"
+  },
+  {
+   "id": "studio",
+   "name": "6 · Studio"
+  },
+  {
+   "id": "maison",
+   "name": "7 · Maison"
+  },
+  {
+   "id": "cacao",
+   "name": "8 · Cacao"
+  },
+  {
+   "id": "plan",
+   "name": "9 · Plan"
+  },
+  {
+   "id": "halles",
+   "name": "10 · Halles"
+  }
+ ],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1900,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Couverture — les 10 propositions",
+   "page": "capa"
+  },
+  "Studio-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 8184,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Accueil",
+   "page": "studio"
+  },
+  "Studio-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4109,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Lignes",
+   "page": "studio"
+  },
+  "Studio-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 3754,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Module Gourmandise",
+   "page": "studio"
+  },
+  "Studio-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3372,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Secteurs",
+   "page": "studio"
+  },
+  "Studio-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 3845,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Réalisations",
+   "page": "studio"
+  },
+  "Studio-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3195,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Studio · Showroom & contact",
+   "page": "studio"
+  },
+  "Maison-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 7990,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Accueil",
+   "page": "maison"
+  },
+  "Maison-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4085,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Lignes",
+   "page": "maison"
+  },
+  "Maison-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4082,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Module Gourmandise",
+   "page": "maison"
+  },
+  "Maison-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3374,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Secteurs",
+   "page": "maison"
+  },
+  "Maison-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4029,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Réalisations",
+   "page": "maison"
+  },
+  "Maison-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3211,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Maison · Showroom & contact",
+   "page": "maison"
+  },
+  "Cacao-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 7462,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Accueil",
+   "page": "cacao"
+  },
+  "Cacao-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4547,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Lignes",
+   "page": "cacao"
+  },
+  "Cacao-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 3751,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Module Gourmandise",
+   "page": "cacao"
+  },
+  "Cacao-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3611,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Secteurs",
+   "page": "cacao"
+  },
+  "Cacao-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4262,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Réalisations",
+   "page": "cacao"
+  },
+  "Cacao-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3147,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cacao · Showroom & contact",
+   "page": "cacao"
+  },
+  "Plan-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 6900,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Accueil",
+   "page": "plan"
+  },
+  "Plan-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4052,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Lignes",
+   "page": "plan"
+  },
+  "Plan-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4470,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Module Gourmandise",
+   "page": "plan"
+  },
+  "Plan-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3112,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Secteurs",
+   "page": "plan"
+  },
+  "Plan-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 3833,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Réalisations",
+   "page": "plan"
+  },
+  "Plan-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 2750,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Plan · Showroom & contact",
+   "page": "plan"
+  },
+  "Halles-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 8366,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Accueil",
+   "page": "halles"
+  },
+  "Halles-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4479,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Lignes",
+   "page": "halles"
+  },
+  "Halles-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 3373,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Module Gourmandise",
+   "page": "halles"
+  },
+  "Halles-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 2914,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Secteurs",
+   "page": "halles"
+  },
+  "Halles-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 3897,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Réalisations",
+   "page": "halles"
+  },
+  "Halles-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 2984,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Halles · Showroom & contact",
+   "page": "halles"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Studio-Accueil.dc.html",
+  "Studio-Lignes.dc.html",
+  "Studio-Module.dc.html",
+  "Studio-Secteurs.dc.html",
+  "Studio-Realisations.dc.html",
+  "Studio-Contact.dc.html",
+  "Maison-Accueil.dc.html",
+  "Maison-Lignes.dc.html",
+  "Maison-Module.dc.html",
+  "Maison-Secteurs.dc.html",
+  "Maison-Realisations.dc.html",
+  "Maison-Contact.dc.html",
+  "Cacao-Accueil.dc.html",
+  "Cacao-Lignes.dc.html",
+  "Cacao-Module.dc.html",
+  "Cacao-Secteurs.dc.html",
+  "Cacao-Realisations.dc.html",
+  "Cacao-Contact.dc.html",
+  "Plan-Accueil.dc.html",
+  "Plan-Lignes.dc.html",
+  "Plan-Module.dc.html",
+  "Plan-Secteurs.dc.html",
+  "Plan-Realisations.dc.html",
+  "Plan-Contact.dc.html",
+  "Halles-Accueil.dc.html",
+  "Halles-Lignes.dc.html",
+  "Halles-Module.dc.html",
+  "Halles-Secteurs.dc.html",
+  "Halles-Realisations.dc.html",
+  "Halles-Contact.dc.html"
+ ],
+ "notes": {
+  "t_studio": {
+   "x": 0,
+   "y": -340,
+   "text": "6 · Studio — composez votre linéaire",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "studio"
+  },
+  "t_maison": {
+   "x": 0,
+   "y": -340,
+   "text": "7 · Maison — haute pâtisserie parisienne",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "maison"
+  },
+  "t_cacao": {
+   "x": 0,
+   "y": -340,
+   "text": "8 · Cacao — chocolat, cuivre et brillance",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "cacao"
+  },
+  "t_plan": {
+   "x": 0,
+   "y": -340,
+   "text": "9 · Plan — le bureau d’études en vedette",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "plan"
+  },
+  "t_halles": {
+   "x": 0,
+   "y": -340,
+   "text": "10 · Halles — treize métiers, une couleur par secteur",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "halles"
+  }
+ },
+ "designSystems": []
+}

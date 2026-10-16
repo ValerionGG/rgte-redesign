@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Plan — Réalisations</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&amp;family=Red+Hat+Mono:wght@400;500&amp;family=Red+Hat+Text:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF}
+.pl *{box-sizing:border-box}
+.pl a{color:inherit}
+.pl-wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+.disp{font-family:'Red Hat Display',sans-serif}
+.pl :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.nav-a{position:relative;text-decoration:none;font-weight:500;font-size:15px;padding:12px 0;display:inline-flex;align-items:center;min-height:44px}
+.nav-a::after{content:"";position:absolute;left:0;right:100%;bottom:6px;height:1px;background:var(--red);transition:right .45s cubic-bezier(.6,.1,.2,1)}
+.nav-a:hover::after,.nav-a.on::after{right:0}
+.btn-red{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;background:var(--red);color:#fff !important;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;border:0;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--red)}
+.btn-line{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border:1px solid currentColor;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;background:transparent;cursor:pointer;transition:background .3s,color .3s}
+.btn-line:hover{background:#E8EEF4;color:#0E2A47 !important}
+.btn-line.dk:hover{background:#0E2A47;color:#F4F3EF !important}
+.burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(143,179,207,.5);color:#E8EEF4;cursor:pointer}
+.toplink{text-decoration:none;min-height:34px;display:inline-flex;align-items:center}
+.toplink:hover{color:#E8EEF4}
+.rise{opacity:0;transform:translateY(22px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.mask{clip-path:inset(0 0 100% 0);animation:mask 1.1s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes mask{to{clip-path:inset(0 0 0 0)}}
+.swap{animation:swap .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes swap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.grow{transform-origin:left;animation:grow .9s cubic-bezier(.6,.1,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.chip{transition:background .25s,color .25s,border-color .25s}
+.chip:hover{border-color:#0E2A47 !important}
+.ibtn{transition:background .25s,color .25s}
+.ibtn:hover{background:#E8EEF4;color:#0E2A47}
+.card{text-decoration:none;display:block;cursor:pointer}
+.card .ph{position:relative;overflow:hidden}
+.card img{transition:transform 1.4s cubic-bezier(.2,.7,.1,1)}
+.card:hover img{transform:scale(1.06)}
+.card .bp{position:absolute;inset:0;opacity:0;transition:opacity .45s;background-image:linear-gradient(rgba(232,238,244,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(232,238,244,.22) 1px,transparent 1px);background-size:28px 28px;background-color:rgba(14,42,71,.6)}
+.card:hover .bp{opacity:1}
+.card .arr{transition:transform .35s}
+.card:hover .arr{transform:translate(4px,-4px)}
+.lnk{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.lnk:hover{color:var(--red)}
+.foot a{text-decoration:none;display:inline-flex;min-height:32px;align-items:center}
+.foot a:hover{color:#fff;text-decoration:underline}
+.mnav a{display:flex;min-height:52px;align-items:center;border-bottom:1px solid rgba(143,179,207,.2);text-decoration:none;font-size:18px}
+@media (max-width:980px){.desk-nav{display:none !important}.burger{display:inline-flex}.hide-m{display:none !important}}
+@media (max-width:720px){.pl-wrap{padding:0 16px}.btn-red.hdr{padding:0 14px;font-size:14px}}
+</style>
+</helmet>
+<div class="pl" style="{{ rootStyle }}">
+
+<header style="background:#0E2A47;color:#E8EEF4;position:relative;z-index:5">
+  <div style="border-bottom:1px solid rgba(143,179,207,.2)">
+    <div class="pl-wrap mono" style="display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span class="hide-m">BUREAU D’ÉTUDES &amp; SHOW-ROOM — PUGET-SUR-ARGENS (83)</span>
+      <a class="toplink" href="index.html">← TOUTES LES PROPOSITIONS</a>
+    </div>
+  </div>
+  <div class="pl-wrap" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px">
+    <a href="Plan-Accueil.html" aria-label="RGTE, accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" fill="none" stroke="#8FB3CF" stroke-width="1"></rect><path d="M17 4V30M4 17H30" stroke="#8FB3CF" stroke-width="1"></path><circle cx="17" cy="17" r="7" fill="none" stroke="var(--red)" stroke-width="2"></circle></svg>
+      <span style="display:flex;flex-direction:column;line-height:1">
+        <span class="disp" style="font-weight:900;font-size:27px;letter-spacing:.08em">RGTE</span>
+        <span class="mono" style="font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:5px">R.G. TECHNOLOGIES</span>
+      </span>
+    </a>
+    <nav class="desk-nav" aria-label="Navigation principale" style="display:flex;gap:34px">
+      <a class="nav-a" href="Plan-Lignes.html">Lignes</a>
+      <a class="nav-a" href="Plan-Secteurs.html">Secteurs</a>
+      <a class="nav-a on" href="Plan-Realisations.html" aria-current="page">Réalisations</a>
+      <a class="nav-a" href="Plan-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="tel:0800951313" class="hide-m" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.2">
+        <span class="mono" style="font-size:15px;font-weight:500;letter-spacing:.04em">0 800 95 13 13</span>
+        <span class="mono" style="font-size:10px;color:#8FB3CF;letter-spacing:.12em">APPEL GRATUIT</span>
+      </a>
+      <a href="Plan-Contact.html" class="btn-red hdr">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="{{ burgerLabel }}" onClick="{{ toggleMenu }}"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><path d="M0 1H20M0 7H20M0 13H20" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav pl-wrap" aria-label="Navigation mobile" style="padding-bottom:20px">
+      <a href="Plan-Lignes.html">Lignes</a>
+      <a href="Plan-Secteurs.html">Secteurs</a>
+      <a href="Plan-Realisations.html">Réalisations</a>
+      <a href="Plan-Contact.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313" class="mono">0 800 95 13 13 — appel gratuit</a>
+    </nav>
+  </sc-if>
+</header>
+
+<!-- HERO + DÉTAIL -->
+<section id="detail" style="{{ heroStyle }}">
+  <div class="pl-wrap" style="padding-top:64px;padding-bottom:72px">
+    <p class="mono rise" style="margin:0 0 20px;font-size:12px;letter-spacing:.18em;color:#8FB3CF"><span style="color:var(--red)">■</span> FEUILLE E — RÉALISATIONS</p>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 56px;align-items:flex-end;justify-content:space-between">
+      <h1 class="disp mask" style="margin:0;flex:1 1 640px;font-weight:900;font-size:clamp(40px,6vw,88px);line-height:.98;letter-spacing:-.02em;overflow-wrap:anywhere">Quatorze plans devenus boutiques.</h1>
+      <p class="rise" style="margin:0;flex:1 1 320px;max-width:420px;font-size:17px;line-height:1.6;color:#C9D7E4;animation-delay:.3s">De Paris à La Réunion, chaque réalisation a commencé par un relevé et un plan. Basculez du plan schématique à la photo.</p>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:48px;align-items:stretch">
+      <div style="flex:3 1 560px;border:1px solid rgba(143,179,207,.35);position:relative;min-height:460px;overflow:hidden;background:#0B2440">
+        <img src="{{ cur.img }}" alt="{{ cur.alt }}" style="{{ photoStyle }}">
+        <div style="{{ planStyle }}">
+          <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:.12em;color:#8FB3CF"><span>PLAN SCHÉMATIQUE — {{ cur.code }}</span><span>LIGNE {{ cur.ligneUp }}</span></div>
+          <div style="margin-top:auto">
+            <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.12em;color:#8FB3CF">ZONE PERSONNEL</p>
+            <div style="display:flex;gap:6px;align-items:stretch;min-height:120px">
+              <sc-for list="{{ cur.blocks }}" as="b" hint-placeholder-count="3">
+                <div class="grow" style="{{ b.style }}"><span class="mono" style="font-size:11px;letter-spacing:.08em;color:#E8EEF4">{{ b.nom }}</span><span class="mono" style="font-size:10px;color:var(--red);margin-top:auto">L = [COTE]</span></div>
+              </sc-for>
+            </div>
+            <div style="position:relative;height:28px;margin-top:10px;border-left:1px solid #E8EEF4;border-right:1px solid #E8EEF4">
+              <div style="position:absolute;left:0;right:0;top:13px;height:1px;background:#E8EEF4"></div>
+              <span class="mono" style="position:absolute;left:50%;top:0;transform:translateX(-50%);background:#0B2440;padding:0 10px;font-size:11px;letter-spacing:.1em;color:var(--red)">LINÉAIRE SUR MESURE</span>
+            </div>
+            <p class="mono" style="margin:12px 0 0;font-size:11px;letter-spacing:.12em;color:#8FB3CF">ESPACE CLIENT</p>
+          </div>
+        </div>
+        <div role="group" aria-label="Affichage" class="mono" style="position:absolute;top:14px;right:14px;display:flex;border:1px solid rgba(143,179,207,.5);background:#0E2A47;z-index:2">
+          <button type="button" class="ibtn mono" style="{{ bPlan }}" aria-pressed="{{ pPlan }}" onClick="{{ showPlan }}">PLAN</button>
+          <button type="button" class="ibtn mono" style="{{ bPhoto }}" aria-pressed="{{ pPhoto }}" onClick="{{ showPhoto }}">PHOTO</button>
+        </div>
+      </div>
+      <aside class="swap" style="flex:2 1 340px;border:1px solid rgba(143,179,207,.35);display:flex;flex-direction:column">
+        <div class="mono" style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(143,179,207,.35);font-size:11px;letter-spacing:.12em;color:#8FB3CF">
+          <span style="padding:0 18px">{{ cur.code }} / 14</span>
+          <span style="display:flex">
+            <button type="button" class="ibtn" aria-label="Réalisation précédente" onClick="{{ prev }}" style="width:52px;height:52px;border:0;border-left:1px solid rgba(143,179,207,.35);background:transparent;color:#E8EEF4;cursor:pointer"><svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M16 5H1M5 1L1 5L5 9" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg></button>
+            <button type="button" class="ibtn" aria-label="Réalisation suivante" onClick="{{ next }}" style="width:52px;height:52px;border:0;border-left:1px solid rgba(143,179,207,.35);background:transparent;color:#E8EEF4;cursor:pointer"><svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M0 5H15M11 1L15 5L11 9" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg></button>
+          </span>
+        </div>
+        <div style="padding:26px 22px;display:flex;flex-direction:column;gap:16px;flex:1">
+          <p class="mono" style="margin:0;font-size:11px;letter-spacing:.14em;color:#8FB3CF">{{ cur.groupe }}</p>
+          <h2 class="disp" style="margin:0;font-size:38px;font-weight:900;line-height:1.02">{{ cur.type }}</h2>
+          <div class="mono" style="display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(143,179,207,.35);font-size:13px">
+            <div style="padding:12px;border-right:1px solid rgba(143,179,207,.35)"><span style="display:block;font-size:10px;letter-spacing:.12em;color:#8FB3CF">LIEU</span>{{ cur.lieu }}</div>
+            <div style="padding:12px"><span style="display:block;font-size:10px;letter-spacing:.12em;color:#8FB3CF">LIGNE</span>{{ cur.ligne }}</div>
+          </div>
+          <div>
+            <p class="mono" style="margin:0 0 8px;font-size:10px;letter-spacing:.12em;color:#8FB3CF">MODULES POSÉS</p>
+            <sc-for list="{{ cur.mods }}" as="m" hint-placeholder-count="3">
+              <a href="Plan-Module.html" class="lnk" style="display:flex;justify-content:space-between;align-items:center;min-height:44px;border-bottom:1px solid rgba(143,179,207,.25);padding:0;font-size:15px"><span>{{ m }}</span><span class="mono" style="font-size:12px;color:#8FB3CF">FICHE →</span></a>
+            </sc-for>
+          </div>
+          <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:10px">
+            <a href="Plan-Contact.html" class="btn-red">Un projet similaire</a>
+            <a href="Plan-Lignes.html" class="btn-line">Ligne {{ cur.ligne }}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <p class="mono" style="margin:12px 0 0;font-size:11px;letter-spacing:.08em;color:#8FB3CF">Visuels d’illustration — photos des chantiers à fournir par RGTE.</p>
+  </div>
+</section>
+
+<!-- FILTRES + GRILLE -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:80px;padding-bottom:96px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px">
+      <div>
+        <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">REGISTRE DES PROJETS</p>
+        <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.02em"><span class="mono" style="font-weight:500">{{ count }}</span> / 14 réalisations</h2>
+      </div>
+      <button type="button" class="lnk mono" style="background:none;border:0;border-bottom:1px solid currentColor;cursor:pointer;font-size:13px;min-height:44px;color:#0E2A47" onClick="{{ resetF }}">Réinitialiser les filtres</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 40px;margin-top:32px;padding:20px 0;border-top:1.5px solid #0E2A47;border-bottom:1px solid rgba(14,42,71,.2)">
+      <div>
+        <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#5A6E84">LIGNE</p>
+        <div role="group" aria-label="Filtrer par ligne" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ fLigne }}" as="o" hint-placeholder-count="4">
+            <button type="button" class="chip mono" style="{{ o.style }}" aria-pressed="{{ o.sel }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#5A6E84">TYPE DE COMMERCE</p>
+        <div role="group" aria-label="Filtrer par type" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ fType }}" as="o" hint-placeholder-count="5">
+            <button type="button" class="chip mono" style="{{ o.style }}" aria-pressed="{{ o.sel }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:28px 24px;margin-top:40px">
+      <sc-for list="{{ list }}" as="r" hint-placeholder-count="6">
+        <a href="#detail" class="card swap" onClick="{{ r.pick }}" aria-current="{{ r.current }}">
+          <div class="ph" style="{{ r.phStyle }}">
+            <img src="{{ r.img }}" alt="{{ r.alt }}" style="width:100%;height:100%;object-fit:cover;display:block">
+            <div class="bp"><span class="mono" style="position:absolute;left:14px;right:14px;bottom:14px;color:#E8EEF4;font-size:11px;letter-spacing:.1em;line-height:1.7">{{ r.modsTxt }}</span></div>
+            <span class="mono" style="position:absolute;top:0;left:0;background:#F4F3EF;color:#0E2A47;font-size:11px;letter-spacing:.1em;padding:6px 10px">{{ r.code }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding-top:12px">
+            <div>
+              <span class="mono" style="font-size:11px;letter-spacing:.12em;color:#5A6E84">{{ r.lieuUp }} · {{ r.ligneUp }}</span>
+              <span class="disp" style="display:block;font-size:21px;font-weight:700;margin-top:4px">{{ r.type }}</span>
+            </div>
+            <svg class="arr" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style="flex:none"><path d="M3 15L15 3M6 3H15V12" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="border:1px dashed #0E2A47;padding:32px;margin-top:24px;text-align:center">
+        <p class="disp" style="margin:0 0 12px;font-size:22px;font-weight:700">Aucune réalisation pour ce croisement.</p>
+        <button type="button" class="btn-line dk" onClick="{{ resetF }}">Voir les 14 réalisations</button>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--red);color:#fff">
+  <div class="pl-wrap" style="padding-top:72px;padding-bottom:72px;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between">
+    <div style="flex:1 1 560px">
+      <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em">PROJET N° 15</p>
+      <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4.4vw,60px);line-height:1;letter-spacing:-.02em">La prochaine fiche pourrait être la vôtre.</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="Plan-Contact.html" class="btn-line" style="color:#fff;min-height:56px">Demander mon plan 3D</a>
+      <a href="tel:0800951313" class="btn-line mono" style="color:#fff;min-height:56px">0 800 95 13 13</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" style="background:#0E2A47;color:#E8EEF4;padding:64px 0 28px">
+  <div class="pl-wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(143,179,207,.35);border:1px solid rgba(143,179,207,.35)">
+      <div style="background:#0E2A47;padding:22px"><span class="disp" style="font-weight:900;font-size:30px;letter-spacing:.08em">RGTE</span><span class="mono" style="display:block;font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:6px">R.G. TECHNOLOGIES</span><p style="margin:14px 0 0;font-size:14px;color:#C9D7E4;line-height:1.5">Agencement de vitrines réfrigérées</p></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">BUREAU D’ÉTUDES &amp; SHOW-ROOM</span>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">TÉLÉPHONE</span><a href="tel:0800951313" class="mono" style="font-size:18px">0 800 95 13 13</a><br>Appel gratuit · [HORAIRES]</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">SITE</span><a href="Plan-Lignes.html">Lignes</a><a href="Plan-Secteurs.html">Secteurs</a><a href="Plan-Realisations.html">Réalisations</a><a href="Plan-Contact.html">Showroom &amp; contact</a></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">LÉGAL</span><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+    </div>
+    <div class="mono" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:20px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span>© RGTE — R.G. TECHNOLOGIES</span>
+      <span>FEUILLE 05 / 06 — RÉALISATIONS</span>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3800},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1A1A1A","#B08D57"]},"grille":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu:false, sel:1, view:'plan', ligne:'toutes', type:'tous' }; }
+  renderVals() {
+    const p = this.props || {};
+    const R = p.accent || '#D42A20';
+    const grid = p.grille !== false;
+    const s = this.state;
+    const gridBg = grid ? 'background-image:linear-gradient(rgba(143,179,207,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(143,179,207,.09) 1px,transparent 1px);background-size:40px 40px;' : '';
+    const G = { pat:'PÂTISSERIE & CHOCOLAT', boul:'BOULANGERIE', trait:'TRAITEUR & SNACKING', bar:'BARS & COMPTOIRS' };
+    const P = [
+      { id:1, type:'Pâtisserie', lieu:'Paris 4e', ligne:'Stone', g:'pat', mods:['Vitrine réfrigérée Plane','Caisse'], img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine' },
+      { id:2, type:'Bar à salades', lieu:'Département 13', ligne:'Stone', g:'bar', mods:['Saladette','Caisse','Panorama'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox colorés' },
+      { id:3, type:'Chocolatier', lieu:'Gap & Grenoble', ligne:'Stone', g:'pat', mods:['Plane','Caisse'], img:'assets/chocolates-dark.webp', alt:'Bonbons de chocolat' },
+      { id:4, type:'Sandwicherie', lieu:'Chamonix', ligne:'Basique', g:'trait', mods:['Panoramique','Basse','Murale self-service'], img:'assets/vitrine-cookies.webp', alt:'Vitrine de cookies' },
+      { id:5, type:'Bar à olives', lieu:'Nice', ligne:'Stone', g:'bar', mods:['Saladette sur mesure à trous arrondis'], img:'assets/bakery-domes.webp', alt:'Cloches en verre, ambiance rustique' },
+      { id:6, type:'Bar à yogourt glacé (chaîne)', lieu:'Toute la France', ligne:'Stone', g:'bar', mods:['Saladette sur mesure à trous arrondis','Surface plane'], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:7, type:'Boulangerie pâtisserie', lieu:'La Réunion', ligne:'Basique', g:'boul', mods:['Amandine','Caisse'], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:8, type:'Boulangerie', lieu:'Département 33', ligne:'Legno', g:'boul', mods:['Réfrigérée statique','Neutre','Module arrière'], img:'assets/bakery-shelves.webp', alt:'Étagères à pains' },
+      { id:9, type:'Pizza sur composition', lieu:'Paris', ligne:'Stone', g:'trait', mods:['Saladette','Caisse','Plane'], img:'assets/baker-table.webp', alt:'Plan de travail avec pains et rouleau' },
+      { id:10, type:'Pâtissier chocolatier', lieu:'Département 69', ligne:'Stone', g:'pat', mods:['Centrale','Caisse','Plane'], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés' },
+      { id:11, type:'Traiteur asiatique (chaîne)', lieu:'Marseille', ligne:'Stone', g:'trait', mods:['Plane','Caisse','Saladette','Comptoir bar'], img:'assets/vitrine-slice.webp', alt:'Parts derrière le verre' },
+      { id:12, type:'Bar à couscous', lieu:'Isère', ligne:'Stone', g:'bar', mods:['Bain-marie à trous arrondis sur mesure'], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre' },
+      { id:13, type:'Traiteur poissonnier', lieu:'Département 92', ligne:'Stone', g:'trait', mods:['Panorama','Surface plane','Caisse'], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:14, type:'Pâtissier chocolatier Canet', lieu:'Nice 06', ligne:'Stone', g:'pat', mods:['Plane pâtissière +2/+8','Plane chocolats +14/+18'], img:'assets/macarons-rows.webp', alt:'Rangées de macarons' }
+    ];
+    const code = id => 'PL-' + String(id).padStart(2, '0');
+    const filtered = P.filter(x => (s.ligne === 'toutes' || x.ligne.toLowerCase() === s.ligne) && (s.type === 'tous' || x.g === s.type));
+    const raw = P.find(x => x.id === s.sel) || P[0];
+    const weight = n => /caisse|comptoir|neutre|surface/i.test(n) ? 1 : (/murale|panorama|arrière/i.test(n) ? 1.3 : 1.8);
+    const blocks = raw.mods.map((m, i) => ({ nom: m.toUpperCase(),
+      style: 'flex:' + weight(m) + ' 1 0;min-width:0;display:flex;flex-direction:column;gap:8px;padding:10px;border:1.2px solid #E8EEF4;background:rgba(232,238,244,.06);animation-delay:' + (i * 0.12) + 's;overflow-wrap:anywhere' }));
+    const cur = Object.assign({}, raw, { code: code(raw.id), ligneUp: raw.ligne.toUpperCase(), groupe: G[raw.g], blocks });
+    const plan = s.view === 'plan';
+    const pool = filtered.length ? filtered : P;
+    const pos = Math.max(0, pool.findIndex(x => x.id === s.sel));
+    const go = d => () => { const n = pool[(pos + d + pool.length) % pool.length]; this.setState({ sel:n.id }); };
+    const chip = on => 'min-height:44px;padding:0 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid ' + (on ? '#0E2A47' : 'rgba(14,42,71,.25)') + ';' + (on ? 'background:#0E2A47;color:#F4F3EF;' : 'background:transparent;color:#0E2A47;');
+    const LG = [ ['toutes','Toutes'], ['stone','Stone'], ['basique','Basique'], ['legno','Legno'] ];
+    const TY = [ ['tous','Tous'], ['pat','Pâtisserie & chocolat'], ['boul','Boulangerie'], ['trait','Traiteur & snacking'], ['bar','Bars & comptoirs'] ];
+    const fLigne = LG.map(o => { const on = s.ligne === o[0]; const n = P.filter(x => (o[0] === 'toutes' || x.ligne.toLowerCase() === o[0]) && (s.type === 'tous' || x.g === s.type)).length; return { label: o[1] + ' · ' + n, sel: on ? 'true' : 'false', style: chip(on), pick: () => this.setState({ ligne:o[0] }) }; });
+    const fType = TY.map(o => { const on = s.type === o[0]; return { label:o[1], sel: on ? 'true' : 'false', style: chip(on), pick: () => this.setState({ type:o[0] }) }; });
+    const list = filtered.map(x => { const on = x.id === s.sel; return { code: code(x.id), type:x.type, img:x.img, alt:x.alt, lieuUp: x.lieu.toUpperCase(), ligneUp: x.ligne.toUpperCase(), modsTxt: x.mods.join(' · ').toUpperCase(), current: on ? 'true' : 'false',
+      pick: () => this.setState({ sel:x.id, view:'plan' }),
+      phStyle: 'height:300px;background:#0E2A47;outline:' + (on ? '3px solid ' + R : '0 solid transparent') + ';outline-offset:4px;transition:outline-color .3s' }; });
+    const ib = on => 'min-height:44px;padding:0 16px;border:0;cursor:pointer;font-size:12px;letter-spacing:.14em;' + (on ? 'background:#E8EEF4;color:#0E2A47;' : 'background:transparent;color:#E8EEF4;');
+    return {
+      rootStyle: '--red:' + R + ';font-family:\'Red Hat Text\',sans-serif;background:#F4F3EF;color:#0E2A47;',
+      menuOpen: s.menu, burgerLabel: s.menu ? 'Fermer le menu' : 'Ouvrir le menu', toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      heroStyle: 'background-color:#0E2A47;color:#E8EEF4;' + gridBg,
+      cur,
+      photoStyle: 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:clip-path 1.1s cubic-bezier(.7,0,.2,1),transform 1.6s;' + (plan ? 'clip-path:inset(0 0 0 100%);transform:scale(1.06);' : 'clip-path:inset(0 0 0 0);transform:scale(1);'),
+      planStyle: 'position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;transition:opacity .8s;background-image:linear-gradient(rgba(143,179,207,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(143,179,207,.12) 1px,transparent 1px);background-size:24px 24px;' +(plan ? 'opacity:1;' : 'opacity:0;pointer-events:none;'),
+      bPlan: ib(plan), bPhoto: ib(!plan), pPlan: plan ? 'true' : 'false', pPhoto: plan ? 'false' : 'true',
+      showPlan: () => this.setState({ view:'plan' }), showPhoto: () => this.setState({ view:'photo' }),
+      prev: go(-1), next: go(1),
+      count: filtered.length, empty: filtered.length === 0, list, fLigne, fType,
+      resetF: () => this.setState({ ligne:'toutes', type:'tous' })
+    };
+  }
+}
+</script>
+</body>
+</html>

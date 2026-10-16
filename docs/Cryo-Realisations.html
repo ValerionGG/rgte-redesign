@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cryo — Réalisations</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F1F5F7}
+.cx,.cx *{box-sizing:border-box}
+.cx{font-family:'Sora',system-ui,sans-serif;color:#0F1C24;background:#F1F5F7;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cx a{color:inherit}
+.cx h1,.cx h2,.cx h3,.cx p{margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.tnum{font-variant-numeric:tabular-nums}
+.navl{position:relative;text-decoration:none;font-size:14px;font-weight:500;display:inline-flex;align-items:center;min-height:44px}
+.navl::after{content:"";position:absolute;left:0;right:0;bottom:8px;height:1px;background:#3A7CA5;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font:600 14px/1 'Sora',sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s}
+.btn-red{background:#D42A20;color:#fff!important;box-shadow:0 12px 26px -14px rgba(212,42,32,.75)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 18px 32px -14px rgba(212,42,32,.85)}
+.btn-ghost{background:rgba(255,255,255,.62);color:#0F1C24;border:1px solid rgba(15,28,36,.16)}
+.btn-ghost:hover{background:#fff;border-color:#3A7CA5}
+.btn-dark{background:#0F1C24;color:#fff!important}
+.btn-dark:hover{transform:translateY(-2px);background:#1B2F3B}
+.frost{background:linear-gradient(160deg,rgba(255,255,255,.80),rgba(255,255,255,.46));backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 30px 60px -32px rgba(15,28,36,.32)}
+.dew{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,.95) 0 1.1px,transparent 1.7px),radial-gradient(circle,rgba(15,28,36,.10) 0 1.6px,transparent 2.2px),radial-gradient(circle,rgba(255,255,255,.85) 0 2.2px,transparent 3px),radial-gradient(circle,rgba(58,124,165,.16) 0 .8px,transparent 1.3px);background-size:23px 19px,47px 41px,71px 63px,13px 17px;background-position:0 0,12px 9px,30px 22px,5px 3px}
+.gridbg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(15,28,36,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,28,36,.05) 1px,transparent 1px);background-size:64px 64px}
+.lab{font-size:12px;color:#2B6688;display:flex;gap:12px;align-items:center;text-transform:uppercase}
+.lab i{display:inline-block;width:40px;height:1px;background:#3A7CA5}
+.h2{font-size:clamp(30px,3.8vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(15,28,36,.14);background:rgba(255,255,255,.75);font-size:13.5px;cursor:pointer;font-family:'Sora',sans-serif;color:#0F1C24;text-decoration:none;transition:border-color .25s,background .25s,color .25s}
+.chip:hover{border-color:#3A7CA5}
+.tab{cursor:pointer;border:0;font-family:'Sora',sans-serif;transition:background .3s,color .3s}
+.pj{cursor:pointer;font-family:'Sora',sans-serif;text-align:left;padding:0;display:block;width:100%;border-radius:22px;overflow:hidden;background:#fff;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,border-color .3s;animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.pj:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px rgba(15,28,36,.42)}
+.pj img{transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.pj:hover img{transform:scale(1.07)}
+.lrow{cursor:pointer;border:0;width:100%;font-family:'Sora',sans-serif;text-align:left;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:6px 20px;align-items:center;padding:18px 20px;transition:background .25s,padding .3s}
+.lrow:hover{background:#fff!important;padding-left:28px}
+.nav-ico{width:48px;height:48px;border-radius:50%;border:1px solid rgba(15,28,36,.16);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s,transform .25s}
+.nav-ico:hover{background:#DDE7EC;transform:scale(1.05)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+@keyframes kb{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.1) translate(-1.5%,-1%)}}
+.kb{animation:kb 16s ease-in-out infinite alternate}
+:focus-visible{outline:2px solid #3A7CA5;outline-offset:3px}
+.burger{display:none!important}
+@media(max-width:980px){.navd{display:none!important}.burger{display:inline-flex!important}}
+@media(max-width:640px){.wrap{padding:0 18px}.hide-sm{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cx *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="cx">
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(241,245,247,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(15,28,36,.08)">
+  <div class="mono" style="background:#0F1C24;color:#C9D7DF;font-size:11.5px">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;min-height:34px;align-items:center">
+      <span class="hide-sm">BUREAU D'ÉTUDES &amp; SHOW-ROOM · PUGET-SUR-ARGENS (83)</span>
+      <a href="tel:0800951313" style="text-decoration:none;color:#fff;display:inline-flex;align-items:center;min-height:34px">N° VERT 0 800 95 13 13 · APPEL GRATUIT</a>
+    </div>
+  </div>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px">
+    <a href="Cryo-Accueil.html" aria-label="RGTE, retour à l'accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-height:44px">
+      <span style="font-weight:700;font-size:26px;letter-spacing:.08em">RGTE</span>
+      <span style="width:1px;height:30px;background:rgba(15,28,36,.25)"></span>
+      <span class="mono" style="font-size:10.5px;line-height:1.3;color:#4A5D69">R.G.<br>TECHNOLOGIES</span>
+    </a>
+    <nav class="navd" aria-label="Navigation principale" style="display:flex;gap:32px">
+      <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+      <a class="navl" href="Cryo-Secteurs.html">Secteurs</a>
+      <a class="navl on" href="Cryo-Realisations.html" aria-current="page">Réalisations</a>
+      <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn btn-ghost navd" href="tel:0800951313" style="font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+      <a class="btn btn-red navd" href="Cryo-Contact.html" style="{{ ctaStyle }}">Plan 3D offert</a>
+      <button type="button" class="btn btn-ghost burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}" style="width:48px;padding:0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:1px solid rgba(15,28,36,.08);background:#F1F5F7">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:8px;padding-bottom:20px">
+        <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+        <a class="navl" href="Cryo-Secteurs.html">Secteurs</a>
+        <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+        <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        <a class="btn btn-red" href="Cryo-Contact.html" style="margin-top:12px">Plan 3D offert</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- EN-TÊTE -->
+<section style="position:relative;overflow:hidden;background:#E3EDF2">
+  <div aria-hidden="true" class="gridbg"></div>
+  <div aria-hidden="true" class="dew" style="opacity:.6"></div>
+  <div class="wrap" style="position:relative;padding-top:64px;padding-bottom:56px">
+    <div class="mono rise" style="font-size:11.5px;color:#4A5D69"><a href="Cryo-Accueil.html" style="text-decoration:none">ACCUEIL</a> / RÉALISATIONS</div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:30px;margin-top:26px">
+      <h1 class="rise d1" style="font-size:clamp(44px,7vw,108px);font-weight:200;letter-spacing:-.045em;line-height:.95;overflow-wrap:anywhere">Réalisations<br><span style="font-weight:600">sur le terrain.</span></h1>
+      <div class="frost rise d2" style="border-radius:22px;padding:18px 24px;min-width:220px">
+        <div class="mono" style="font-size:11px;color:#4A5D69">PROJETS AFFICHÉS</div>
+        <div class="tnum" style="font-size:56px;font-weight:200;letter-spacing:-.03em;line-height:1.05">{{ countTxt }}<span style="font-size:24px;color:#4A5D69"> / 14</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTRES -->
+<section style="position:sticky;top:110px;z-index:20;background:rgba(241,245,247,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(15,28,36,.08)">
+  <div class="wrap" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;padding-top:16px;padding-bottom:16px;align-items:center">
+    <div style="display:flex;flex-wrap:wrap;gap:18px">
+      <div role="group" aria-label="Filtrer par ligne" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+        <span class="mono" style="font-size:11px;color:#4A5D69;margin-right:4px">LIGNE</span>
+        <sc-for list="{{ fLigne }}" as="f" hint-placeholder-count="4">
+          <button type="button" class="chip" style="{{ f.st }}" onClick="{{ f.pick }}" aria-pressed="{{ f.on }}">{{ f.n }} <span class="mono" style="font-size:11px;opacity:.7">{{ f.c }}</span></button>
+        </sc-for>
+      </div>
+      <div role="group" aria-label="Filtrer par type" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+        <span class="mono" style="font-size:11px;color:#4A5D69;margin-right:4px">TYPE</span>
+        <sc-for list="{{ fType }}" as="f" hint-placeholder-count="5">
+          <button type="button" class="chip" style="{{ f.st }}" onClick="{{ f.pick }}" aria-pressed="{{ f.on }}">{{ f.n }} <span class="mono" style="font-size:11px;opacity:.7">{{ f.c }}</span></button>
+        </sc-for>
+      </div>
+    </div>
+    <div role="group" aria-label="Affichage" style="display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgba(15,28,36,.06)">
+      <button type="button" class="tab" style="{{ vGrid }}" onClick="{{ showGrid }}" aria-pressed="{{ isGrid }}">Grille</button>
+      <button type="button" class="tab" style="{{ vList }}" onClick="{{ showList }}" aria-pressed="{{ isList }}">Liste</button>
+    </div>
+  </div>
+</section>
+
+<!-- DÉTAIL DU PROJET SÉLECTIONNÉ -->
+<section style="padding:44px 0 0">
+  <div class="wrap">
+    <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ true }}">
+      <div class="frost" style="position:relative;border-radius:30px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:24px;overflow:hidden">
+        <div style="position:relative;height:440px;border-radius:22px;overflow:hidden;background:#0F1C24">
+          <img class="kb" src="{{ sel.img }}" alt="{{ sel.alt }}" style="width:100%;height:440px;object-fit:cover;display:block">
+          <span class="mono" style="position:absolute;left:14px;bottom:14px;padding:6px 10px;border-radius:999px;background:rgba(15,28,36,.65);color:#fff;font-size:11px">PHOTO D'ILLUSTRATION · [PHOTO CHANTIER]</span>
+        </div>
+        <div style="padding:18px 14px 14px;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <span class="mono" style="font-size:12px;color:#2B6688">{{ sel.k }} · LIGNE {{ sel.lu }}</span>
+            <span style="display:flex;gap:8px">
+              <button type="button" class="nav-ico" aria-label="Projet précédent" onClick="{{ prev }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M13 8H3M7 4L3 8l4 4"></path></svg></button>
+              <button type="button" class="nav-ico" aria-label="Projet suivant" onClick="{{ next }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+            </span>
+          </div>
+          <h2 style="font-size:clamp(32px,3.6vw,50px);font-weight:400;letter-spacing:-.03em;line-height:1.02;margin-top:18px">{{ sel.n }}</h2>
+          <div style="font-size:18px;color:#33454F;margin-top:8px;display:flex;align-items:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#2B6688" stroke-width="1.5" aria-hidden="true"><path d="M8 15s5-4.6 5-8.5A5 5 0 0 0 3 6.5C3 10.4 8 15 8 15z"></path><circle cx="8" cy="6.5" r="1.8"></circle></svg>{{ sel.w }}
+          </div>
+          <div style="margin-top:24px">
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">LIGNE</span><a href="Cryo-Lignes.html" style="font-weight:500">{{ sel.l }}</a></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">TYPE</span><a href="Cryo-Secteurs.html" style="font-weight:500">{{ sel.typeN }}</a></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">TEMPÉRATURES</span><span class="tnum" style="{{ sel.tSt }}">{{ sel.t }}</span></div>
+          </div>
+          <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:22px">MODULES INSTALLÉS · {{ sel.mc }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <sc-for list="{{ sel.mods }}" as="m" hint-placeholder-count="3">
+              <a class="chip" href="Cryo-Module.html">{{ m.n }}</a>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:26px">
+            <a class="btn btn-red" href="Cryo-Contact.html" style="{{ ctaStyle }}">Un projet similaire ?</a>
+            <a class="btn btn-ghost" href="Cryo-Secteurs.html">Secteur {{ sel.typeN }}</a>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div class="frost" style="border-radius:24px;padding:36px;text-align:center">
+        <p style="font-size:18px">Aucune réalisation ne correspond à ces filtres.</p>
+        <button type="button" class="btn btn-dark" onClick="{{ resetAll }}" style="margin-top:18px">Réinitialiser les filtres</button>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- GRILLE / LISTE -->
+<section style="padding:44px 0 100px">
+  <div class="wrap">
+    <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:16px">
+        <sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+          <button type="button" class="pj" style="{{ p.st }}" onClick="{{ p.pick }}" aria-pressed="{{ p.on }}">
+            <span style="display:block;height:230px;overflow:hidden;background:#0F1C24"><img src="{{ p.img }}" alt="{{ p.alt }}" style="{{ p.imgSt }}"></span>
+            <span style="display:block;padding:18px 20px 22px">
+              <span class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#4A5D69"><span>{{ p.k }}</span><span>{{ p.lu }}</span></span>
+              <span style="display:block;font-size:18px;font-weight:600;margin-top:10px;letter-spacing:-.01em;color:#0F1C24">{{ p.n }}</span>
+              <span style="display:block;font-size:14px;color:#33454F;margin-top:2px">{{ p.w }}</span>
+              <span class="mono" style="display:block;font-size:11.5px;color:#2B6688;margin-top:12px">{{ p.ms }}</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius:24px;overflow:hidden;border:1px solid rgba(15,28,36,.1)">
+        <sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+          <button type="button" class="lrow" style="{{ p.rowSt }}" onClick="{{ p.pick }}" aria-pressed="{{ p.on }}">
+            <span class="mono" style="font-size:12px;color:#2B6688">{{ p.k }} · {{ p.lu }}</span>
+            <span style="font-size:17px;font-weight:600;color:#0F1C24">{{ p.n }}</span>
+            <span style="font-size:14px;color:#33454F">{{ p.w }}</span>
+            <span class="mono" style="font-size:11.5px;color:#4A5D69">{{ p.ms }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <p class="mono" style="margin-top:18px;font-size:11px;color:#4A5D69">PHOTOS D'ILLUSTRATION — LES VISUELS DE CHANTIER SONT À INTÉGRER [PHOTOS].</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#0F1C24;color:#E6EEF2;padding:100px 0;position:relative;overflow:hidden">
+  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(127,179,211,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,179,211,.07) 1px,transparent 1px);background-size:48px 48px"></div>
+  <div class="wrap" style="position:relative;text-align:center">
+    <div class="mono" style="font-size:12px;color:#7FB3D3">R-15 · VOTRE PROJET</div>
+    <h2 style="font-size:clamp(38px,6vw,88px);font-weight:200;letter-spacing:-.04em;line-height:1;margin-top:18px;overflow-wrap:anywhere">La quinzième vitrine<br><span style="font-weight:600">est la vôtre.</span></h2>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px">
+      <a class="btn btn-red" href="Cryo-Contact.html" style="{{ ctaStyle }}">Demande de devis</a>
+      <a class="btn" href="Cryo-Contact.html" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(127,179,211,.3)">Plan 3D offert</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0B161D;color:#C9D7DF;padding:84px 0 28px;position:relative;overflow:hidden">
+  <div aria-hidden="true" class="mono" style="position:absolute;right:-20px;top:20px;font-size:180px;line-height:1;color:rgba(127,179,211,.06);white-space:nowrap">−2 / +90</div>
+  <div class="wrap" style="position:relative">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:40px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;color:#fff"><span style="font-weight:700;font-size:24px;letter-spacing:.08em">RGTE</span><span class="mono" style="font-size:10px;line-height:1.3;color:#9FB4C1">R.G.<br>TECHNOLOGIES</span></div>
+        <p style="margin-top:16px;font-size:14px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">SHOW-ROOM</div>
+        <p style="margin-top:12px;font-size:14px">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">CONTACT</div>
+        <p style="margin-top:12px;font-size:14px"><a href="tel:0800951313" style="color:#fff;text-decoration:none;font-family:'IBM Plex Mono',monospace">0 800 95 13 13</a><br>Numéro vert, appel gratuit<br>Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">NAVIGATION</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="Cryo-Lignes.html">Lignes d'agencement</a>
+          <a class="navl" href="Cryo-Secteurs.html">Secteurs d'activité</a>
+          <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+          <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">INFORMATIONS</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="#">Mentions légales</a>
+          <a class="navl" href="#">Conditions de vente</a>
+          <a class="navl" href="#">Plan du site</a>
+          <a class="navl" href="#">Gestion des cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="mono" style="margin-top:60px;padding-top:20px;border-top:1px solid rgba(201,215,223,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:11.5px;color:#9FB4C1">
+      <span>© RGTE — R.G. Technologies</span>
+      <a href="index.html" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px">← Toutes les propositions</a>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3900},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#0F1C24","#3A7CA5"]},"vue":{"editor":"enum","default":"grille","options":["grille","liste"]}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { ligne:'all', type:'all', sel:1, view: (props && props.vue==='liste') ? 'list' : 'grid', menuOpen:false }; }
+  renderVals(){
+    const s=this.state, accent=this.props.accent || '#D42A20';
+    const TYPES = { patis:'Pâtisserie & chocolat', boul:'Boulangerie', snack:'Snacking & bars', trait:'Traiteur & poisson' };
+    const P = [
+      [1,'Pâtisserie','Paris 4e','Stone','patis',['Vitrine réfrigérée Plane','Caisse'],'assets/vitrine-cakes.webp','Gâteaux en vitrine',''],
+      [2,'Bar à salades','Département 13','Stone','snack',['Saladette','Caisse','Panorama'],'assets/saladette-bacs.webp','Bacs gastronormes colorés',''],
+      [3,'Chocolatier','Gap & Grenoble','Stone','patis',['Plane','Caisse'],'assets/chocolates-dark.webp','Bonbons de chocolat',''],
+      [4,'Sandwicherie','Chamonix','Basique','snack',['Panoramique','Basse','Murale self-service'],'assets/bakery-counter-bright.webp','Boutique claire avec comptoir',''],
+      [5,'Bar à olives','Nice','Stone','snack',['Saladette sur mesure avec trous arrondis'],'assets/counter-domes.webp','Comptoir en marbre sous cloches de verre',''],
+      [6,'Bar à yogourt glacé (chaîne)','Toute la France','Stone','snack',['Saladette sur mesure trous arrondis','Surface plane'],'assets/topping-bar.webp','Bar à toppings',''],
+      [7,'Boulangerie pâtisserie','La Réunion','Basique','boul',['Amandine','Caisse'],'assets/vitrine-viennoiserie.webp','Vitrine de viennoiseries',''],
+      [8,'Boulangerie','Département 33','Legno','boul',['Réfrigérée statique','Neutre','Module arrière'],'assets/bakery-shelves.webp','Étagères à pains',''],
+      [9,'Pizza sur composition','Paris','Stone','snack',['Saladette','Caisse','Plane'],'assets/baker-table.webp','Pains et plan de travail',''],
+      [10,'Pâtissier chocolatier','Département 69','Stone','patis',['Centrale','Caisse','Plane'],'assets/vitrine-colorful.webp','Entremets colorés étagés',''],
+      [11,'Traiteur asiatique (chaîne)','Marseille','Stone','trait',['Plane','Caisse','Saladette','Comptoir bar'],'assets/bakery-hall-dark.webp','Grande halle sombre',''],
+      [12,'Bar à couscous','Isère','Stone','snack',['Bain-marie avec trous arrondis sur mesure'],'assets/saladette-bacs.webp','Bacs gastronormes inox','+30 / +90 °C'],
+      [13,'Traiteur poissonnier','Département 92','Stone','trait',['Panorama','Surface plane','Caisse'],'assets/fish-ice.webp','Poissons sur glace',''],
+      [14,'Pâtissier chocolatier Canet','Nice 06','Stone','patis',['Plane pâtissière','Plane chocolats'],'assets/vitrine-slice.webp','Parts de gâteaux derrière le verre','+2 / +8 · +14 / +18 °C']
+    ].map(a => ({ id:a[0], n:a[1], w:a[2], l:a[3], type:a[4], mods:a[5], img:a[6], alt:a[7], t:a[8] }));
+
+    const match = (p, lg, tp) => (lg==='all' || p.l===lg) && (tp==='all' || p.type===tp);
+    const list = P.filter(p => match(p, s.ligne, s.type));
+    const selId = list.some(p => p.id===s.sel) ? s.sel : (list[0] ? list[0].id : 0);
+    const idx = list.findIndex(p => p.id===selId);
+
+    const chipSt = on => on ? 'background:#0F1C24;color:#fff;border-color:#0F1C24' : '';
+    const fLigne = [['all','Toutes'],['Stone','Stone'],['Basique','Basique'],['Legno','Legno']].map(f => ({ n:f[1], on:s.ligne===f[0], st:chipSt(s.ligne===f[0]),
+      c: String(P.filter(p => match(p, f[0], s.type)).length), pick: () => this.setState({ ligne:f[0] }) }));
+    const fType = [['all','Tous']].concat(Object.keys(TYPES).map(k => [k, TYPES[k]])).map(f => ({ n:f[1], on:s.type===f[0], st:chipSt(s.type===f[0]),
+      c: String(P.filter(p => match(p, s.ligne, f[0])).length), pick: () => this.setState({ type:f[0] }) }));
+
+    const k = id => 'R-' + String(id).padStart(2,'0');
+    const POS = ['center','30% 40%','70% 50%','center 30%'];
+    const items = list.map((p,i) => { const on = p.id===selId; return { n:p.n, w:p.w, img:p.img, alt:p.alt, k:k(p.id), lu:p.l.toUpperCase(), on,
+      ms: p.mods.join(' · '),
+      imgSt: 'width:100%;height:230px;object-fit:cover;display:block;object-position:' + POS[p.id % 4],
+      st: 'border:' + (on ? '2px solid #3A7CA5' : '1px solid rgba(15,28,36,.08)') + ';box-shadow:' + (on ? '0 24px 44px -26px rgba(58,124,165,.8)' : 'none') + ';animation-delay:' + (i*0.04).toFixed(2) + 's',
+      rowSt: 'background:' + (on ? '#E3EDF2' : (i%2 ? '#F6F9FA' : '#FFFFFF')) + ';border-bottom:1px solid rgba(15,28,36,.06);box-shadow:' + (on ? 'inset 3px 0 0 #3A7CA5' : 'none'),
+      pick: () => this.setState({ sel:p.id }) }; });
+
+    const S0 = list[idx] || P[0];
+    const sel = { k:k(S0.id), n:S0.n, w:S0.w, l:'Ligne ' + S0.l, lu:S0.l.toUpperCase(), img:S0.img, alt:S0.alt, typeN:TYPES[S0.type],
+      t: S0.t || 'Selon modules',
+      tSt: 'font-weight:500;color:' + (S0.t.indexOf('+30')===0 ? '#B3241B' : (S0.t ? '#2B6688' : '#4A5D69')),
+      mods: S0.mods.map(n => ({ n })), mc: String(S0.mods.length).padStart(2,'0') };
+    const go = d => () => { if (!list.length) return; const j = (idx + d + list.length) % list.length; this.setState({ sel:list[j].id }); };
+    const pill = on => 'min-height:40px;padding:0 18px;border-radius:999px;font-size:13.5px;font-weight:600;background:' + (on ? '#0F1C24' : 'transparent') + ';color:' + (on ? '#fff' : '#0F1C24');
+
+    return {
+      fLigne, fType, items, sel,
+      countTxt: String(list.length).padStart(2,'0'),
+      hasSel: list.length>0, empty: list.length===0,
+      prev: go(-1), next: go(1),
+      resetAll: () => this.setState({ ligne:'all', type:'all' }),
+      isGrid: s.view==='grid', isList: s.view==='list',
+      vGrid: pill(s.view==='grid'), vList: pill(s.view==='list'),
+      showGrid: () => this.setState({ view:'grid' }), showList: () => this.setState({ view:'list' }),
+      ctaStyle: 'background:' + accent,
+      menuOpen: s.menuOpen, toggleMenu: () => this.setState({ menuOpen: !s.menuOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

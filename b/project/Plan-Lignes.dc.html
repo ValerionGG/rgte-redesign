@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Plan — Lignes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&amp;family=Red+Hat+Mono:wght@400;500&amp;family=Red+Hat+Text:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF}
+.pl *{box-sizing:border-box}
+.pl a{color:inherit}
+.pl-wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+.disp{font-family:'Red Hat Display',sans-serif}
+.pl :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.nav-a{position:relative;text-decoration:none;font-weight:500;font-size:15px;padding:12px 0;display:inline-flex;align-items:center;min-height:44px}
+.nav-a::after{content:"";position:absolute;left:0;right:100%;bottom:6px;height:1px;background:var(--red);transition:right .45s cubic-bezier(.6,.1,.2,1)}
+.nav-a:hover::after,.nav-a.on::after{right:0}
+.btn-red{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;background:var(--red);color:#fff !important;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;border:0;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--red)}
+.btn-line{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border:1px solid currentColor;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;background:transparent;cursor:pointer;transition:background .3s,color .3s}
+.btn-line:hover{background:#E8EEF4;color:#0E2A47 !important}
+.btn-line.dk:hover{background:#0E2A47;color:#F4F3EF !important}
+.burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(143,179,207,.5);color:#E8EEF4;cursor:pointer}
+.toplink{text-decoration:none;min-height:34px;display:inline-flex;align-items:center}
+.toplink:hover{color:#E8EEF4}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.rise{opacity:0;transform:translateY(22px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.mask{clip-path:inset(0 0 100% 0);animation:mask 1.1s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes mask{to{clip-path:inset(0 0 0 0)}}
+.svgt{font-family:'Red Hat Mono',monospace;font-size:10px;letter-spacing:.08em}
+.lsel{transition:background .35s,border-color .35s,transform .35s}
+.lsel:hover{transform:translateY(-3px);border-color:#E8EEF4 !important}
+.chip{transition:background .25s,color .25s,border-color .25s}
+.chip:hover{border-color:#0E2A47 !important}
+.mcard{text-decoration:none;display:flex;flex-direction:column;transition:background .35s,color .35s}
+.mcard:hover{background:#0E2A47;color:#E8EEF4}
+.mcard:hover .mic{stroke:#E8EEF4}
+.mcard:hover .msub{color:#8FB3CF !important}
+.mcard .arr{transition:transform .35s}
+.mcard:hover .arr{transform:translate(4px,-4px)}
+.mic{transition:stroke .35s}
+.colh{transition:background .3s,color .3s}
+.colh:hover{background:rgba(14,42,71,.08)}
+.swap{animation:swap .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes swap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.lnk{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.lnk:hover{color:var(--red)}
+.foot a{text-decoration:none;display:inline-flex;min-height:32px;align-items:center}
+.foot a:hover{color:#fff;text-decoration:underline}
+.mnav a{display:flex;min-height:52px;align-items:center;border-bottom:1px solid rgba(143,179,207,.2);text-decoration:none;font-size:18px}
+@media (max-width:980px){.desk-nav{display:none !important}.burger{display:inline-flex}.hide-m{display:none !important}}
+@media (max-width:720px){.pl-wrap{padding:0 16px}.btn-red.hdr{padding:0 14px;font-size:14px}}
+</style>
+</helmet>
+<div class="pl" style="{{ rootStyle }}">
+
+<header style="background:#0E2A47;color:#E8EEF4;position:relative;z-index:5">
+  <div style="border-bottom:1px solid rgba(143,179,207,.2)">
+    <div class="pl-wrap mono" style="display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span class="hide-m">BUREAU D’ÉTUDES &amp; SHOW-ROOM — PUGET-SUR-ARGENS (83)</span>
+      <a class="toplink" href="Main.dc.html">← TOUTES LES PROPOSITIONS</a>
+    </div>
+  </div>
+  <div class="pl-wrap" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px">
+    <a href="Plan-Accueil.dc.html" aria-label="RGTE, accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" fill="none" stroke="#8FB3CF" stroke-width="1"></rect><path d="M17 4V30M4 17H30" stroke="#8FB3CF" stroke-width="1"></path><circle cx="17" cy="17" r="7" fill="none" stroke="var(--red)" stroke-width="2"></circle></svg>
+      <span style="display:flex;flex-direction:column;line-height:1">
+        <span class="disp" style="font-weight:900;font-size:27px;letter-spacing:.08em">RGTE</span>
+        <span class="mono" style="font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:5px">R.G. TECHNOLOGIES</span>
+      </span>
+    </a>
+    <nav class="desk-nav" aria-label="Navigation principale" style="display:flex;gap:34px">
+      <a class="nav-a on" href="Plan-Lignes.dc.html" aria-current="page">Lignes</a>
+      <a class="nav-a" href="Plan-Secteurs.dc.html">Secteurs</a>
+      <a class="nav-a" href="Plan-Realisations.dc.html">Réalisations</a>
+      <a class="nav-a" href="Plan-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="tel:0800951313" class="hide-m" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.2">
+        <span class="mono" style="font-size:15px;font-weight:500;letter-spacing:.04em">0 800 95 13 13</span>
+        <span class="mono" style="font-size:10px;color:#8FB3CF;letter-spacing:.12em">APPEL GRATUIT</span>
+      </a>
+      <a href="Plan-Contact.dc.html" class="btn-red hdr">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="{{ burgerLabel }}" onClick="{{ toggleMenu }}"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><path d="M0 1H20M0 7H20M0 13H20" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav pl-wrap" aria-label="Navigation mobile" style="padding-bottom:20px">
+      <a href="Plan-Lignes.dc.html">Lignes</a>
+      <a href="Plan-Secteurs.dc.html">Secteurs</a>
+      <a href="Plan-Realisations.dc.html">Réalisations</a>
+      <a href="Plan-Contact.dc.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313" class="mono">0 800 95 13 13 — appel gratuit</a>
+    </nav>
+  </sc-if>
+</header>
+
+<!-- HERO : sélecteur de lignes -->
+<section style="{{ heroStyle }}">
+  <div class="pl-wrap" style="padding-top:64px;padding-bottom:64px">
+    <p class="mono rise" style="margin:0 0 20px;font-size:12px;letter-spacing:.18em;color:#8FB3CF"><span style="color:var(--red)">■</span> FEUILLE B — LIGNES D’AGENCEMENT</p>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 56px;align-items:flex-end;justify-content:space-between">
+      <h1 class="disp mask" style="margin:0;flex:1 1 640px;font-weight:900;font-size:clamp(40px,6vw,88px);line-height:.98;letter-spacing:-.02em;overflow-wrap:anywhere">Cinq lignes, un même bureau d’études.</h1>
+      <p class="rise" style="margin:0;flex:1 1 320px;max-width:420px;font-size:17px;line-height:1.6;color:#C9D7E4;animation-delay:.3s">De la pierre acrylique sérigraphiée au module brut à habiller : choisissez une ligne, puis composez vos modules à vos dimensions.</p>
+    </div>
+    <div role="tablist" aria-label="Choisir une ligne" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:12px;margin-top:48px">
+      <sc-for list="{{ lignes }}" as="l" hint-placeholder-count="5">
+        <button type="button" role="tab" class="lsel" style="{{ l.selStyle }}" aria-selected="{{ l.sel }}" onClick="{{ l.pick }}">
+          <svg viewBox="0 0 200 110" width="100%" style="display:block;height:auto" aria-hidden="true">
+            <path d="M8 98H192" stroke="#8FB3CF" stroke-width=".8"></path>
+            <path class="draw" pathLength="1" d="M26 46L30 16H170L174 46" style="{{ l.v.glass }}"></path>
+            <rect x="20" y="46" width="160" height="6" style="{{ l.v.top }}"></rect>
+            <rect x="24" y="52" width="152" height="40" style="{{ l.v.panel }}"></rect>
+            <path d="M75 52V92M125 52V92" style="{{ l.v.joints }}"></path>
+            <rect x="28" y="92" width="144" height="6" style="{{ l.v.plinthe }}"></rect>
+          </svg>
+          <span class="mono" style="display:block;margin-top:12px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">{{ l.n }} · {{ l.nb }} MODULES</span>
+          <span class="disp" style="display:block;font-size:24px;font-weight:900;margin-top:2px">{{ l.nom }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- DÉTAIL LIGNE -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:80px">
+    <div style="display:flex;flex-wrap:wrap;gap:48px">
+      <div style="flex:1 1 380px;display:flex;flex-direction:column;gap:18px">
+        <p class="mono" style="margin:0;font-size:12px;letter-spacing:.18em;color:var(--red)">LIGNE {{ cur.n }} / 05</p>
+        <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(48px,6vw,96px);line-height:.92;letter-spacing:-.03em">{{ cur.nom }}</h2>
+        <p style="margin:0;font-size:18px;line-height:1.65;color:#3A4F66">{{ cur.pitch }}</p>
+        <div class="mono" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(14,42,71,.2);border:1px solid rgba(14,42,71,.2);font-size:13px;margin-top:8px">
+          <div style="background:#F4F3EF;padding:14px"><span style="display:block;font-size:10px;letter-spacing:.14em;color:#5A6E84">STRUCTURE</span>{{ cur.structure }}</div>
+          <div style="background:#F4F3EF;padding:14px"><span style="display:block;font-size:10px;letter-spacing:.14em;color:#5A6E84">PANNEAU FRONTAL</span>{{ cur.panneau }}</div>
+          <div style="background:#F4F3EF;padding:14px"><span style="display:block;font-size:10px;letter-spacing:.14em;color:#5A6E84">PLAN DE TRAVAIL</span>{{ cur.plan }}</div>
+          <div style="background:#F4F3EF;padding:14px"><span style="display:block;font-size:10px;letter-spacing:.14em;color:#5A6E84">PLINTHE</span>{{ cur.plinthe }}</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+          <a href="Plan-Contact.dc.html" class="btn-red">Plan 3D de ma ligne {{ cur.nom }}</a>
+        </div>
+      </div>
+      <div style="flex:1.4 1 520px;background:#0E2A47;padding:28px;position:relative">
+        <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:12px"><span>ÉLÉVATION FACE CLIENT + COUPE</span><span>B-{{ cur.n }}</span></div>
+        <svg viewBox="0 0 700 360" width="100%" style="display:block;height:auto" role="img" aria-label="Élévation et coupe de la ligne sélectionnée avec repères de matières">
+          <path d="M10 300H690" stroke="#8FB3CF" stroke-width="1"></path>
+          <path d="M40 130L52 50H418L430 130" style="{{ lv.glass }}"></path>
+          <rect x="26" y="130" width="418" height="14" style="{{ lv.top }}"></rect>
+          <rect x="34" y="144" width="402" height="142" style="{{ lv.panel }}"></rect>
+          <path d="M168 144V286M302 144V286" style="{{ lv.joints }}"></path>
+          <rect x="44" y="286" width="382" height="14" style="{{ lv.plinthe }}"></rect>
+          <text x="235" y="222" text-anchor="middle" class="svgt" style="{{ lv.serigStyle }}">{{ cur.serig }}</text>
+          <g fill="none" stroke="#E8EEF4" stroke-width="1.2">
+            <path d="M540 300V144H520V130H660V144H640V300"></path>
+            <path d="M540 130L556 60H640V130" stroke="#8FB3CF"></path>
+            <path d="M548 144H632V196H548Z" stroke="#8FB3CF" stroke-dasharray="4 3"></path>
+            <path d="M552 214H628V286H552Z" stroke-dasharray="2 4"></path>
+          </g>
+          <text x="590" y="252" text-anchor="middle" class="svgt" fill="#8FB3CF">GROUPE</text>
+          <text x="590" y="174" text-anchor="middle" class="svgt" fill="#8FB3CF">CUVE</text>
+          <g stroke="var(--red)" stroke-width=".8" fill="none">
+            <path d="M444 137H480"></path><path d="M436 200H480"></path><path d="M426 293H480"></path>
+          </g>
+          <g class="svgt" fill="#E8EEF4">
+            <text x="484" y="140">{{ cur.planShort }}</text>
+            <text x="484" y="203">{{ cur.panShort }}</text>
+            <text x="484" y="296">{{ cur.plinShort }}</text>
+          </g>
+          <path d="M26 326H444M26 332V320M444 332V320M22 330L30 322M440 330L448 322" stroke="#E8EEF4" stroke-width=".8" fill="none"></path>
+          <text x="235" y="348" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:12px">L = ASSOCIATION DE MODULES · SUR MESURE</text>
+          <text x="590" y="348" text-anchor="middle" class="svgt" fill="#8FB3CF">COUPE A-A</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section style="background:#F4F3EF;color:#0E2A47;border-top:1px solid rgba(14,42,71,.15)">
+  <div class="pl-wrap" style="padding-top:80px;padding-bottom:96px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px">
+      <div>
+        <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">NOMENCLATURE — LIGNE {{ cur.nom }}</p>
+        <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.02em">{{ countLabel }}</h2>
+      </div>
+      <div role="group" aria-label="Filtrer par type" style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ types }}" as="t" hint-placeholder-count="4">
+          <button type="button" class="chip mono" style="{{ t.style }}" aria-pressed="{{ t.sel }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:1px;background:rgba(14,42,71,.2);border:1px solid rgba(14,42,71,.2);margin-top:40px">
+      <sc-for list="{{ mods }}" as="m" hint-placeholder-count="8">
+        <a href="Plan-Module.dc.html" class="mcard swap" style="background:#F4F3EF;padding:22px;min-height:250px">
+          <span class="mono" style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:.12em"><span class="msub" style="color:#5A6E84">{{ m.code }}</span><span style="{{ m.flagStyle }}">{{ m.flag }}</span></span>
+          <svg viewBox="0 0 80 64" width="96" height="77" style="display:block;margin:18px 0 14px" aria-hidden="true"><path class="mic" d="{{ m.icon }}" fill="none" stroke="#0E2A47" stroke-width="1.2" style="{{ m.iconStyle }}"></path></svg>
+          <span class="disp" style="font-size:21px;font-weight:700;line-height:1.15">{{ m.nom }}</span>
+          <span class="msub" style="margin-top:8px;font-size:14px;line-height:1.5;color:#3A4F66">{{ m.spec }}</span>
+          <span style="margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:center" class="mono"><span style="font-size:12px;letter-spacing:.08em">Fiche module</span><svg class="arr" width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3H15V12" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg></span>
+        </a>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <p class="mono" style="margin:24px 0 0;font-size:13px;letter-spacing:.06em;color:#3A4F66">Aucun module de ce type dans la ligne {{ cur.nom }} — essayez « Tous ».</p>
+    </sc-if>
+  </div>
+</section>
+
+<!-- COMPARATEUR -->
+<section style="background:#0E2A47;color:#E8EEF4">
+  <div class="pl-wrap" style="padding-top:96px;padding-bottom:96px">
+    <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:#8FB3CF">COMPARATEUR</p>
+    <h2 class="disp" style="margin:0 0 40px;font-weight:900;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.02em">Matières, panneau, plan de travail.</h2>
+    <div style="overflow-x:auto;border:1px solid rgba(143,179,207,.35)">
+      <div style="min-width:960px">
+        <div style="display:grid;grid-template-columns:200px repeat(5,1fr);border-bottom:1px solid rgba(143,179,207,.35)">
+          <div class="mono" style="padding:16px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">CRITÈRE</div>
+          <sc-for list="{{ lignes }}" as="l" hint-placeholder-count="5">
+            <button type="button" class="colh" style="{{ l.colHead }}" onClick="{{ l.pick }}" aria-pressed="{{ l.sel }}"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;opacity:.7">{{ l.n }}</span><span class="disp" style="font-size:19px;font-weight:700">{{ l.nom }}</span></button>
+          </sc-for>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:200px repeat(5,1fr);border-bottom:1px solid rgba(143,179,207,.2)">
+            <div class="mono" style="padding:16px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">{{ r.label }}</div>
+            <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5">
+              <div style="{{ c.style }}">{{ c.txt }}</div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <p class="mono" style="margin:16px 0 0;font-size:11px;letter-spacing:.08em;color:#8FB3CF">[À PRÉCISER] = information à confirmer par RGTE. Cliquez un en-tête pour changer de ligne.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:88px;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between">
+    <div style="flex:1 1 560px">
+      <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">PROCHAINE FEUILLE</p>
+      <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4.4vw,60px);line-height:1;letter-spacing:-.02em">Une ligne choisie ? On la cote dans votre local.</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="Plan-Contact.dc.html" class="btn-red" style="min-height:56px">Demander mon plan 3D</a>
+      <a href="Plan-Module.dc.html" class="btn-line dk" style="min-height:56px">Voir la Gourmandise</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" style="background:#0E2A47;color:#E8EEF4;padding:64px 0 28px">
+  <div class="pl-wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(143,179,207,.35);border:1px solid rgba(143,179,207,.35)">
+      <div style="background:#0E2A47;padding:22px"><span class="disp" style="font-weight:900;font-size:30px;letter-spacing:.08em">RGTE</span><span class="mono" style="display:block;font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:6px">R.G. TECHNOLOGIES</span><p style="margin:14px 0 0;font-size:14px;color:#C9D7E4;line-height:1.5">Agencement de vitrines réfrigérées</p></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">BUREAU D’ÉTUDES &amp; SHOW-ROOM</span>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">TÉLÉPHONE</span><a href="tel:0800951313" class="mono" style="font-size:18px">0 800 95 13 13</a><br>Appel gratuit · [HORAIRES]</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">SITE</span><a href="Plan-Lignes.dc.html">Lignes</a><a href="Plan-Secteurs.dc.html">Secteurs</a><a href="Plan-Realisations.dc.html">Réalisations</a><a href="Plan-Contact.dc.html">Showroom &amp; contact</a></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">LÉGAL</span><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+    </div>
+    <div class="mono" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:20px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span>© RGTE — R.G. TECHNOLOGIES</span>
+      <span>FEUILLE 02 / 06 — LIGNES</span>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4000},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1A1A1A","#B08D57"]},"grille":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu:false, ligne:'stone', type:'tous' }; }
+  renderVals() {
+    const p = this.props || {};
+    const R = p.accent || '#D42A20';
+    const grid = p.grille !== false;
+    const s = this.state;
+    const gridBg = grid ? 'background-image:linear-gradient(rgba(143,179,207,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(143,179,207,.09) 1px,transparent 1px);background-size:40px 40px;' : '';
+    const ICON = {
+      froid: 'M6 40H74V58H6ZM10 40L16 16H64L70 40M16 30H64',
+      murale: 'M10 6H70V58H10ZM10 22H70M10 38H70M16 6V58',
+      comptoir: 'M6 28H74V58H6ZM14 36H34V46H14ZM6 28L4 24H76L74 28',
+      chaud: 'M6 36H74V58H6ZM16 28C20 22 24 34 28 28S36 22 40 28S48 34 52 28S60 22 64 28',
+      saladette: 'M6 34H74V58H6ZM12 26H28V34H12ZM32 26H48V34H32ZM52 26H68V34H52Z',
+      brut: 'M6 40H74V58H6ZM10 40L16 16H64L70 40'
+    };
+    const M = (nom, kind, spec) => ({ nom, kind, spec: spec || '' });
+    const LIGNES = [
+      { id:'basique', n:'01', nom:'Basique', pitch:'Association de modules différents ; choix du coloris et des matériaux selon le souhait du client. Panneau frontal en bois mélaminé ou en verre (option) ; plan de travail et plinthe en granit.', structure:'Modules associés', panneau:'Bois mélaminé ou verre (option)', plan:'Granit', plinthe:'Granit', serig:'', planShort:'GRANIT', panShort:'MÉLAMINÉ / VERRE', plinShort:'GRANIT', perso:'Coloris et matériaux au choix', principe:'Association de modules différents',
+        mods:[ M('Comptoir bar','comptoir'), M('Comptoir caisse','comptoir'), M('Saladette réfrigérée','saladette','Ingrédients en bacs gastronormes.'), M('Vitrine réfrigérée Cube','froid','Vitrage cubique, 2 ou 3 étagères verre.'), M('Pastry Show','froid','Froid ventilé, vitrage droit, plaques 600 × 400 mm à hauteur de comptoir.'), M('Statique','froid'), M('Basse','froid'), M('Murale self-service','murale'), M('Panoramique','froid'), M('Chaud','chaud','Bain-marie ou plaque chaude.'), M('Vitrine rétro','froid'), M('Amandine','froid','Montants modernes, cuve pour plaques pâtissières 600 × 400, froid ventilé.') ] },
+      { id:'stone', n:'02', nom:'Stone', pitch:'Association de modules ; structure en pierre acrylique type Corian ; panneau frontal en verre avec la sérigraphie du client.', structure:'Pierre acrylique type Corian', panneau:'Verre sérigraphié client', plan:'Pierre acrylique', plinthe:'[À PRÉCISER]', serig:'VOTRE SÉRIGRAPHIE', planShort:'PIERRE ACRYLIQUE', panShort:'VERRE SÉRIGRAPHIÉ', plinShort:'[À PRÉCISER]', perso:'Sérigraphie du client', principe:'Association de modules',
+        mods:[ M('Réfrigérée Plane','froid','À hauteur du plan de travail ; profondeur 53 ou 60 cm ; +2/+8 ou +14/+18 °C.'), M('Réfrigérée Vision','froid','8 cm sous le plan de travail ; profondeur 53 ou 60 cm ; +2/+8 ou +14/+18 °C.'), M('Saladette','saladette','Bacs gastronormes (non fournis) ; +2/+8 °C.'), M('Chaud bain-marie','chaud','Bacs gastronormes ; +30/+90 °C.'), M('Réfrigérée Centrale','froid','Vitrages coulissants des 2 côtés ; profondeur 60 cm ; +2/+8 ou +14/+18 °C.'), M('Gourmandise','froid','De 101 à 222 cm ou sur mesure ; 5 800 € HT en 101 cm.'), M('Comptoir caisse','comptoir','Tout commerce ; avec ou sans tablette PMR.'), M('Comptoir bar','comptoir','Neutre ou réfrigéré.'), M('Réfrigérée Poissonnerie','froid','Froid statique, serpentin de cuve ; −2/0 °C ; vidange de cuve.'), M('Réfrigérée Panorama','murale','Étagères réfrigérées +4/+8 ; 2 ou 3 étagères.'), M('Surface plane','comptoir') ] },
+      { id:'legno', n:'03', nom:'Legno', pitch:'Association de modules ; panneau frontal en bois mélaminé. Du réfrigéré ventilé au neutre et au chauffant sec.', structure:'Modules associés', panneau:'Bois mélaminé', plan:'[À PRÉCISER]', plinthe:'[À PRÉCISER]', serig:'', planShort:'[À PRÉCISER]', panShort:'BOIS MÉLAMINÉ', plinShort:'[À PRÉCISER]', perso:'[À PRÉCISER]', principe:'Association de modules',
+        mods:[ M('Plane','froid'), M('Arrière neutre','murale'), M('Caisse et vitrine neutre','comptoir'), M('Comptoir bar','comptoir'), M('Réfrigérée statique','froid'), M('Vitrine réfrigérée ventilée plane','froid'), M('Vitrine neutre','froid'), M('Réfrigéré ventilé','froid'), M('Vitrine chauffante sèche','chaud') ] },
+      { id:'encastrable', n:'04', nom:'Encastrable', pitch:'Module brut prêt à être habillé : version comptoir ou meuble entier sur pied.', structure:'Module brut', panneau:'À habiller', plan:'À habiller', plinthe:'Sur pied (option)', serig:'MODULE BRUT', planShort:'À HABILLER', panShort:'À HABILLER', plinShort:'SUR PIED', perso:'Habillage libre', principe:'Comptoir ou meuble entier sur pied',
+        mods:[ M('Cuve froid ventilé','brut','Version comptoir ou meuble entier sur pied.'), M('Cuve froid statique','brut','Version comptoir ou meuble entier sur pied.') ] },
+      { id:'industry', n:'05', nom:'Industry', pitch:'Vitrines standardisées en longueurs et indépendantes, de la murale à la poissonnerie et au supermarché.', structure:'Vitrines indépendantes', panneau:'Standardisé', plan:'Standardisé', plinthe:'Standardisée', serig:'', planShort:'STANDARD', panShort:'STANDARD', plinShort:'STANDARD', perso:'Longueurs standardisées', principe:'Vitrines standardisées, indépendantes',
+        mods:[ M('Olympe','murale','Murale.'), M('Nepal','froid','Snack.'), M('Aramis','froid','Boucherie.'), M('Rubis','froid'), M('Argentine','froid'), M('Hanoi','froid','Poissonnerie.'), M('Loire','froid','Boulangerie.'), M('Argent','murale','Murale froid.'), M('Sugar','froid','Hauteur comptoir.'), M('Hawaii','froid','Supermarché.'), M('4 faces vitrées','froid') ] }
+    ];
+    const LV = {
+      basique: { glass:'fill:rgba(143,179,207,.12);stroke:#8FB3CF;stroke-width:1', top:'fill:#5D6670;stroke:#E8EEF4;stroke-width:1', panel:'fill:#B89C78;stroke:#E8EEF4;stroke-width:1', joints:'stroke:#0E2A47;stroke-width:2', plinthe:'fill:#5D6670', serigStyle:'fill:none' },
+      stone: { glass:'fill:rgba(143,179,207,.12);stroke:#8FB3CF;stroke-width:1', top:'fill:#F4F3EF;stroke:#E8EEF4;stroke-width:1', panel:'fill:rgba(232,238,244,.18);stroke:#E8EEF4;stroke-width:1.2', joints:'stroke:rgba(232,238,244,.35);stroke-width:1', plinthe:'fill:#F4F3EF', serigStyle:'fill:' + R + ';font-size:15px;letter-spacing:.3em' },
+      legno: { glass:'fill:rgba(143,179,207,.12);stroke:#8FB3CF;stroke-width:1', top:'fill:#7A5A3C;stroke:#E8EEF4;stroke-width:1', panel:'fill:#8A6644;stroke:#E8EEF4;stroke-width:1', joints:'stroke:#5E432C;stroke-width:3', plinthe:'fill:#3D2C1E', serigStyle:'fill:none' },
+      encastrable: { glass:'fill:none;stroke:#8FB3CF;stroke-width:1;stroke-dasharray:6 6', top:'fill:none;stroke:#8FB3CF;stroke-dasharray:6 6', panel:'fill:none;stroke:#E8EEF4;stroke-width:1.2;stroke-dasharray:8 6', joints:'stroke:none', plinthe:'fill:none;stroke:#8FB3CF;stroke-dasharray:4 4', serigStyle:'fill:#8FB3CF;font-size:14px;letter-spacing:.3em' },
+      industry: { glass:'fill:rgba(143,179,207,.12);stroke:#8FB3CF;stroke-width:1', top:'fill:#AEB7C0;stroke:#E8EEF4;stroke-width:1', panel:'fill:#7F8B97;stroke:#E8EEF4;stroke-width:1', joints:'stroke:#0E2A47;stroke-width:4', plinthe:'fill:#2E3B48', serigStyle:'fill:none' }
+    };
+    const cur = LIGNES.find(l => l.id === s.ligne) || LIGNES[1];
+    const lignes = LIGNES.map(l => { const on = l.id === s.ligne; return { n:l.n, nom:l.nom, nb:l.mods.length, v:LV[l.id], sel: on ? 'true' : 'false', pick: () => this.setState({ ligne:l.id, type:'tous' }),
+      selStyle: 'text-align:left;cursor:pointer;padding:18px;color:#E8EEF4;font-family:inherit;border:1px solid ' + (on ? '#E8EEF4' : 'rgba(143,179,207,.3)') + ';background:' + (on ? 'rgba(232,238,244,.07)' : 'transparent') + ';box-shadow:' + (on ? 'inset 0 -3px 0 ' + R : 'none') + ';',
+      colHead: 'min-height:64px;padding:12px 16px;text-align:left;cursor:pointer;border:0;border-left:1px solid rgba(143,179,207,.2);font-family:inherit;' + (on ? 'background:#E8EEF4;color:#0E2A47;' : 'background:transparent;color:#E8EEF4;') }; });
+
+    const TYPES = [ { id:'tous', label:'Tous' }, { id:'froid', label:'Réfrigéré' }, { id:'comptoir', label:'Comptoirs' }, { id:'chaud', label:'Chaud' } ];
+    const types = TYPES.map(t => { const on = t.id === s.type; return { label:t.label, sel: on ? 'true' : 'false', pick: () => this.setState({ type:t.id }),
+      style: 'min-height:44px;padding:0 16px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:1px solid ' + (on ? '#0E2A47' : 'rgba(14,42,71,.25)') + ';' + (on ? 'background:#0E2A47;color:#F4F3EF;' : 'background:transparent;color:#0E2A47;') }; });
+    const group = k => (k === 'murale' || k === 'saladette' || k === 'brut') ? 'froid' : k;
+    const prefix = cur.nom.slice(0, 2).toUpperCase();
+    const mods = cur.mods.map((m, i) => ({ m, i })).filter(o => s.type === 'tous' || group(o.m.kind) === s.type).map(o => {
+      const gm = o.m.nom === 'Gourmandise';
+      return { nom:o.m.nom, spec:o.m.spec || 'Caractéristiques : [À PRÉCISER]', code: prefix + '-' + String(o.i + 1).padStart(2, '0'), icon: ICON[o.m.kind],
+        iconStyle: o.m.kind === 'brut' ? 'stroke-dasharray:4 3' : '',
+        flag: gm ? 'FICHE COMPLÈTE' : o.m.kind.toUpperCase(), flagStyle: gm ? 'color:#fff;background:' + R + ';padding:3px 6px' : 'color:#5A6E84' };
+    });
+    const ROWS = [ ['PRINCIPE','principe'], ['STRUCTURE','structure'], ['PANNEAU FRONTAL','panneau'], ['PLAN DE TRAVAIL','plan'], ['PLINTHE','plinthe'], ['PERSONNALISATION','perso'] ];
+    const rows = ROWS.map(r => ({ label:r[0], cells: LIGNES.map(l => { const on = l.id === s.ligne; return { txt: l[r[1]], style: 'padding:16px;font-size:14px;line-height:1.45;border-left:1px solid rgba(143,179,207,.2);transition:background .3s;' + (on ? 'background:rgba(232,238,244,.1);color:#fff;font-weight:500;' : 'color:#C9D7E4;') }; }) }));
+    rows.push({ label:'MODULES', cells: LIGNES.map(l => { const on = l.id === s.ligne; return { txt: l.mods.length + ' modules', style: 'padding:16px;font-size:14px;border-left:1px solid rgba(143,179,207,.2);font-family:\'Red Hat Mono\',monospace;' + (on ? 'background:rgba(232,238,244,.1);color:#fff;' : 'color:#C9D7E4;') }; }) });
+
+    return {
+      rootStyle: '--red:' + R + ';font-family:\'Red Hat Text\',sans-serif;background:#F4F3EF;color:#0E2A47;',
+      menuOpen: s.menu, burgerLabel: s.menu ? 'Fermer le menu' : 'Ouvrir le menu', toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      heroStyle: 'background-color:#0E2A47;color:#E8EEF4;' + gridBg,
+      lignes, cur, lv: LV[cur.id], types, mods, empty: mods.length === 0,
+      countLabel: mods.length + (mods.length > 1 ? ' modules à composer.' : ' module à composer.'),
+      rows
+    };
+  }
+}
+</script>
+</body>
+</html>

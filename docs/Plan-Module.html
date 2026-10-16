@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Plan — Module Gourmandise</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&amp;family=Red+Hat+Mono:wght@400;500&amp;family=Red+Hat+Text:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF}
+.pl *{box-sizing:border-box}
+.pl a{color:inherit}
+.pl-wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+.disp{font-family:'Red Hat Display',sans-serif}
+.pl :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.nav-a{position:relative;text-decoration:none;font-weight:500;font-size:15px;padding:12px 0;display:inline-flex;align-items:center;min-height:44px}
+.nav-a::after{content:"";position:absolute;left:0;right:100%;bottom:6px;height:1px;background:var(--red);transition:right .45s cubic-bezier(.6,.1,.2,1)}
+.nav-a:hover::after,.nav-a.on::after{right:0}
+.btn-red{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;background:var(--red);color:#fff !important;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;border:0;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--red)}
+.btn-line{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border:1px solid currentColor;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;background:transparent;cursor:pointer;transition:background .3s,color .3s}
+.btn-line:hover{background:#E8EEF4;color:#0E2A47 !important}
+.btn-line.dk:hover{background:#0E2A47;color:#F4F3EF !important}
+.burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(143,179,207,.5);color:#E8EEF4;cursor:pointer}
+.toplink{text-decoration:none;min-height:34px;display:inline-flex;align-items:center}
+.toplink:hover{color:#E8EEF4}
+.rise{opacity:0;transform:translateY(22px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.mask{clip-path:inset(0 0 100% 0);animation:mask 1.1s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes mask{to{clip-path:inset(0 0 0 0)}}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.svgt{font-family:'Red Hat Mono',monospace;font-size:11px;letter-spacing:.08em}
+.morph path,.morph rect,.morph text{transition:d .7s cubic-bezier(.6,.1,.2,1),transform .7s cubic-bezier(.6,.1,.2,1)}
+.opt{transition:background .25s,color .25s,border-color .25s}
+.opt:hover{border-color:#E8EEF4 !important}
+.vtab{transition:background .25s,color .25s}
+.vtab:hover{background:rgba(232,238,244,.08)}
+.ttab{transition:color .25s,box-shadow .25s}
+.ttab:hover{color:var(--red) !important}
+.swap{animation:swap .55s cubic-bezier(.2,.7,.2,1)}
+@keyframes swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ph{position:relative;overflow:hidden}
+.ph img{transition:transform 1.4s cubic-bezier(.2,.7,.1,1)}
+.ph:hover img{transform:scale(1.05)}
+.fld{width:100%;min-height:48px;border:1px solid rgba(14,42,71,.35);background:#fff;padding:12px 14px;font:inherit;font-size:15px;color:#0E2A47;border-radius:0;transition:border-color .25s,box-shadow .25s}
+.fld:focus{outline:none;border-color:#0E2A47;box-shadow:0 0 0 3px rgba(143,179,207,.45)}
+.lab{display:block;font-family:'Red Hat Mono',monospace;font-size:11px;letter-spacing:.12em;margin-bottom:6px;color:#3A4F66}
+.acard{text-decoration:none;display:flex;flex-direction:column;transition:background .35s,color .35s}
+.acard:hover{background:#0E2A47;color:#E8EEF4}
+.acard:hover .mic{stroke:#E8EEF4}
+.acard .arr{transition:transform .35s}
+.acard:hover .arr{transform:translate(4px,-4px)}
+.lnk{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.lnk:hover{color:var(--red)}
+.foot a{text-decoration:none;display:inline-flex;min-height:32px;align-items:center}
+.foot a:hover{color:#fff;text-decoration:underline}
+.mnav a{display:flex;min-height:52px;align-items:center;border-bottom:1px solid rgba(143,179,207,.2);text-decoration:none;font-size:18px}
+@media (max-width:980px){.desk-nav{display:none !important}.burger{display:inline-flex}.hide-m{display:none !important}}
+@media (max-width:720px){.pl-wrap{padding:0 16px}.btn-red.hdr{padding:0 14px;font-size:14px}}
+</style>
+</helmet>
+<div class="pl" style="{{ rootStyle }}">
+
+<header style="background:#0E2A47;color:#E8EEF4;position:relative;z-index:5">
+  <div style="border-bottom:1px solid rgba(143,179,207,.2)">
+    <div class="pl-wrap mono" style="display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span class="hide-m">BUREAU D’ÉTUDES &amp; SHOW-ROOM — PUGET-SUR-ARGENS (83)</span>
+      <a class="toplink" href="index.html">← TOUTES LES PROPOSITIONS</a>
+    </div>
+  </div>
+  <div class="pl-wrap" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px">
+    <a href="Plan-Accueil.html" aria-label="RGTE, accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" fill="none" stroke="#8FB3CF" stroke-width="1"></rect><path d="M17 4V30M4 17H30" stroke="#8FB3CF" stroke-width="1"></path><circle cx="17" cy="17" r="7" fill="none" stroke="var(--red)" stroke-width="2"></circle></svg>
+      <span style="display:flex;flex-direction:column;line-height:1">
+        <span class="disp" style="font-weight:900;font-size:27px;letter-spacing:.08em">RGTE</span>
+        <span class="mono" style="font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:5px">R.G. TECHNOLOGIES</span>
+      </span>
+    </a>
+    <nav class="desk-nav" aria-label="Navigation principale" style="display:flex;gap:34px">
+      <a class="nav-a on" href="Plan-Lignes.html">Lignes</a>
+      <a class="nav-a" href="Plan-Secteurs.html">Secteurs</a>
+      <a class="nav-a" href="Plan-Realisations.html">Réalisations</a>
+      <a class="nav-a" href="Plan-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="tel:0800951313" class="hide-m" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.2">
+        <span class="mono" style="font-size:15px;font-weight:500;letter-spacing:.04em">0 800 95 13 13</span>
+        <span class="mono" style="font-size:10px;color:#8FB3CF;letter-spacing:.12em">APPEL GRATUIT</span>
+      </a>
+      <a href="#demande" class="btn-red hdr">Demande de devis</a>
+      <button type="button" class="burger" aria-label="{{ burgerLabel }}" onClick="{{ toggleMenu }}"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><path d="M0 1H20M0 7H20M0 13H20" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav pl-wrap" aria-label="Navigation mobile" style="padding-bottom:20px">
+      <a href="Plan-Lignes.html">Lignes</a>
+      <a href="Plan-Secteurs.html">Secteurs</a>
+      <a href="Plan-Realisations.html">Réalisations</a>
+      <a href="Plan-Contact.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313" class="mono">0 800 95 13 13 — appel gratuit</a>
+    </nav>
+  </sc-if>
+</header>
+
+<!-- HERO + DESSIN + CONFIGURATEUR -->
+<section style="{{ heroStyle }}">
+  <div class="pl-wrap" style="padding-top:40px;padding-bottom:72px">
+    <nav aria-label="Fil d’Ariane" class="mono" style="font-size:12px;letter-spacing:.1em;color:#8FB3CF;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="Plan-Lignes.html" style="text-decoration:none;min-height:32px;display:inline-flex;align-items:center">LIGNES</a><span style="display:inline-flex;align-items:center">/</span>
+      <a href="Plan-Lignes.html" style="text-decoration:none;min-height:32px;display:inline-flex;align-items:center">STONE</a><span style="display:inline-flex;align-items:center">/</span>
+      <span style="color:#E8EEF4;display:inline-flex;align-items:center">GOURMANDISE</span>
+    </nav>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 56px;align-items:flex-end;justify-content:space-between;margin-top:24px">
+      <div style="flex:1 1 560px">
+        <p class="mono rise" style="margin:0 0 16px;font-size:12px;letter-spacing:.18em;color:#8FB3CF"><span style="color:var(--red)">■</span> MODULE — LIGNE STONE — FEUILLE C-06</p>
+        <h1 class="disp mask" style="margin:0;font-weight:900;font-size:clamp(52px,8.4vw,128px);line-height:.9;letter-spacing:-.035em;overflow-wrap:anywhere">Gourmandise</h1>
+      </div>
+      <p class="rise" style="margin:0;flex:1 1 340px;max-width:440px;font-size:17px;line-height:1.6;color:#C9D7E4;animation-delay:.3s">Exposition centrale à hauteur du plan de travail, vitrages coulissants des 2 côtés : pâtisseries, macarons ou chocolats, servis de face comme de dos.</p>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px;align-items:stretch">
+      <!-- planche -->
+      <div style="flex:3 1 580px;border:1px solid rgba(143,179,207,.35);display:flex;flex-direction:column;background:#0B2440">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:stretch;border-bottom:1px solid rgba(143,179,207,.35)">
+          <div role="tablist" aria-label="Vue technique" style="display:flex">
+            <sc-for list="{{ vues }}" as="v" hint-placeholder-count="3">
+              <button type="button" role="tab" class="vtab mono" style="{{ v.style }}" aria-selected="{{ v.sel }}" onClick="{{ v.pick }}">{{ v.label }}</button>
+            </sc-for>
+          </div>
+          <span class="mono" style="display:flex;align-items:center;padding:0 16px;font-size:11px;letter-spacing:.12em;color:#8FB3CF">{{ echelle }} — COTES EN MM</span>
+        </div>
+        <div style="padding:16px 12px 8px;flex:1">
+          <sc-if value="{{ isElev }}" hint-placeholder-val="{{ true }}">
+            <svg class="morph swap" viewBox="0 0 900 440" width="100%" style="display:block;height:auto" role="img" aria-label="{{ elevAria }}">
+              <path d="M30 380H870" stroke="#8FB3CF" stroke-width="1"></path>
+              <path d="{{ e.cap }}" fill="#E8EEF4" stroke="#E8EEF4" stroke-width="1"></path>
+              <path d="{{ e.pillars }}" fill="#F4F3EF" fill-opacity=".92" stroke="#E8EEF4" stroke-width="1"></path>
+              <path d="{{ e.glass }}" fill="rgba(143,179,207,.14)" stroke="#8FB3CF" stroke-width="1"></path>
+              <path d="{{ e.slide }}" fill="none" stroke="#E8EEF4" stroke-width="1.2"></path>
+              <path d="{{ e.work }}" fill="#F4F3EF" stroke="#E8EEF4" stroke-width="1"></path>
+              <path d="{{ e.body }}" fill="rgba(232,238,244,.1)" stroke="#E8EEF4" stroke-width="1.2" style="{{ e.bodyStyle }}"></path>
+              <path d="{{ e.plinth }}" fill="#F4F3EF" stroke="#E8EEF4" stroke-width="1"></path>
+              <text x="450" y="268" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:14px;letter-spacing:.3em">{{ serig }}</text>
+              <path d="{{ e.dimL }}" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <path d="{{ e.dimV }}" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <text x="450" y="426" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:14px;font-weight:500">{{ lenMm }}</text>
+              <text transform="{{ e.t800 }}" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:13px">800</text>
+              <text transform="{{ e.t250 }}" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:13px">+250 h</text>
+              <text x="40" y="30" class="svgt" fill="#8FB3CF">ÉLÉVATION — FACE CLIENT</text>
+              <text x="860" y="30" text-anchor="end" class="svgt" fill="#8FB3CF">{{ tempShort }}</text>
+            </svg>
+          </sc-if>
+          <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+            <svg class="morph swap" viewBox="0 0 900 440" width="100%" style="display:block;height:auto" role="img" aria-label="Vue de dessus du module Gourmandise">
+              <path d="{{ pv.outer }}" fill="rgba(232,238,244,.08)" stroke="#E8EEF4" stroke-width="1.4" style="{{ e.bodyStyle }}"></path>
+              <path d="{{ pv.inner }}" fill="rgba(143,179,207,.14)" stroke="#8FB3CF" stroke-width="1"></path>
+              <path d="{{ pv.rails }}" fill="none" stroke="#E8EEF4" stroke-width="1.2"></path>
+              <path d="{{ pv.dimL }}" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <path d="{{ pv.dimD }}" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <text x="450" y="226" text-anchor="middle" class="svgt" fill="#E8EEF4" style="font-size:13px">{{ innerLabel }}</text>
+              <text x="450" y="244" text-anchor="middle" class="svgt" fill="#8FB3CF">EXPOSITION EN VERRE</text>
+              <text x="450" y="88" text-anchor="middle" class="svgt" fill="#8FB3CF">VITRAGE COULISSANT — CÔTÉ VENDEUR</text>
+              <text x="450" y="362" text-anchor="middle" class="svgt" fill="#8FB3CF">VITRAGE COULISSANT — CÔTÉ CLIENT</text>
+              <text x="450" y="420" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:14px;font-weight:500">{{ lenMm }}</text>
+              <text transform="{{ pv.tD }}" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:13px">800</text>
+              <text x="40" y="30" class="svgt" fill="#8FB3CF">PLAN — VUE DE DESSUS</text>
+            </svg>
+          </sc-if>
+          <sc-if value="{{ isCote }}" hint-placeholder-val="{{ false }}">
+            <svg class="swap" viewBox="0 0 900 440" width="100%" style="display:block;height:auto" role="img" aria-label="Vue de côté du module Gourmandise avec groupe logé et froid ventilé">
+              <path d="M30 380H870" stroke="#8FB3CF" stroke-width="1"></path>
+              <path d="M330 59H570V65H330Z" fill="#E8EEF4" stroke="#E8EEF4"></path>
+              <path d="M340 65H560V140H340Z" fill="rgba(143,179,207,.14)" stroke="#8FB3CF"></path>
+              <path d="M340 65V140M560 65V140" stroke="#E8EEF4" stroke-width="2"></path>
+              <path d="M330 140H570V150H330Z" fill="#F4F3EF" stroke="#E8EEF4"></path>
+              <path d="M334 150H566V372H334Z" fill="rgba(232,238,244,.08)" stroke="#E8EEF4" stroke-width="1.2"></path>
+              <path d="M344 372H556V380H344Z" fill="#F4F3EF"></path>
+              <path class="draw" pathLength="1" d="M362 300H538V364H362Z" fill="none" stroke="#8FB3CF" stroke-dasharray="5 4"></path>
+              <path class="draw" pathLength="1" style="animation-delay:.3s" d="M380 136C390 92 510 92 520 136" fill="none" stroke="var(--red)" stroke-width="1.2" stroke-dasharray="4 4"></path>
+              <path d="M514 128L520 136L526 127" fill="none" stroke="var(--red)" stroke-width="1.2"></path>
+              <text x="450" y="336" text-anchor="middle" class="svgt" fill="#8FB3CF">GROUPE LOGÉ</text>
+              <text x="450" y="88" text-anchor="middle" class="svgt" fill="var(--red)">FROID VENTILÉ</text>
+              <path d="M330 404H570M330 392V412M570 392V412M326 408L334 400M566 408L574 400" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <text x="450" y="428" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:14px;font-weight:500">800</text>
+              <path d="M606 140V380M598 140H614M598 380H614M606 65V140M598 65H614M602 144L610 136M602 384L610 376" fill="none" stroke="#E8EEF4" stroke-width=".9"></path>
+              <text transform="translate(626 260) rotate(-90)" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:13px">800</text>
+              <text transform="translate(626 102) rotate(-90)" text-anchor="middle" class="svgt" fill="var(--red)" style="font-size:13px">+250 h</text>
+              <path d="M570 240H680" stroke="#8FB3CF" stroke-width=".8"></path>
+              <text x="686" y="236" class="svgt" fill="#E8EEF4">PIED EN PIERRE</text>
+              <text x="686" y="252" class="svgt" fill="#E8EEF4">ACRYLIQUE BLANCHE</text>
+              <text x="40" y="30" class="svgt" fill="#8FB3CF">CÔTÉ — COUPE TRANSVERSALE</text>
+            </svg>
+          </sc-if>
+        </div>
+        <div class="mono" style="display:flex;flex-wrap:wrap;border-top:1px solid rgba(143,179,207,.35);font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+          <span style="flex:1 1 160px;padding:12px 16px;border-right:1px solid rgba(143,179,207,.35)">GOURMANDISE {{ lenShort }}</span>
+          <span style="flex:1 1 160px;padding:12px 16px;border-right:1px solid rgba(143,179,207,.35)">{{ tempShort }}</span>
+          <span style="flex:1 1 200px;padding:12px 16px">{{ finLabelUp }}</span>
+        </div>
+      </div>
+
+      <!-- configurateur -->
+      <aside aria-label="Configurateur" style="flex:2 1 360px;border:1px solid rgba(143,179,207,.35);padding:24px;display:flex;flex-direction:column;gap:22px">
+        <div>
+          <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">01 — LONGUEUR (CM)</p>
+          <div role="group" aria-label="Longueur" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+            <sc-for list="{{ lens }}" as="l" hint-placeholder-count="7">
+              <button type="button" class="opt mono" style="{{ l.style }}" aria-pressed="{{ l.sel }}" onClick="{{ l.pick }}">{{ l.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">02 — PLAGE DE TEMPÉRATURE</p>
+          <div role="group" aria-label="Température" style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <sc-for list="{{ temps }}" as="t" hint-placeholder-count="2">
+              <button type="button" class="opt" style="{{ t.style }}" aria-pressed="{{ t.sel }}" onClick="{{ t.pick }}"><span class="mono" style="display:block;font-size:15px;font-weight:500">{{ t.label }}</span><span style="display:block;font-size:13px;margin-top:2px;opacity:.8">{{ t.usage }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">03 — FINITION</p>
+          <div role="group" aria-label="Finition" style="display:grid;gap:6px">
+            <sc-for list="{{ fins }}" as="f" hint-placeholder-count="2">
+              <button type="button" class="opt" style="{{ f.style }}" aria-pressed="{{ f.sel }}" onClick="{{ f.pick }}"><span style="{{ f.sw }}"></span><span style="font-size:15px">{{ f.label }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="border-top:1px dashed rgba(143,179,207,.5);padding-top:18px;margin-top:auto">
+          <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#8FB3CF">RÉCAPITULATIF</p>
+          <div class="mono" style="font-size:13px;line-height:1.9">
+            <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#8FB3CF">Module</span><span>Gourmandise · Stone</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#8FB3CF">Longueur</span><span>{{ lenMm }}</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#8FB3CF">Température</span><span>{{ tempShort }}</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:#8FB3CF">Finition</span><span style="text-align:right">{{ finLabel }}</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(143,179,207,.35)">
+            <span class="mono" style="font-size:11px;letter-spacing:.14em;color:#8FB3CF">PRIX</span>
+            <span class="disp swap" style="font-size:36px;font-weight:900;line-height:1">{{ prix }}</span>
+          </div>
+          <p style="margin:8px 0 16px;font-size:13px;color:#C9D7E4;line-height:1.5">{{ prixNote }}</p>
+          <a href="#demande" class="btn-red" style="width:100%">Demander ce modèle</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTOS -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:80px;padding-bottom:40px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+      <figure class="ph" style="margin:0;height:420px;background:#0E2A47"><img src="assets/vitrine-glass-pastry.webp" alt="Vitrine vitrée garnie de pâtisseries" style="width:100%;height:100%;object-fit:cover;display:block"><figcaption class="mono" style="position:absolute;left:0;bottom:0;background:#F4F3EF;font-size:11px;letter-spacing:.1em;padding:8px 12px">+2/+8 — PÂTISSERIES</figcaption></figure>
+      <figure class="ph" style="margin:0;height:420px;background:#0E2A47"><img src="assets/macarons-rows.webp" alt="Rangées de macarons" style="width:100%;height:100%;object-fit:cover;display:block"><figcaption class="mono" style="position:absolute;left:0;bottom:0;background:#F4F3EF;font-size:11px;letter-spacing:.1em;padding:8px 12px">MACARONS</figcaption></figure>
+      <figure class="ph" style="margin:0;height:420px;background:#0E2A47"><img src="assets/chocolates-dark.webp" alt="Bonbons de chocolat" style="width:100%;height:100%;object-fit:cover;display:block"><figcaption class="mono" style="position:absolute;left:0;bottom:0;background:#F4F3EF;font-size:11px;letter-spacing:.1em;padding:8px 12px">+14/+18 — CHOCOLATS</figcaption></figure>
+    </div>
+    <p class="mono" style="margin:12px 0 0;font-size:11px;letter-spacing:.08em;color:#5A6E84">Visuels d’illustration — photos du module à fournir.</p>
+  </div>
+</section>
+
+<!-- ONGLETS + FICHE -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:56px;padding-bottom:96px">
+    <div role="tablist" aria-label="Informations produit" style="display:flex;flex-wrap:wrap;gap:32px;border-bottom:1px solid rgba(14,42,71,.25)">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button type="button" role="tab" class="ttab disp" style="{{ t.style }}" aria-selected="{{ t.sel }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:48px;margin-top:40px">
+      <div style="flex:1.2 1 480px">
+        <sc-if value="{{ tabDesc }}" hint-placeholder-val="{{ true }}">
+          <div class="swap">
+            <h2 class="disp" style="margin:0 0 18px;font-size:36px;font-weight:900;line-height:1.05">Une vitrine qu’on contourne.</h2>
+            <p style="margin:0 0 16px;font-size:17px;line-height:1.7;color:#3A4F66">La Gourmandise expose au centre, à hauteur du plan de travail. Ses vitrages coulissent des deux côtés : le client voit, le vendeur sert, sans tourner le dos à personne. Pâtisseries, macarons ou chocolats, sur une profondeur d’exposition de 60 cm.</p>
+            <p style="margin:0;font-size:17px;line-height:1.7;color:#3A4F66">Deux plages au choix : +2 °C/+8 °C pour la pâtisserie, +14 °C/+18 °C pour le chocolat. Six longueurs de 101 à 222 cm, ou sur mesure.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tabCarac }}" hint-placeholder-val="{{ false }}">
+          <div class="swap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(14,42,71,.2);border:1px solid rgba(14,42,71,.2)">
+            <sc-for list="{{ caracs }}" as="c" hint-placeholder-count="6">
+              <div style="background:#F4F3EF;padding:20px;display:flex;gap:14px;align-items:flex-start">
+                <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" style="flex:none"><path d="{{ c.icon }}" fill="none" stroke="var(--red)" stroke-width="1.4"></path></svg>
+                <span><span class="disp" style="display:block;font-size:17px;font-weight:700">{{ c.t }}</span><span style="display:block;font-size:14px;color:#3A4F66;margin-top:4px;line-height:1.5">{{ c.d }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ tabDim }}" hint-placeholder-val="{{ false }}">
+          <div class="swap">
+            <svg viewBox="0 0 520 260" width="100%" style="display:block;height:auto;max-width:560px" role="img" aria-label="Schéma isométrique des dimensions du modèle 101">
+              <g fill="none" stroke="#0E2A47" stroke-width="1.3">
+                <path d="M120 200L300 236L440 180L260 144Z"></path>
+                <path d="M120 200V110L260 54V144M300 236V146L440 90V180M120 110L300 146L440 90L260 54"></path>
+                <path d="M150 104L170 60H290L300 96" stroke="#8FB3CF"></path>
+              </g>
+              <path d="M116 214L296 250M380 222L444 196M104 196V114" stroke="var(--red)" stroke-width=".9" fill="none"></path>
+              <text x="190" y="252" class="svgt" fill="var(--red)" style="font-size:13px">1010</text>
+              <text x="420" y="226" class="svgt" fill="var(--red)" style="font-size:13px">800</text>
+              <text x="60" y="160" class="svgt" fill="var(--red)" style="font-size:13px">800</text>
+              <text x="190" y="44" class="svgt" fill="#0E2A47">+250 h</text>
+            </svg>
+            <div class="mono" style="margin-top:16px;font-size:14px;line-height:2">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(14,42,71,.15)"><span>Dimensions extérieures (101)</span><span>101 × 80 × 80 + 25 h</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(14,42,71,.15)"><span>Exposition en verre (101)</span><span>81 × 60 cm</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(14,42,71,.15)"><span>Profondeur d’exposition</span><span>60 cm</span></div>
+              <div style="display:flex;justify-content:space-between;gap:12px"><span>Longueurs</span><span style="text-align:right">101 · 117 · 146 · 169 · 191 · 222 · sur mesure</span></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="flex:1 1 400px;border:1.5px solid #0E2A47">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1.5px solid #0E2A47;background:#0E2A47;color:#E8EEF4">
+          <span class="disp" style="font-weight:900;font-size:18px">Fiche technique — modèle 101 cm</span>
+          <span class="mono" style="font-size:11px;letter-spacing:.12em;color:#8FB3CF">C-06</span>
+        </div>
+        <sc-for list="{{ fiche }}" as="f" hint-placeholder-count="12">
+          <div style="display:grid;grid-template-columns:minmax(120px,1fr) 1.4fr;border-bottom:1px solid rgba(14,42,71,.18)">
+            <span class="mono" style="padding:11px 14px;font-size:11px;letter-spacing:.1em;color:#5A6E84;border-right:1px solid rgba(14,42,71,.18)">{{ f.k }}</span>
+            <span style="padding:11px 14px;font-size:14px;line-height:1.4">{{ f.v }}</span>
+          </div>
+        </sc-for>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px">
+          <span class="mono" style="font-size:11px;letter-spacing:.12em;color:#5A6E84">PRIX 101 CM</span>
+          <span class="disp" style="font-size:26px;font-weight:900;color:var(--red)">5 800,00 € HT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULAIRE -->
+<section id="demande" style="background:#E8EEF4;color:#0E2A47;border-top:1px solid rgba(14,42,71,.15)">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:96px;display:flex;flex-wrap:wrap;gap:48px">
+    <div style="flex:1 1 320px">
+      <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">DEMANDE D’INFORMATIONS</p>
+      <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4vw,52px);line-height:1;letter-spacing:-.02em">Une question sur la Gourmandise ?</h2>
+      <p style="margin:20px 0 0;font-size:16px;line-height:1.65;color:#3A4F66">Votre configuration est reprise dans le champ Modèle. Ou appelez le <a href="tel:0800951313" class="mono" style="font-weight:500">0 800 95 13 13</a> (appel gratuit).</p>
+    </div>
+    <div style="flex:2 1 560px">
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submit }}" novalidate="novalidate" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:16px 20px">
+          <div><label class="lab" for="pm-produit">PRODUIT</label><input id="pm-produit" class="fld" type="text" value="Gourmandise — Ligne Stone" readonly="readonly"></div>
+          <div><label class="lab" for="pm-modele">MODÈLE</label><input id="pm-modele" class="fld" type="text" value="{{ modele }}" readonly="readonly"></div>
+          <div><label class="lab" for="pm-nom">NOM *</label><input id="pm-nom" class="fld" type="text" autocomplete="name" onInput="{{ setNom }}" style="{{ errStyle.nom }}"><sc-if value="{{ err.nom }}" hint-placeholder-val="{{ false }}"><span class="mono" style="display:block;margin-top:6px;font-size:12px;color:#B3221A">Champ requis</span></sc-if></div>
+          <div><label class="lab" for="pm-tel">TÉLÉPHONE *</label><input id="pm-tel" class="fld" type="tel" autocomplete="tel" onInput="{{ setTel }}" style="{{ errStyle.tel }}"><sc-if value="{{ err.tel }}" hint-placeholder-val="{{ false }}"><span class="mono" style="display:block;margin-top:6px;font-size:12px;color:#B3221A">Champ requis</span></sc-if></div>
+          <div><label class="lab" for="pm-email">EMAIL *</label><input id="pm-email" class="fld" type="email" autocomplete="email" onInput="{{ setEmail }}" style="{{ errStyle.email }}"><sc-if value="{{ err.email }}" hint-placeholder-val="{{ false }}"><span class="mono" style="display:block;margin-top:6px;font-size:12px;color:#B3221A">Email valide requis</span></sc-if></div>
+          <div><label class="lab" for="pm-secteur">SECTEUR D’ACTIVITÉ</label>
+            <select id="pm-secteur" class="fld">
+              <option>Pâtisserie</option><option>Boulangerie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+            </select></div>
+          <div><label class="lab" for="pm-cp">CODE POSTAL</label><input id="pm-cp" class="fld" type="text" inputmode="numeric" autocomplete="postal-code"></div>
+          <div><label class="lab" for="pm-ville">VILLE</label><input id="pm-ville" class="fld" type="text" autocomplete="address-level2"></div>
+          <div style="grid-column:1/-1"><label class="lab" for="pm-msg">MESSAGE *</label><textarea id="pm-msg" class="fld" rows="5" onInput="{{ setMsg }}" style="{{ errStyle.msg }}"></textarea><sc-if value="{{ err.msg }}" hint-placeholder-val="{{ false }}"><span class="mono" style="display:block;margin-top:6px;font-size:12px;color:#B3221A">Champ requis</span></sc-if></div>
+          <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+            <span class="mono" style="font-size:11px;letter-spacing:.08em;color:#3A4F66">* champs obligatoires — prototype, rien n’est envoyé</span>
+            <button type="submit" class="btn-red">Envoyer ma demande</button>
+          </div>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div class="swap" style="border:1.5px solid #0E2A47;padding:32px;background:#F4F3EF">
+          <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--red)" stroke-width="1.5"></circle><path class="draw" pathLength="1" d="M14 24L21 31L34 17" fill="none" stroke="var(--red)" stroke-width="2"></path></svg>
+          <h3 class="disp" style="margin:16px 0 8px;font-size:28px;font-weight:900">Demande enregistrée — prototype</h3>
+          <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#3A4F66">Prototype — rien n’est envoyé. Modèle demandé : <span class="mono">{{ modele }}</span>.</p>
+          <button type="button" class="btn-line dk" onClick="{{ reset }}">Nouvelle demande</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES ASSOCIÉS -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:96px">
+    <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">MODULES ASSOCIÉS — LIGNE STONE</p>
+    <h2 class="disp" style="margin:0 0 40px;font-weight:900;font-size:clamp(30px,3.6vw,48px);line-height:1;letter-spacing:-.02em">À composer autour de la Gourmandise.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:1px;background:rgba(14,42,71,.2);border:1px solid rgba(14,42,71,.2)">
+      <sc-for list="{{ assoc }}" as="a" hint-placeholder-count="4">
+        <a href="Plan-Module.html" class="acard" style="background:#F4F3EF;padding:22px;min-height:240px">
+          <span class="mono" style="font-size:11px;letter-spacing:.12em;opacity:.7">{{ a.code }}</span>
+          <svg viewBox="0 0 80 64" width="90" height="72" style="display:block;margin:16px 0" aria-hidden="true"><path class="mic" d="{{ a.icon }}" fill="none" stroke="#0E2A47" stroke-width="1.2" style="transition:stroke .35s"></path></svg>
+          <span class="disp" style="font-size:21px;font-weight:700">{{ a.nom }}</span>
+          <span style="margin-top:6px;font-size:14px;line-height:1.5;opacity:.85">{{ a.spec }}</span>
+          <svg class="arr" width="16" height="16" viewBox="0 0 18 18" aria-hidden="true" style="margin-top:auto;padding-top:0;align-self:flex-end"><path d="M3 15L15 3M6 3H15V12" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" style="background:#0E2A47;color:#E8EEF4;padding:64px 0 28px">
+  <div class="pl-wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(143,179,207,.35);border:1px solid rgba(143,179,207,.35)">
+      <div style="background:#0E2A47;padding:22px"><span class="disp" style="font-weight:900;font-size:30px;letter-spacing:.08em">RGTE</span><span class="mono" style="display:block;font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:6px">R.G. TECHNOLOGIES</span><p style="margin:14px 0 0;font-size:14px;color:#C9D7E4;line-height:1.5">Agencement de vitrines réfrigérées</p></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">BUREAU D’ÉTUDES &amp; SHOW-ROOM</span>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">TÉLÉPHONE</span><a href="tel:0800951313" class="mono" style="font-size:18px">0 800 95 13 13</a><br>Appel gratuit · [HORAIRES]</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">SITE</span><a href="Plan-Lignes.html">Lignes</a><a href="Plan-Secteurs.html">Secteurs</a><a href="Plan-Realisations.html">Réalisations</a><a href="Plan-Contact.html">Showroom &amp; contact</a></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">LÉGAL</span><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+    </div>
+    <div class="mono" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:20px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span>© RGTE — R.G. TECHNOLOGIES</span>
+      <span>FEUILLE 03 / 06 — MODULE</span>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4400},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1A1A1A","#B08D57"]},"grille":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu:false, vue:'elev', len:101, temp:'p', fin:'blanc', tab:'desc', f:{ nom:'', tel:'', email:'', msg:'' }, tried:false, sent:false }; }
+  renderVals() {
+    const p = this.props || {};
+    const R = p.accent || '#D42A20';
+    const grid = p.grille !== false;
+    const s = this.state;
+    const gridBg = grid ? 'background-image:linear-gradient(rgba(143,179,207,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(143,179,207,.09) 1px,transparent 1px);background-size:40px 40px;' : '';
+    const sur = s.len === 'sur';
+    const L = sur ? 180 : s.len;
+    const k = 3, W = L * k, x0 = 450 - W / 2, x1 = 450 + W / 2, cx = 450, xd = x1 + 36;
+    const e = {
+      cap: 'M' + x0 + ' 59H' + x1 + 'V65H' + x0 + 'Z',
+      pillars: 'M' + x0 + ' 65H' + (x0 + 30) + 'V140H' + x0 + 'ZM' + (x1 - 30) + ' 65H' + x1 + 'V140H' + (x1 - 30) + 'Z',
+      glass: 'M' + (x0 + 30) + ' 65H' + (x1 - 30) + 'V140H' + (x0 + 30) + 'Z',
+      slide: 'M' + (x0 + 34) + ' 74H' + (cx + 14) + 'M' + (cx - 14) + ' 80H' + (x1 - 34) + 'M' + (cx + 14) + ' 70V78M' + (cx - 14) + ' 76V84',
+      work: 'M' + x0 + ' 140H' + x1 + 'V150H' + x0 + 'Z',
+      body: 'M' + (x0 + 4) + ' 150H' + (x1 - 4) + 'V372H' + (x0 + 4) + 'Z',
+      plinth: 'M' + (x0 + 14) + ' 372H' + (x1 - 14) + 'V380H' + (x0 + 14) + 'Z',
+      dimL: 'M' + x0 + ' 404H' + x1 + 'M' + x0 + ' 386V412M' + x1 + ' 386V412M' + (x0 - 4) + ' 408L' + (x0 + 4) + ' 400M' + (x1 - 4) + ' 408L' + (x1 + 4) + ' 400',
+      dimV: 'M' + xd + ' 140V380M' + (xd - 8) + ' 140H' + (xd + 8) + 'M' + (xd - 8) + ' 380H' + (xd + 8) + 'M' + xd + ' 65V140M' + (xd - 8) + ' 65H' + (xd + 8) + 'M' + (xd - 4) + ' 144L' + (xd + 4) + ' 136M' + (xd - 4) + ' 384L' + (xd + 4) + ' 376M' + (xd - 4) + ' 69L' + (xd + 4) + ' 61',
+      t800: 'translate(' + (xd + 18) + ' 260) rotate(-90)',
+      t250: 'translate(' + (xd + 18) + ' 102) rotate(-90)',
+      bodyStyle: sur ? 'stroke-dasharray:8 6' : ''
+    };
+    const pv = {
+      outer: 'M' + x0 + ' 100H' + x1 + 'V340H' + x0 + 'Z',
+      inner: 'M' + (x0 + 30) + ' 130H' + (x1 - 30) + 'V310H' + (x0 + 30) + 'Z',
+      rails: 'M' + (x0 + 30) + ' 110H' + (cx + 12) + 'M' + (cx - 12) + ' 118H' + (x1 - 30) + 'M' + (x0 + 30) + ' 322H' + (cx + 12) + 'M' + (cx - 12) + ' 330H' + (x1 - 30),
+      dimL: 'M' + x0 + ' 396H' + x1 + 'M' + x0 + ' 346V404M' + x1 + ' 346V404M' + (x0 - 4) + ' 400L' + (x0 + 4) + ' 392M' + (x1 - 4) + ' 400L' + (x1 + 4) + ' 392',
+      dimD: 'M' + xd + ' 100V340M' + (x1 + 6) + ' 100H' + (xd + 8) + 'M' + (x1 + 6) + ' 340H' + (xd + 8) + 'M' + (xd - 4) + ' 104L' + (xd + 4) + ' 96M' + (xd - 4) + ' 344L' + (xd + 4) + ' 336',
+      tD: 'translate(' + (xd + 18) + ' 220) rotate(-90)'
+    };
+    const LENS = [101, 117, 146, 169, 191, 222, 'sur'];
+    const optBase = 'min-height:48px;cursor:pointer;font-family:inherit;';
+    const optOn = on => (on ? 'background:#E8EEF4;color:#0E2A47;border:1px solid #E8EEF4;' : 'background:transparent;color:#E8EEF4;border:1px solid rgba(143,179,207,.4);');
+    const lens = LENS.map(v => { const on = s.len === v; return { label: v === 'sur' ? 'Sur mesure' : String(v), sel: on ? 'true' : 'false', pick: () => this.setState({ len:v }),
+      style: optBase + 'font-family:\'Red Hat Mono\',monospace;font-size:14px;' + optOn(on) + (v === 'sur' ? 'grid-column:span 2;' : '') }; });
+    const TEMPS = [ { id:'p', label:'+2 / +8 °C', usage:'Pâtisserie', short:'+2 °C / +8 °C' }, { id:'c', label:'+14 / +18 °C', usage:'Chocolat', short:'+14 °C / +18 °C' } ];
+    const temps = TEMPS.map(t => { const on = s.temp === t.id; return { label:t.label, usage:t.usage, sel: on ? 'true' : 'false', pick: () => this.setState({ temp:t.id }),
+      style: optBase + 'padding:12px;text-align:left;' + optOn(on) + (on ? 'box-shadow:inset 3px 0 0 ' + R + ';' : '') }; });
+    const FINS = [ { id:'blanc', label:'Pierre acrylique blanche', sw:'#F4F3EF' }, { id:'autre', label:'Autre coloris — [COLORIS]', sw:'repeating-linear-gradient(45deg,#8FB3CF 0 4px,transparent 4px 8px)' } ];
+    const fins = FINS.map(f => { const on = s.fin === f.id; return { label:f.label, sel: on ? 'true' : 'false', pick: () => this.setState({ fin:f.id }),
+      sw: 'display:inline-block;width:22px;height:22px;flex:none;border:1px solid #8FB3CF;background:' + f.sw + ';',
+      style: optBase + 'display:flex;gap:12px;align-items:center;padding:0 14px;text-align:left;' + optOn(on) }; });
+    const curT = TEMPS.find(t => t.id === s.temp);
+    const curF = FINS.find(f => f.id === s.fin);
+    const lenMm = sur ? 'L SUR MESURE' : (s.len * 10) + ' MM';
+    const VUES = [ { id:'elev', label:'ÉLÉVATION' }, { id:'plan', label:'PLAN' }, { id:'cote', label:'CÔTÉ' } ];
+    const vues = VUES.map(v => { const on = s.vue === v.id; return { label:v.label, sel: on ? 'true' : 'false', pick: () => this.setState({ vue:v.id }),
+      style: 'min-height:48px;padding:0 18px;font-size:12px;letter-spacing:.14em;cursor:pointer;border:0;border-right:1px solid rgba(143,179,207,.35);' + (on ? 'background:#E8EEF4;color:#0E2A47;' : 'background:transparent;color:#E8EEF4;') }; });
+    const TABS = [ { id:'desc', label:'Description' }, { id:'carac', label:'Caractéristiques' }, { id:'dim', label:'Dimensions' } ];
+    const tabs = TABS.map(t => { const on = s.tab === t.id; return { label:t.label, sel: on ? 'true' : 'false', pick: () => this.setState({ tab:t.id }),
+      style: 'min-height:56px;padding:0;background:transparent;border:0;cursor:pointer;font-size:20px;font-weight:700;' + (on ? 'color:#0E2A47;box-shadow:inset 0 -3px 0 ' + R + ';' : 'color:#5A6E84;box-shadow:none;') }; });
+    const caracs = [
+      { t:'Groupe logé', d:'Le groupe froid est intégré au meuble.', icon:'M4 8H24V24H4ZM8 14H20M8 18H20' },
+      { t:'Froid ventilé', d:'Air brassé dans l’exposition.', icon:'M4 10C8 4 12 16 16 10S24 4 24 10M4 18C8 12 12 24 16 18S24 12 24 18' },
+      { t:'Contrôle électronique', d:'Température pilotée électroniquement.', icon:'M6 4H22V24H6ZM10 9H18V14H10ZM10 19H12M16 19H18' },
+      { t:'Dégivrage automatique', d:'Sans intervention manuelle.', icon:'M14 3V25M5 8L23 20M23 8L5 20' },
+      { t:'Ré-évaporation automatique', d:'Des eaux de condensation.', icon:'M14 4C10 10 8 13 8 17A6 6 0 0 0 20 17C20 13 18 10 14 4Z' },
+      { t:'Fréon R134A', d:'Fluide frigorigène du modèle 101.', icon:'M14 4A10 10 0 1 0 14.01 4M9 14H19M14 9V19' }
+    ];
+    const fiche = [
+      { k:'LIGNE', v:'Stone' }, { k:'EXPOSITION', v:'Centrale, à hauteur du plan de travail' }, { k:'VITRAGES', v:'Coulissants des 2 côtés' },
+      { k:'PILIERS & PLAN', v:'Pierre acrylique blanche' }, { k:'PIED', v:'Pierre acrylique blanche' }, { k:'GROUPE', v:'Logé' },
+      { k:'FROID', v:'Ventilé — fréon R134A' }, { k:'RÉGULATION', v:'Contrôle électronique de la température' }, { k:'DÉGIVRAGE', v:'Automatique ; ré-évaporation automatique des eaux de condensation' },
+      { k:'TEMPÉRATURE', v:'+2 °C/+8 °C ou +14 °C/+18 °C' }, { k:'DIM. EXTÉRIEURES', v:'101 × 80 × 80 + 25 h' }, { k:'EXPOSITION VERRE', v:'81 × 60 cm' },
+      { k:'PROF. D’EXPOSITION', v:'60 cm' }, { k:'RÉSERVE', v:'Sans réserve réfrigérée' }
+    ];
+    const assoc = [
+      { code:'ST-01', nom:'Réfrigérée Plane', spec:'À hauteur du plan de travail ; profondeur 53 ou 60 cm.', icon:'M6 40H74V58H6ZM10 40L16 16H64L70 40M16 30H64' },
+      { code:'ST-02', nom:'Réfrigérée Vision', spec:'Exposition 8 cm sous le plan de travail.', icon:'M6 40H74V58H6ZM10 40L16 22H64L70 40' },
+      { code:'ST-05', nom:'Réfrigérée Centrale', spec:'Vitrages coulissants des 2 côtés ; profondeur 60 cm.', icon:'M6 40H74V58H6ZM10 40L14 16H66L70 40M40 16V40' },
+      { code:'ST-10', nom:'Réfrigérée Panorama', spec:'Étagères réfrigérées +4/+8 ; 2 ou 3 étagères.', icon:'M10 6H70V58H10ZM10 22H70M10 38H70M16 6V58' }
+    ];
+    const f = s.f;
+    const emailOk = /.+@.+\..+/.test(f.email);
+    const err = { nom: s.tried && !f.nom.trim(), tel: s.tried && !f.tel.trim(), email: s.tried && !emailOk, msg: s.tried && !f.msg.trim() };
+    const eS = on => on ? 'border-color:#B3221A;box-shadow:0 0 0 3px rgba(179,34,26,.15)' : '';
+    const setF = key => ev => { const v = ev && ev.target ? ev.target.value : ''; this.setState({ f: Object.assign({}, this.state.f, { [key]: v }) }); };
+    const modele = 'Gourmandise ' + (sur ? 'sur mesure' : s.len + ' cm') + ' · ' + curT.short + ' · ' + curF.label;
+    return {
+      rootStyle: '--red:' + R + ';font-family:\'Red Hat Text\',sans-serif;background:#F4F3EF;color:#0E2A47;',
+      menuOpen: s.menu, burgerLabel: s.menu ? 'Fermer le menu' : 'Ouvrir le menu', toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      heroStyle: 'background-color:#0E2A47;color:#E8EEF4;' + gridBg,
+      vues, isElev: s.vue === 'elev', isPlan: s.vue === 'plan', isCote: s.vue === 'cote',
+      e, pv, lenMm, lenShort: sur ? 'SUR MESURE' : s.len + ' CM', echelle: 'ÉCHELLE ADAPTÉE',
+      innerLabel: s.len === 101 ? '810 × 600' : 'PROF. 600',
+      elevAria: 'Élévation du module Gourmandise, longueur ' + (sur ? 'sur mesure' : s.len + ' cm'),
+      serig: 'VOTRE SÉRIGRAPHIE',
+      tempShort: curT.short, finLabel: curF.label, finLabelUp: curF.label.toUpperCase(),
+      lens, temps, fins,
+      prix: s.len === 101 ? '5 800,00 € HT' : 'Sur devis',
+      prixNote: s.len === 101 ? 'Modèle 101 cm, pierre acrylique blanche. Hors livraison et pose : [À PRÉCISER].' : 'Seul le modèle 101 cm a un prix publié. Cette configuration : sur devis.',
+      tabs, tabDesc: s.tab === 'desc', tabCarac: s.tab === 'carac', tabDim: s.tab === 'dim', caracs, fiche, assoc,
+      modele, err, errStyle: { nom: eS(err.nom), tel: eS(err.tel), email: eS(err.email), msg: eS(err.msg) },
+      setNom: setF('nom'), setTel: setF('tel'), setEmail: setF('email'), setMsg: setF('msg'),
+      submit: ev => { if (ev && ev.preventDefault) ev.preventDefault(); const g = this.state.f; const ok = g.nom.trim() && g.tel.trim() && /.+@.+\..+/.test(g.email) && g.msg.trim(); this.setState(ok ? { sent:true, tried:false } : { tried:true }); },
+      sent: s.sent, notSent: !s.sent,
+      reset: () => this.setState({ sent:false, tried:false, f:{ nom:'', tel:'', email:'', msg:'' } })
+    };
+  }
+}
+</script>
+</body>
+</html>

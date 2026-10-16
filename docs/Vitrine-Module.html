@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vitrine — Module Gourmandise</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Manrope:wght@300;400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#101010}
+.vt{font-family:'Manrope',system-ui,sans-serif;color:#EEE9E1;background:#101010;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6;font-size:15px}
+.vt *{box-sizing:border-box}
+.vt a{color:inherit;text-decoration:none}
+.vt img{display:block;max-width:100%}
+.vt button,.vt input,.vt select,.vt textarea{font-family:inherit}
+.vt-wrap{max-width:1320px;margin:0 auto;padding:0 48px}
+.vt-d{font-family:'Libre Caslon Display',Georgia,serif;font-weight:400;line-height:1.04;letter-spacing:-.005em;margin:0}
+.vt-sc{font-size:11px;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:#A8A39A}
+.vt-brass{color:var(--brass)}
+.vt-h2{font-size:clamp(34px,4.6vw,64px)}
+.vt-lead{font-size:17px;color:#A8A39A;max-width:560px;margin:0}
+.vt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D42A20;flex:none}
+.vt-sec{padding:120px 0}
+.vt-sechead{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:28px 80px;align-items:end;margin-bottom:56px}
+.vt-kicker{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.vt-kicker::before{content:"";width:40px;height:1px;background:var(--brass)}
+.vt-strip{border-bottom:1px solid rgba(238,233,225,.08);font-size:12px;color:#A8A39A}
+.vt-stripin{display:flex;justify-content:space-between;align-items:center;min-height:40px;gap:16px;flex-wrap:wrap}
+.vt-stripin a{display:inline-flex;align-items:center;gap:8px;min-height:40px;transition:color .3s}
+.vt-stripin a:hover{color:#EEE9E1}
+.vt-head{position:sticky;top:0;z-index:60;background:rgba(16,16,16,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(176,141,87,.22)}
+.vt-headin{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:84px}
+.vt-logo{display:inline-flex;align-items:center;gap:12px;min-height:48px}
+.vt-logo b{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:28px;letter-spacing:.18em;line-height:1}
+.vt-logo small{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#A8A39A;font-weight:600;padding-left:12px;border-left:1px solid rgba(176,141,87,.5);line-height:1.3}
+.vt-nav{display:flex;gap:36px}
+.vt-nav a{position:relative;display:inline-flex;align-items:center;min-height:48px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#A8A39A;transition:color .3s}
+.vt-nav a::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:1px;background:var(--brass);transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.2,.7,.1,1)}
+.vt-nav a:hover,.vt-nav a.on{color:#EEE9E1}
+.vt-nav a:hover::after,.vt-nav a.on::after{transform:scaleX(1);transform-origin:left}
+.vt-headr{display:flex;align-items:center;gap:22px}
+.vt-tel{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.25;min-height:44px}
+.vt-tel .vt-sc{font-size:10px;letter-spacing:.26em}
+.vt-tel strong{font-size:15px;font-weight:600;letter-spacing:.06em}
+.vt-burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(238,233,225,.2);color:#EEE9E1;cursor:pointer}
+.vt-mnav{display:none}
+.vt-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:0 28px;border:1px solid var(--brass);background:transparent;color:#EEE9E1;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;cursor:pointer;position:relative;overflow:hidden;transition:color .5s,border-color .5s;z-index:0;white-space:nowrap}
+.vt-btn::before{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:#EEE9E1;transform:translateY(101%);transition:transform .55s cubic-bezier(.2,.7,.1,1);z-index:-1}
+.vt-btn:hover{color:#101010;border-color:#EEE9E1}
+.vt-btn:hover::before{transform:none}
+.vt-btn.solid{background:#EEE9E1;color:#101010;border-color:#EEE9E1}
+.vt-btn.solid::before{background:var(--brass)}
+.vt-btn.solid:hover{border-color:var(--brass)}
+.vt-link{display:inline-flex;align-items:center;gap:14px;min-height:44px;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#EEE9E1;background:none;border:0;cursor:pointer;padding:0}
+.vt-link span{padding-bottom:5px;border-bottom:1px solid var(--brass)}
+.vt-link svg{transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.vt-link:hover svg{transform:translateX(6px)}
+.vt-foot{border-top:1px solid rgba(176,141,87,.35);padding:96px 0 36px;background:#0C0C0C}
+.vt-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:48px}
+.vt-foot h4{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--brass);margin:0 0 18px;font-weight:600}
+.vt-foot p{font-size:14px;color:#A8A39A;margin:0}
+.vt-footlinks{display:flex;flex-direction:column}
+.vt-footlinks a{min-height:44px;display:flex;align-items:center;font-size:14px;color:#A8A39A;transition:color .3s}
+.vt-footlinks a:hover{color:#EEE9E1}
+.vt-footbot{margin-top:64px;padding-top:24px;border-top:1px solid rgba(238,233,225,.08);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;color:#A8A39A}
+.vt-footbot a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes vtRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vtFade{from{opacity:0}to{opacity:1}}
+.vt-rise{animation:vtRise 1.1s cubic-bezier(.2,.7,.1,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}.d4{animation-delay:.5s}
+.vt :focus-visible{outline:1px solid #EEE9E1;outline-offset:4px}
+
+/* fiche */
+.vt-crumb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:34px 0 0}
+.vt-crumb a{min-height:44px;display:inline-flex;align-items:center;color:#A8A39A;transition:color .3s}
+.vt-crumb a:hover{color:#EEE9E1}
+.vt-prod{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:64px;padding:30px 0 110px;align-items:start}
+.vt-visual{position:sticky;top:110px}
+.vt-viewsw{display:flex;gap:0;border:1px solid rgba(238,233,225,.14);width:max-content;margin-bottom:16px}
+.vt-viewsw button{min-height:44px;padding:0 20px;background:transparent;border:0;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .4s,color .4s}
+.vt-draw{position:relative;height:520px;overflow:hidden;border:1px solid rgba(238,233,225,.09);background-color:#131313;background-image:linear-gradient(rgba(238,233,225,.035) 1px,rgba(0,0,0,0) 1px),linear-gradient(90deg,rgba(238,233,225,.035) 1px,rgba(0,0,0,0) 1px);background-size:24px 24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 70px 54px}
+.vt-draw::before{content:"";position:absolute;left:50%;top:-120px;width:820px;height:640px;margin-left:-410px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(238,224,200,.09),rgba(238,224,200,0) 70%);pointer-events:none}
+.vt-drawtag{position:absolute;left:22px;top:18px;display:flex;flex-direction:column;gap:4px}
+.vt-drawtemp{position:absolute;right:22px;top:18px;text-align:right}
+.vt-drawtemp b{display:block;font-family:'Libre Caslon Display',serif;font-weight:400;font-size:26px;color:#EEE9E1}
+.vt-unit{position:relative;transition:width 1.1s cubic-bezier(.2,.7,.1,1);max-width:100%}
+.vt-unit .gl{position:relative;height:130px;border:1px solid rgba(238,233,225,.42);border-bottom:0;overflow:hidden;background:linear-gradient(180deg,rgba(238,233,225,.07),rgba(238,233,225,.015))}
+.vt-unit .led{position:absolute;left:3%;right:3%;top:0;height:2px;transition:background 1s,box-shadow 1s}
+.vt-unit .pr{position:absolute;left:10px;right:10px;bottom:10px;height:34px;transition:background 1s}
+.vt-unit .panes{position:absolute;left:0;top:0;right:0;bottom:0}
+.vt-unit .sh{position:absolute;top:-20px;bottom:-20px;left:0;width:30%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,247,232,.16),rgba(255,255,255,0));animation:vtSheen 6.5s cubic-bezier(.45,0,.2,1) infinite}
+@keyframes vtSheen{0%{transform:translateX(-160%) skewX(-16deg)}55%,100%{transform:translateX(440%) skewX(-16deg)}}
+.vt-unit .wt{height:14px;background:linear-gradient(180deg,#F3EFE8,#D6D0C5);border-top:1px solid var(--brass);transition:background 1s}
+.vt-unit .ped{margin:0 auto;width:78%;height:150px;transition:background 1s;display:flex;align-items:center;justify-content:center}
+.vt-unit .ped span{font-size:10px;letter-spacing:.3em;text-transform:uppercase;font-weight:700}
+.vt-hcote{position:absolute;right:-40px;top:0;bottom:0;width:12px;border-top:1px solid #A8A39A;border-bottom:1px solid #A8A39A}
+.vt-hcote::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:1px;background:#A8A39A}
+.vt-hcote span{position:absolute;left:18px;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:left center;white-space:nowrap;font-size:10px;letter-spacing:.2em;color:#A8A39A}
+.vt-wcote{position:relative;margin-top:22px;height:12px;border-left:1px solid var(--brass);border-right:1px solid var(--brass);transition:width 1.1s cubic-bezier(.2,.7,.1,1);max-width:100%}
+.vt-wcote::before{content:"";position:absolute;left:0;right:0;top:6px;height:1px;background:var(--brass)}
+.vt-wcote span{position:absolute;left:50%;top:-4px;transform:translateX(-50%);background:#131313;padding:0 12px;font-family:'Libre Caslon Display',serif;font-size:18px;color:#EEE9E1;white-space:nowrap}
+.vt-photo{position:relative;height:520px;overflow:hidden;border:1px solid rgba(238,233,225,.09);animation:vtFade .8s ease both}
+.vt-photo img{width:100%;height:520px;object-fit:cover;filter:brightness(.85)}
+.vt-photo span{position:absolute;left:20px;bottom:16px}
+.vt-thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.vt-thumbs div{height:110px;overflow:hidden;border:1px solid rgba(238,233,225,.08)}
+.vt-thumbs img{width:100%;height:110px;object-fit:cover;filter:grayscale(.3) brightness(.7);transition:filter .6s,transform 1.2s}
+.vt-thumbs div:hover img{filter:none;transform:scale(1.06)}
+
+.vt-conf h1{font-size:clamp(46px,5vw,74px);margin:14px 0 18px}
+.vt-group{margin-top:34px}
+.vt-group legend,.vt-glabel{display:flex;justify-content:space-between;width:100%;margin-bottom:14px;padding:0}
+.vt-group fieldset{border:0;margin:0;padding:0;min-width:0}
+.vt-lens{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.vt-opt{min-height:52px;padding:8px 10px;background:transparent;border:1px solid rgba(238,233,225,.16);color:#EEE9E1;cursor:pointer;font-size:14px;transition:border-color .4s,background .4s,color .4s;text-align:center}
+.vt-opt:hover{border-color:rgba(238,233,225,.5)}
+.vt-opt2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vt-opt2 .vt-opt{text-align:left;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-height:72px}
+.vt-opt2 .vt-opt small{font-size:12px;color:#A8A39A}
+.vt-recap{margin-top:38px;border:1px solid rgba(176,141,87,.38);background:#161616;padding:26px 26px 24px;position:relative}
+.vt-recap::before{content:"";position:absolute;left:26px;top:-1px;width:44px;height:1px;background:#D42A20}
+.vt-recrow{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid rgba(238,233,225,.07);font-size:14.5px}
+.vt-recrow span:first-child{color:#A8A39A}
+.vt-price{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-top:20px;flex-wrap:wrap}
+.vt-price b{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:44px;line-height:1;animation:vtFade .6s ease both}
+.vt-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+/* onglets */
+.vt-tabs{display:flex;gap:40px;border-bottom:1px solid rgba(238,233,225,.12);margin-bottom:48px;overflow-x:auto}
+.vt-tab{position:relative;min-height:56px;background:transparent;border:0;cursor:pointer;font-family:'Libre Caslon Display',serif;font-size:26px;padding:0 0 10px;white-space:nowrap;transition:color .4s}
+.vt-tab::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--brass);transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.1,1)}
+.vt-tabpane{animation:vtRise .8s cubic-bezier(.2,.7,.1,1) both}
+.vt-desc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:48px 80px}
+.vt-desc p{margin:0 0 18px;color:#A8A39A;font-size:16px}
+.vt-desc .vt-d{font-size:34px;margin-bottom:20px}
+.vt-feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:0 56px}
+.vt-feat div{display:flex;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(238,233,225,.08);font-size:15px;transition:padding .5s}
+.vt-feat div:hover{padding-left:8px}
+.vt-feat i{font-style:normal;font-family:'Libre Caslon Display',serif;color:var(--brass);min-width:30px}
+.vt-dims{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.vt-dimtable{border-top:1px solid rgba(238,233,225,.12)}
+.vt-dimrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:14px 0;border-bottom:1px solid rgba(238,233,225,.08);font-size:14.5px;transition:background .5s}
+.vt-elev{border:1px solid rgba(238,233,225,.08);background:#131313;padding:28px}
+
+/* formulaire */
+.vt-formgrid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:72px}
+.vt-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 24px}
+.vt-field{display:flex;flex-direction:column;gap:8px}
+.vt-field.full{grid-column:1 / -1}
+.vt-field label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#A8A39A}
+.vt-field input,.vt-field select,.vt-field textarea{min-height:52px;background:#161616;border:1px solid rgba(238,233,225,.16);color:#EEE9E1;font-size:15px;padding:12px 14px;outline:none;transition:border-color .4s;border-radius:0}
+.vt-field textarea{min-height:140px;resize:vertical}
+.vt-field input:focus,.vt-field select:focus,.vt-field textarea:focus{border-color:var(--brass)}
+.vt-field input[readonly]{color:#A8A39A}
+.vt-err{font-size:12.5px;color:#F0A39C}
+.vt-sent{border:1px solid rgba(176,141,87,.5);padding:48px;background:#161616;animation:vtRise .8s cubic-bezier(.2,.7,.1,1) both}
+
+/* associés */
+.vt-rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:24px}
+.vt-relc{display:block;border:1px solid rgba(238,233,225,.08);padding:28px 24px 26px;background:#141414;transition:border-color .5s,transform .7s cubic-bezier(.2,.7,.1,1)}
+.vt-relc:hover{border-color:rgba(176,141,87,.6);transform:translateY(-8px)}
+.vt-mini{height:110px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;margin-bottom:24px}
+.vt-mini .g{width:80%;border:1px solid rgba(238,233,225,.4);border-bottom:0;background:linear-gradient(180deg,rgba(238,233,225,.08),rgba(238,233,225,.02))}
+.vt-mini .t{width:80%;height:5px;background:#D9D3C8;border-top:1px solid var(--brass)}
+.vt-mini .b{width:66%;height:40px;background:linear-gradient(90deg,#CFC9BE,#ECE7DF 45%,#D8D2C7)}
+.vt-relc h3{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:28px;margin:10px 0 8px}
+.vt-relc p{margin:0;color:#A8A39A;font-size:14px}
+
+@media (max-width:1100px){
+  .vt-nav,.vt-tel{display:none}
+  .vt-burger{display:inline-flex}
+  .vt-mnav{display:flex;flex-direction:column;padding:8px 24px 28px;border-top:1px solid rgba(238,233,225,.08)}
+  .vt-mnav a{min-height:54px;display:flex;align-items:center;font-family:'Libre Caslon Display',serif;font-size:26px;border-bottom:1px solid rgba(238,233,225,.06)}
+  .vt-mnav .vt-btn{margin-top:20px;font-family:'Manrope',sans-serif;font-size:11.5px}
+  .vt-prod,.vt-formgrid,.vt-dims{grid-template-columns:minmax(0,1fr)}
+  .vt-visual{position:relative;top:0}
+}
+@media (max-width:640px){
+  .vt-wrap{padding:0 20px}
+  .vt-headcta{display:none}
+  .vt-logo small{display:none}
+  .vt-sec{padding:90px 0}
+  .vt-draw,.vt-photo,.vt-photo img{height:400px}
+  .vt-draw{padding:0 46px 44px}
+  .vt-unit .ped{height:100px}
+  .vt-unit .gl{height:100px}
+  .vt-lens{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vt-form{grid-template-columns:minmax(0,1fr)}
+  .vt-dimrow{grid-template-columns:1fr 1fr}
+  .vt-tab{font-size:21px}
+}
+@media (prefers-reduced-motion:reduce){.vt *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="vt" style="{{ rootStyle }}">
+
+  <div class="vt-strip">
+    <div class="vt-wrap vt-stripin">
+      <a href="index.html"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M16 5H2M6 1L2 5l4 4"></path></svg>Toutes les propositions</a>
+      <span>Direction 1 · Vitrine — proposition de refonte, concept non officiel</span>
+    </div>
+  </div>
+
+  <header class="vt-head">
+    <div class="vt-wrap vt-headin">
+      <a href="Vitrine-Accueil.html" class="vt-logo" aria-label="RGTE, retour à l’accueil"><b>RGTE</b><span class="vt-dot"></span><small>R.G. Technologies</small></a>
+      <nav class="vt-nav" aria-label="Navigation principale">
+        <a href="Vitrine-Lignes.html" class="on">Lignes</a>
+        <a href="Vitrine-Secteurs.html">Secteurs</a>
+        <a href="Vitrine-Realisations.html">Réalisations</a>
+        <a href="Vitrine-Contact.html">Showroom &amp; contact</a>
+      </nav>
+      <div class="vt-headr">
+        <a class="vt-tel" href="tel:0800951313"><span class="vt-sc">Appel gratuit</span><strong>0 800 95 13 13</strong></a>
+        <a class="vt-btn vt-headcta" href="Vitrine-Contact.html">Demande de devis</a>
+        <button type="button" class="vt-burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuExpanded }}" onClick="{{ toggleMenu }}"><svg width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 1h20M0 6h20M0 11h20"></path></svg></button>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav class="vt-mnav" aria-label="Navigation mobile">
+        <a href="Vitrine-Lignes.html">Lignes</a>
+        <a href="Vitrine-Secteurs.html">Secteurs</a>
+        <a href="Vitrine-Realisations.html">Réalisations</a>
+        <a href="Vitrine-Contact.html">Showroom &amp; contact</a>
+        <a href="tel:0800951313">0 800 95 13 13</a>
+        <a class="vt-btn solid" href="Vitrine-Contact.html">Plan 3D offert</a>
+      </nav>
+    </sc-if>
+  </header>
+
+  <div class="vt-wrap">
+    <div class="vt-crumb vt-sc"><a href="Vitrine-Accueil.html">Accueil</a><span>/</span><a href="Vitrine-Lignes.html">Lignes</a><span>/</span><a href="Vitrine-Lignes.html">Stone</a><span>/</span><span>Module Gourmandise</span></div>
+
+    <!-- ===== FICHE + CONFIGURATEUR ===== -->
+    <section class="vt-prod" aria-label="Module Gourmandise et configurateur">
+      <div class="vt-visual vt-rise">
+        <div class="vt-viewsw" role="group" aria-label="Type de visuel">
+          <button type="button" aria-pressed="{{ isDraw }}" style="{{ swDraw }}" onClick="{{ viewDraw }}">Dessin coté</button>
+          <button type="button" aria-pressed="{{ isPhoto }}" style="{{ swPhoto }}" onClick="{{ viewPhoto }}">Ambiance</button>
+        </div>
+
+        <sc-if value="{{ showDraw }}" hint-placeholder-val="{{ true }}">
+          <div class="vt-draw" role="img" aria-label="{{ drawAlt }}">
+            <div class="vt-drawtag"><span class="vt-sc">Élévation de face</span><span class="vt-sc vt-brass">Pièce n° 06 · Ligne Stone</span></div>
+            <div class="vt-drawtemp"><span class="vt-sc">Consigne</span><b>{{ tempLabel }}</b></div>
+            <div class="vt-unit" style="{{ unitStyle }}">
+              <div class="gl" style="{{ glassStyle }}">
+                <div class="led" style="{{ ledStyle }}"></div>
+                <div class="pr" style="{{ prodStyle }}"></div>
+                <div class="panes" style="{{ panesStyle }}"></div>
+                <sc-if value="{{ sheen }}" hint-placeholder-val="{{ true }}"><div class="sh"></div></sc-if>
+              </div>
+              <div class="wt" style="{{ topStyle }}"></div>
+              <div class="ped" style="{{ pedStyle }}"><span style="{{ pedTextStyle }}">{{ finShort }}</span></div>
+              <div class="vt-hcote"><span>{{ heightLabel }}</span></div>
+            </div>
+            <div class="vt-wcote" style="{{ unitWidth }}"><span>{{ lenLabel }}</span></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showPhoto }}" hint-placeholder-val="{{ false }}">
+          <div class="vt-photo"><img src="assets/counter-domes.webp" alt="Comptoir de pierre et cloches de verre dans une boutique sombre"><span class="vt-sc">Ambiance — photo d’illustration</span></div>
+        </sc-if>
+        <div class="vt-thumbs">
+          <div><img src="assets/macarons-tray.webp" alt="Plateau de macarons"></div>
+          <div><img src="assets/chocolates-dark.webp" alt="Bonbons de chocolat"></div>
+          <div><img src="assets/marble-white.webp" alt="Pierre blanche, matière du module"></div>
+        </div>
+      </div>
+
+      <div class="vt-conf">
+        <div class="vt-sc vt-brass vt-rise">Ligne Stone · Pièce n° 06</div>
+        <h1 class="vt-d vt-rise d1">Module Gourmandise</h1>
+        <p class="vt-lead vt-rise d2">Exposition centrale à hauteur du plan de travail, vitrages coulissants des deux côtés. Pour pâtisseries, macarons ou chocolats — profondeur d’exposition 60 cm.</p>
+
+        <div class="vt-group vt-rise d3">
+          <fieldset>
+            <legend class="vt-glabel"><span class="vt-sc">1 · Longueur</span><span class="vt-sc vt-brass">{{ lenLabel }}</span></legend>
+            <div class="vt-lens">
+              <sc-for list="{{ lens }}" as="o" hint-placeholder-count="7">
+                <button type="button" class="vt-opt" aria-pressed="{{ o.pressed }}" style="{{ o.style }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="vt-group vt-rise d3">
+          <fieldset>
+            <legend class="vt-glabel"><span class="vt-sc">2 · Plage de température</span></legend>
+            <div class="vt-opt2">
+              <sc-for list="{{ temps }}" as="o" hint-placeholder-count="2">
+                <button type="button" class="vt-opt" aria-pressed="{{ o.pressed }}" style="{{ o.style }}" onClick="{{ o.pick }}"><span>{{ o.label }}</span><small>{{ o.sub }}</small></button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="vt-group vt-rise d4">
+          <fieldset>
+            <legend class="vt-glabel"><span class="vt-sc">3 · Finition</span></legend>
+            <div class="vt-opt2">
+              <sc-for list="{{ fins }}" as="o" hint-placeholder-count="2">
+                <button type="button" class="vt-opt" aria-pressed="{{ o.pressed }}" style="{{ o.style }}" onClick="{{ o.pick }}"><span>{{ o.label }}</span><small>{{ o.sub }}</small></button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="vt-recap vt-rise d4" aria-live="polite">
+          <div class="vt-sc" style="margin-bottom:10px">Votre pièce</div>
+          <div class="vt-recrow"><span>Modèle</span><span>Gourmandise · Ligne Stone</span></div>
+          <div class="vt-recrow"><span>Longueur</span><span>{{ lenLabel }}</span></div>
+          <div class="vt-recrow"><span>Température</span><span>{{ tempLabel }} — {{ tempUse }}</span></div>
+          <div class="vt-recrow"><span>Finition</span><span>{{ finLabel }}</span></div>
+          <div class="vt-price">
+            <span class="vt-sc">{{ priceNote }}</span>
+            <b>{{ price }}</b>
+          </div>
+          <div class="vt-actions">
+            <a class="vt-btn solid" href="#demande" onClick="{{ askThis }}">Demander ce modèle</a>
+            <a class="vt-btn" href="Vitrine-Contact.html">Plan 3D offert</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== ONGLETS ===== -->
+  <section class="vt-sec" style="background:#141414" aria-label="Informations détaillées">
+    <div class="vt-wrap">
+      <div class="vt-tabs" role="tablist" aria-label="Informations produit">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <button type="button" role="tab" class="vt-tab" aria-selected="{{ t.pressed }}" style="{{ t.style }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ tabDesc }}" hint-placeholder-val="{{ true }}">
+        <div class="vt-tabpane vt-desc">
+          <div>
+            <h2 class="vt-d">Une pièce centrale, lisible des deux côtés.</h2>
+            <p>Le Module Gourmandise expose vos créations au centre de la boutique, à hauteur du plan de travail. Ses vitrages coulissent des deux côtés : le service se fait d’un côté, la mise en place de l’autre.</p>
+            <p>Il se règle en +2 °C / +8 °C pour les pâtisseries et macarons, ou en +14 °C / +18 °C pour les chocolats.</p>
+          </div>
+          <div>
+            <h2 class="vt-d">Six longueurs, ou la vôtre.</h2>
+            <p>101, 117, 146, 169, 191 ou 222 cm — et sur mesure. Le modèle 101 cm est proposé en pierre acrylique blanche, monté sur pied, groupe logé.</p>
+            <p>Comme toute la Ligne Stone, il s’associe aux autres modules : Plane, Vision, Centrale, Panorama, Comptoir caisse…</p>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabSpec }}" hint-placeholder-val="{{ false }}">
+        <div class="vt-tabpane">
+          <div class="vt-sc" style="margin-bottom:18px">Modèle 101 cm</div>
+          <div class="vt-feat">
+            <sc-for list="{{ specs }}" as="f" hint-placeholder-count="11"><div><i>{{ f.n }}</i><span>{{ f.v }}</span></div></sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabDim }}" hint-placeholder-val="{{ false }}">
+        <div class="vt-tabpane vt-dims">
+          <div>
+            <div class="vt-dimtable">
+              <div class="vt-dimrow vt-sc"><span>Longueur</span><span>Ext. L × P × H</span><span>Prix</span></div>
+              <sc-for list="{{ dimRows }}" as="r" hint-placeholder-count="7">
+                <div class="vt-dimrow" style="{{ r.style }}"><span>{{ r.len }}</span><span>{{ r.ext }}</span><span>{{ r.price }}</span></div>
+              </sc-for>
+            </div>
+            <p style="color:#A8A39A;font-size:13px;margin-top:18px">Profondeur d’exposition 60 cm pour toutes les longueurs. Dimensions des autres longueurs : [DIMENSIONS].</p>
+          </div>
+          <div class="vt-elev">
+            <div class="vt-sc" style="margin-bottom:16px">Coupe — modèle 101 cm</div>
+            <svg viewBox="0 0 420 300" width="100%" height="300" role="img" aria-label="Coupe latérale cotée : 80 cm de profondeur, 80 plus 25 cm de hauteur, exposition 60 cm">
+              <g fill="none" stroke="#EEE9E1" stroke-width="1">
+                <rect x="110" y="70" width="200" height="60" stroke-opacity=".5"></rect>
+                <path d="M110 70 L150 40 L270 40 L310 70" stroke-opacity=".5"></path>
+                <rect x="100" y="130" width="220" height="10" style="stroke:var(--brass)"></rect>
+                <rect x="130" y="140" width="160" height="110" stroke-opacity=".7"></rect>
+              </g>
+              <g style="stroke:var(--brass)" stroke-width="1">
+                <path d="M100 270 H320 M100 264 V276 M320 264 V276"></path>
+                <path d="M350 40 V250 M344 40 H356 M344 250 H356"></path>
+                <path d="M120 22 H300 M120 16 V28 M300 16 V28"></path>
+              </g>
+              <g fill="#A8A39A" font-family="Manrope" font-size="11" letter-spacing="1">
+                <text x="210" y="290" text-anchor="middle">80 cm</text>
+                <text x="362" y="150">80 + 25 h</text>
+                <text x="210" y="13" text-anchor="middle">exposition 60 cm</text>
+              </g>
+              <circle cx="210" cy="135" r="3" fill="#D42A20"></circle>
+            </svg>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <!-- ===== FORMULAIRE ===== -->
+  <section id="demande" class="vt-sec" aria-labelledby="t-form">
+    <div class="vt-wrap vt-formgrid">
+      <div>
+        <div class="vt-sc vt-kicker">Demande d’informations</div>
+        <h2 id="t-form" class="vt-d vt-h2">Parlons<br>de votre pièce.</h2>
+        <p class="vt-lead" style="margin-top:24px">Le bureau d’études revient vers vous avec un devis et, si vous le souhaitez, l’élaboration de votre plan 3D.</p>
+        <p style="margin-top:28px"><a class="vt-link" href="tel:0800951313"><span>0 800 95 13 13 — appel gratuit</span></a></p>
+      </div>
+      <div>
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form class="vt-form" novalidate="novalidate" onSubmit="{{ submit }}">
+            <div class="vt-field"><label for="f-prod">Produit</label><input id="f-prod" type="text" readonly="readonly" value="Module Gourmandise — Ligne Stone"></div>
+            <div class="vt-field"><label for="f-mod">Modèle</label>
+              <select id="f-mod" value="{{ fModele }}" onChange="{{ setModele }}">
+                <option value="101 cm">101 cm</option>
+                <option value="117 cm">117 cm</option>
+                <option value="146 cm">146 cm</option>
+                <option value="169 cm">169 cm</option>
+                <option value="191 cm">191 cm</option>
+                <option value="222 cm">222 cm</option>
+                <option value="Sur mesure">Sur mesure</option>
+              </select>
+            </div>
+            <div class="vt-field"><label for="f-nom">Nom *</label><input id="f-nom" type="text" autocomplete="name" value="{{ fNom }}" onInput="{{ setNom }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="vt-err">Indiquez votre nom.</span></sc-if></div>
+            <div class="vt-field"><label for="f-tel">Téléphone *</label><input id="f-tel" type="tel" autocomplete="tel" value="{{ fTel }}" onInput="{{ setTel }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="vt-err">Numéro à 10 chiffres attendu.</span></sc-if></div>
+            <div class="vt-field"><label for="f-mail">Email *</label><input id="f-mail" type="email" autocomplete="email" value="{{ fMail }}" onInput="{{ setMail }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="vt-err">Adresse email invalide.</span></sc-if></div>
+            <div class="vt-field"><label for="f-sect">Secteur d’activité</label>
+              <select id="f-sect" value="{{ fSect }}" onChange="{{ setSect }}">
+                <option value="">— Choisir —</option>
+                <option value="Boulangerie">Boulangerie</option>
+                <option value="Pâtisserie">Pâtisserie</option>
+                <option value="Chocolats">Chocolats</option>
+                <option value="Sandwichs">Sandwichs</option>
+                <option value="Traiteur">Traiteur</option>
+                <option value="Poissonnerie">Poissonnerie</option>
+                <option value="Bar à salades">Bar à salades</option>
+                <option value="Bar à couscous">Bar à couscous</option>
+                <option value="Fromagerie">Fromagerie</option>
+                <option value="Bar">Bar</option>
+                <option value="Bar à topping">Bar à topping</option>
+                <option value="Coffee shop / Café">Coffee shop / Café</option>
+                <option value="Pizza al taglio">Pizza al taglio</option>
+              </select>
+            </div>
+            <div class="vt-field"><label for="f-cp">Code postal</label><input id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ fCp }}" onInput="{{ setCp }}"></div>
+            <div class="vt-field"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ fVille }}" onInput="{{ setVille }}"></div>
+            <div class="vt-field full"><label for="f-msg">Message *</label><textarea id="f-msg" onInput="{{ setMsg }}">{{ fMsg }}</textarea><sc-if value="{{ eMsg }}" hint-placeholder-val="{{ false }}"><span class="vt-err">Quelques mots sur votre projet.</span></sc-if></div>
+            <div class="vt-field full" style="flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+              <span style="font-size:12px;color:#A8A39A">* Champs obligatoires</span>
+              <button type="submit" class="vt-btn solid">Envoyer la demande</button>
+            </div>
+          </form>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div class="vt-sent" role="status">
+            <div class="vt-sc vt-brass">Demande enregistrée</div>
+            <h3 class="vt-d" style="font-size:40px;margin:14px 0 16px">Merci, {{ fNom }}.</h3>
+            <p style="color:#A8A39A;margin:0 0 8px">Module Gourmandise — {{ fModele }}, {{ tempLabel }}.</p>
+            <p style="color:#A8A39A;margin:0 0 26px">Prototype — rien n’est envoyé.</p>
+            <button type="button" class="vt-link" onClick="{{ reset }}"><span>Nouvelle demande</span></button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ASSOCIÉS ===== -->
+  <section class="vt-sec" style="background:#141414" aria-labelledby="t-rel">
+    <div class="vt-wrap">
+      <div class="vt-sechead">
+        <div>
+          <div class="vt-sc vt-kicker">Modules associés</div>
+          <h2 id="t-rel" class="vt-d vt-h2">À composer avec.</h2>
+        </div>
+        <p class="vt-lead">Les autres pièces de la Ligne Stone conseillées en pâtisserie.</p>
+      </div>
+      <div class="vt-rel">
+        <a class="vt-relc" href="Vitrine-Module.html">
+          <div class="vt-mini" aria-hidden="true"><div class="g" style="height:46px"></div><div class="t"></div><div class="b"></div></div>
+          <span class="vt-sc">Pièce n° 05</span><h3>Centrale</h3><p>Vitrages coulissants des 2 côtés · prof. 60 cm · +2/+8 ou +14/+18 °C</p>
+        </a>
+        <a class="vt-relc" href="Vitrine-Module.html">
+          <div class="vt-mini" aria-hidden="true"><div class="g" style="height:38px"></div><div class="t"></div><div class="b"></div></div>
+          <span class="vt-sc">Pièce n° 01</span><h3>Réfrigérée Plane</h3><p>Exposition à hauteur du plan de travail · prof. 53 ou 60 cm</p>
+        </a>
+        <a class="vt-relc" href="Vitrine-Module.html">
+          <div class="vt-mini" aria-hidden="true"><div class="g" style="height:30px;margin-bottom:-8px"></div><div class="t"></div><div class="b"></div></div>
+          <span class="vt-sc">Pièce n° 02</span><h3>Vision</h3><p>Exposition 8 cm sous la hauteur du plan de travail</p>
+        </a>
+        <a class="vt-relc" href="Vitrine-Module.html">
+          <div class="vt-mini" aria-hidden="true"><div class="g" style="height:70px;border-top-left-radius:30px"></div><div class="t"></div><div class="b"></div></div>
+          <span class="vt-sc">Pièce n° 10</span><h3>Panorama</h3><p>2 ou 3 étagères réfrigérées +4/+8 °C</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="vt-foot">
+    <div class="vt-wrap">
+      <div class="vt-footgrid">
+        <div>
+          <a href="Vitrine-Accueil.html" class="vt-logo" aria-label="RGTE, accueil"><b>RGTE</b><span class="vt-dot"></span></a>
+          <p style="margin-top:14px">R.G. Technologies — agencement de vitrines réfrigérées sur mesure.</p>
+        </div>
+        <div>
+          <h4>Bureau d’études &amp; show-room</h4>
+          <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <div class="vt-footlinks">
+            <a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+            <a href="Vitrine-Contact.html">Demande de devis</a>
+            <a href="Vitrine-Contact.html">Plan 3D offert</a>
+          </div>
+        </div>
+        <div>
+          <h4>Explorer</h4>
+          <div class="vt-footlinks">
+            <a href="Vitrine-Lignes.html">Lignes d’agencement</a>
+            <a href="Vitrine-Secteurs.html">Secteurs d’activité</a>
+            <a href="Vitrine-Realisations.html">Réalisations</a>
+          </div>
+        </div>
+        <div>
+          <h4>Informations</h4>
+          <div class="vt-footlinks">
+            <a href="#">Mentions légales</a>
+            <a href="#">Conditions de vente</a>
+            <a href="#">Plan du site</a>
+            <a href="#">Gestion des cookies</a>
+          </div>
+        </div>
+      </div>
+      <div class="vt-footbot">
+        <span>© RGTE — R.G. Technologies</span>
+        <span>Proposition de refonte — concept, non officiel</span>
+        <a href="index.html">Toutes les propositions</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#B08D57","options":["#B08D57","#D42A20","#EEE9E1"]},"sheen":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, len:101, temp:'p', fin:'blanc', view:'dessin', tab:'desc',
+      fModele:'101 cm', fNom:'', fTel:'', fMail:'', fSect:'', fCp:'', fVille:'', fMsg:'', tried:false, sent:false };
+    this.LENS = [101, 117, 146, 169, 191, 222, 'sur'];
+    this.SPECS = [
+      'Piliers et plan de travail en pierre acrylique blanche',
+      'Monté sur pied en pierre acrylique blanche',
+      'Groupe logé',
+      'Froid ventilé',
+      'Fréon R134A',
+      'Contrôle électronique de la température',
+      'Dégivrage automatique',
+      'Ré-évaporation automatique des eaux de condensation',
+      'Dimensions extérieures 101 × 80 × 80 + 25 h',
+      'Sans réserve réfrigérée',
+      'Exposition en verre 81 × 60 cm'
+    ];
+  }
+  lenText(l){ return l === 'sur' ? 'Sur mesure' : l + ' cm'; }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#B08D57';
+    const s = this.state;
+    const on = 'border-color:' + accent + ';background:rgba(176,141,87,.14);color:#EEE9E1';
+    const off = '';
+    const isSur = s.len === 'sur';
+    const isP = s.temp === 'p';
+    const white = s.fin === 'blanc';
+    const lenLabel = this.lenText(s.len);
+    const w = isSur ? 100 : Math.round(46 + (s.len - 101) / 121 * 54);
+    const panes = isSur ? 4 : (s.len <= 117 ? 2 : (s.len <= 169 ? 3 : 4));
+    const hasPrice = s.len === 101 && white;
+    const tel = s.fTel.replace(/\D/g, '');
+    const eNom = s.tried && !s.fNom.trim();
+    const eTel = s.tried && tel.length < 10;
+    const eMail = s.tried && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.fMail.trim());
+    const eMsg = s.tried && !s.fMsg.trim();
+    const field = (k) => (e) => { const o = {}; o[k] = e.target.value; this.setState(o); };
+    const lens = this.LENS.map((l) => ({
+      label: this.lenText(l),
+      pressed: l === s.len ? 'true' : 'false',
+      style: l === s.len ? on : off,
+      pick: () => this.setState({ len: l, fModele: this.lenText(l) })
+    }));
+    const temps = [
+      { id:'p', label:'+2 °C / +8 °C', sub:'Pâtisseries, macarons' },
+      { id:'c', label:'+14 °C / +18 °C', sub:'Chocolats' }
+    ].map((t) => Object.assign({}, t, { pressed: t.id === s.temp ? 'true' : 'false', style: t.id === s.temp ? on : off, pick: () => this.setState({ temp: t.id }) }));
+    const fins = [
+      { id:'blanc', label:'Pierre acrylique blanche', sub:'Finition de référence' },
+      { id:'autre', label:'Autre coloris', sub:'[COLORIS] — sur demande' }
+    ].map((t) => Object.assign({}, t, { pressed: t.id === s.fin ? 'true' : 'false', style: t.id === s.fin ? on : off, pick: () => this.setState({ fin: t.id }) }));
+    const tabs = [
+      { id:'desc', label:'Description' },
+      { id:'spec', label:'Caractéristiques' },
+      { id:'dim', label:'Dimensions' }
+    ].map((t) => Object.assign({}, t, { pressed: t.id === s.tab ? 'true' : 'false', style: t.id === s.tab ? 'color:#EEE9E1;box-shadow:inset 0 -1px 0 ' + accent : 'color:#A8A39A', pick: () => this.setState({ tab: t.id }) }));
+    const dimRows = this.LENS.map((l) => ({
+      len: this.lenText(l),
+      ext: l === 101 ? '101 × 80 × 80 + 25 h' : '[DIMENSIONS]',
+      price: l === 101 ? '5 800,00 € HT' : 'Sur devis',
+      style: l === s.len ? 'background:rgba(176,141,87,.12);color:#EEE9E1' : 'color:#A8A39A'
+    }));
+    const pastryProd = 'background:radial-gradient(circle at 50% 55%,#E9B9B4 0 9px,rgba(0,0,0,0) 10px) 0 0/26px 34px,radial-gradient(circle at 50% 55%,#CFE0B8 0 9px,rgba(0,0,0,0) 10px) 13px 0/26px 34px';
+    const chocoProd = 'background:linear-gradient(90deg,#3B2318 0 18px,rgba(0,0,0,0) 18px) 4px 12px/26px 22px repeat-x';
+    return {
+      rootStyle: '--brass:' + accent,
+      menuOpen: s.menuOpen,
+      menuExpanded: s.menuOpen ? 'true' : 'false',
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      sheen: p.sheen !== false,
+      isDraw: s.view === 'dessin' ? 'true' : 'false',
+      isPhoto: s.view === 'photo' ? 'true' : 'false',
+      showDraw: s.view === 'dessin',
+      showPhoto: s.view === 'photo',
+      swDraw: s.view === 'dessin' ? 'background:#EEE9E1;color:#101010' : 'background:transparent;color:#A8A39A',
+      swPhoto: s.view === 'photo' ? 'background:#EEE9E1;color:#101010' : 'background:transparent;color:#A8A39A',
+      viewDraw: () => this.setState({ view: 'dessin' }),
+      viewPhoto: () => this.setState({ view: 'photo' }),
+      drawAlt: 'Dessin du Module Gourmandise, ' + lenLabel + ', ' + (isP ? '+2/+8 °C' : '+14/+18 °C'),
+      unitStyle: 'width:' + w + '%',
+      unitWidth: 'width:' + w + '%',
+      glassStyle: isSur ? 'border-style:dashed' : '',
+      ledStyle: isP ? 'background:linear-gradient(90deg,rgba(220,235,255,0),rgba(220,235,255,.9),rgba(220,235,255,0));box-shadow:0 0 22px 2px rgba(200,225,255,.45)' : 'background:linear-gradient(90deg,rgba(255,220,170,0),rgba(255,220,170,.9),rgba(255,220,170,0));box-shadow:0 0 22px 2px rgba(255,210,150,.45)',
+      prodStyle: isP ? pastryProd : chocoProd,
+      panesStyle: 'background:linear-gradient(90deg,rgba(0,0,0,0) calc(100% - 1px),rgba(238,233,225,.32) 0) 0 0/' + (100 / panes).toFixed(3) + '% 100%',
+      topStyle: white ? '' : 'background:linear-gradient(180deg,#4A4743,#2C2A27)',
+      pedStyle: white ? 'background:linear-gradient(90deg,#BDB7AC,#E9E4DC 40%,#E0DAD0 60%,#B9B3A8)' : 'background:repeating-linear-gradient(135deg,#2A2826 0 8px,#24221F 8px 16px);border:1px solid rgba(238,233,225,.18)',
+      pedTextStyle: white ? 'color:#3E3A34' : 'color:#A8A39A',
+      finShort: white ? 'Pierre acrylique blanche' : '[COLORIS]',
+      heightLabel: '80 + 25 h',
+      lenLabel: lenLabel,
+      lens: lens,
+      temps: temps,
+      fins: fins,
+      tempLabel: isP ? '+2 °C / +8 °C' : '+14 °C / +18 °C',
+      tempUse: isP ? 'pâtisseries, macarons' : 'chocolats',
+      finLabel: white ? 'Pierre acrylique blanche' : 'Autre coloris — [COLORIS]',
+      price: hasPrice ? '5 800,00 € HT' : 'Sur devis',
+      priceNote: hasPrice ? 'Prix — modèle 101 cm' : (s.len === 101 ? 'Coloris spécifique — [PRIX]' : 'Prix de cette longueur — [PRIX]'),
+      askThis: () => this.setState({ fModele: lenLabel }),
+      tabs: tabs,
+      tabDesc: s.tab === 'desc',
+      tabSpec: s.tab === 'spec',
+      tabDim: s.tab === 'dim',
+      specs: this.SPECS.map((v, i) => ({ v: v, n: (i < 9 ? '0' : '') + (i + 1) })),
+      dimRows: dimRows,
+      fModele: s.fModele, fNom: s.fNom, fTel: s.fTel, fMail: s.fMail, fSect: s.fSect, fCp: s.fCp, fVille: s.fVille, fMsg: s.fMsg,
+      setModele: field('fModele'), setNom: field('fNom'), setTel: field('fTel'), setMail: field('fMail'),
+      setSect: field('fSect'), setCp: field('fCp'), setVille: field('fVille'), setMsg: field('fMsg'),
+      eNom: eNom, eTel: eTel, eMail: eMail, eMsg: eMsg,
+      submit: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        const st = this.state;
+        const ok = st.fNom.trim() && st.fTel.replace(/\D/g, '').length >= 10 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(st.fMail.trim()) && st.fMsg.trim();
+        this.setState(ok ? { sent: true, tried: false } : { tried: true });
+      },
+      notSent: !s.sent,
+      sent: s.sent,
+      reset: () => this.setState({ sent: false, fNom: '', fTel: '', fMail: '', fMsg: '', fCp: '', fVille: '', fSect: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cryo — Accueil</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F1F5F7}
+.cx,.cx *{box-sizing:border-box}
+.cx{font-family:'Sora',system-ui,sans-serif;color:#0F1C24;background:#F1F5F7;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cx a{color:inherit}
+.cx h1,.cx h2,.cx h3,.cx p{margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.tnum{font-variant-numeric:tabular-nums}
+.navl{position:relative;text-decoration:none;font-size:14px;font-weight:500;display:inline-flex;align-items:center;min-height:44px}
+.navl::after{content:"";position:absolute;left:0;right:0;bottom:8px;height:1px;background:#3A7CA5;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font:600 14px/1 'Sora',sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s}
+.btn-red{background:#D42A20;color:#fff!important;box-shadow:0 12px 26px -14px rgba(212,42,32,.75)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 18px 32px -14px rgba(212,42,32,.85)}
+.btn-ghost{background:rgba(255,255,255,.62);color:#0F1C24;border:1px solid rgba(15,28,36,.16)}
+.btn-ghost:hover{background:#fff;border-color:#3A7CA5}
+.btn-dark{background:#0F1C24;color:#fff!important}
+.btn-dark:hover{transform:translateY(-2px);background:#1B2F3B}
+.frost{background:linear-gradient(160deg,rgba(255,255,255,.80),rgba(255,255,255,.46));backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 30px 60px -32px rgba(15,28,36,.32)}
+.dew{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,.95) 0 1.1px,transparent 1.7px),radial-gradient(circle,rgba(15,28,36,.10) 0 1.6px,transparent 2.2px),radial-gradient(circle,rgba(255,255,255,.85) 0 2.2px,transparent 3px),radial-gradient(circle,rgba(58,124,165,.16) 0 .8px,transparent 1.3px);background-size:23px 19px,47px 41px,71px 63px,13px 17px;background-position:0 0,12px 9px,30px 22px,5px 3px;transition:opacity .7s}
+.gridbg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(15,28,36,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,28,36,.05) 1px,transparent 1px);background-size:64px 64px}
+.ruler{background-image:repeating-linear-gradient(90deg,rgba(15,28,36,.28) 0 1px,transparent 1px 12px)}
+.lab{font-size:12px;color:#2B6688;display:flex;gap:12px;align-items:center;text-transform:uppercase}
+.lab i{display:inline-block;width:40px;height:1px;background:#3A7CA5}
+.h2{font-size:clamp(32px,4.2vw,58px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.chip{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(15,28,36,.14);background:rgba(255,255,255,.7);font-size:13px;text-decoration:none;transition:border-color .25s,background .25s,transform .25s}
+.chip:hover{border-color:#3A7CA5;background:#fff;transform:translateY(-1px)}
+.tab{cursor:pointer;border:0;font-family:'Sora',sans-serif;text-align:left;transition:background .3s,color .3s,box-shadow .3s,transform .3s}
+.tab:hover{transform:translateY(-2px)}
+.card{text-decoration:none;display:block;border-radius:22px;overflow:hidden;background:#fff;border:1px solid rgba(15,28,36,.08);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s}
+.card:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px rgba(15,28,36,.4)}
+.card img{transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.card:hover img{transform:scale(1.06)}
+.cell{transition:background .3s,transform .3s}
+.cell:hover{background:#fff;transform:translateY(-3px)}
+.sw{cursor:pointer;border:0;padding:0;text-align:left;font-family:'Sora',sans-serif;background:none;transition:transform .35s}
+.sw:hover{transform:translateY(-4px)}
+.sw-a{background:url(assets/marble-white.webp) center/cover}
+.sw-b{background:url(assets/marble-veins.webp) center/cover}
+.sw-c{background:url(assets/vitrine-wood.webp) center/cover}
+.sw-d{background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(221,231,236,.9)),repeating-linear-gradient(135deg,rgba(58,124,165,.18) 0 2px,transparent 2px 14px),#DDE7EC}
+.room{background:url(assets/counter-domes.webp) center/cover}
+.cryo-range{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:grab;position:relative;z-index:3}
+.cryo-range:active{cursor:grabbing}
+.cryo-range::-webkit-slider-runnable-track{height:44px;background:transparent}
+.cryo-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:44px;border-radius:14px;background:#0F1C24;border:3px solid #fff;box-shadow:0 8px 18px rgba(15,28,36,.38)}
+.cryo-range::-moz-range-track{height:44px;background:transparent}
+.cryo-range::-moz-range-thumb{width:22px;height:38px;border-radius:14px;background:#0F1C24;border:3px solid #fff;box-shadow:0 8px 18px rgba(15,28,36,.38)}
+.cryo-range:focus-visible{outline:none}
+.cryo-range:focus-visible::-webkit-slider-thumb{outline:3px solid #3A7CA5;outline-offset:2px}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}
+@keyframes flow{to{stroke-dashoffset:-96}}
+.flow{stroke-dasharray:6 10;animation:flow 1.8s linear infinite}
+.flow.f2{animation-duration:2.3s}.flow.f3{animation-duration:2.9s}
+@keyframes fall{0%{transform:translateY(-14px);opacity:0}25%{opacity:1}100%{transform:translateY(70px);opacity:0}}
+.drop{animation:fall 3.6s ease-in infinite}
+@keyframes heat{0%{transform:translateY(30px);opacity:0}40%{opacity:.95}100%{transform:translateY(-50px);opacity:0}}
+.heat{animation:heat 2.8s ease-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.live{animation:pulse 1.6s ease-in-out infinite}
+@keyframes coil{to{stroke-dashoffset:-40}}
+.coil{stroke-dasharray:10 6;animation:coil 2.4s linear infinite}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.drift{animation:drift 6s ease-in-out infinite}
+:focus-visible{outline:2px solid #3A7CA5;outline-offset:3px}
+.burger{display:none!important}
+@media(max-width:980px){.navd{display:none!important}.burger{display:inline-flex!important}}
+@media(max-width:640px){.wrap{padding:0 18px}.hide-sm{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cx *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="cx">
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(241,245,247,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(15,28,36,.08)">
+  <div class="mono" style="background:#0F1C24;color:#C9D7DF;font-size:11.5px">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;min-height:34px;align-items:center">
+      <span class="hide-sm">BUREAU D'ÉTUDES &amp; SHOW-ROOM · PUGET-SUR-ARGENS (83)</span>
+      <a href="tel:0800951313" style="text-decoration:none;color:#fff;display:inline-flex;align-items:center;min-height:34px">N° VERT 0 800 95 13 13 · APPEL GRATUIT</a>
+    </div>
+  </div>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px">
+    <a href="Cryo-Accueil.html" aria-label="RGTE, retour à l'accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none;min-height:44px">
+      <span style="font-weight:700;font-size:26px;letter-spacing:.08em">RGTE</span>
+      <span style="width:1px;height:30px;background:rgba(15,28,36,.25)"></span>
+      <span class="mono" style="font-size:10.5px;line-height:1.3;color:#4A5D69">R.G.<br>TECHNOLOGIES</span>
+    </a>
+    <nav class="navd" aria-label="Navigation principale" style="display:flex;gap:32px">
+      <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+      <a class="navl" href="Cryo-Secteurs.html">Secteurs</a>
+      <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+      <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn btn-ghost navd" href="tel:0800951313" style="font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+      <a class="btn btn-red navd" href="Cryo-Contact.html" style="{{ ctaStyle }}">Plan 3D offert</a>
+      <button type="button" class="btn btn-ghost burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}" style="width:48px;padding:0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0F1C24" stroke-width="1.6"><path d="M3 6h14M3 10h14M3 14h14"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="border-top:1px solid rgba(15,28,36,.08);background:#F1F5F7">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:8px;padding-bottom:20px">
+        <a class="navl" href="Cryo-Lignes.html">Lignes</a>
+        <a class="navl" href="Cryo-Secteurs.html">Secteurs</a>
+        <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+        <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        <a class="btn btn-red" href="Cryo-Contact.html" style="margin-top:12px">Plan 3D offert</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- HERO : lecture de température en direct -->
+<section style="{{ heroStyle }}">
+  <div aria-hidden="true" style="{{ glowStyle }}"></div>
+  <div aria-hidden="true" class="gridbg"></div>
+  <div aria-hidden="true" class="dew" style="{{ dewStyle }}"></div>
+  <div class="wrap" style="position:relative;padding-top:44px;padding-bottom:80px">
+    <div class="mono rise" style="display:flex;flex-wrap:wrap;gap:10px 28px;font-size:11.5px;color:#4A5D69;padding-bottom:22px;border-bottom:1px solid rgba(15,28,36,.12)">
+      <span>RGTE / VITRINES RÉFRIGÉRÉES</span>
+      <span style="display:inline-flex;align-items:center;gap:8px"><span class="live" style="width:7px;height:7px;border-radius:50%;background:#D42A20;display:inline-block"></span>LECTURE EN DIRECT</span>
+      <span>CONSIGNE · {{ fam.label }}</span>
+      <span class="hide-sm">PLAGE −2 °C → +90 °C</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:56px;align-items:start;margin-top:40px">
+      <div>
+        <h1 class="rise d1" style="font-size:clamp(30px,3.4vw,48px);font-weight:400;letter-spacing:-.025em;line-height:1.08;max-width:560px">Agencement de vitrines réfrigérées <span style="color:#2B6688">sur mesure</span>, à la température de vos produits.</h1>
+        <div class="rise d2" style="margin-top:34px">
+          <div class="mono" style="font-size:11.5px;color:#4A5D69">T° D'EXPOSITION</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-top:4px" aria-live="polite">
+            <span class="tnum" style="{{ readStyle }}">{{ tempTxt }}</span>
+            <span style="{{ unitStyle }}">°C</span>
+          </div>
+          <div class="mono" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;font-size:11.5px">
+            <span style="padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(15,28,36,.1)">PLAGE <b style="{{ fam.rangeInk }}">{{ fam.range }}</b></span>
+            <span style="{{ statusStyle }}">{{ statusTxt }}</span>
+            <span style="padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(15,28,36,.1)">MODE {{ fam.mode }}</span>
+          </div>
+        </div>
+
+        <div class="rise d3" style="margin-top:36px">
+          <div class="mono" style="position:relative;height:18px;margin:0 14px;font-size:11px;color:#4A5D69">
+            <sc-for list="{{ ticks }}" as="tk" hint-placeholder-count="8">
+              <span class="{{ tk.cls }}" style="{{ tk.st }}">{{ tk.v }}</span>
+            </sc-for>
+          </div>
+          <div class="frost" style="position:relative;height:56px;border-radius:28px;padding:6px 0;margin-top:6px">
+            <div class="ruler" aria-hidden="true" style="position:absolute;left:14px;right:14px;top:6px;height:8px;opacity:.7"></div>
+            <div class="ruler" aria-hidden="true" style="position:absolute;left:14px;right:14px;bottom:6px;height:8px;opacity:.7"></div>
+            <div aria-hidden="true" style="position:absolute;left:14px;right:14px;top:16px;height:24px">
+              <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+                <div style="{{ z.st }}"></div>
+              </sc-for>
+            </div>
+            <div aria-hidden="true" style="{{ fillStyle }}"></div>
+            <label for="cryo-temp" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Régler la température d'exposition</label>
+            <input id="cryo-temp" class="cryo-range" type="range" min="0" max="100" step="0.5" value="{{ pos }}" onInput="{{ setPos }}" aria-valuetext="{{ ariaTemp }}">
+          </div>
+          <div class="mono hide-sm" style="position:relative;height:20px;margin:10px 14px 0;font-size:11px">
+            <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+              <span style="{{ z.lst }}">{{ z.lab }}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="rise d4" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:10px;margin-top:26px">
+          <sc-for list="{{ fams }}" as="f" hint-placeholder-count="4">
+            <button type="button" class="tab" style="{{ f.st }}" onClick="{{ f.pick }}" aria-pressed="{{ f.on }}">
+              <span class="mono" style="display:block;font-size:10.5px;opacity:.75">{{ f.code }}</span>
+              <span style="display:block;font-size:14px;font-weight:600;margin-top:4px">{{ f.name }}</span>
+              <span class="mono" style="display:block;font-size:11.5px;margin-top:2px">{{ f.range }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+
+      <aside class="frost rise d2" style="position:relative;border-radius:30px;overflow:hidden;padding:18px">
+        <div aria-hidden="true" class="dew" style="{{ panelDew }}"></div>
+        <div class="mono" style="position:relative;display:flex;justify-content:space-between;font-size:11px;color:#4A5D69;padding:4px 6px 14px">
+          <span>FAMILLE {{ fam.code }}</span><span>{{ fam.mode }}</span>
+        </div>
+        <div style="position:relative;height:340px;border-radius:20px;overflow:hidden;background:#0F1C24">
+          <img src="{{ fam.img }}" alt="{{ fam.alt }}" style="width:100%;height:340px;object-fit:cover;display:block;opacity:.88;transition:opacity .5s">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:340px">
+            <path d="M40 252 L40 150 Q40 62 150 52 L362 52 L362 252 Z" fill="rgba(241,245,247,.10)" stroke="rgba(255,255,255,.85)" stroke-width="1.4"></path>
+            <path d="M40 252 L362 252" stroke="#fff" stroke-width="2"></path>
+            <path d="M120 170 L362 170" stroke="rgba(255,255,255,.5)" stroke-width="1" stroke-dasharray="3 5"></path>
+            <g style="{{ gVent }}">
+              <path class="flow" d="M348 240 C350 120 300 70 210 72 C130 74 70 110 62 200 L330 242" fill="none" stroke="#DDF0FA" stroke-width="2"></path>
+              <path class="flow f2" d="M336 232 C334 140 290 96 214 98 C150 100 96 130 90 196 L320 234" fill="none" stroke="#A8D2EA" stroke-width="1.6"></path>
+              <path class="flow f3" d="M322 222 C318 160 280 122 220 124 C170 126 124 150 120 192 L306 226" fill="none" stroke="#7FB3D3" stroke-width="1.4"></path>
+            </g>
+            <g style="{{ gStat }}" fill="#DDF0FA">
+              <circle class="drop" cx="110" cy="80" r="2.4"></circle>
+              <circle class="drop" cx="170" cy="70" r="2" style="animation-delay:.8s"></circle>
+              <circle class="drop" cx="230" cy="66" r="2.6" style="animation-delay:1.6s"></circle>
+              <circle class="drop" cx="290" cy="64" r="2" style="animation-delay:.4s"></circle>
+              <circle class="drop" cx="340" cy="70" r="2.4" style="animation-delay:2.2s"></circle>
+              <circle class="drop" cx="200" cy="120" r="1.8" style="animation-delay:1.2s"></circle>
+              <circle class="drop" cx="300" cy="118" r="1.8" style="animation-delay:2.8s"></circle>
+              <path class="coil" d="M52 266 L76 278 L100 266 L124 278 L148 266 L172 278 L196 266 L220 278 L244 266 L268 278 L292 266 L316 278 L340 266" fill="none" stroke="#7FB3D3" stroke-width="2.2"></path>
+            </g>
+            <g style="{{ gHeat }}" fill="none" stroke="#FF9C8E" stroke-width="2" stroke-linecap="round">
+              <path class="heat" d="M100 230 C90 210 110 196 100 176 C90 156 110 142 100 122"></path>
+              <path class="heat" d="M170 236 C160 216 180 202 170 182 C160 162 180 148 170 128" style="animation-delay:.7s"></path>
+              <path class="heat" d="M240 230 C230 210 250 196 240 176 C230 156 250 142 240 122" style="animation-delay:1.3s"></path>
+              <path class="heat" d="M310 236 C300 216 320 202 310 182 C300 162 320 148 310 128" style="animation-delay:.35s"></path>
+            </g>
+          </svg>
+          <div class="mono" style="position:absolute;left:14px;bottom:14px;right:14px;display:flex;justify-content:space-between;gap:10px;color:#fff;font-size:11px">
+            <span style="padding:6px 10px;border-radius:999px;background:rgba(15,28,36,.6);backdrop-filter:blur(8px)">{{ fam.flowTxt }}</span>
+            <span style="padding:6px 10px;border-radius:999px;background:rgba(15,28,36,.6);backdrop-filter:blur(8px)">{{ fam.range }}</span>
+          </div>
+        </div>
+        <div style="position:relative;padding:22px 8px 6px">
+          <h2 style="font-size:28px;font-weight:500;letter-spacing:-.02em">{{ fam.name }}</h2>
+          <p style="margin-top:10px;font-size:15px;color:#33454F;max-width:520px">{{ fam.desc }}</p>
+          <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:18px">MODULES CONCERNÉS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <sc-for list="{{ fam.mods }}" as="m" hint-placeholder-count="4">
+              <a class="chip" href="Cryo-Module.html">{{ m.n }}</a>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px">
+            <a class="btn btn-dark" href="Cryo-Lignes.html">Voir les lignes
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+            </a>
+            <a class="btn btn-ghost" href="Cryo-Module.html">Module Gourmandise</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- PROMESSE -->
+<section style="background:#fff;padding:110px 0 90px;border-bottom:1px solid rgba(15,28,36,.06)">
+  <div class="wrap">
+    <div class="lab mono"><span>01</span><i></i><span>La promesse</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px;margin-top:30px;align-items:end">
+      <h2 class="h2">Vos produits méritent d'être <span style="color:#2B6688">mis en valeur</span>.</h2>
+      <p style="font-size:17px;color:#33454F;max-width:560px">Des vitrines adaptées à votre local et à vos dimensions : modules à étagères, à hauteur de comptoir, plane, ventilé ou statique ; matières tendance — corian, granit, bois mélaminé avec moulures. Et pour commencer, l'élaboration de votre plan 3D d'agencement.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(15,28,36,.1);border:1px solid rgba(15,28,36,.1);border-radius:22px;overflow:hidden;margin-top:64px">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div class="cell" style="background:#F6F9FA;padding:28px 26px">
+          <div class="mono" style="font-size:11px;color:#4A5D69">{{ s.k }}</div>
+          <div class="tnum" style="font-size:56px;font-weight:200;letter-spacing:-.03em;line-height:1;margin-top:14px">{{ s.v }}</div>
+          <div style="font-size:14px;color:#33454F;margin-top:10px">{{ s.l }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- LIGNES -->
+<section style="padding:110px 0">
+  <div class="wrap">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:end">
+      <div>
+        <div class="lab mono"><span>02</span><i></i><span>Lignes d'agencement</span></div>
+        <h2 class="h2" style="margin-top:22px;max-width:720px">Cinq lignes pour composer votre comptoir.</h2>
+      </div>
+      <a class="btn btn-ghost" href="Cryo-Lignes.html">Comparer les 5 lignes</a>
+    </div>
+    <div role="tablist" aria-label="Lignes d'agencement" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:10px;margin-top:44px">
+      <sc-for list="{{ lignes }}" as="l" hint-placeholder-count="5">
+        <button type="button" role="tab" class="tab" style="{{ l.st }}" onClick="{{ l.pick }}" aria-selected="{{ l.on }}">
+          <span class="mono" style="display:block;font-size:11px;opacity:.75">{{ l.code }}</span>
+          <span style="display:block;font-size:20px;font-weight:500;margin-top:6px">{{ l.n }}</span>
+          <span style="display:block;font-size:12.5px;opacity:.8;margin-top:2px">{{ l.tag }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:24px;margin-top:22px">
+      <div style="position:relative;border-radius:26px;overflow:hidden;height:500px;background:#0F1C24">
+        <img src="{{ lig.img }}" alt="{{ lig.alt }}" style="width:100%;height:500px;object-fit:cover;display:block">
+        <div class="frost" style="position:absolute;left:18px;bottom:18px;border-radius:18px;padding:14px 18px">
+          <div class="mono" style="font-size:11px;color:#4A5D69">{{ lig.code }} · LIGNE</div>
+          <div style="font-size:26px;font-weight:600;letter-spacing:-.02em">{{ lig.n }}</div>
+        </div>
+      </div>
+      <div class="frost" style="border-radius:26px;padding:34px">
+        <p style="font-size:19px;font-weight:300;line-height:1.45">{{ lig.desc }}</p>
+        <div style="margin-top:24px">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">STRUCTURE</span><span style="text-align:right;font-weight:500">{{ lig.st }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">FAÇADE</span><span style="text-align:right;font-weight:500">{{ lig.fr }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">PLAN · FORMAT</span><span style="text-align:right;font-weight:500">{{ lig.pl }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px dashed rgba(15,28,36,.2)"><span class="mono" style="font-size:11.5px;color:#4A5D69">MODULES</span><span class="tnum" style="text-align:right;font-weight:500">{{ lig.count }}</span></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:22px">
+          <sc-for list="{{ lig.mods }}" as="m" hint-placeholder-count="8">
+            <a class="chip" href="Cryo-Module.html">{{ m.n }}</a>
+          </sc-for>
+        </div>
+        <a class="btn btn-dark" href="Cryo-Lignes.html" style="margin-top:26px">Explorer la ligne {{ lig.n }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTILÉ / STATIQUE -->
+<section style="background:#0F1C24;color:#E6EEF2;padding:110px 0;position:relative;overflow:hidden">
+  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(127,179,211,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(127,179,211,.07) 1px,transparent 1px);background-size:48px 48px"></div>
+  <div class="wrap" style="position:relative">
+    <div class="lab mono" style="color:#7FB3D3"><span>03</span><i style="background:#7FB3D3"></i><span>Deux façons de faire le froid</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:56px;margin-top:30px;align-items:center">
+      <div>
+        <h2 class="h2">Ventilé ou statique : le froid se choisit.</h2>
+        <div role="group" aria-label="Mode de froid" style="display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(127,179,211,.25);margin-top:30px">
+          <button type="button" class="tab" style="{{ airVentBtn }}" onClick="{{ setVent }}" aria-pressed="{{ isVent }}">Froid ventilé</button>
+          <button type="button" class="tab" style="{{ airStatBtn }}" onClick="{{ setStat }}" aria-pressed="{{ isStat }}">Froid statique</button>
+        </div>
+        <p style="font-size:17px;color:#C9D7DF;margin-top:26px;max-width:520px">{{ air.txt }}</p>
+        <div class="mono" style="font-size:11px;color:#7FB3D3;margin-top:26px">MODULES {{ air.code }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+          <sc-for list="{{ air.mods }}" as="m" hint-placeholder-count="4">
+            <a href="Cryo-Module.html" class="chip" style="background:rgba(255,255,255,.06);border-color:rgba(127,179,211,.3);color:#E6EEF2">{{ m.n }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:relative;border-radius:28px;border:1px solid rgba(127,179,211,.22);background:rgba(255,255,255,.03);padding:22px">
+        <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#7FB3D3;padding-bottom:10px">
+          <span>COUPE TECHNIQUE · SCHÉMA</span><span>MODE · {{ air.code }}</span>
+        </div>
+        <svg viewBox="0 0 640 400" role="img" aria-label="{{ air.aria }}" style="width:100%;height:auto;display:block">
+          <rect x="70" y="262" width="500" height="110" rx="6" fill="rgba(127,179,211,.06)" stroke="rgba(127,179,211,.5)"></rect>
+          <path d="M80 248 L560 248" stroke="#E6EEF2" stroke-width="2"></path>
+          <path d="M96 248 L96 170 Q96 84 230 76 L560 76 L560 248" fill="rgba(221,231,236,.04)" stroke="#DDE7EC" stroke-width="1.6"></path>
+          <path d="M300 168 L560 168" stroke="rgba(221,231,236,.55)" stroke-dasharray="4 6"></path>
+          <g style="{{ svgVent }}">
+            <path class="flow" d="M540 236 C540 120 470 96 380 98 C260 102 150 128 120 228 L520 238" fill="none" stroke="#A8D2EA" stroke-width="2.2"></path>
+            <path class="flow f2" d="M520 226 C520 140 460 120 380 122 C280 126 190 146 160 222 L500 228" fill="none" stroke="#7FB3D3" stroke-width="1.8"></path>
+            <path class="flow f3" d="M500 216 C496 160 450 146 384 148 C310 150 236 164 210 214 L480 218" fill="none" stroke="#3A7CA5" stroke-width="1.6"></path>
+            <rect x="500" y="276" width="50" height="34" rx="4" fill="none" stroke="#7FB3D3"></rect>
+            <circle cx="525" cy="293" r="10" fill="none" stroke="#7FB3D3"></circle>
+            <text x="440" y="336" fill="#7FB3D3" font-family="IBM Plex Mono" font-size="12">VENTILATION</text>
+          </g>
+          <g style="{{ svgStat }}" fill="#A8D2EA">
+            <circle class="drop" cx="160" cy="110" r="3"></circle>
+            <circle class="drop" cx="230" cy="96" r="2.6" style="animation-delay:.9s"></circle>
+            <circle class="drop" cx="300" cy="94" r="3" style="animation-delay:1.8s"></circle>
+            <circle class="drop" cx="370" cy="92" r="2.4" style="animation-delay:.5s"></circle>
+            <circle class="drop" cx="440" cy="94" r="3" style="animation-delay:2.4s"></circle>
+            <circle class="drop" cx="510" cy="100" r="2.6" style="animation-delay:1.3s"></circle>
+            <circle class="drop" cx="340" cy="150" r="2" style="animation-delay:3s"></circle>
+            <path class="coil" d="M100 258 L124 270 L148 258 L172 270 L196 258 L220 270 L244 258 L268 270 L292 258 L316 270 L340 258 L364 270 L388 258 L412 270 L436 258 L460 270 L484 258 L508 270 L532 258" fill="none" stroke="#7FB3D3" stroke-width="2.4"></path>
+            <text x="100" y="300" fill="#7FB3D3" font-family="IBM Plex Mono" font-size="12">SERPENTIN DE CUVE (POISSONNERIE)</text>
+          </g>
+          <text x="110" y="62" fill="#C9D7DF" font-family="IBM Plex Mono" font-size="12">VITRAGE</text>
+          <text x="440" y="160" fill="#C9D7DF" font-family="IBM Plex Mono" font-size="12">ÉTAGÈRE</text>
+          <text x="96" y="392" fill="#C9D7DF" font-family="IBM Plex Mono" font-size="12">MEUBLE · GROUPE</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTEURS -->
+<section style="padding:110px 0">
+  <div class="wrap">
+    <div class="lab mono"><span>04</span><i></i><span>13 secteurs d'activité</span></div>
+    <h2 class="h2" style="margin-top:22px;max-width:820px">Un métier, une plage de température.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:28px;margin-top:44px;align-items:start">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:8px">
+        <sc-for list="{{ sects }}" as="sc" hint-placeholder-count="13">
+          <button type="button" class="tab" style="{{ sc.st }}" onClick="{{ sc.pick }}" aria-pressed="{{ sc.on }}">
+            <span style="font-size:14.5px;font-weight:500">{{ sc.n }}</span>
+            <span class="mono tnum" style="{{ sc.tst }}">{{ sc.t }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div class="frost" style="border-radius:26px;overflow:hidden">
+        <div style="position:relative;height:260px;background:#0F1C24">
+          <img src="{{ sec.img }}" alt="{{ sec.n }}" style="width:100%;height:260px;object-fit:cover;display:block">
+          <div class="mono" style="position:absolute;top:14px;left:14px;padding:6px 10px;border-radius:999px;background:rgba(15,28,36,.65);color:#fff;font-size:11px">SECTEUR {{ sec.idx }} / 13</div>
+        </div>
+        <div style="padding:28px 30px 32px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px">
+            <h3 style="font-size:30px;font-weight:500;letter-spacing:-.02em">{{ sec.n }}</h3>
+            <span class="mono tnum" style="{{ sec.big }}">{{ sec.t }}</span>
+          </div>
+          <div class="mono" style="font-size:11px;color:#4A5D69;margin-top:20px">MODULES CONSEILLÉS</div>
+          <p style="margin-top:8px;font-size:15.5px">{{ sec.mods }}</p>
+          <sc-if value="{{ sec.v }}" hint-placeholder-val="{{ false }}">
+            <p class="mono" style="margin-top:10px;font-size:11.5px;color:#8A4A12">SÉLECTION À VALIDER PAR LE BUREAU D'ÉTUDES</p>
+          </sc-if>
+          <a class="btn btn-dark" href="Cryo-Secteurs.html" style="margin-top:22px">Fiche secteur</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESSUS -->
+<section style="background:#DDE7EC;padding:110px 0;position:relative;overflow:hidden">
+  <div aria-hidden="true" class="dew" style="opacity:.55"></div>
+  <div class="wrap" style="position:relative">
+    <div class="lab mono"><span>05</span><i></i><span>Le processus</span></div>
+    <h2 class="h2" style="margin-top:22px;max-width:820px">De la mesure du local à la vitrine en place.</h2>
+    <div style="position:relative;height:2px;background:rgba(15,28,36,.12);margin-top:56px;border-radius:2px">
+      <div style="{{ progStyle }}"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:14px;margin-top:22px">
+      <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+        <button type="button" class="tab" style="{{ st.st }}" onClick="{{ st.pick }}" aria-pressed="{{ st.on }}">
+          <span class="mono" style="display:block;font-size:11px;opacity:.75">ÉTAPE {{ st.k }}</span>
+          <span style="display:block;font-size:24px;font-weight:500;letter-spacing:-.02em;margin-top:10px">{{ st.n }}</span>
+          <span style="display:block;font-size:14.5px;margin-top:10px;line-height:1.55;opacity:.9">{{ st.d }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- RÉALISATIONS -->
+<section style="padding:110px 0">
+  <div class="wrap">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:end">
+      <div>
+        <div class="lab mono"><span>06</span><i></i><span>Réalisations en vedette</span></div>
+        <h2 class="h2" style="margin-top:22px">Sur le terrain.</h2>
+      </div>
+      <a class="btn btn-ghost" href="Cryo-Realisations.html">Les 14 réalisations</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:18px;margin-top:44px">
+      <sc-for list="{{ reals }}" as="r" hint-placeholder-count="4">
+        <a class="card" href="Cryo-Realisations.html">
+          <div style="height:300px;overflow:hidden;background:#0F1C24"><img src="{{ r.img }}" alt="{{ r.n }}" style="width:100%;height:300px;object-fit:cover;display:block"></div>
+          <div style="padding:20px 22px 24px">
+            <div class="mono" style="display:flex;justify-content:space-between;font-size:11px;color:#4A5D69"><span>{{ r.k }}</span><span>{{ r.l }}</span></div>
+            <div style="font-size:19px;font-weight:600;margin-top:10px;letter-spacing:-.01em">{{ r.n }}</div>
+            <div style="font-size:14px;color:#33454F;margin-top:4px">{{ r.where }}</div>
+            <div class="mono" style="font-size:11.5px;color:#2B6688;margin-top:14px">{{ r.m }}</div>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+    <p class="mono" style="margin-top:16px;font-size:11px;color:#4A5D69">PHOTOS D'ILLUSTRATION — VISUELS DE CHANTIER À INTÉGRER [PHOTOS]</p>
+  </div>
+</section>
+
+<!-- MATIÈRES -->
+<section style="background:#fff;padding:110px 0">
+  <div class="wrap">
+    <div class="lab mono"><span>07</span><i></i><span>Matières</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:48px;margin-top:30px;align-items:center">
+      <div>
+        <h2 class="h2">Pierre, granit, bois, verre.</h2>
+        <div class="frost" style="border-radius:22px;padding:28px;margin-top:32px;background:#F6F9FA">
+          <div class="mono" style="font-size:11px;color:#4A5D69">{{ matSel.k }} · MATIÈRE</div>
+          <h3 style="font-size:26px;font-weight:500;margin-top:8px;letter-spacing:-.02em">{{ matSel.n }}</h3>
+          <p style="margin-top:12px;font-size:16px;color:#33454F">{{ matSel.d }}</p>
+          <div class="mono" style="font-size:11.5px;color:#2B6688;margin-top:16px">{{ matSel.lines }}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+        <sc-for list="{{ mats }}" as="mt" hint-placeholder-count="4">
+          <button type="button" class="sw" onClick="{{ mt.pick }}" aria-pressed="{{ mt.on }}">
+            <span class="{{ mt.cls }}" style="{{ mt.st }}"></span>
+            <span style="display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:14px;font-weight:500;color:#0F1C24"><span>{{ mt.n }}</span><span class="mono" style="font-size:11px;color:#4A5D69">{{ mt.k }}</span></span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOW-ROOM -->
+<section style="padding:110px 0 0">
+  <div class="wrap">
+    <div class="room" style="position:relative;border-radius:30px;overflow:hidden;min-height:560px;display:flex;align-items:flex-end;padding:28px">
+      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,28,36,.55),rgba(15,28,36,0) 60%)"></div>
+      <div class="frost drift" style="position:relative;border-radius:24px;padding:30px;max-width:460px">
+        <div class="lab mono"><span>08</span><i></i><span>Show-room</span></div>
+        <h2 style="font-size:32px;font-weight:400;letter-spacing:-.02em;margin-top:16px;line-height:1.1">Venez voir le froid de près.</h2>
+        <p style="margin-top:14px;font-size:15px;color:#33454F">Bureau d'études et show-room<br>423, Chemin des Vernèdes — Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+        <div class="mono" style="margin-top:14px;font-size:12px;color:#33454F">HORAIRES · [HORAIRES]</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+          <a class="btn btn-dark" href="Cryo-Contact.html">Préparer ma visite</a>
+          <a class="btn btn-ghost" href="tel:0800951313" style="font-family:'IBM Plex Mono',monospace;font-weight:500">0 800 95 13 13</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:120px 0">
+  <div class="wrap" style="text-align:center">
+    <div class="mono" style="font-size:12px;color:#2B6688">ÉTUDE · PLAN 3D · FABRICATION · INSTALLATION</div>
+    <h2 style="font-size:clamp(40px,7vw,104px);font-weight:200;letter-spacing:-.04em;line-height:.98;margin-top:22px;overflow-wrap:anywhere">Votre plan 3D,<br><span style="font-weight:600">offert.</span></h2>
+    <p style="font-size:17px;color:#33454F;max-width:560px;margin:24px auto 0">Envoyez les dimensions de votre local et vos produits : le bureau d'études élabore votre plan 3D d'agencement.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px">
+      <a class="btn btn-red" href="Cryo-Contact.html" style="{{ ctaStyle }}">Demande de devis</a>
+      <a class="btn btn-ghost" href="tel:0800951313">Appeler le 0 800 95 13 13 · gratuit</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0F1C24;color:#C9D7DF;padding:84px 0 28px;position:relative;overflow:hidden">
+  <div aria-hidden="true" class="mono" style="position:absolute;right:-20px;top:20px;font-size:180px;line-height:1;color:rgba(127,179,211,.06);white-space:nowrap">−2 / +90</div>
+  <div class="wrap" style="position:relative">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:40px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;color:#fff"><span style="font-weight:700;font-size:24px;letter-spacing:.08em">RGTE</span><span class="mono" style="font-size:10px;line-height:1.3;color:#9FB4C1">R.G.<br>TECHNOLOGIES</span></div>
+        <p style="margin-top:16px;font-size:14px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">SHOW-ROOM</div>
+        <p style="margin-top:12px;font-size:14px">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">CONTACT</div>
+        <p style="margin-top:12px;font-size:14px"><a href="tel:0800951313" style="color:#fff;text-decoration:none;font-family:'IBM Plex Mono',monospace">0 800 95 13 13</a><br>Numéro vert, appel gratuit<br>Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">NAVIGATION</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="Cryo-Lignes.html">Lignes d'agencement</a>
+          <a class="navl" href="Cryo-Secteurs.html">Secteurs d'activité</a>
+          <a class="navl" href="Cryo-Realisations.html">Réalisations</a>
+          <a class="navl" href="Cryo-Contact.html">Showroom &amp; contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="mono" style="font-size:11px;color:#7FB3D3">INFORMATIONS</div>
+        <div style="display:flex;flex-direction:column;margin-top:4px">
+          <a class="navl" href="#">Mentions légales</a>
+          <a class="navl" href="#">Conditions de vente</a>
+          <a class="navl" href="#">Plan du site</a>
+          <a class="navl" href="#">Gestion des cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="mono" style="margin-top:60px;padding-top:20px;border-top:1px solid rgba(201,215,223,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:11.5px;color:#9FB4C1">
+      <span>© RGTE — R.G. Technologies</span>
+      <a href="index.html" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px">← Toutes les propositions</a>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":9200},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#0F1C24","#3A7CA5"]},"givre":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { pos:33, ligne:1, air:'vent', sect:1, step:0, mat:0, menuOpen:false }; }
+  hx(h){ return [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); }
+  mix(a,b,k){ const A=this.hx(a), B=this.hx(b); return 'rgb(' + A.map((v,i) => Math.round(v + (B[i]-v)*k)).join(',') + ')'; }
+  ramp(stops,p){ for(let i=1;i<stops.length;i++){ if(p<=stops[i][0]){ const a=stops[i-1], b=stops[i]; return this.mix(a[1], b[1], (p-a[0])/(b[0]-a[0])); } } return stops[stops.length-1][1]; }
+  temp(p){ const P=[[0,-2],[20,0],[25,2],[45,8],[55,14],[72,18],[80,30],[100,90]]; for(let i=1;i<P.length;i++){ if(p<=P[i][0]){ const a=P[i-1], b=P[i]; return a[1] + (b[1]-a[1])*(p-a[0])/(b[0]-a[0]); } } return 90; }
+  fmt(t){ const r=Math.round(t*10)/10; const s=r<0?'−':(r>0?'+':''); return s + Math.abs(r).toFixed(1).replace('.', ','); }
+  renderVals(){
+    const s=this.state, p=s.pos, accent=this.props.accent || '#D42A20', givre=this.props.givre !== false;
+    const t=this.temp(p);
+    const FAMS=[
+      { code:'F-01', label:'POISSONNERIE', name:'Poissonnerie', range:'−2 / 0 °C', mode:'STATIQUE', zone:[0,20], go:10, band:'#3A7CA5', img:'assets/fish-ice.webp', alt:'Poissons sur glace', flowTxt:'FROID STATIQUE · SERPENTIN', desc:'Réfrigérée Poissonnerie (Ligne Stone) : froid statique avec serpentin de cuve, vidange de cuve. En Ligne Industry, la vitrine Hanoi est dédiée à la poissonnerie.', mods:['Poissonnerie · Stone','Hanoi · Industry'], vent:false, stat:true, heat:false },
+      { code:'F-02', label:'PÂTISSERIE', name:'Pâtisserie', range:'+2 / +8 °C', mode:'VENTILÉ', zone:[25,45], go:33, band:'#7FB3D3', img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine', flowTxt:'FROID VENTILÉ', desc:'Entremets, tartes, macarons : Plane, Vision, Panorama, Centrale, Gourmandise, Pastry Show, Cube et Amandine sont conseillés pour la pâtisserie.', mods:['Gourmandise','Plane','Vision','Centrale','Pastry Show','Amandine'], vent:true, stat:false, heat:false },
+      { code:'F-03', label:'CHOCOLAT', name:'Chocolat', range:'+14 / +18 °C', mode:'VENTILÉ', zone:[55,72], go:63, band:'#B9A08C', img:'assets/chocolates-dark.webp', alt:'Bonbons de chocolat', flowTxt:'FROID VENTILÉ', desc:'Les mêmes modules, réglés pour le chocolat : Plane, Vision, Centrale, Gourmandise et Panorama existent en version +14 / +18 °C.', mods:['Gourmandise','Centrale','Plane','Vision','Panorama'], vent:true, stat:false, heat:false },
+      { code:'F-04', label:'BAIN-MARIE', name:'Bain-marie', range:'+30 / +90 °C', mode:'CHAUD', zone:[80,100], go:90, band:'#D42A20', img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox', flowTxt:'CHAUD · BACS GASTRONORMES', desc:'Module Chaud bain-marie en bacs gastronormes (Ligne Stone) ; en Ligne Basique, module Chaud bain-marie ou plaque chaude ; en Legno, vitrine chauffante sèche.', mods:['Chaud bain-marie · Stone','Chaud · Basique','Chauffante sèche · Legno'], vent:false, stat:false, heat:true }
+    ];
+    const fi = p<=22.5 ? 0 : (p<=50 ? 1 : (p<=76 ? 2 : 3));
+    const F = FAMS[fi];
+    const inZone = p>=F.zone[0] && p<=F.zone[1];
+    const bg=this.ramp([[0,'#D3E4EE'],[45,'#F1F5F7'],[72,'#F3F0EC'],[100,'#F7E1D9']],p);
+    const glow=this.ramp([[0,'#4F93C0'],[45,'#A9CBE0'],[72,'#E2D3C6'],[100,'#E8644F']],p);
+    const ink=this.ramp([[0,'#1D5579'],[45,'#0F1C24'],[76,'#3A2620'],[100,'#B3241B']],p);
+    const cold=Math.max(0, 1 - p/60);
+    const warm=fi===3;
+    const fam = Object.assign({}, F, {
+      rangeInk: warm ? 'color:#B3241B;font-weight:600' : 'color:#0F1C24;font-weight:600',
+      mods: F.mods.map(n => ({ n }))
+    });
+    const fams = FAMS.map((f,i) => {
+      const on = i===fi;
+      const bgc = on ? (i===3 ? '#D42A20' : '#0F1C24') : 'rgba(255,255,255,.62)';
+      return Object.assign({}, f, { on,
+        st:'padding:14px 16px;border-radius:18px;min-height:76px;background:' + bgc + ';color:' + (on ? '#fff' : '#0F1C24') + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.12)') + ';box-shadow:' + (on ? '0 16px 30px -18px rgba(15,28,36,.6)' : 'none'),
+        pick: () => this.setState({ pos: f.go }) });
+    });
+    const TK=[['−2',0],['0',20],['+2',25],['+8',45],['+14',55],['+18',72],['+30',80],['+90',100]];
+    const ticks = TK.map((k,i) => ({ v:k[0], cls: (i===2||i===4) ? 'hide-sm' : '',
+      st:'position:absolute;top:0;left:' + k[1] + '%;transform:translateX(' + (i===0 ? '-20%' : (i===7 ? '-80%' : '-50%')) + ');color:' + (i>=6 ? '#B3241B' : '#4A5D69') }));
+    const zones = FAMS.map((f,i) => ({ lab:f.name,
+      st:'position:absolute;top:0;height:24px;left:' + f.zone[0] + '%;width:' + (f.zone[1]-f.zone[0]) + '%;border-radius:12px;background:' + f.band + ';opacity:' + (i===fi ? .9 : .32) + ';transition:opacity .4s',
+      lst:'position:absolute;top:0;left:' + ((f.zone[0]+f.zone[1])/2) + '%;transform:translateX(-50%);white-space:nowrap;color:' + (i===fi ? '#0F1C24' : '#4A5D69') + ';font-weight:' + (i===fi ? 600 : 400) }));
+
+    const LIG=[
+      { code:'L-01', n:'Basique', tag:'Composition libre', img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir', desc:'Association de modules différents ; choix du coloris et des matériaux selon votre souhait.', st:'Coloris et matériaux au choix', fr:'Bois mélaminé ou verre (option)', pl:'Plan de travail et plinthe en granit', mods:['Comptoir bar','Comptoir caisse','Saladette réfrigérée','Cube','Pastry Show','Statique','Basse','Murale self-service','Panoramique','Chaud','Vitrine rétro','Amandine'] },
+      { code:'L-02', n:'Stone', tag:'Pierre acrylique', img:'assets/counter-domes.webp', alt:'Comptoir en pierre avec cloches de verre', desc:'Structure en pierre acrylique type Corian ; panneau frontal en verre, sérigraphié à l’image du client.', st:'Pierre acrylique type Corian', fr:'Verre, sérigraphie du client', pl:'[À PRÉCISER]', mods:['Plane','Vision','Saladette','Chaud bain-marie','Centrale','Gourmandise','Comptoir caisse','Comptoir bar','Poissonnerie','Panorama','Surface plane'] },
+      { code:'L-03', n:'Legno', tag:'Bois mélaminé', img:'assets/vitrine-wood.webp', alt:'Vitrine bois et verre', desc:'Association de modules habillés d’un panneau frontal en bois mélaminé.', st:'[À PRÉCISER]', fr:'Bois mélaminé', pl:'[À PRÉCISER]', mods:['Plane','Arrière neutre','Caisse et vitrine neutre','Comptoir bar','Réfrigérée statique','Ventilée plane','Vitrine neutre','Réfrigéré ventilé','Chauffante sèche'] },
+      { code:'L-04', n:'Encastrable', tag:'Module brut', img:'assets/saladette-bacs.webp', alt:'Cuves inox', desc:'Module brut prêt à être habillé, en version comptoir ou meuble entier sur pied.', st:'Brut, prêt à être habillé', fr:'Votre habillage', pl:'Comptoir ou meuble sur pied', mods:['Cuve froid ventilé','Cuve froid statique'] },
+      { code:'L-05', n:'Industry', tag:'Standardisée', img:'assets/vitrine-bakery-tall.webp', alt:'Vitrine haute de boulangerie', desc:'Vitrines standardisées en longueurs et indépendantes : une référence par usage.', st:'Longueurs standardisées', fr:'[À PRÉCISER]', pl:'Vitrines indépendantes', mods:['Olympe','Nepal','Aramis','Rubis','Argentine','Hanoi','Loire','Argent','Sugar','Hawaii','4 faces vitrées'] }
+    ];
+    const lignes = LIG.map((l,i) => { const on=i===s.ligne; return Object.assign({}, l, { on,
+      st:'padding:18px 20px;border-radius:20px;min-height:96px;background:' + (on ? '#0F1C24' : 'rgba(255,255,255,.7)') + ';color:' + (on ? '#fff' : '#0F1C24') + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.1)'),
+      pick: () => this.setState({ ligne:i }) }); });
+    const L0 = LIG[s.ligne];
+    const lig = Object.assign({}, L0, { count: String(L0.mods.length).padStart(2,'0') + ' modules', mods: L0.mods.map(n => ({ n })) });
+
+    const AIR = {
+      vent:{ code:'VENTILÉ', aria:'Schéma du froid ventilé : l’air froid circule en boucle dans l’enceinte', txt:'L’air froid est brassé dans toute l’enceinte, du fond de cuve jusqu’aux étagères. C’est le mode du module Gourmandise, du Pastry Show et de l’Amandine.', mods:['Gourmandise','Pastry Show','Amandine','Ventilée plane · Legno','Réfrigéré ventilé · Legno','Cuve froid ventilé'] },
+      stat:{ code:'STATIQUE', aria:'Schéma du froid statique : le froid descend sans brassage, serpentin de cuve', txt:'Sans brassage d’air : le froid descend naturellement sur le produit. En poissonnerie, il est assuré par un serpentin de cuve, avec vidange.', mods:['Statique · Basique','Réfrigérée statique · Legno','Poissonnerie · Stone','Cuve froid statique'] }
+    };
+    const A = AIR[s.air];
+    const air = Object.assign({}, A, { mods: A.mods.map(n => ({ n })) });
+    const pill = on => 'min-height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;background:' + (on ? '#DDE7EC' : 'transparent') + ';color:' + (on ? '#0F1C24' : '#C9D7DF');
+
+    const SECT=[
+      { n:'Boulangerie', t:'[T°]', img:'assets/vitrine-viennoiserie.webp', mods:'Amandine · Pastry Show · Statique · Loire (Industry) · Réfrigérée statique (Legno)', v:true },
+      { n:'Pâtisserie', t:'+2 / +8 °C', img:'assets/vitrine-cakes.webp', mods:'Plane · Vision · Panorama · Centrale · Gourmandise · Pastry Show · Cube · Amandine', v:false },
+      { n:'Chocolats', t:'+14 / +18 °C', img:'assets/chocolates-dark.webp', mods:'Plane · Vision · Centrale · Gourmandise · Panorama (versions +14 / +18 °C)', v:false },
+      { n:'Sandwichs', t:'[T°]', img:'assets/bakery-counter-bright.webp', mods:'Plane · Panoramique · Basse · Murale self-service · Nepal (Industry)', v:true },
+      { n:'Traiteur', t:'[T°]', img:'assets/bakery-hall-dark.webp', mods:'Plane · Saladette · Panorama · Comptoir bar · Comptoir caisse', v:true },
+      { n:'Poissonnerie', t:'−2 / 0 °C', img:'assets/fish-ice.webp', mods:'Réfrigérée Poissonnerie (Stone) · Hanoi (Industry) · Panorama · Surface plane', v:false },
+      { n:'Bar à salades', t:'+2 / +8 °C', img:'assets/saladette-bacs.webp', mods:'Saladette · Panorama · Comptoir caisse', v:false },
+      { n:'Bar à couscous', t:'+30 / +90 °C', img:'assets/saladette-bacs.webp', mods:'Chaud bain-marie sur mesure, trous arrondis · Saladette', v:false },
+      { n:'Fromagerie', t:'[T°]', img:'assets/fromagerie.webp', mods:'Statique · Panorama · Vitrine rétro', v:true },
+      { n:'Bar', t:'[T°]', img:'assets/coffee-counter.webp', mods:'Comptoir bar (neutre ou réfrigéré) · Comptoir caisse', v:false },
+      { n:'Bar à topping', t:'[T°]', img:'assets/topping-bar.webp', mods:'Saladette sur mesure à trous arrondis · Surface plane', v:false },
+      { n:'Coffee shop / Café', t:'[T°]', img:'assets/vitrine-cookies.webp', mods:'Comptoir bar · Comptoir caisse · Cube · Pastry Show', v:true },
+      { n:'Pizza al taglio', t:'[T°]', img:'assets/baker-table.webp', mods:'Saladette · Plane · Comptoir caisse', v:true }
+    ];
+    const tcol = x => x.indexOf('+30')===0 ? '#B3241B' : (x.indexOf('[')===0 ? '#4A5D69' : '#2B6688');
+    const sects = SECT.map((x,i) => { const on=i===s.sect; return Object.assign({}, x, { on,
+      st:'display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 16px;min-height:56px;border-radius:16px;background:' + (on ? '#0F1C24' : 'rgba(255,255,255,.7)') + ';color:' + (on ? '#fff' : '#0F1C24') + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.1)'),
+      tst:'font-size:11px;white-space:nowrap;color:' + (on ? (x.t.indexOf('+30')===0 ? '#FF9C8E' : '#A8D2EA') : tcol(x.t)),
+      pick: () => this.setState({ sect:i }) }); });
+    const S0 = SECT[s.sect];
+    const sec = Object.assign({}, S0, { idx:String(s.sect+1).padStart(2,'0'), big:'font-size:22px;font-weight:500;color:' + tcol(S0.t) });
+
+    const STEPS=[
+      { k:'01', n:'Étude', d:'Votre local, vos produits, vos contraintes : le bureau d’études relève les dimensions et définit les plages de température.' },
+      { k:'02', n:'Plan 3D', d:'Élaboration de votre plan 3D d’agencement, offert : vous voyez votre comptoir avant sa fabrication.' },
+      { k:'03', n:'Fabrication', d:'Modules, matières et coloris réunis selon le plan validé : pierre acrylique, granit, bois mélaminé, verre sérigraphié.' },
+      { k:'04', n:'Installation', d:'Mise en place des vitrines dans votre boutique. Modalités et délais : [À CONFIRMER].' }
+    ];
+    const steps = STEPS.map((x,i) => { const on=i===s.step, done=i<=s.step; return Object.assign({}, x, { on,
+      st:'padding:24px;border-radius:22px;min-height:220px;background:' + (on ? '#0F1C24' : (done ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.5)')) + ';color:' + (on ? '#fff' : '#0F1C24') + ';border:1px solid ' + (on ? 'transparent' : 'rgba(15,28,36,.1)'),
+      pick: () => this.setState({ step:i }) }); });
+
+    const reals=[
+      { k:'R-01', l:'STONE', n:'Pâtisserie', where:'Paris 4e', m:'Vitrine réfrigérée Plane · Caisse', img:'assets/vitrine-cakes.webp' },
+      { k:'R-03', l:'STONE', n:'Chocolatier', where:'Gap & Grenoble', m:'Plane · Caisse', img:'assets/chocolates-dark.webp' },
+      { k:'R-13', l:'STONE', n:'Traiteur poissonnier', where:'Département 92', m:'Panorama · Surface plane · Caisse', img:'assets/fish-ice.webp' },
+      { k:'R-14', l:'STONE', n:'Pâtissier chocolatier Canet', where:'Nice 06', m:'Plane +2/+8 · chocolats +14/+18', img:'assets/vitrine-slice.webp' }
+    ];
+
+    const MATS=[
+      { k:'M-01', n:'Pierre acrylique', cls:'sw-a', d:'Pierre acrylique type Corian : structure de la Ligne Stone. Sur le module Gourmandise, piliers, plan de travail et pied sont en pierre acrylique blanche.', lines:'LIGNE STONE' },
+      { k:'M-02', n:'Granit', cls:'sw-b', d:'Plan de travail et plinthe en granit sur la Ligne Basique.', lines:'LIGNE BASIQUE' },
+      { k:'M-03', n:'Bois mélaminé', cls:'sw-c', d:'Panneau frontal en bois mélaminé, avec moulures : la matière des lignes Basique et Legno.', lines:'LIGNES BASIQUE · LEGNO' },
+      { k:'M-04', n:'Verre sérigraphié', cls:'sw-d', d:'Panneau frontal en verre avec la sérigraphie du client sur la Ligne Stone ; façade verre en option sur la Ligne Basique.', lines:'LIGNES STONE · BASIQUE (OPTION)' }
+    ];
+    const mats = MATS.map((x,i) => { const on=i===s.mat; return Object.assign({}, x, { on,
+      st:'display:block;height:200px;border-radius:20px;border:' + (on ? '3px solid #3A7CA5' : '1px solid rgba(15,28,36,.12)') + ';box-shadow:' + (on ? '0 20px 40px -24px rgba(58,124,165,.8)' : 'none') + ';transition:border-color .3s,box-shadow .3s',
+      pick: () => this.setState({ mat:i }) }); });
+
+    return {
+      fam, fams, ticks, zones, pos:p,
+      tempTxt: this.fmt(t),
+      ariaTemp: this.fmt(t) + ' degrés, ' + F.name,
+      statusTxt: inZone ? 'DANS LA PLAGE' : 'ENTRE DEUX PLAGES',
+      statusStyle: 'padding:7px 12px;border-radius:999px;color:#fff;background:' + (inZone ? (warm ? '#B3241B' : '#2B6688') : '#4A5D69'),
+      setPos: e => this.setState({ pos: parseFloat(e.target.value) }),
+      heroStyle: 'position:relative;overflow:hidden;background-color:' + bg + ';transition:background-color .6s',
+      glowStyle: 'position:absolute;width:960px;height:960px;border-radius:50%;left:-260px;top:-300px;filter:blur(110px);opacity:.55;background-color:' + glow + ';transition:background-color .6s',
+      dewStyle: 'opacity:' + (givre ? (0.15 + cold*0.85).toFixed(2) : 0),
+      panelDew: 'opacity:' + (givre ? (0.1 + cold*0.7).toFixed(2) : 0),
+      readStyle: 'font-size:clamp(84px,10.5vw,168px);font-weight:200;line-height:.9;letter-spacing:-.045em;color:' + ink + ';transition:color .5s',
+      unitStyle: 'font-size:clamp(26px,3vw,44px);font-weight:300;margin-top:10px;color:' + ink,
+      fillStyle: 'position:absolute;left:14px;top:22px;height:12px;border-radius:6px;background:' + ink + ';opacity:.85;width:calc((100% - 28px) * ' + (p/100).toFixed(3) + ');transition:background-color .5s',
+      gVent: 'opacity:' + (F.vent ? 1 : 0) + ';transition:opacity .5s',
+      gStat: 'opacity:' + (F.stat ? 1 : 0) + ';transition:opacity .5s',
+      gHeat: 'opacity:' + (F.heat ? 1 : 0) + ';transition:opacity .5s',
+      ctaStyle: 'background:' + accent,
+      stats:[ { k:'LIGNES', v:'05', l:'lignes d’agencement' }, { k:'SECTEURS', v:'13', l:'secteurs d’activité' }, { k:'RÉALISATIONS', v:'14', l:'réalisations présentées' }, { k:'PLAN', v:'3D', l:'plan d’agencement offert' } ],
+      lignes, lig,
+      air, isVent: s.air==='vent', isStat: s.air==='stat',
+      airVentBtn: pill(s.air==='vent'), airStatBtn: pill(s.air==='stat'),
+      setVent: () => this.setState({ air:'vent' }), setStat: () => this.setState({ air:'stat' }),
+      svgVent: 'opacity:' + (s.air==='vent' ? 1 : 0) + ';transition:opacity .6s',
+      svgStat: 'opacity:' + (s.air==='stat' ? 1 : 0) + ';transition:opacity .6s',
+      sects, sec,
+      steps, progStyle: 'position:absolute;left:0;top:0;height:2px;background:#0F1C24;border-radius:2px;width:' + ((s.step+1)*25) + '%;transition:width .6s cubic-bezier(.2,.7,.2,1)',
+      reals, mats, matSel: MATS[s.mat],
+      menuOpen: s.menuOpen, toggleMenu: () => this.setState({ menuOpen: !s.menuOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cacao — Secteurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap">
+<style>
+body{margin:0;background:#1B110D}
+sc-for,sc-if{display:contents}
+.cc{font-family:'Albert Sans',system-ui,sans-serif;color:#F1E6DA;background:#1B110D;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cc *{box-sizing:border-box}
+.pf{font-family:'Playfair Display',Georgia,serif}
+.wrap{max-width:1320px;margin:0 auto;padding:0 40px;position:relative}
+.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#C07A4A;font-weight:500}
+.muted{color:#B9A797}
+.hair{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;background-image:linear-gradient(to right,rgba(192,122,74,.11) 1px,transparent 1px);background-size:calc(100% / 6) 100%;background-position:center}
+.navl{color:#F1E6DA;text-decoration:none;font-size:14px;letter-spacing:.04em;padding:0 4px;min-height:44px;display:inline-flex;align-items:center;position:relative}
+.navl::after{content:'';position:absolute;left:4px;right:4px;bottom:9px;height:1px;background:#C07A4A;transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn-cu{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border-radius:999px;background:#C07A4A;color:#1B110D;font-weight:600;font-size:14px;letter-spacing:.02em;text-decoration:none;border:0;cursor:pointer;font-family:inherit;transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s,filter .3s}
+.btn-cu:hover{transform:translateY(-2px);box-shadow:0 16px 34px -14px rgba(192,122,74,.8);filter:brightness(1.08)}
+.btn-gh{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border-radius:999px;background:transparent;color:#F1E6DA;font-weight:500;font-size:14px;text-decoration:none;border:1px solid rgba(192,122,74,.55);cursor:pointer;font-family:inherit;transition:background .4s,border-color .4s}
+.btn-gh:hover{background:rgba(192,122,74,.12);border-color:#C07A4A}
+.btn-cu svg,.btn-gh svg{transition:transform .4s}
+.btn-cu:hover svg,.btn-gh:hover svg{transform:translateX(4px)}
+.cc :focus-visible{outline:2px solid #C07A4A;outline-offset:3px}
+.burger{display:none;width:46px;height:46px;border-radius:999px;border:1px solid rgba(192,122,74,.5);background:transparent;color:#F1E6DA;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.ft-h{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C07A4A;font-weight:500;margin:0 0 16px}
+.ft-l{color:#B9A797;text-decoration:none;display:flex;min-height:40px;align-items:center;transition:color .3s;font-size:15px}
+.ft-l:hover{color:#F1E6DA}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(192,122,74,.35);color:#F1E6DA;text-decoration:none;font-size:14px;background:transparent;transition:border-color .35s,background .35s,transform .35s}
+.chip:hover{border-color:#C07A4A;background:rgba(192,122,74,.14);transform:translateY(-2px)}
+.fade-up{animation:fu 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fu{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.melt{display:block;animation:melt 2s cubic-bezier(.6,.05,.3,1) both}
+@keyframes melt{
+0%{clip-path:polygon(0% 0%,100% 0%,100% 0%,87% 0%,75% 0%,62% 0%,50% 0%,37% 0%,25% 0%,12% 0%,0% 0%);transform:translateY(-10px)}
+55%{clip-path:polygon(0% 0%,100% 0%,100% 72%,87% 96%,75% 58%,62% 88%,50% 52%,37% 92%,25% 62%,12% 100%,0% 70%);transform:translateY(-2px)}
+100%{clip-path:polygon(0% 0%,100% 0%,100% 135%,87% 135%,75% 135%,62% 135%,50% 135%,37% 135%,25% 135%,12% 135%,0% 135%);transform:none}}
+.sheen{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,224,190,0) 44%,rgba(255,224,190,.16) 50%,rgba(255,224,190,0) 56%,transparent 60%,transparent 100%);background-size:300% 100%;animation:sheen 10s cubic-bezier(.45,0,.2,1) infinite;mix-blend-mode:screen}
+@keyframes sheen{0%{background-position:100% 0}65%,100%{background-position:0% 0}}
+.rng{flex:1 1 150px;text-align:left;cursor:pointer;font-family:inherit;padding:16px 18px;min-height:44px;border-radius:12px;transition:background .5s,border-color .5s,color .5s,transform .4s}
+.rng:hover{transform:translateY(-2px)}
+.tile{position:relative;text-align:left;cursor:pointer;font-family:inherit;padding:22px 20px;min-height:132px;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;transition:background .5s,border-color .5s,opacity .5s,transform .6s cubic-bezier(.2,.7,.2,1)}
+.tile .tn{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.tile .tt{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.tile:hover{transform:translateY(-4px)}
+.tile:hover .tn{transform:translate(6px,-4px)}
+.tile:hover .tt{transform:translateX(4px)}
+.det-img{display:block;width:100%;height:320px;object-fit:cover;animation:imgin 1.2s cubic-bezier(.2,.7,.2,1) both}
+@keyframes imgin{from{opacity:.2;transform:scale(1.06)}to{opacity:1;transform:none}}
+.rl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;min-height:44px;border-bottom:1px solid rgba(192,122,74,.16);color:#F1E6DA;text-decoration:none;font-size:14px;transition:padding .4s}
+.rl:hover{padding-left:8px}
+.duo{position:relative;border-radius:16px;overflow:hidden;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.duo img{display:block;width:100%;height:420px;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.duo:hover img{transform:scale(1.07)}
+.duo-a:hover{transform:translate(-6px,-6px)}
+.duo-b:hover{transform:translate(6px,6px)}
+@media(max-width:960px){.navlinks{display:none}.burger{display:inline-flex}.hdr-tel{display:none}.mnav{display:block}.sec-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.wrap{padding:0 20px}.hdr-cta{display:none}}
+@media(prefers-reduced-motion:reduce){.melt,.sheen,.fade-up,.det-img{animation:none}}
+</style>
+</helmet>
+<div class="cc" style="position:relative;overflow:hidden">
+
+<header style="position:sticky;top:0;z-index:60;background:rgba(27,17,13,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(192,122,74,.22)">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;height:84px">
+    <a href="Cacao-Accueil.dc.html" aria-label="RGTE, retour à l’accueil" style="text-decoration:none;display:flex;align-items:baseline;gap:12px;min-height:44px;padding-top:10px">
+      <span class="pf" style="font-size:30px;font-weight:600;letter-spacing:.06em;color:#F1E6DA;line-height:1">RGTE<span style="color:#D42A20">.</span></span>
+      <span style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#B9A797">R.G. Technologies</span>
+    </a>
+    <nav class="navlinks" aria-label="Navigation principale" style="display:flex;gap:30px">
+      <a class="navl" href="Cacao-Lignes.dc.html">Lignes</a>
+      <a class="navl on" href="Cacao-Secteurs.dc.html" aria-current="page">Secteurs</a>
+      <a class="navl" href="Cacao-Realisations.dc.html">Réalisations</a>
+      <a class="navl" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:18px">
+      <a class="hdr-tel" href="tel:0800951313" style="text-decoration:none;color:#F1E6DA;display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;min-height:44px;justify-content:center">
+        <span style="font-size:15px;font-weight:600;letter-spacing:.04em">0 800 95 13 13</span>
+        <span style="font-size:11px;color:#B9A797;letter-spacing:.08em">appel gratuit</span>
+      </a>
+      <a class="btn-cu hdr-cta" href="Cacao-Contact.dc.html" style="{{ ctaStyle }}">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir le menu" onClick="{{ toggleMenu }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="mnav" style="border-top:1px solid rgba(192,122,74,.22);background:#1B110D">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:12px;padding-bottom:20px">
+        <a class="navl" href="Cacao-Lignes.dc.html">Lignes</a>
+        <a class="navl" href="Cacao-Secteurs.dc.html">Secteurs</a>
+        <a class="navl" href="Cacao-Realisations.dc.html">Réalisations</a>
+        <a class="navl" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+        <a class="navl" href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+        <a class="btn-cu" href="Cacao-Contact.dc.html" style="margin-top:12px">Plan 3D offert</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- HERO + ECHELLE -->
+<section style="position:relative;overflow:hidden;padding:100px 0 60px">
+  <div class="hair" aria-hidden="true"></div>
+  <div aria-hidden="true" style="position:absolute;top:-200px;right:-200px;width:800px;height:800px;border-radius:999px;background:radial-gradient(circle,rgba(192,122,74,.2),transparent 65%)"></div>
+  <div class="wrap">
+    <p class="eyebrow fade-up" style="margin:0 0 22px;animation-delay:.6s"><a href="Cacao-Accueil.dc.html" style="color:#B9A797;text-decoration:none">Accueil</a> <span class="muted">/</span> Secteurs d’activité</p>
+    <h1 class="pf" style="margin:0;font-weight:400;font-size:clamp(44px,6.4vw,96px);line-height:1;letter-spacing:-.015em;overflow-wrap:anywhere">
+      <span class="melt" style="animation-delay:.3s">Treize métiers,</span>
+      <span class="melt" style="animation-delay:.6s;font-style:italic;color:#C07A4A;padding-bottom:6px">une température chacun.</span>
+    </h1>
+    <p class="fade-up muted" style="margin:26px 0 0;max-width:620px;font-size:18px;line-height:1.65;animation-delay:1.1s">Filtrez par plage de température, puis choisissez votre métier : modules conseillés et réalisations s’affichent.</p>
+    <div role="group" aria-label="Filtrer par plage de température" class="fade-up" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:44px;animation-delay:1.3s">
+      <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="6">
+        <button type="button" class="rng" aria-pressed="{{ r.sel }}" style="{{ r.style }}" onClick="{{ r.pick }}">
+          <span class="pf" style="display:block;font-size:22px;line-height:1.1">{{ r.label }}</span>
+          <span style="display:block;margin-top:4px;font-size:12px;color:#B9A797">{{ r.sub }}</span>
+          <span style="{{ r.bar }}"></span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- SELECTEUR -->
+<section aria-label="Secteurs" style="position:relative;padding:30px 0 110px">
+  <div class="wrap">
+    <div class="sec-grid" style="display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start">
+      <div role="listbox" aria-label="Choisir un secteur" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:12px">
+        <sc-for list="{{ sects }}" as="s" hint-placeholder-count="13">
+          <button type="button" role="option" class="tile" aria-selected="{{ s.sel }}" style="{{ s.style }}" onClick="{{ s.pick }}">
+            <span class="pf tn" style="font-size:15px;font-style:italic;color:#C07A4A">{{ s.n }}</span>
+            <span class="tt" style="display:block">
+              <span class="pf" style="display:block;font-size:24px;line-height:1.1">{{ s.nom }}</span>
+              <span style="display:block;margin-top:6px;font-size:12px;color:#B9A797">{{ s.temp }}</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="position:sticky;top:104px;background:#2A1B15;border:1px solid rgba(192,122,74,.32);border-radius:20px;overflow:hidden">
+        <div style="position:relative;overflow:hidden">
+          <img class="det-img" src="{{ cs.img }}" alt="{{ cs.alt }}">
+          <div aria-hidden="true" style="position:absolute;top:0;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(27,17,13,0) 45%,rgba(42,27,21,1))"></div>
+          <sc-if value="{{ sheenOn }}" hint-placeholder-val="{{ true }}"><div class="sheen" aria-hidden="true"></div></sc-if>
+          <p class="muted" style="position:absolute;top:14px;right:16px;margin:0;font-size:11px;padding:4px 8px;border-radius:6px;background:rgba(27,17,13,.7)">Image d’ambiance</p>
+        </div>
+        <div style="padding:6px 30px 30px">
+          <p class="pf" style="margin:0;font-size:14px;font-style:italic;color:#C07A4A">Secteur {{ cs.n }} / 13</p>
+          <h2 class="pf" style="margin:6px 0 0;font-weight:400;font-size:44px;line-height:1.02">{{ cs.nom }}</h2>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:20px">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C07A4A" stroke-width="1.5" aria-hidden="true"><path d="M10 4a2 2 0 1 1 4 0v10a4 4 0 1 1-4 0z"></path><path d="M12 10v6"></path></svg>
+            <span style="font-size:18px;font-weight:500">{{ cs.temp }}</span>
+            <sc-if value="{{ cs.valider }}" hint-placeholder-val="{{ false }}">
+              <span style="margin-left:auto;padding:4px 10px;border-radius:999px;border:1px solid rgba(185,167,151,.5);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B9A797">à valider</span>
+            </sc-if>
+          </div>
+          <div aria-hidden="true" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:14px">
+            <sc-for list="{{ cs.scale }}" as="g" hint-placeholder-count="5">
+              <span style="display:block"><span style="{{ g.bar }}"></span><span style="display:block;margin-top:6px;font-size:10px;color:#B9A797;text-align:center">{{ g.l }}</span></span>
+            </sc-for>
+          </div>
+          <p style="margin:24px 0 10px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#B9A797">Modules conseillés</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ cs.modsL }}" as="m" hint-placeholder-count="5">
+              <a class="chip" href="Cacao-Module.dc.html">{{ m.n }}</a>
+            </sc-for>
+          </div>
+          <p style="margin:24px 0 4px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#B9A797">Réalisations liées</p>
+          <sc-for list="{{ cs.realsL }}" as="r" hint-placeholder-count="2">
+            <a class="rl" href="Cacao-Realisations.dc.html"><span><span class="pf" style="font-size:17px">{{ r.t }}</span> <span class="muted">— {{ r.lieu }}</span></span><span style="font-size:12px;color:#C07A4A">{{ r.ligne }}</span></a>
+          </sc-for>
+          <sc-if value="{{ cs.noReal }}" hint-placeholder-val="{{ false }}">
+            <p class="muted" style="margin:6px 0 0;font-size:14px">Pas encore de réalisation présentée pour ce métier — [RÉFÉRENCES].</p>
+          </sc-if>
+          <a class="btn-cu" href="Cacao-Contact.dc.html" style="margin-top:24px;width:100%">Un projet en {{ cs.nomLow }} ? Plan 3D offert</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOUBLE PLAGE -->
+<section aria-labelledby="t-duo" style="position:relative;padding:110px 0;background:#2A1B15;border-top:1px solid rgba(192,122,74,.22);border-bottom:1px solid rgba(192,122,74,.22)">
+  <div class="hair" aria-hidden="true" style="opacity:.6"></div>
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:56px;align-items:center">
+      <div>
+        <p class="eyebrow" style="margin:0 0 16px">Pâtissier &amp; chocolatier</p>
+        <h2 id="t-duo" class="pf" style="margin:0;font-weight:400;font-size:clamp(34px,4vw,58px);line-height:1.05">Une boutique, <em style="color:#C07A4A">deux plages.</em></h2>
+        <p style="margin:22px 0 0;font-size:17px;line-height:1.7;max-width:520px">Chez le pâtissier chocolatier Canet, à Nice, la Ligne Stone réunit une vitrine Plane pâtissière à +2 °C / +8 °C et une vitrine chocolats à +14 °C / +18 °C — dans un même agencement.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:30px">
+          <a class="btn-gh" href="Cacao-Realisations.dc.html">Voir la réalisation</a>
+          <a class="btn-gh" href="Cacao-Module.dc.html">Configurer la Gourmandise</a>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="duo duo-a"><img src="assets/macarons-stack.webp" alt="Macarons empilés (image d’ambiance)"><span style="position:absolute;left:14px;bottom:14px;padding:8px 12px;border-radius:999px;background:rgba(27,17,13,.82);font-size:13px">+2 / +8 °C</span></div>
+        <div class="duo duo-b" style="margin-top:60px"><img src="assets/chocolates-dark.webp" alt="Bonbons de chocolat (image d’ambiance)"><span style="position:absolute;left:14px;bottom:14px;padding:8px 12px;border-radius:999px;background:rgba(27,17,13,.82);font-size:13px">+14 / +18 °C</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="position:relative;padding:110px 0">
+  <div class="wrap">
+    <div style="position:relative;overflow:hidden;border-radius:22px;background:#C07A4A;color:#1B110D;padding:56px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:28px">
+      <div class="sheen" aria-hidden="true" style="mix-blend-mode:soft-light"></div>
+      <p class="pf" style="position:relative;margin:0;font-size:clamp(30px,3.4vw,48px);line-height:1.08;max-width:700px">Votre métier n’est pas listé ? <em>Le sur mesure</em> commence ici.</p>
+      <div style="position:relative;display:flex;flex-wrap:wrap;gap:12px">
+        <a href="Cacao-Contact.dc.html" style="display:inline-flex;align-items:center;min-height:50px;padding:0 26px;border-radius:999px;background:#1B110D;color:#F1E6DA;text-decoration:none;font-weight:600">Demande de devis</a>
+        <a href="tel:0800951313" style="display:inline-flex;align-items:center;min-height:50px;padding:0 22px;border-radius:999px;border:1px solid #1B110D;color:#1B110D;text-decoration:none;font-weight:600">0 800 95 13 13</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="position:relative;background:#120B08;border-top:1px solid rgba(192,122,74,.28);overflow:hidden">
+  <div class="hair" aria-hidden="true"></div>
+  <div class="wrap" style="padding-top:88px;padding-bottom:32px">
+    <p class="pf" style="margin:0 0 64px;font-size:clamp(40px,6vw,88px);line-height:1;font-weight:400;letter-spacing:-.01em">Le froid, <em style="color:#C07A4A">sur mesure.</em></p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px;padding-bottom:52px;border-bottom:1px solid rgba(192,122,74,.2)">
+      <div>
+        <p class="pf" style="margin:0;font-size:30px;font-weight:600;letter-spacing:.06em">RGTE<span style="color:#D42A20">.</span></p>
+        <p style="margin:4px 0 0;font-size:10px;letter-spacing:.26em;text-transform:uppercase" class="muted">R.G. Technologies</p>
+        <p class="muted" style="margin:18px 0 0;font-size:15px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <h3 class="ft-h">Bureau d’études &amp; show-room</h3>
+        <address style="font-style:normal;font-size:15px;line-height:1.7" class="muted">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</address>
+        <p class="muted" style="margin:10px 0 0;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <h3 class="ft-h">Navigation</h3>
+        <a class="ft-l" href="Cacao-Lignes.dc.html">Lignes d’agencement</a>
+        <a class="ft-l" href="Cacao-Secteurs.dc.html">Secteurs d’activité</a>
+        <a class="ft-l" href="Cacao-Realisations.dc.html">Réalisations</a>
+        <a class="ft-l" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+      </div>
+      <div>
+        <h3 class="ft-h">Contact</h3>
+        <a href="tel:0800951313" style="color:#F1E6DA;text-decoration:none;font-size:22px;font-weight:600;display:flex;min-height:44px;align-items:center">0 800 95 13 13</a>
+        <p class="muted" style="margin:0 0 12px;font-size:13px">Numéro vert — appel gratuit</p>
+        <a class="ft-l" href="#">Mentions légales</a>
+        <a class="ft-l" href="#">Conditions de vente</a>
+        <a class="ft-l" href="#">Plan du site</a>
+        <a class="ft-l" href="#">Gestion des cookies</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-top:20px;font-size:13px" class="muted">
+      <span>© RGTE — R.G. Technologies</span>
+      <span>Proposition de refonte — concept, non officiel · Direction 08 « Cacao »</span>
+      <a class="ft-l" href="Main.dc.html" style="font-size:13px">Toutes les propositions →</a>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3700},"accent":{"editor":"color","default":"#C07A4A","options":["#C07A4A","#D4A373","#D42A20"]},"sheen":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, sect:'chocolats', range:'all' };
+  }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#C07A4A';
+    const s = this.state;
+    const R = {
+      1:['Pâtisserie','Paris 4e','Stone'], 2:['Bar à salades','Département 13','Stone'], 3:['Chocolatier','Gap & Grenoble','Stone'],
+      4:['Sandwicherie','Chamonix','Basique'], 6:['Bar à yogourt glacé','Toute la France','Stone'], 7:['Boulangerie pâtisserie','La Réunion','Basique'],
+      8:['Boulangerie','Département 33','Legno'], 9:['Pizza sur composition','Paris','Stone'], 10:['Pâtissier chocolatier','Département 69','Stone'],
+      11:['Traiteur asiatique','Marseille','Stone'], 12:['Bar à couscous','Isère','Stone'], 13:['Traiteur poissonnier','Département 92','Stone'], 14:['Pâtissier chocolatier Canet','Nice 06','Stone']
+    };
+    const SECT = [
+      { id:'boulangerie', n:'01', nom:'Boulangerie', temp:'Neutre ou +2 °C / +8 °C', valider:true, rg:['neutre','pos'], mods:['Amandine','Pastry Show','Réfrigérée statique','Vitrine neutre','Loire (Industry)','Comptoir caisse'], reals:[7,8], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:'patisserie', n:'02', nom:'Pâtisserie', temp:'+2 °C / +8 °C', valider:false, rg:['pos'], mods:['Plane','Vision','Panorama','Centrale','Gourmandise','Pastry Show','Cube','Amandine'], reals:[1,7,10,14], img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine' },
+      { id:'chocolats', n:'03', nom:'Chocolats', temp:'+14 °C / +18 °C', valider:false, rg:['choc'], mods:['Plane','Vision','Centrale','Gourmandise','Panorama'], reals:[3,10,14], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs' },
+      { id:'sandwichs', n:'04', nom:'Sandwichs', temp:'+2 °C / +8 °C', valider:true, rg:['pos'], mods:['Panoramique','Basse','Murale self-service','Saladette','Nepal (Industry)'], reals:[4], img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir' },
+      { id:'traiteur', n:'05', nom:'Traiteur', temp:'+2 °C / +8 °C', valider:true, rg:['pos'], mods:['Plane','Saladette','Panorama','Surface plane','Comptoir bar','Comptoir caisse'], reals:[11,13], img:'assets/counter-domes.webp', alt:'Comptoir en marbre et cloches de verre' },
+      { id:'poissonnerie', n:'06', nom:'Poissonnerie', temp:'−2 °C / 0 °C', valider:false, rg:['neg'], mods:['Poissonnerie (Stone)','Hanoi (Industry)','Panorama','Surface plane'], reals:[13], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:'salades', n:'07', nom:'Bar à salades', temp:'+2 °C / +8 °C', valider:false, rg:['pos'], mods:['Saladette','Panorama','Comptoir caisse'], reals:[2], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox colorés' },
+      { id:'couscous', n:'08', nom:'Bar à couscous', temp:'+30 °C / +90 °C', valider:true, rg:['hot'], mods:['Chaud bain-marie','Saladette','Comptoir caisse'], reals:[12], img:'assets/bakery-domes.webp', alt:'Cloches en verre, ambiance rustique' },
+      { id:'fromagerie', n:'09', nom:'Fromagerie', temp:'Selon module', valider:true, rg:[], mods:['Réfrigérée statique','Panorama','Plane'], reals:[], img:'assets/fromagerie.webp', alt:'Meules de fromage sur étagères' },
+      { id:'bar', n:'10', nom:'Bar', temp:'Neutre ou réfrigéré', valider:true, rg:['neutre','pos'], mods:['Comptoir bar','Comptoir caisse','Saladette'], reals:[], img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc' },
+      { id:'topping', n:'11', nom:'Bar à topping', temp:'+2 °C / +8 °C', valider:true, rg:['pos'], mods:['Saladette sur mesure (trous arrondis)','Surface plane','Comptoir caisse'], reals:[6], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:'cafe', n:'12', nom:'Coffee shop / Café', temp:'Neutre ou +2 °C / +8 °C', valider:true, rg:['neutre','pos'], mods:['Comptoir bar','Comptoir caisse','Cube','Plane'], reals:[], img:'assets/croissants.webp', alt:'Croissants' },
+      { id:'pizza', n:'13', nom:'Pizza al taglio', temp:'+2 °C / +8 °C', valider:true, rg:['pos'], mods:['Saladette','Plane','Chaud (plaque chaude)','Comptoir caisse'], reals:[9], img:'assets/baker-table.webp', alt:'Pains, rouleau et plan de travail' }
+    ];
+    const RG = [
+      ['all','Toutes','13 secteurs','#B9A797'],
+      ['neg','−2 / 0 °C','Marée','#9fb6c0'],
+      ['pos','+2 / +8 °C','Frais & pâtisserie','#F1E6DA'],
+      ['choc','+14 / +18 °C','Chocolat','#C07A4A'],
+      ['hot','+30 / +90 °C','Chaud','#D42A20'],
+      ['neutre','Neutre','Sans froid','#7d6a5c']
+    ];
+    const ranges = RG.map(r => {
+      const sel = r[0] === s.range;
+      const n = r[0] === 'all' ? SECT.length : SECT.filter(x => x.rg.indexOf(r[0]) > -1).length;
+      return { label:r[1], sub: r[0] === 'all' ? r[2] : r[2] + ' · ' + n,
+        sel: sel ? 'true' : 'false',
+        style: sel ? 'background:rgba(192,122,74,.2);border:1px solid #C07A4A;color:#F1E6DA;' : 'background:#2A1B15;border:1px solid rgba(192,122,74,.22);color:#F1E6DA;',
+        bar: 'display:block;height:3px;border-radius:3px;margin-top:12px;background:' + r[3] + ';transition:width .6s;width:' + (sel ? '100%' : '28px') + ';',
+        pick: () => this.setState({ range:r[0] }) };
+    });
+    const sects = SECT.map(x => {
+      const sel = x.id === s.sect;
+      const match = s.range === 'all' || x.rg.indexOf(s.range) > -1;
+      return { n:x.n, nom:x.nom, temp:x.temp, sel: sel ? 'true' : 'false',
+        style: (sel ? 'background:linear-gradient(160deg,#4a2c1c,#2A1B15);border:1px solid #C07A4A;color:#F1E6DA;box-shadow:0 24px 40px -24px rgba(192,122,74,.6);' : 'background:#2A1B15;border:1px solid rgba(192,122,74,.2);color:#F1E6DA;') + 'opacity:' + (match ? '1' : '.32') + ';',
+        pick: () => this.setState({ sect:x.id }) };
+    });
+    const c = SECT.find(x => x.id === s.sect) || SECT[2];
+    const SC = [['neg','−2/0','#9fb6c0'],['pos','+2/+8','#F1E6DA'],['choc','+14/+18','#C07A4A'],['hot','+30/+90','#D42A20'],['neutre','neutre','#7d6a5c']];
+    const cs = {
+      n:c.n, nom:c.nom, nomLow:c.nom.toLowerCase(), temp:c.temp, valider:c.valider, img:c.img, alt:c.alt,
+      modsL: c.mods.map(n => ({ n })),
+      realsL: c.reals.map(id => ({ t:R[id][0], lieu:R[id][1], ligne:R[id][2] })),
+      noReal: c.reals.length === 0,
+      scale: SC.map(g => ({ l:g[1], bar:'display:block;height:8px;border-radius:4px;transition:background .6s,opacity .6s;background:' + g[2] + ';opacity:' + (c.rg.indexOf(g[0]) > -1 ? '1' : '.15') + ';' }))
+    };
+    return {
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      ctaStyle: 'background:' + accent + ';',
+      sheenOn: p.sheen !== false,
+      ranges, sects, cs
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Vitrine — Réalisations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Manrope:wght@300;400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#101010}
+.vt{font-family:'Manrope',system-ui,sans-serif;color:#EEE9E1;background:#101010;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6;font-size:15px}
+.vt *{box-sizing:border-box}
+.vt a{color:inherit;text-decoration:none}
+.vt img{display:block;max-width:100%}
+.vt button{font-family:inherit}
+.vt-wrap{max-width:1320px;margin:0 auto;padding:0 48px}
+.vt-d{font-family:'Libre Caslon Display',Georgia,serif;font-weight:400;line-height:1.04;letter-spacing:-.005em;margin:0}
+.vt-sc{font-size:11px;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:#A8A39A}
+.vt-brass{color:var(--brass)}
+.vt-h2{font-size:clamp(34px,4.6vw,64px)}
+.vt-lead{font-size:17px;color:#A8A39A;max-width:560px;margin:0}
+.vt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D42A20;flex:none}
+.vt-sechead{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:28px 80px;align-items:end;margin-bottom:56px}
+.vt-strip{border-bottom:1px solid rgba(238,233,225,.08);font-size:12px;color:#A8A39A}
+.vt-stripin{display:flex;justify-content:space-between;align-items:center;min-height:40px;gap:16px;flex-wrap:wrap}
+.vt-stripin a{display:inline-flex;align-items:center;gap:8px;min-height:40px;transition:color .3s}
+.vt-stripin a:hover{color:#EEE9E1}
+.vt-head{position:sticky;top:0;z-index:60;background:rgba(16,16,16,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(176,141,87,.22)}
+.vt-headin{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:84px}
+.vt-logo{display:inline-flex;align-items:center;gap:12px;min-height:48px}
+.vt-logo b{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:28px;letter-spacing:.18em;line-height:1}
+.vt-logo small{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#A8A39A;font-weight:600;padding-left:12px;border-left:1px solid rgba(176,141,87,.5);line-height:1.3}
+.vt-nav{display:flex;gap:36px}
+.vt-nav a{position:relative;display:inline-flex;align-items:center;min-height:48px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#A8A39A;transition:color .3s}
+.vt-nav a::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:1px;background:var(--brass);transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.2,.7,.1,1)}
+.vt-nav a:hover,.vt-nav a.on{color:#EEE9E1}
+.vt-nav a:hover::after,.vt-nav a.on::after{transform:scaleX(1);transform-origin:left}
+.vt-headr{display:flex;align-items:center;gap:22px}
+.vt-tel{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.25;min-height:44px}
+.vt-tel .vt-sc{font-size:10px;letter-spacing:.26em}
+.vt-tel strong{font-size:15px;font-weight:600;letter-spacing:.06em}
+.vt-burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(238,233,225,.2);color:#EEE9E1;cursor:pointer}
+.vt-mnav{display:none}
+.vt-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:0 28px;border:1px solid var(--brass);background:transparent;color:#EEE9E1;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;cursor:pointer;position:relative;overflow:hidden;transition:color .5s,border-color .5s;z-index:0;white-space:nowrap}
+.vt-btn::before{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:#EEE9E1;transform:translateY(101%);transition:transform .55s cubic-bezier(.2,.7,.1,1);z-index:-1}
+.vt-btn:hover{color:#101010;border-color:#EEE9E1}
+.vt-btn:hover::before{transform:none}
+.vt-btn.solid{background:#EEE9E1;color:#101010;border-color:#EEE9E1}
+.vt-btn.solid::before{background:var(--brass)}
+.vt-btn.solid:hover{border-color:var(--brass)}
+.vt-link{display:inline-flex;align-items:center;gap:14px;min-height:44px;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#EEE9E1;background:none;border:0;cursor:pointer;padding:0}
+.vt-link span{padding-bottom:5px;border-bottom:1px solid var(--brass)}
+.vt-link svg{transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.vt-link:hover svg{transform:translateX(6px)}
+.vt-foot{border-top:1px solid rgba(176,141,87,.35);padding:96px 0 36px;background:#0C0C0C}
+.vt-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:48px}
+.vt-foot h4{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--brass);margin:0 0 18px;font-weight:600}
+.vt-foot p{font-size:14px;color:#A8A39A;margin:0}
+.vt-footlinks{display:flex;flex-direction:column}
+.vt-footlinks a{min-height:44px;display:flex;align-items:center;font-size:14px;color:#A8A39A;transition:color .3s}
+.vt-footlinks a:hover{color:#EEE9E1}
+.vt-footbot{margin-top:64px;padding-top:24px;border-top:1px solid rgba(238,233,225,.08);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;color:#A8A39A}
+.vt-footbot a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes vtRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vtUnveil{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.vt-rise{animation:vtRise 1.1s cubic-bezier(.2,.7,.1,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}.d4{animation-delay:.5s}
+.vt :focus-visible{outline:1px solid #EEE9E1;outline-offset:4px}
+
+.vt-phero{padding:100px 0 60px}
+.vt-phero h1{font-size:clamp(46px,7vw,108px);overflow-wrap:anywhere}
+.vt-phero h1 span{color:var(--brass)}
+.vt-crumb{display:flex;gap:10px;align-items:center;margin-bottom:34px}
+.vt-crumb a{min-height:44px;display:inline-flex;align-items:center;color:#A8A39A;transition:color .3s}
+.vt-crumb a:hover{color:#EEE9E1}
+
+/* filtres */
+.vt-filters{position:sticky;top:85px;z-index:20;background:rgba(16,16,16,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(238,233,225,.08);border-bottom:1px solid rgba(238,233,225,.08)}
+.vt-filtin{display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;justify-content:space-between;padding:14px 0}
+.vt-fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vt-fgroup > .vt-sc{margin-right:10px}
+.vt-chip{min-height:44px;padding:0 16px;border:1px solid rgba(238,233,225,.14);background:transparent;color:#EEE9E1;font-size:13px;cursor:pointer;transition:border-color .4s,background .4s,color .4s;display:inline-flex;align-items:center;gap:8px}
+.vt-chip:hover{border-color:rgba(238,233,225,.5)}
+.vt-chip small{font-size:11px;color:inherit;opacity:.7}
+.vt-views{display:flex;border:1px solid rgba(238,233,225,.14)}
+.vt-views button{width:48px;height:44px;background:transparent;border:0;color:#EEE9E1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .4s,color .4s}
+
+/* résultats */
+.vt-results{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:48px;align-items:start;padding:56px 0 120px}
+.vt-count{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.vt-count b{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:34px}
+.vt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:28px 20px}
+.vt-card{display:block;width:100%;padding:0;background:transparent;border:0;color:inherit;text-align:left;cursor:pointer;animation:vtRise .9s cubic-bezier(.2,.7,.1,1) both}
+.vt-card .ph{position:relative;height:300px;overflow:hidden;background:#1A1A1A;transition:outline-color .4s}
+.vt-card .ph img{width:100%;height:300px;object-fit:cover;filter:grayscale(.4) brightness(.65);transition:transform 1.6s cubic-bezier(.2,.7,.1,1),filter 1s}
+.vt-card .ph::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:radial-gradient(circle at 50% 45%,rgba(16,16,16,0) 0,rgba(16,16,16,.2) 35%,rgba(16,16,16,.85) 100%);transition:opacity 1s}
+.vt-card:hover .ph img{transform:scale(1.07);filter:grayscale(0) brightness(1)}
+.vt-card:hover .ph::after{opacity:.3}
+.vt-card .lot{position:absolute;z-index:2;left:16px;top:14px}
+.vt-card .sel{position:absolute;z-index:2;right:14px;top:14px;width:10px;height:10px;border-radius:50%;background:#D42A20;box-shadow:0 0 0 4px rgba(212,42,32,.18)}
+.vt-card h3{font-family:'Libre Caslon Display',serif;font-weight:400;font-size:24px;line-height:1.15;margin:18px 0 4px}
+.vt-card p{margin:0;font-size:13.5px;color:#A8A39A}
+.vt-card .ln{display:flex;gap:10px;align-items:center;margin-top:10px}
+.vt-card .ln i{width:18px;height:1px;background:var(--brass)}
+.vt-list{border-top:1px solid rgba(238,233,225,.1)}
+.vt-row{display:grid;grid-template-columns:70px minmax(0,1.3fr) minmax(0,1fr) 110px;gap:18px;align-items:center;width:100%;min-height:72px;padding:14px 0;background:transparent;border:0;border-bottom:1px solid rgba(238,233,225,.08);color:inherit;text-align:left;cursor:pointer;transition:padding .5s,background .5s;animation:vtRise .8s cubic-bezier(.2,.7,.1,1) both}
+.vt-row:hover{padding-left:10px;background:rgba(238,233,225,.02)}
+.vt-row .no{font-family:'Libre Caslon Display',serif;font-size:22px;color:var(--brass)}
+.vt-row .nm{font-family:'Libre Caslon Display',serif;font-size:22px;line-height:1.2}
+.vt-row .pl{font-size:13.5px;color:#A8A39A}
+.vt-empty{padding:70px 24px;text-align:center;border:1px dashed rgba(238,233,225,.18);color:#A8A39A}
+
+.vt-detail{position:sticky;top:180px;border:1px solid rgba(176,141,87,.35);background:#161616}
+.vt-detail .ph{position:relative;height:300px;overflow:hidden}
+.vt-detail .ph img{width:100%;height:300px;object-fit:cover;animation:vtUnveil 1.1s cubic-bezier(.7,0,.2,1) both}
+.vt-detail .ph::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(22,22,22,0) 45%,#161616)}
+.vt-dbody{padding:4px 28px 28px}
+.vt-dbody h2{font-size:38px;margin:10px 0 6px}
+.vt-meta{margin-top:22px;border-top:1px solid rgba(238,233,225,.1)}
+.vt-meta > div{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid rgba(238,233,225,.08);font-size:14px}
+.vt-modl{display:flex;flex-wrap:wrap;gap:6px}
+.vt-modl a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid rgba(238,233,225,.16);font-size:13px;transition:border-color .4s,background .4s}
+.vt-modl a:hover{border-color:var(--brass);background:rgba(176,141,87,.12)}
+.vt-dnav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+.vt-arrow{width:48px;height:48px;border-radius:50%;border:1px solid rgba(238,233,225,.22);background:transparent;color:#EEE9E1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .4s,background .4s,color .4s}
+.vt-arrow:hover{border-color:#EEE9E1;background:#EEE9E1;color:#101010}
+
+.vt-cta{text-align:center;padding:140px 0;border-top:1px solid rgba(238,233,225,.06);position:relative;overflow:hidden;background:#141414}
+.vt-cta::before{content:"";position:absolute;left:50%;top:-260px;width:900px;height:900px;margin-left:-450px;border-radius:50%;background:radial-gradient(circle,rgba(176,141,87,.14),rgba(176,141,87,0) 62%);pointer-events:none}
+.vt-cta .vt-d{font-size:clamp(40px,5.6vw,84px);position:relative}
+.vt-cta p{position:relative;color:#A8A39A;max-width:560px;margin:24px auto 40px;font-size:17px}
+.vt-ctarow{position:relative;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+
+@media (max-width:1100px){
+  .vt-nav,.vt-tel{display:none}
+  .vt-burger{display:inline-flex}
+  .vt-mnav{display:flex;flex-direction:column;padding:8px 24px 28px;border-top:1px solid rgba(238,233,225,.08)}
+  .vt-mnav a{min-height:54px;display:flex;align-items:center;font-family:'Libre Caslon Display',serif;font-size:26px;border-bottom:1px solid rgba(238,233,225,.06)}
+  .vt-mnav .vt-btn{margin-top:20px;font-family:'Manrope',sans-serif;font-size:11.5px}
+  .vt-results{grid-template-columns:minmax(0,1fr)}
+  .vt-detail{position:relative;top:0;order:-1}
+  .vt-filters{position:relative;top:0}
+}
+@media (max-width:640px){
+  .vt-wrap{padding:0 20px}
+  .vt-headcta{display:none}
+  .vt-logo small{display:none}
+  .vt-row{grid-template-columns:50px minmax(0,1fr)}
+  .vt-row .pl,.vt-row .vt-sc{grid-column:2}
+  .vt-meta > div{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:reduce){.vt *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="vt" style="{{ rootStyle }}">
+
+  <div class="vt-strip">
+    <div class="vt-wrap vt-stripin">
+      <a href="Main.dc.html"><svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M16 5H2M6 1L2 5l4 4"></path></svg>Toutes les propositions</a>
+      <span>Direction 1 · Vitrine — proposition de refonte, concept non officiel</span>
+    </div>
+  </div>
+
+  <header class="vt-head">
+    <div class="vt-wrap vt-headin">
+      <a href="Vitrine-Accueil.dc.html" class="vt-logo" aria-label="RGTE, retour à l’accueil"><b>RGTE</b><span class="vt-dot"></span><small>R.G. Technologies</small></a>
+      <nav class="vt-nav" aria-label="Navigation principale">
+        <a href="Vitrine-Lignes.dc.html">Lignes</a>
+        <a href="Vitrine-Secteurs.dc.html">Secteurs</a>
+        <a href="Vitrine-Realisations.dc.html" class="on" aria-current="page">Réalisations</a>
+        <a href="Vitrine-Contact.dc.html">Showroom &amp; contact</a>
+      </nav>
+      <div class="vt-headr">
+        <a class="vt-tel" href="tel:0800951313"><span class="vt-sc">Appel gratuit</span><strong>0 800 95 13 13</strong></a>
+        <a class="vt-btn vt-headcta" href="Vitrine-Contact.dc.html">Plan 3D offert</a>
+        <button type="button" class="vt-burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuExpanded }}" onClick="{{ toggleMenu }}"><svg width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 1h20M0 6h20M0 11h20"></path></svg></button>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav class="vt-mnav" aria-label="Navigation mobile">
+        <a href="Vitrine-Lignes.dc.html">Lignes</a>
+        <a href="Vitrine-Secteurs.dc.html">Secteurs</a>
+        <a href="Vitrine-Realisations.dc.html">Réalisations</a>
+        <a href="Vitrine-Contact.dc.html">Showroom &amp; contact</a>
+        <a href="tel:0800951313">0 800 95 13 13</a>
+        <a class="vt-btn solid" href="Vitrine-Contact.dc.html">Plan 3D offert</a>
+      </nav>
+    </sc-if>
+  </header>
+
+  <section class="vt-phero" aria-labelledby="t-real">
+    <div class="vt-wrap">
+      <div class="vt-crumb vt-sc"><a href="Vitrine-Accueil.dc.html">Accueil</a><span>/</span><span>Réalisations</span></div>
+      <div class="vt-sechead" style="margin-bottom:0">
+        <h1 id="t-real" class="vt-d vt-rise">Le catalogue<br><span>des pièces posées.</span></h1>
+        <p class="vt-lead vt-rise d2">Quatorze réalisations, de Paris 4e à La Réunion : pâtissiers, chocolatiers, boulangers, traiteurs et bars. Chaque lot détaille sa ligne et ses modules.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="vt-filters">
+    <div class="vt-wrap vt-filtin">
+      <div class="vt-fgroup" role="group" aria-label="Filtrer par ligne">
+        <span class="vt-sc">Ligne</span>
+        <sc-for list="{{ lineChips }}" as="c" hint-placeholder-count="4">
+          <button type="button" class="vt-chip" aria-pressed="{{ c.pressed }}" style="{{ c.style }}" onClick="{{ c.pick }}">{{ c.label }} <small>{{ c.count }}</small></button>
+        </sc-for>
+      </div>
+      <div class="vt-fgroup" role="group" aria-label="Filtrer par type de commerce">
+        <span class="vt-sc">Métier</span>
+        <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="5">
+          <button type="button" class="vt-chip" aria-pressed="{{ c.pressed }}" style="{{ c.style }}" onClick="{{ c.pick }}">{{ c.label }} <small>{{ c.count }}</small></button>
+        </sc-for>
+      </div>
+      <div class="vt-views" role="group" aria-label="Affichage">
+        <button type="button" aria-label="Affichage en grille" aria-pressed="{{ isGrid }}" style="{{ swGrid }}" onClick="{{ viewGrid }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="1" y="1" width="5.5" height="5.5"></rect><rect x="9.5" y="1" width="5.5" height="5.5"></rect><rect x="1" y="9.5" width="5.5" height="5.5"></rect><rect x="9.5" y="9.5" width="5.5" height="5.5"></rect></svg></button>
+        <button type="button" aria-label="Affichage en liste" aria-pressed="{{ isList }}" style="{{ swList }}" onClick="{{ viewList }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M1 3h14M1 8h14M1 13h14"></path></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <section class="vt-wrap vt-results" aria-label="Réalisations">
+    <div>
+      <div class="vt-count"><b>{{ countLabel }}</b><span class="vt-sc">Photographies d’ambiance — [PHOTOS RGTE]</span></div>
+
+      <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+        <div class="vt-grid">
+          <sc-for list="{{ items }}" as="r" hint-placeholder-count="8">
+            <button type="button" class="vt-card" aria-pressed="{{ r.pressed }}" onClick="{{ r.pick }}" style="{{ r.delay }}">
+              <div class="ph" style="{{ r.phStyle }}">
+                <img src="{{ r.img }}" alt="{{ r.alt }}">
+                <span class="vt-sc lot">Lot n° {{ r.no }}</span>
+                <sc-if value="{{ r.sel }}" hint-placeholder-val="{{ false }}"><span class="sel"></span></sc-if>
+              </div>
+              <h3>{{ r.title }}</h3>
+              <p>{{ r.place }}</p>
+              <div class="ln"><i></i><span class="vt-sc">{{ r.line }}</span></div>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+        <div class="vt-list">
+          <sc-for list="{{ items }}" as="r" hint-placeholder-count="8">
+            <button type="button" class="vt-row" aria-pressed="{{ r.pressed }}" onClick="{{ r.pick }}" style="{{ r.rowStyle }}">
+              <span class="no">{{ r.no }}</span>
+              <span><span class="nm">{{ r.title }}</span><br><span class="pl">{{ r.place }}</span></span>
+              <span class="pl">{{ r.mods }}</span>
+              <span class="vt-sc">{{ r.line }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div class="vt-empty">
+          <p style="margin:0 0 16px">Aucune réalisation ne réunit ces deux critères.</p>
+          <button type="button" class="vt-link" onClick="{{ resetFilters }}"><span>Réinitialiser les filtres</span></button>
+        </div>
+      </sc-if>
+    </div>
+
+    <aside class="vt-detail" aria-live="polite" aria-label="Réalisation sélectionnée">
+      <sc-for list="{{ all }}" as="r" hint-placeholder-count="1">
+        <div style="{{ r.paneStyle }}">
+          <div class="ph"><img src="{{ r.img }}" alt="{{ r.alt }}"></div>
+          <div class="vt-dbody">
+            <div class="vt-sc vt-brass vt-rise">Lot n° {{ r.no }} / 14</div>
+            <h2 class="vt-d vt-rise d1">{{ r.title }}</h2>
+            <p class="vt-rise d1" style="margin:0;color:#A8A39A">{{ r.place }}</p>
+            <div class="vt-meta vt-rise d2">
+              <div><span class="vt-sc">Ligne</span><a href="Vitrine-Lignes.dc.html" style="display:inline-flex;align-items:center;gap:10px;min-height:24px"><span class="vt-dot"></span>{{ r.line }}</a></div>
+              <div><span class="vt-sc">Métier</span><a href="Vitrine-Secteurs.dc.html">{{ r.typeLabel }}</a></div>
+              <div><span class="vt-sc">Modules</span><div class="vt-modl"><sc-for list="{{ r.modList }}" as="m" hint-placeholder-count="3"><a href="Vitrine-Module.dc.html">{{ m }}</a></sc-for></div></div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+      <div class="vt-dbody" style="padding-top:0">
+        <div class="vt-dnav">
+          <button type="button" class="vt-arrow" aria-label="Réalisation précédente" onClick="{{ prev }}"><svg width="18" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M18 5H2M6 1L2 5l4 4"></path></svg></button>
+          <span class="vt-sc">{{ posLabel }}</span>
+          <button type="button" class="vt-arrow" aria-label="Réalisation suivante" onClick="{{ next }}"><svg width="18" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"></path></svg></button>
+        </div>
+        <a class="vt-btn solid" href="Vitrine-Contact.dc.html" style="width:100%;margin-top:22px">Un projet similaire ?</a>
+      </div>
+    </aside>
+  </section>
+
+  <section class="vt-cta" aria-labelledby="t-cta">
+    <div class="vt-wrap">
+      <div class="vt-sc" style="position:relative">Le prochain lot</div>
+      <h2 id="t-cta" class="vt-d" style="margin-top:22px">Et si la quinzième<br>était la vôtre ?</h2>
+      <p>Décrivez votre boutique et vos produits : le bureau d’études élabore votre plan 3D d’agencement.</p>
+      <div class="vt-ctarow">
+        <a class="vt-btn solid" href="Vitrine-Contact.dc.html">Demande de devis</a>
+        <a class="vt-btn" href="tel:0800951313">0 800 95 13 13</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="vt-foot">
+    <div class="vt-wrap">
+      <div class="vt-footgrid">
+        <div>
+          <a href="Vitrine-Accueil.dc.html" class="vt-logo" aria-label="RGTE, accueil"><b>RGTE</b><span class="vt-dot"></span></a>
+          <p style="margin-top:14px">R.G. Technologies — agencement de vitrines réfrigérées sur mesure.</p>
+        </div>
+        <div>
+          <h4>Bureau d’études &amp; show-room</h4>
+          <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <div class="vt-footlinks">
+            <a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+            <a href="Vitrine-Contact.dc.html">Demande de devis</a>
+            <a href="Vitrine-Contact.dc.html">Plan 3D offert</a>
+          </div>
+        </div>
+        <div>
+          <h4>Explorer</h4>
+          <div class="vt-footlinks">
+            <a href="Vitrine-Lignes.dc.html">Lignes d’agencement</a>
+            <a href="Vitrine-Secteurs.dc.html">Secteurs d’activité</a>
+            <a href="Vitrine-Realisations.dc.html">Réalisations</a>
+          </div>
+        </div>
+        <div>
+          <h4>Informations</h4>
+          <div class="vt-footlinks">
+            <a href="#">Mentions légales</a>
+            <a href="#">Conditions de vente</a>
+            <a href="#">Plan du site</a>
+            <a href="#">Gestion des cookies</a>
+          </div>
+        </div>
+      </div>
+      <div class="vt-footbot">
+        <span>© RGTE — R.G. Technologies</span>
+        <span>Proposition de refonte — concept, non officiel</span>
+        <a href="Main.dc.html">Toutes les propositions</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3900},"accent":{"editor":"color","default":"#B08D57","options":["#B08D57","#D42A20","#EEE9E1"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, line:'all', type:'all', view:'grid', sel:1 };
+    this.TYPES = [
+      { id:'all', label:'Tous' },
+      { id:'patisserie', label:'Pâtisserie & chocolat' },
+      { id:'boulangerie', label:'Boulangerie' },
+      { id:'traiteur', label:'Traiteur & snacking' },
+      { id:'bar', label:'Bars & comptoirs' }
+    ];
+    this.LINES = [
+      { id:'all', label:'Toutes' },
+      { id:'Stone', label:'Stone' },
+      { id:'Basique', label:'Basique' },
+      { id:'Legno', label:'Legno' }
+    ];
+    this.REALS = [
+      { id:1, title:'Pâtisserie', place:'Paris 4e', line:'Stone', type:'patisserie', mods:['Vitrine réfrigérée Plane','Caisse'], img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine' },
+      { id:2, title:'Bar à salades', place:'Département 13', line:'Stone', type:'bar', mods:['Saladette','Caisse','Panorama'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes colorés' },
+      { id:3, title:'Chocolatier', place:'Gap & Grenoble', line:'Stone', type:'patisserie', mods:['Plane','Caisse'], img:'assets/chocolates-dark.webp', alt:'Bonbons de chocolat' },
+      { id:4, title:'Sandwicherie', place:'Chamonix', line:'Basique', type:'traiteur', mods:['Panoramique','Basse','Murale self-service'], img:'assets/bakery-window.webp', alt:'Vitrine de rue' },
+      { id:5, title:'Bar à olives', place:'Nice', line:'Stone', type:'bar', mods:['Saladette sur mesure avec trous arrondis'], img:'assets/marble-veins.webp', alt:'Pierre veinée grise' },
+      { id:6, title:'Bar à yogourt glacé (chaîne)', place:'Toute la France', line:'Stone', type:'bar', mods:['Saladette sur mesure trous arrondis','Surface plane'], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:7, title:'Boulangerie pâtisserie', place:'La Réunion', line:'Basique', type:'boulangerie', mods:['Amandine','Caisse'], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:8, title:'Boulangerie', place:'Département 33', line:'Legno', type:'boulangerie', mods:['Réfrigérée statique','Neutre','Module arrière'], img:'assets/vitrine-wood.webp', alt:'Vitrine bois et verre' },
+      { id:9, title:'Pizza sur composition', place:'Paris', line:'Stone', type:'traiteur', mods:['Saladette','Caisse','Plane'], img:'assets/baker-table.webp', alt:'Plan de travail fariné' },
+      { id:10, title:'Pâtissier chocolatier', place:'Département 69', line:'Stone', type:'patisserie', mods:['Centrale','Caisse','Plane'], img:'assets/macarons-rows.webp', alt:'Rangées de macarons' },
+      { id:11, title:'Traiteur asiatique (chaîne)', place:'Marseille', line:'Stone', type:'traiteur', mods:['Plane','Caisse','Saladette','Comptoir bar'], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre' },
+      { id:12, title:'Bar à couscous', place:'Isère', line:'Stone', type:'bar', mods:['Bain-marie avec trous arrondis sur mesure'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes' },
+      { id:13, title:'Traiteur poissonnier', place:'Département 92', line:'Stone', type:'traiteur', mods:['Panorama','Surface plane','Caisse'], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:14, title:'Pâtissier chocolatier Canet', place:'Nice 06', line:'Stone', type:'patisserie', mods:['Plane pâtissière +2/+8','Plane chocolats +14/+18'], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés' }
+    ];
+  }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#B08D57';
+    const s = this.state;
+    const onChip = 'background:#EEE9E1;color:#101010;border-color:#EEE9E1';
+    const typeLabel = {};
+    this.TYPES.forEach((t) => { typeLabel[t.id] = t.label; });
+    const match = (r, line, type) => (line === 'all' || r.line === line) && (type === 'all' || r.type === type);
+    const filtered = this.REALS.filter((r) => match(r, s.line, s.type));
+    const decorate = (r, i) => {
+      const sel = r.id === s.sel;
+      return Object.assign({}, r, {
+        no: (r.id < 10 ? '0' : '') + r.id,
+        sel: sel,
+        pressed: sel ? 'true' : 'false',
+        pick: () => this.setState({ sel: r.id }),
+        typeLabel: typeLabel[r.type],
+        modList: r.mods,
+        mods: r.mods.join(' · '),
+        delay: 'animation-delay:' + (i * 0.04).toFixed(2) + 's',
+        phStyle: sel ? 'outline:1px solid ' + accent + ';outline-offset:6px' : 'outline:1px solid rgba(0,0,0,0);outline-offset:6px',
+        rowStyle: 'animation-delay:' + (i * 0.03).toFixed(2) + 's;' + (sel ? 'background:rgba(176,141,87,.1)' : ''),
+        paneStyle: sel ? 'display:block' : 'display:none'
+      });
+    };
+    const items = filtered.map(decorate);
+    const all = this.REALS.map(decorate);
+    const nav = filtered.length ? filtered : this.REALS;
+    let idx = nav.map((r) => r.id).indexOf(s.sel);
+    const step = (d) => () => {
+      const list = this.REALS.filter((r) => match(r, this.state.line, this.state.type));
+      const L = list.length ? list : this.REALS;
+      let k = L.map((r) => r.id).indexOf(this.state.sel);
+      k = k === -1 ? 0 : (k + d + L.length) % L.length;
+      this.setState({ sel: L[k].id });
+    };
+    const lineChips = this.LINES.map((c) => ({
+      label: c.label,
+      count: this.REALS.filter((r) => match(r, c.id, s.type)).length,
+      pressed: c.id === s.line ? 'true' : 'false',
+      style: c.id === s.line ? onChip : '',
+      pick: () => this.setState({ line: c.id })
+    }));
+    const typeChips = this.TYPES.map((c) => ({
+      label: c.label,
+      count: this.REALS.filter((r) => match(r, s.line, c.id)).length,
+      pressed: c.id === s.type ? 'true' : 'false',
+      style: c.id === s.type ? onChip : '',
+      pick: () => this.setState({ type: c.id })
+    }));
+    const isGrid = s.view === 'grid';
+    return {
+      rootStyle: '--brass:' + accent,
+      menuOpen: s.menuOpen,
+      menuExpanded: s.menuOpen ? 'true' : 'false',
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      lineChips: lineChips,
+      typeChips: typeChips,
+      isGrid: isGrid ? 'true' : 'false',
+      isList: isGrid ? 'false' : 'true',
+      swGrid: isGrid ? 'background:#EEE9E1;color:#101010' : '',
+      swList: isGrid ? '' : 'background:#EEE9E1;color:#101010',
+      viewGrid: () => this.setState({ view: 'grid' }),
+      viewList: () => this.setState({ view: 'list' }),
+      items: items,
+      all: all,
+      showGrid: isGrid && items.length > 0,
+      showList: !isGrid && items.length > 0,
+      empty: items.length === 0,
+      countLabel: items.length + (items.length > 1 ? ' réalisations' : ' réalisation') + ' sur 14',
+      resetFilters: () => this.setState({ line: 'all', type: 'all' }),
+      prev: step(-1),
+      next: step(1),
+      posLabel: idx === -1 ? 'Hors filtre' : (idx + 1) + ' / ' + nav.length
+    };
+  }
+}
+</script>
+</body>
+</html>

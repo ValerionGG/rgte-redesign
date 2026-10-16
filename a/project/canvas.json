@@ -1,0 +1,426 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-16T10:00:00Z"
+ },
+ "title": "RGTE — propositions de refonte 1 à 5",
+ "launch": {
+  "view": "focused",
+  "file": "Main.dc.html"
+ },
+ "pages": [
+  {
+   "id": "capa",
+   "name": "Couverture"
+  },
+  {
+   "id": "vitrine",
+   "name": "1 · Vitrine"
+  },
+  {
+   "id": "mineral",
+   "name": "2 · Minéral"
+  },
+  {
+   "id": "atelier",
+   "name": "3 · Atelier"
+  },
+  {
+   "id": "cryo",
+   "name": "4 · Cryo"
+  },
+  {
+   "id": "rouge",
+   "name": "5 · Rouge"
+  }
+ ],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1900,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Couverture — les 10 propositions",
+   "page": "capa"
+  },
+  "Vitrine-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 10085,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Accueil",
+   "page": "vitrine"
+  },
+  "Vitrine-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 5044,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Lignes",
+   "page": "vitrine"
+  },
+  "Vitrine-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4425,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Module Gourmandise",
+   "page": "vitrine"
+  },
+  "Vitrine-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 4091,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Secteurs",
+   "page": "vitrine"
+  },
+  "Vitrine-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4533,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Réalisations",
+   "page": "vitrine"
+  },
+  "Vitrine-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 5019,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Vitrine · Showroom & contact",
+   "page": "vitrine"
+  },
+  "Mineral-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 8962,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Accueil",
+   "page": "mineral"
+  },
+  "Mineral-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 5322,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Lignes",
+   "page": "mineral"
+  },
+  "Mineral-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4513,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Module Gourmandise",
+   "page": "mineral"
+  },
+  "Mineral-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3458,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Secteurs",
+   "page": "mineral"
+  },
+  "Mineral-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 5374,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Réalisations",
+   "page": "mineral"
+  },
+  "Mineral-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3084,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Minéral · Showroom & contact",
+   "page": "mineral"
+  },
+  "Atelier-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 7734,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Accueil",
+   "page": "atelier"
+  },
+  "Atelier-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 4041,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Lignes",
+   "page": "atelier"
+  },
+  "Atelier-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4426,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Module Gourmandise",
+   "page": "atelier"
+  },
+  "Atelier-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3203,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Secteurs",
+   "page": "atelier"
+  },
+  "Atelier-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4008,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Réalisations",
+   "page": "atelier"
+  },
+  "Atelier-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3003,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Atelier · Showroom & contact",
+   "page": "atelier"
+  },
+  "Cryo-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 8707,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Accueil",
+   "page": "cryo"
+  },
+  "Cryo-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 5046,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Lignes",
+   "page": "cryo"
+  },
+  "Cryo-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4063,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Module Gourmandise",
+   "page": "cryo"
+  },
+  "Cryo-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 2904,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Secteurs",
+   "page": "cryo"
+  },
+  "Cryo-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4011,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Réalisations",
+   "page": "cryo"
+  },
+  "Cryo-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 4036,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Cryo · Showroom & contact",
+   "page": "cryo"
+  },
+  "Rouge-Accueil.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 7755,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Accueil",
+   "page": "rouge"
+  },
+  "Rouge-Lignes.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 3836,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Lignes",
+   "page": "rouge"
+  },
+  "Rouge-Module.dc.html": {
+   "x": 3040,
+   "y": 0,
+   "w": 1440,
+   "h": 4244,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Module Gourmandise",
+   "page": "rouge"
+  },
+  "Rouge-Secteurs.dc.html": {
+   "x": 4560,
+   "y": 0,
+   "w": 1440,
+   "h": 3831,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Secteurs",
+   "page": "rouge"
+  },
+  "Rouge-Realisations.dc.html": {
+   "x": 6080,
+   "y": 0,
+   "w": 1440,
+   "h": 4465,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Réalisations",
+   "page": "rouge"
+  },
+  "Rouge-Contact.dc.html": {
+   "x": 7600,
+   "y": 0,
+   "w": 1440,
+   "h": 3853,
+   "expand": "fill",
+   "is_interactive": true,
+   "title": "Rouge · Showroom & contact",
+   "page": "rouge"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Vitrine-Accueil.dc.html",
+  "Vitrine-Lignes.dc.html",
+  "Vitrine-Module.dc.html",
+  "Vitrine-Secteurs.dc.html",
+  "Vitrine-Realisations.dc.html",
+  "Vitrine-Contact.dc.html",
+  "Mineral-Accueil.dc.html",
+  "Mineral-Lignes.dc.html",
+  "Mineral-Module.dc.html",
+  "Mineral-Secteurs.dc.html",
+  "Mineral-Realisations.dc.html",
+  "Mineral-Contact.dc.html",
+  "Atelier-Accueil.dc.html",
+  "Atelier-Lignes.dc.html",
+  "Atelier-Module.dc.html",
+  "Atelier-Secteurs.dc.html",
+  "Atelier-Realisations.dc.html",
+  "Atelier-Contact.dc.html",
+  "Cryo-Accueil.dc.html",
+  "Cryo-Lignes.dc.html",
+  "Cryo-Module.dc.html",
+  "Cryo-Secteurs.dc.html",
+  "Cryo-Realisations.dc.html",
+  "Cryo-Contact.dc.html",
+  "Rouge-Accueil.dc.html",
+  "Rouge-Lignes.dc.html",
+  "Rouge-Module.dc.html",
+  "Rouge-Secteurs.dc.html",
+  "Rouge-Realisations.dc.html",
+  "Rouge-Contact.dc.html"
+ ],
+ "notes": {
+  "t_vitrine": {
+   "x": 0,
+   "y": -340,
+   "text": "1 · Vitrine — la haute joaillerie de la pâtisserie",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "vitrine"
+  },
+  "t_mineral": {
+   "x": 0,
+   "y": -340,
+   "text": "2 · Minéral — pierre, granit et verre",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "mineral"
+  },
+  "t_atelier": {
+   "x": 0,
+   "y": -340,
+   "text": "3 · Atelier — l’univers de l’artisan",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "atelier"
+  },
+  "t_cryo": {
+   "x": 0,
+   "y": -340,
+   "text": "4 · Cryo — la science du froid",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "cryo"
+  },
+  "t_rouge": {
+   "x": 0,
+   "y": -340,
+   "text": "5 · Rouge — la marque amplifiée",
+   "kind": "title1",
+   "maxW": 9040,
+   "page": "rouge"
+  }
+ },
+ "designSystems": []
+}

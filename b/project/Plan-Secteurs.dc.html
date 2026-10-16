@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Plan — Secteurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&amp;family=Red+Hat+Mono:wght@400;500&amp;family=Red+Hat+Text:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF}
+.pl *{box-sizing:border-box}
+.pl a{color:inherit}
+.pl-wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+.disp{font-family:'Red Hat Display',sans-serif}
+.pl :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.nav-a{position:relative;text-decoration:none;font-weight:500;font-size:15px;padding:12px 0;display:inline-flex;align-items:center;min-height:44px}
+.nav-a::after{content:"";position:absolute;left:0;right:100%;bottom:6px;height:1px;background:var(--red);transition:right .45s cubic-bezier(.6,.1,.2,1)}
+.nav-a:hover::after,.nav-a.on::after{right:0}
+.btn-red{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;background:var(--red);color:#fff !important;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;border:0;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--red)}
+.btn-line{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border:1px solid currentColor;text-decoration:none;font-family:'Red Hat Display',sans-serif;font-weight:700;font-size:15px;background:transparent;cursor:pointer;transition:background .3s,color .3s}
+.btn-line:hover{background:#E8EEF4;color:#0E2A47 !important}
+.btn-line.dk:hover{background:#0E2A47;color:#F4F3EF !important}
+.burger{display:none;width:48px;height:48px;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(143,179,207,.5);color:#E8EEF4;cursor:pointer}
+.toplink{text-decoration:none;min-height:34px;display:inline-flex;align-items:center}
+.toplink:hover{color:#E8EEF4}
+.rise{opacity:0;transform:translateY(22px);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.mask{clip-path:inset(0 0 100% 0);animation:mask 1.1s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes mask{to{clip-path:inset(0 0 0 0)}}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.svgt{font-family:'Red Hat Mono',monospace;font-size:11px;letter-spacing:.08em}
+.band{cursor:pointer;transition:fill .4s,stroke .4s}
+.band:hover{fill:rgba(232,238,244,.18)}
+.srow{transition:background .3s,color .3s,padding .3s}
+.srow:hover{background:rgba(14,42,71,.06);padding-left:22px !important}
+.chip{text-decoration:none;transition:background .25s,color .25s,border-color .25s}
+.chip:hover{background:#0E2A47;color:#F4F3EF;border-color:#0E2A47 !important}
+.rl{text-decoration:none;transition:background .3s}
+.rl:hover{background:rgba(14,42,71,.06)}
+.rl .arr{transition:transform .35s}
+.rl:hover .arr{transform:translateX(4px)}
+.ph img{transition:transform 1.4s cubic-bezier(.2,.7,.1,1)}
+.ph:hover img{transform:scale(1.05)}
+.swap{animation:swap .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes swap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.lnk{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.lnk:hover{color:var(--red)}
+.foot a{text-decoration:none;display:inline-flex;min-height:32px;align-items:center}
+.foot a:hover{color:#fff;text-decoration:underline}
+.mnav a{display:flex;min-height:52px;align-items:center;border-bottom:1px solid rgba(143,179,207,.2);text-decoration:none;font-size:18px}
+@media (max-width:980px){.desk-nav{display:none !important}.burger{display:inline-flex}.hide-m{display:none !important}}
+@media (max-width:720px){.pl-wrap{padding:0 16px}.btn-red.hdr{padding:0 14px;font-size:14px}}
+</style>
+</helmet>
+<div class="pl" style="{{ rootStyle }}">
+
+<header style="background:#0E2A47;color:#E8EEF4;position:relative;z-index:5">
+  <div style="border-bottom:1px solid rgba(143,179,207,.2)">
+    <div class="pl-wrap mono" style="display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span class="hide-m">BUREAU D’ÉTUDES &amp; SHOW-ROOM — PUGET-SUR-ARGENS (83)</span>
+      <a class="toplink" href="Main.dc.html">← TOUTES LES PROPOSITIONS</a>
+    </div>
+  </div>
+  <div class="pl-wrap" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px">
+    <a href="Plan-Accueil.dc.html" aria-label="RGTE, accueil" style="display:flex;align-items:center;gap:14px;text-decoration:none">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" fill="none" stroke="#8FB3CF" stroke-width="1"></rect><path d="M17 4V30M4 17H30" stroke="#8FB3CF" stroke-width="1"></path><circle cx="17" cy="17" r="7" fill="none" stroke="var(--red)" stroke-width="2"></circle></svg>
+      <span style="display:flex;flex-direction:column;line-height:1">
+        <span class="disp" style="font-weight:900;font-size:27px;letter-spacing:.08em">RGTE</span>
+        <span class="mono" style="font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:5px">R.G. TECHNOLOGIES</span>
+      </span>
+    </a>
+    <nav class="desk-nav" aria-label="Navigation principale" style="display:flex;gap:34px">
+      <a class="nav-a" href="Plan-Lignes.dc.html">Lignes</a>
+      <a class="nav-a on" href="Plan-Secteurs.dc.html" aria-current="page">Secteurs</a>
+      <a class="nav-a" href="Plan-Realisations.dc.html">Réalisations</a>
+      <a class="nav-a" href="Plan-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="tel:0800951313" class="hide-m" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.2">
+        <span class="mono" style="font-size:15px;font-weight:500;letter-spacing:.04em">0 800 95 13 13</span>
+        <span class="mono" style="font-size:10px;color:#8FB3CF;letter-spacing:.12em">APPEL GRATUIT</span>
+      </a>
+      <a href="Plan-Contact.dc.html" class="btn-red hdr">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="{{ burgerLabel }}" onClick="{{ toggleMenu }}"><svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><path d="M0 1H20M0 7H20M0 13H20" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav pl-wrap" aria-label="Navigation mobile" style="padding-bottom:20px">
+      <a href="Plan-Lignes.dc.html">Lignes</a>
+      <a href="Plan-Secteurs.dc.html">Secteurs</a>
+      <a href="Plan-Realisations.dc.html">Réalisations</a>
+      <a href="Plan-Contact.dc.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313" class="mono">0 800 95 13 13 — appel gratuit</a>
+    </nav>
+  </sc-if>
+</header>
+
+<!-- HERO : échelle des températures -->
+<section style="{{ heroStyle }}">
+  <div class="pl-wrap" style="padding-top:64px;padding-bottom:64px">
+    <p class="mono rise" style="margin:0 0 20px;font-size:12px;letter-spacing:.18em;color:#8FB3CF"><span style="color:var(--red)">■</span> FEUILLE D — SECTEURS D’ACTIVITÉ</p>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 56px;align-items:flex-end;justify-content:space-between">
+      <h1 class="disp mask" style="margin:0;flex:1 1 640px;font-weight:900;font-size:clamp(40px,6vw,88px);line-height:.98;letter-spacing:-.02em;overflow-wrap:anywhere">Treize métiers, quatre régimes de température.</h1>
+      <p class="rise" style="margin:0;flex:1 1 320px;max-width:420px;font-size:17px;line-height:1.6;color:#C9D7E4;animation-delay:.3s">Chaque produit a sa plage. Cliquez une bande de l’échelle ou un métier : modules conseillés et réalisations liées s’affichent.</p>
+    </div>
+    <div style="margin-top:48px;border:1px solid rgba(143,179,207,.35);padding:20px 16px 8px;background:#0B2440">
+      <svg viewBox="0 0 1100 210" width="100%" style="display:block;height:auto" role="img" aria-label="Échelle des températures : −2/0, +2/+8, +14/+18 et +30/+90 °C">
+        <path class="draw" pathLength="1" d="M40 140H780M820 140H1080" stroke="#E8EEF4" stroke-width="1.2" fill="none"></path>
+        <path d="M776 150L786 130M814 150L824 130" stroke="#8FB3CF" stroke-width="1.2"></path>
+        <rect class="band" x="120" y="60" width="60" height="70" style="{{ bands.neg }}" onClick="{{ bandPick.neg }}"></rect>
+        <rect class="band" x="240" y="60" width="180" height="70" style="{{ bands.p }}" onClick="{{ bandPick.p }}"></rect>
+        <rect class="band" x="600" y="60" width="120" height="70" style="{{ bands.c }}" onClick="{{ bandPick.c }}"></rect>
+        <rect class="band" x="820" y="60" width="240" height="70" style="{{ bands.h }}" onClick="{{ bandPick.h }}"></rect>
+        <g stroke="#E8EEF4" stroke-width="1">
+          <path d="M120 140V152M180 140V152M240 140V152M420 140V152M600 140V152M720 140V152M820 140V152M1060 140V152"></path>
+          <path d="M60 140V146M90 140V146M150 140V146M210 140V146M270 140V146M300 140V146M330 140V146M360 140V146M390 140V146M450 140V146M480 140V146M510 140V146M540 140V146M570 140V146M630 140V146M660 140V146M690 140V146M750 140V146M780 140V146" stroke="#8FB3CF"></path>
+        </g>
+        <g class="svgt" fill="#E8EEF4" text-anchor="middle">
+          <text x="120" y="170">−2</text><text x="180" y="170">0</text><text x="240" y="170">+2</text><text x="420" y="170">+8</text>
+          <text x="600" y="170">+14</text><text x="720" y="170">+18</text><text x="820" y="170">+30</text><text x="1060" y="170">+90 °C</text>
+        </g>
+        <g class="svgt" text-anchor="middle">
+          <text x="150" y="48" style="{{ bandTxt.neg }}">POISSONNERIE</text>
+          <text x="330" y="48" style="{{ bandTxt.p }}">PÂTISSERIE · FRAIS</text>
+          <text x="660" y="48" style="{{ bandTxt.c }}">CHOCOLATS</text>
+          <text x="940" y="48" style="{{ bandTxt.h }}">CHAUD — BAIN-MARIE</text>
+        </g>
+        <path d="M40 196H1080" stroke="rgba(143,179,207,.3)" stroke-dasharray="2 4"></path>
+        <text x="40" y="22" class="svgt" fill="#8FB3CF">ÉCHELLE DES TEMPÉRATURES D’EXPOSITION — SOURCE : FICHES MODULES</text>
+        <text x="1080" y="22" text-anchor="end" class="svgt" fill="var(--red)">{{ cur.temp }}</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SÉLECTEUR + DÉTAIL -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:80px;padding-bottom:96px;display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start">
+    <div style="flex:1 1 360px">
+      <p class="mono" style="margin:0 0 16px;font-size:12px;letter-spacing:.18em;color:var(--red)">NOMENCLATURE DES MÉTIERS</p>
+      <div role="listbox" aria-label="Secteurs d’activité" style="border-top:1.5px solid #0E2A47">
+        <sc-for list="{{ secteurs }}" as="x" hint-placeholder-count="13">
+          <button type="button" role="option" class="srow" style="{{ x.rowStyle }}" aria-selected="{{ x.sel }}" onClick="{{ x.pick }}">
+            <span class="mono" style="font-size:11px;letter-spacing:.1em;width:28px;opacity:.7">{{ x.n }}</span>
+            <span class="disp" style="flex:1;font-size:19px;font-weight:700">{{ x.nom }}</span>
+            <span class="mono" style="font-size:12px;opacity:.85">{{ x.tempShort }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    <div class="swap" style="flex:1.6 1 520px;border:1.5px solid #0E2A47">
+      <div class="ph" style="position:relative;height:360px;overflow:hidden;background:#0E2A47">
+        <img src="{{ cur.img }}" alt="{{ cur.alt }}" style="width:100%;height:100%;object-fit:cover;display:block">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(232,238,244,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(232,238,244,.18) 1px,transparent 1px);background-size:48px 48px;pointer-events:none"></div>
+        <span class="mono" style="position:absolute;left:0;top:0;background:#0E2A47;color:#E8EEF4;font-size:11px;letter-spacing:.12em;padding:8px 12px">D-{{ cur.n }} · VISUEL D’ILLUSTRATION</span>
+        <span class="mono" style="position:absolute;right:0;bottom:0;background:var(--red);color:#fff;font-size:16px;font-weight:500;padding:12px 16px">{{ cur.temp }}</span>
+      </div>
+      <div style="padding:28px;display:flex;flex-direction:column;gap:22px">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between">
+          <h2 class="disp" style="margin:0;font-size:clamp(36px,4vw,56px);font-weight:900;line-height:1;letter-spacing:-.02em">{{ cur.nom }}</h2>
+          <sc-if value="{{ cur.valider }}" hint-placeholder-val="{{ false }}"><span class="mono" style="font-size:11px;letter-spacing:.12em;border:1px dashed #0E2A47;padding:6px 10px">À VALIDER PAR RGTE</span></sc-if>
+        </div>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#3A4F66">{{ cur.txt }}</p>
+        <div>
+          <p class="mono" style="margin:0 0 10px;font-size:11px;letter-spacing:.14em;color:#5A6E84">MODULES CONSEILLÉS</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ cur.mods }}" as="m" hint-placeholder-count="5">
+              <a href="Plan-Module.dc.html" class="chip mono" style="font-size:13px;border:1px solid rgba(14,42,71,.35);padding:0 14px;min-height:40px;display:inline-flex;align-items:center">{{ m }}</a>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <p class="mono" style="margin:0 0 6px;font-size:11px;letter-spacing:.14em;color:#5A6E84">RÉALISATIONS LIÉES — {{ cur.nbReal }}</p>
+          <sc-if value="{{ cur.hasReal }}" hint-placeholder-val="{{ true }}">
+            <div style="border-top:1px solid rgba(14,42,71,.2)">
+              <sc-for list="{{ cur.reals }}" as="r" hint-placeholder-count="3">
+                <a href="Plan-Realisations.dc.html" class="rl" style="display:flex;gap:16px;align-items:center;min-height:56px;border-bottom:1px solid rgba(14,42,71,.2);padding:8px 4px">
+                  <span class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--red);width:48px">{{ r.code }}</span>
+                  <span style="flex:1"><span style="display:block;font-weight:700;font-size:15px">{{ r.type }} — {{ r.lieu }}</span><span class="mono" style="display:block;font-size:12px;color:#5A6E84;margin-top:2px">{{ r.ligne }} : {{ r.mods }}</span></span>
+                  <svg class="arr" width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M0 5H15M11 1L15 5L11 9" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ cur.noReal }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:6px 0 0;font-size:15px;color:#3A4F66">Pas encore de réalisation publiée pour ce métier. Votre boutique pourrait être la première : <a href="Plan-Contact.dc.html" class="lnk">demander un plan 3D</a>.</p>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATRICE -->
+<section style="background:#0E2A47;color:#E8EEF4">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:88px">
+    <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:#8FB3CF">MATRICE</p>
+    <h2 class="disp" style="margin:0 0 36px;font-weight:900;font-size:clamp(30px,3.6vw,48px);line-height:1;letter-spacing:-.02em">Quel module pour quelle plage ?</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:1px;background:rgba(143,179,207,.35);border:1px solid rgba(143,179,207,.35)">
+      <sc-for list="{{ regimes }}" as="g" hint-placeholder-count="4">
+        <button type="button" style="{{ g.style }}" onClick="{{ g.pick }}" aria-pressed="{{ g.sel }}">
+          <span class="mono" style="display:block;font-size:22px;font-weight:500;color:#E8EEF4">{{ g.temp }}</span>
+          <span class="mono" style="display:block;font-size:11px;letter-spacing:.12em;color:#8FB3CF;margin-top:6px">{{ g.usage }}</span>
+          <span style="display:block;margin-top:18px;font-size:15px;line-height:1.6;color:#C9D7E4">{{ g.mods }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#F4F3EF;color:#0E2A47">
+  <div class="pl-wrap" style="padding-top:88px;padding-bottom:88px;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between">
+    <div style="flex:1 1 560px">
+      <p class="mono" style="margin:0 0 14px;font-size:12px;letter-spacing:.18em;color:var(--red)">VOTRE MÉTIER</p>
+      <h2 class="disp" style="margin:0;font-weight:900;font-size:clamp(32px,4.4vw,60px);line-height:1;letter-spacing:-.02em">Un produit, une plage, un plan.</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="Plan-Contact.dc.html" class="btn-red" style="min-height:56px">Demander mon plan 3D</a>
+      <a href="Plan-Lignes.dc.html" class="btn-line dk" style="min-height:56px">Voir les lignes</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" style="background:#0E2A47;color:#E8EEF4;padding:64px 0 28px">
+  <div class="pl-wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:1px;background:rgba(143,179,207,.35);border:1px solid rgba(143,179,207,.35)">
+      <div style="background:#0E2A47;padding:22px"><span class="disp" style="font-weight:900;font-size:30px;letter-spacing:.08em">RGTE</span><span class="mono" style="display:block;font-size:10px;letter-spacing:.16em;color:#8FB3CF;margin-top:6px">R.G. TECHNOLOGIES</span><p style="margin:14px 0 0;font-size:14px;color:#C9D7E4;line-height:1.5">Agencement de vitrines réfrigérées</p></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">BUREAU D’ÉTUDES &amp; SHOW-ROOM</span>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;line-height:1.6"><span class="mono" style="display:block;font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:8px">TÉLÉPHONE</span><a href="tel:0800951313" class="mono" style="font-size:18px">0 800 95 13 13</a><br>Appel gratuit · [HORAIRES]</div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">SITE</span><a href="Plan-Lignes.dc.html">Lignes</a><a href="Plan-Secteurs.dc.html">Secteurs</a><a href="Plan-Realisations.dc.html">Réalisations</a><a href="Plan-Contact.dc.html">Showroom &amp; contact</a></div>
+      <div style="background:#0E2A47;padding:22px;font-size:14px;display:flex;flex-direction:column"><span class="mono" style="font-size:10px;letter-spacing:.14em;color:#8FB3CF;margin-bottom:4px">LÉGAL</span><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+    </div>
+    <div class="mono" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:20px;font-size:11px;letter-spacing:.1em;color:#8FB3CF">
+      <span>© RGTE — R.G. TECHNOLOGIES</span>
+      <span>FEUILLE 04 / 06 — SECTEURS</span>
+      <span>Proposition de refonte — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3100},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1A1A1A","#B08D57"]},"grille":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu:false, sect:'patisserie' }; }
+  renderVals() {
+    const p = this.props || {};
+    const R = p.accent || '#D42A20';
+    const grid = p.grille !== false;
+    const s = this.state;
+    const rgba = (h, a) => { const n = parseInt(h.slice(1), 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; };
+    const gridBg = grid ? 'background-image:linear-gradient(rgba(143,179,207,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(143,179,207,.09) 1px,transparent 1px);background-size:40px 40px;' : '';
+    const REAL = {
+      1:{ type:'Pâtisserie', lieu:'Paris 4e', ligne:'Stone', mods:'Plane & Caisse' },
+      2:{ type:'Bar à salades', lieu:'Département 13', ligne:'Stone', mods:'Saladette & Caisse & Panorama' },
+      3:{ type:'Chocolatier', lieu:'Gap & Grenoble', ligne:'Stone', mods:'Plane & Caisse' },
+      4:{ type:'Sandwicherie', lieu:'Chamonix', ligne:'Basique', mods:'Panoramique & Basse & Murale self-service' },
+      5:{ type:'Bar à olives', lieu:'Nice', ligne:'Stone', mods:'Saladette sur mesure, trous arrondis' },
+      6:{ type:'Bar à yogourt glacé', lieu:'Toute la France', ligne:'Stone', mods:'Saladette trous arrondis & Surface plane' },
+      7:{ type:'Boulangerie pâtisserie', lieu:'La Réunion', ligne:'Basique', mods:'Amandine & Caisse' },
+      8:{ type:'Boulangerie', lieu:'Département 33', ligne:'Legno', mods:'Réfrigérée statique & Neutre & Module arrière' },
+      9:{ type:'Pizza sur composition', lieu:'Paris', ligne:'Stone', mods:'Saladette & Caisse & Plane' },
+      10:{ type:'Pâtissier chocolatier', lieu:'Département 69', ligne:'Stone', mods:'Centrale & Caisse & Plane' },
+      11:{ type:'Traiteur asiatique', lieu:'Marseille', ligne:'Stone', mods:'Plane & Caisse & Saladette & Comptoir bar' },
+      12:{ type:'Bar à couscous', lieu:'Isère', ligne:'Stone', mods:'Bain-marie, trous arrondis sur mesure' },
+      13:{ type:'Traiteur poissonnier', lieu:'Département 92', ligne:'Stone', mods:'Panorama & Surface plane & Caisse' },
+      14:{ type:'Pâtissier chocolatier Canet', lieu:'Nice 06', ligne:'Stone', mods:'Plane +2/+8 et chocolats +14/+18' }
+    };
+    const SECT = [
+      { id:'boulangerie', nom:'Boulangerie', band:null, temp:'Neutre ou réfrigéré', short:'NEUTRE / FROID', valider:true, mods:['Loire (Industry)','Amandine','Réfrigérée statique','Vitrine neutre','Arrière neutre'], real:[7,8], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées', txt:'Viennoiseries, pains et pâtisseries côte à côte : vitrines neutres pour le sec, réfrigérées pour le frais, et un meuble arrière pour la réserve de vente.' },
+      { id:'patisserie', nom:'Pâtisserie', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:false, mods:['Plane','Vision','Panorama','Centrale','Gourmandise','Pastry Show','Cube','Amandine'], real:[1,10,14,7], img:'assets/vitrine-cakes.webp', alt:'Gâteaux en vitrine', txt:'Entremets, tartes et macarons en froid +2/+8. Exposition à hauteur du plan de travail (Plane), légèrement en dessous (Vision), au centre (Centrale, Gourmandise) ou sur plaques 600 × 400 (Pastry Show, Amandine).' },
+      { id:'chocolats', nom:'Chocolats', band:'c', temp:'+14 °C / +18 °C', short:'+14/+18', valider:false, mods:['Plane','Centrale','Gourmandise'], real:[3,10,14], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs', txt:'Bonbons et tablettes en plage +14/+18 : les modules Plane, Centrale et Gourmandise existent dans cette plage, seuls ou à côté d’une vitrine pâtissière +2/+8.' },
+      { id:'sandwichs', nom:'Sandwichs', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:false, mods:['Plane','Panoramique','Basse','Murale self-service','Nepal (snack)'], real:[4], img:'assets/bakery-window.webp', alt:'Vitrine de rue', txt:'Service et libre-service : la Plane accueille les sandwichs à hauteur du plan de travail ; la murale self-service prend le relais quand la file s’allonge.' },
+      { id:'traiteur', nom:'Traiteur', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:true, mods:['Plane','Saladette','Panorama','Surface plane','Comptoir bar','Comptoir caisse'], real:[11,13], img:'assets/vitrine-slice.webp', alt:'Parts derrière le verre', txt:'Plats préparés et assortiments : linéaire Plane, Saladette en bacs gastronormes et Panorama à étagères.' },
+      { id:'poissonnerie', nom:'Poissonnerie', band:'neg', temp:'−2 °C / 0 °C', short:'−2/0', valider:false, mods:['Réfrigérée Poissonnerie','Hanoi (Industry)','Panorama','Surface plane'], real:[13], img:'assets/fish-ice.webp', alt:'Poissons sur glace', txt:'Froid statique avec serpentin de cuve, −2/0 °C, et vidange de cuve pour l’étal sur glace.' },
+      { id:'salades', nom:'Bar à salades', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:false, mods:['Saladette','Panorama','Comptoir caisse'], real:[2,5], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox colorés', txt:'Ingrédients en bacs gastronormes (non fournis) à +2/+8, composés devant le client.' },
+      { id:'couscous', nom:'Bar à couscous', band:'h', temp:'+30 °C / +90 °C', short:'+30/+90', valider:false, mods:['Chaud bain-marie','Trous arrondis sur mesure'], real:[12], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre', txt:'Bain-marie en bacs gastronormes de +30 à +90 °C, avec découpes à trous arrondis sur mesure.' },
+      { id:'fromagerie', nom:'Fromagerie', band:null, temp:'[À VALIDER]', short:'[À VALIDER]', valider:true, mods:['Panorama','Vitrine réfrigérée ventilée plane','Comptoir caisse'], real:[], img:'assets/fromagerie.webp', alt:'Meules de fromage sur étagères', txt:'Plage et modules à définir avec le bureau d’études selon vos fromages et votre local.' },
+      { id:'bar', nom:'Bar', band:null, temp:'Neutre ou réfrigéré', short:'NEUTRE / FROID', valider:true, mods:['Comptoir bar','Comptoir caisse'], real:[], img:'assets/bakery-counter-bright.webp', alt:'Comptoir de boutique claire', txt:'Le comptoir bar existe en version neutre ou réfrigérée, dans les lignes Basique, Stone et Legno.' },
+      { id:'topping', nom:'Bar à topping', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:false, mods:['Saladette sur mesure à trous arrondis','Surface plane'], real:[6], img:'assets/topping-bar.webp', alt:'Bar à toppings', txt:'Toppings en bacs, découpes à trous arrondis sur mesure et surface plane de service.' },
+      { id:'coffee', nom:'Coffee shop / Café', band:null, temp:'[À VALIDER]', short:'[À VALIDER]', valider:true, mods:['Comptoir bar','Comptoir caisse','Vitrine réfrigérée Cube','Pastry Show'], real:[], img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc', txt:'Comptoir, caisse et une petite vitrine pour les gâteaux du jour : composition à valider avec le bureau d’études.' },
+      { id:'pizza', nom:'Pizza al taglio', band:'p', temp:'+2 °C / +8 °C', short:'+2/+8', valider:true, mods:['Saladette','Comptoir caisse','Plane'], real:[9], img:'assets/baker-table.webp', alt:'Plan de travail avec pains et rouleau', txt:'Ingrédients en Saladette, parts en Plane, caisse en bout de linéaire — sur le modèle de la pizzeria sur composition réalisée à Paris.' }
+    ];
+    const curRaw = SECT.find(x => x.id === s.sect) || SECT[1];
+    const idx = SECT.indexOf(curRaw);
+    const reals = curRaw.real.map(n => Object.assign({ code:'PL-' + String(n).padStart(2, '0') }, REAL[n]));
+    const cur = Object.assign({}, curRaw, { n: String(idx + 1).padStart(2, '0'), reals, nbReal: reals.length, hasReal: reals.length > 0, noReal: reals.length === 0 });
+    const secteurs = SECT.map((x, i) => { const on = x.id === s.sect; return { n: String(i + 1).padStart(2, '0'), nom:x.nom, tempShort:x.short, sel: on ? 'true' : 'false', pick: () => this.setState({ sect:x.id }),
+      rowStyle: 'width:100%;display:flex;align-items:center;gap:14px;min-height:56px;padding:8px 12px;border:0;border-bottom:1px solid rgba(14,42,71,.2);cursor:pointer;text-align:left;font-family:inherit;' + (on ? 'background:#0E2A47;color:#F4F3EF;box-shadow:inset 4px 0 0 ' + R + ';' : 'background:transparent;color:#0E2A47;') }; });
+    const FIRST = { neg:'poissonnerie', p:'patisserie', c:'chocolats', h:'couscous' };
+    const bands = {}, bandTxt = {}, bandPick = {};
+    Object.keys(FIRST).forEach(b => {
+      const on = curRaw.band === b;
+      bands[b] = on ? 'fill:' + rgba(R, .35) + ';stroke:' + R + ';stroke-width:2' : 'fill:rgba(143,179,207,.12);stroke:#8FB3CF;stroke-width:1';
+      bandTxt[b] = on ? 'fill:#FFFFFF;font-weight:500' : 'fill:#8FB3CF';
+      bandPick[b] = () => this.setState({ sect: FIRST[b] });
+    });
+    const REG = [
+      { b:'neg', temp:'−2 / 0 °C', usage:'POISSONNERIE', mods:'Réfrigérée Poissonnerie (Stone) — froid statique, serpentin de cuve, vidange.' },
+      { b:'p', temp:'+2 / +8 °C', usage:'PÂTISSERIE · FRAIS', mods:'Plane, Vision, Centrale, Gourmandise, Panorama, Saladette.' },
+      { b:'c', temp:'+14 / +18 °C', usage:'CHOCOLATS', mods:'Plane, Vision, Centrale, Gourmandise, Panorama.' },
+      { b:'h', temp:'+30 / +90 °C', usage:'CHAUD', mods:'Chaud bain-marie (Stone), Chaud bain-marie ou plaque chaude (Basique).' }
+    ];
+    const regimes = REG.map(g => { const on = curRaw.band === g.b; return Object.assign({}, g, { sel: on ? 'true' : 'false', pick: bandPick[g.b],
+      style: 'text-align:left;padding:24px;min-height:200px;cursor:pointer;border:0;font-family:inherit;transition:background .35s;background:' + (on ? '#16375A' : '#0E2A47') + ';box-shadow:' + (on ? 'inset 0 3px 0 ' + R : 'none') + ';' }); });
+    return {
+      rootStyle: '--red:' + R + ';font-family:\'Red Hat Text\',sans-serif;background:#F4F3EF;color:#0E2A47;',
+      menuOpen: s.menu, burgerLabel: s.menu ? 'Fermer le menu' : 'Ouvrir le menu', toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      heroStyle: 'background-color:#0E2A47;color:#E8EEF4;' + gridBg,
+      bands, bandTxt, bandPick, secteurs, cur, regimes
+    };
+  }
+}
+</script>
+</body>
+</html>

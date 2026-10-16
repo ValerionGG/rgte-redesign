@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison — Réalisations</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gilda+Display&amp;family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0;background:#FBF7F2}
+.m{--iv:#FBF7F2;--iv2:#F4EDE4;--pi:#C9D8B6;--ro:#EBC9C6;--pr:#3B2A26;--go:#B8955A;--mu:#6A5550;font-family:'Karla',system-ui,sans-serif;color:var(--pr);background:var(--iv);line-height:1.6;font-size:16px;overflow-x:hidden}
+.m *,.m *::before,.m *::after{box-sizing:border-box}
+.m img{display:block;max-width:100%}
+.m a{color:inherit}
+.m p{margin:0}
+.disp{font-family:'Gilda Display',Georgia,serif;font-weight:400;line-height:1.04;letter-spacing:-.005em;margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 40px}
+.kick{display:inline-flex;align-items:center;gap:12px;font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--mu);margin:0}
+.kick::before{content:"";width:28px;height:1px;background:var(--go);flex:none}
+.lead{font-size:18px;color:var(--mu);max-width:620px}
+.h2{font-size:clamp(34px,4.2vw,60px);overflow-wrap:anywhere}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border-radius:999px;font:700 14px/1 'Karla',sans-serif;letter-spacing:.06em;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform .35s cubic-bezier(.2,.7,.2,1),background .35s,box-shadow .35s,color .35s;white-space:nowrap}
+.btn-red{background:var(--accent);color:#fff}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 14px 28px -14px var(--accent)}
+.btn-line{border-color:var(--pr);color:var(--pr);background:transparent}
+.btn-line:hover{background:var(--pr);color:var(--iv)}
+.m :focus-visible{outline:2px solid var(--pr);outline-offset:3px}
+.tb{background:var(--pr);color:#F3EAE0;font-size:13px}
+.tb .wrap{display:flex;justify-content:space-between;align-items:center;gap:8px 20px;min-height:40px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.tb a{color:#F3EAE0;text-decoration:none}
+.tb a:hover{text-decoration:underline}
+.tb-r{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hd{border-bottom:1px solid var(--go);background:var(--iv);position:relative;z-index:30}
+.hd .wrap{display:flex;align-items:center;gap:24px;min-height:88px}
+.logo{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;padding:7px 2px;border-top:1px solid var(--go);border-bottom:1px solid var(--go);line-height:1;flex:none}
+.logo b{font-family:'Gilda Display',serif;font-weight:400;font-size:30px;letter-spacing:.3em;margin-right:-.3em}
+.logo small{font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;margin-top:6px;font-weight:700;margin-right:-.34em}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nav a{position:relative;text-decoration:none;font-size:15px;padding:0 14px;min-height:44px;display:inline-flex;align-items:center}
+.nav a::after{content:"";position:absolute;left:14px;right:14px;bottom:8px;height:1px;background:var(--go);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.hd-tel{font-weight:700;text-decoration:none;font-size:15px;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.burger{display:none;width:48px;height:48px;border:1px solid var(--pr);border-radius:50%;background:transparent;color:var(--pr);align-items:center;justify-content:center;cursor:pointer}
+@media(max-width:1060px){.nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--iv);border-bottom:1px solid var(--go);padding:8px 24px 20px}.hd-tel{display:none}.hd-cta{margin-left:auto}.burger{display:inline-flex}}
+@media(max-width:700px){.wrap{padding:0 16px}}
+@media(max-width:560px){.hd-cta{display:none}.burger{margin-left:auto}}
+.rib{position:relative;height:60px;display:flex;align-items:center;justify-content:center;--rc:var(--pi);--bc:var(--ro)}
+.rib.ro{--rc:var(--ro);--bc:var(--pi)}
+.rib::before{content:"";position:absolute;left:0;right:0;top:23px;height:14px;background:var(--rc);border-top:1px solid var(--go);border-bottom:1px solid var(--go)}
+.bow{position:relative;width:100px;height:50px;animation:bowSway 7s ease-in-out infinite;transform-origin:50% 40%}
+.bow g{fill:var(--bc);stroke:var(--go);stroke-width:1}
+@keyframes bowSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.ft{background:var(--pr);color:#EFE6DC}
+.ft-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:40px;padding:72px 0 48px}
+.ft h4{font-family:'Gilda Display',serif;font-weight:400;font-size:21px;margin:0 0 16px;color:#fff}
+.ft p{font-size:15px;margin-bottom:12px}
+.ft a{color:#EFE6DC;text-decoration:none}
+.ft a:hover{color:#fff;text-decoration:underline}
+.ft ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ft li a{display:inline-flex;min-height:32px;align-items:center}
+.ft .logo{color:#fff;margin-bottom:18px}
+.ft-b{border-top:1px solid rgba(184,149,90,.55);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:22px 0 30px;font-size:13px;color:#D6C9BD}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}.d4{animation-delay:.48s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid rgba(59,42,38,.28);border-radius:999px;font-size:14px;text-decoration:none;background:#fff;transition:background .3s,border-color .3s,transform .3s}
+.chip:hover{background:var(--ro);border-color:var(--go);transform:translateY(-2px)}
+.scf{position:relative;background:var(--sf,#fff);padding:12px}
+.sc{position:absolute;pointer-events:none}
+.sc-t{left:0;right:0;top:-11px;height:12px;background:radial-gradient(circle at 12px 12px,var(--sf,#fff) 11.5px,transparent 12px) 0 0/24px 12px repeat-x}
+.sc-b{left:0;right:0;bottom:-11px;height:12px;background:radial-gradient(circle at 12px 0,var(--sf,#fff) 11.5px,transparent 12px) 0 0/24px 12px repeat-x}
+.sc-l{top:0;bottom:0;left:-11px;width:12px;background:radial-gradient(circle at 12px 12px,var(--sf,#fff) 11.5px,transparent 12px) 0 0/12px 24px repeat-y}
+.sc-r{top:0;bottom:0;right:-11px;width:12px;background:radial-gradient(circle at 0 12px,var(--sf,#fff) 11.5px,transparent 12px) 0 0/12px 24px repeat-y}
+.sec{padding:80px 0 100px}
+
+.ph{position:relative;background:var(--ro);padding:78px 0 92px;overflow:hidden}
+.ph::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 1px,transparent 1px 12px)}
+.ph::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;background:radial-gradient(circle at 14px 14px,var(--iv) 13.5px,transparent 14px) 0 0/28px 14px repeat-x}
+.ph .wrap{position:relative}
+.crumb{font-size:13px;font-weight:600;margin-bottom:26px;display:flex;gap:10px;align-items:center}
+.crumb a{text-decoration:none;border-bottom:1px solid var(--pr)}
+.h1{font-size:clamp(42px,5.4vw,80px);overflow-wrap:anywhere;margin:18px 0 22px;max-width:1000px}
+
+.bar{display:grid;gap:14px;padding:22px 26px;background:#fff;border:1px solid var(--go);margin-bottom:40px}
+.bar-r{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar-l{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;min-width:96px;color:var(--mu)}
+.fb{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(59,42,38,.3);background:var(--iv);font:600 14px 'Karla',sans-serif;color:var(--pr);cursor:pointer;transition:background .3s,border-color .3s,color .3s}
+.fb:hover{border-color:var(--go)}
+.bar-f{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(184,149,90,.5);padding-top:14px}
+.cnt{font-family:'Gilda Display',serif;font-size:22px}
+.vw{display:flex;gap:6px}
+.vw button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(59,42,38,.3);background:var(--iv);color:var(--pr);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s,color .3s}
+
+.feat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center;margin-bottom:56px;animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+@media(max-width:960px){.feat{grid-template-columns:1fr}}
+.feat .scf{--sf:var(--pi)}
+.feat-im{position:relative;height:420px;overflow:hidden;border:1px solid var(--go)}
+.feat-im img{width:100%;height:420px;object-fit:cover;animation:fz 1.4s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fz{from{transform:scale(1.1);opacity:.3}to{transform:none;opacity:1}}
+.feat-il{position:absolute;left:12px;bottom:12px;background:var(--iv);font-size:11px;padding:4px 8px;font-weight:600}
+.feat-rb{position:absolute;top:0;bottom:0;right:40px;width:22px;background:var(--ro);border-left:1px solid var(--go);border-right:1px solid var(--go)}
+.feat-no{font-family:'Gilda Display',serif;font-size:80px;line-height:.9;color:var(--pr)}
+.feat-t{display:grid;gap:16px}
+.feat-l{border-top:1px solid var(--go)}
+.feat-l div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(184,149,90,.5);font-size:15.5px}
+.feat-l span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--mu);padding-top:3px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:26px}
+.cd{display:block;text-align:left;background:#fff;border:1px solid var(--go);padding:10px 10px 20px;cursor:pointer;font:inherit;color:inherit;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.cd:hover{transform:translateY(-8px);box-shadow:0 30px 50px -34px rgba(59,42,38,.45)}
+.cd-im{position:relative;display:block;height:240px;overflow:hidden}
+.cd-im img{width:100%;height:240px;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.cd:hover .cd-im img{transform:scale(1.07)}
+.cd-rb{position:absolute;top:0;bottom:0;right:22px;width:14px;background:var(--pi);border-left:1px solid var(--go);border-right:1px solid var(--go);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.cd-no{position:absolute;left:10px;top:10px;background:var(--iv);font-family:'Gilda Display',serif;font-size:18px;min-width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--go)}
+.cd-t{display:grid;gap:4px;padding:16px 8px 0}
+.cd-k{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--mu)}
+.cd-n{font-family:'Gilda Display',serif;font-size:23px;line-height:1.15}
+.cd-m{font-size:14px;color:var(--mu)}
+.list{border-top:1px solid var(--go)}
+.lr{display:grid;grid-template-columns:60px 1.4fr 1fr .7fr 2fr;gap:16px;align-items:center;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid rgba(184,149,90,.5);padding:16px 12px;font:inherit;color:inherit;cursor:pointer;transition:background .3s,padding .35s;min-height:56px}
+.lr:hover{background:#fff;padding-left:20px}
+.lr-no{font-family:'Gilda Display',serif;font-size:22px}
+.lr-n{font-family:'Gilda Display',serif;font-size:20px}
+.lr-s{font-size:14px;color:var(--mu)}
+@media(max-width:760px){.lr{grid-template-columns:44px 1fr}.lr .hm{display:none}}
+.empty{padding:40px;text-align:center;border:1px dashed rgba(59,42,38,.35);color:var(--mu)}
+.cta2{background:var(--pi);padding:90px 0;position:relative}
+.cta2::before{content:"";position:absolute;left:0;right:0;top:-1px;height:14px;background:radial-gradient(circle at 14px 0,var(--iv) 13.5px,transparent 14px) 0 0/28px 14px repeat-x}
+.cta2-g{display:flex;flex-wrap:wrap;gap:30px;align-items:center;justify-content:space-between}
+.cta2 .disp{font-size:clamp(32px,3.6vw,52px);max-width:720px}
+</style>
+</helmet>
+<div class="m" style="{{ rootStyle }}">
+
+<div class="tb"><div class="wrap"><span>Bureau d’études &amp; show-room · Puget-sur-Argens, Var</span><span class="tb-r"><a href="index.html">Toutes les propositions</a><a href="tel:0800951313">Numéro vert 0 800 95 13 13 · appel gratuit</a></span></div></div>
+<header class="hd"><div class="wrap">
+<a class="logo" href="Maison-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil"><b>RGTE</b><small>R.G. Technologies</small></a>
+<nav class="nav" style="{{ navStyle }}" aria-label="Navigation principale">
+<a href="Maison-Lignes.html">Lignes</a>
+<a href="Maison-Secteurs.html">Secteurs</a>
+<a class="on" href="Maison-Realisations.html" aria-current="page">Réalisations</a>
+<a href="Maison-Contact.html">Showroom &amp; contact</a>
+</nav>
+<a class="hd-tel" href="tel:0800951313"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>0 800 95 13 13</a>
+<a class="btn btn-red hd-cta" href="Maison-Contact.html">Plan 3D offert</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div></header>
+
+<section class="ph">
+<div class="wrap">
+<p class="crumb rise"><a href="Maison-Accueil.html">Accueil</a><span aria-hidden="true">/</span><span>Réalisations</span></p>
+<p class="kick rise">Réalisations</p>
+<h1 class="disp h1 rise d1">Quatorze boutiques, quatorze boîtes ouvertes.</h1>
+<p class="lead rise d2">Pâtisserie à Paris 4e, chocolatier à Gap et Grenoble, bar à couscous en Isère : filtrez par ligne ou par métier, puis ouvrez un projet.</p>
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="bar">
+<div class="bar-r" role="group" aria-label="Filtrer par ligne"><span class="bar-l">Ligne</span>
+<sc-for list="{{ fLignes }}" as="f" hint-placeholder-count="4"><button type="button" class="fb" style="{{ f.st }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.label }}</button></sc-for>
+</div>
+<div class="bar-r" role="group" aria-label="Filtrer par métier"><span class="bar-l">Métier</span>
+<sc-for list="{{ fTypes }}" as="f" hint-placeholder-count="5"><button type="button" class="fb" style="{{ f.st }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.label }}</button></sc-for>
+</div>
+<div class="bar-f"><p class="cnt" aria-live="polite">{{ countLabel }}</p>
+<div class="vw" role="group" aria-label="Affichage">
+<button type="button" aria-label="Affichage en grille" style="{{ vwGrid }}" onClick="{{ setGrid }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="7" height="7"></rect><rect x="13" y="4" width="7" height="7"></rect><rect x="4" y="13" width="7" height="7"></rect><rect x="13" y="13" width="7" height="7"></rect></svg></button>
+<button type="button" aria-label="Affichage en liste" style="{{ vwList }}" onClick="{{ setList }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+</div>
+</div>
+</div>
+
+<div class="feat">
+<div class="scf"><span class="sc sc-t"></span><span class="sc sc-b"></span><span class="sc sc-l"></span><span class="sc sc-r"></span><div class="feat-im"><img src="{{ sel.img }}" alt="{{ sel.alt }}"><span class="feat-rb"></span><span class="feat-il">Visuel d’illustration</span></div></div>
+<div class="feat-t">
+<p class="kick">Projet sélectionné</p>
+<p class="feat-no">{{ sel.no }}</p>
+<h2 class="disp h2">{{ sel.type }}</h2>
+<div class="feat-l">
+<div><span>Lieu</span><p>{{ sel.lieu }}</p></div>
+<div><span>Ligne</span><p>Ligne {{ sel.ligne }}</p></div>
+<div><span>Métier</span><p>{{ sel.cat }}</p></div>
+</div>
+<div><p style="font-size:13px;font-weight:700;margin-bottom:10px">Modules installés</p><div class="chips"><sc-for list="{{ sel.mods }}" as="md" hint-placeholder-count="3"><a class="chip" href="Maison-Module.html">{{ md.nom }}</a></sc-for></div></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><a class="btn btn-red" href="Maison-Contact.html">Un projet similaire ?</a><a class="btn btn-line" href="Maison-Lignes.html">Voir la Ligne {{ sel.ligne }}</a></div>
+</div>
+</div>
+
+<sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+<div class="grid">
+<sc-for list="{{ items }}" as="r" hint-placeholder-count="6">
+<button type="button" class="cd" style="{{ r.cdStyle }}" aria-pressed="{{ r.on }}" onClick="{{ r.pick }}"><span class="cd-im"><img src="{{ r.img }}" alt="{{ r.alt }}"><span class="cd-rb" style="{{ r.rbStyle }}"></span><span class="cd-no">{{ r.no }}</span></span><span class="cd-t"><span class="cd-k">Ligne {{ r.ligne }} · {{ r.lieu }}</span><span class="cd-n">{{ r.type }}</span><span class="cd-m">{{ r.modsTxt }}</span></span></button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+<div class="list">
+<sc-for list="{{ items }}" as="r" hint-placeholder-count="6">
+<button type="button" class="lr" style="{{ r.lrStyle }}" aria-pressed="{{ r.on }}" onClick="{{ r.pick }}"><span class="lr-no">{{ r.no }}</span><span class="lr-n">{{ r.type }}</span><span class="lr-s hm">{{ r.lieu }}</span><span class="lr-s hm">{{ r.ligne }}</span><span class="lr-s hm">{{ r.modsTxt }}</span></button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}"><p class="empty">Aucune réalisation ne correspond à ces filtres. <button type="button" class="fb" style="margin-left:8px" onClick="{{ clear }}">Tout afficher</button></p></sc-if>
+</div>
+</section>
+
+<section class="cta2">
+<div class="wrap cta2-g">
+<h2 class="disp">La quinzième boîte pourrait être la vôtre.</h2>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-red" href="Maison-Contact.html">Demande de devis</a><a class="btn btn-line" href="tel:0800951313">0 800 95 13 13</a></div>
+</div>
+</section>
+
+<footer class="ft"><div class="wrap">
+<div class="ft-g">
+<div><a class="logo" href="Maison-Accueil.html" aria-label="RGTE — accueil"><b>RGTE</b><small>R.G. Technologies</small></a><p>Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p></div>
+<div><h4>Show-room</h4><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p><p>Horaires : [HORAIRES]</p></div>
+<div><h4>Contact</h4><p><a href="tel:0800951313">0 800 95 13 13</a><br>Appel gratuit</p><a class="btn btn-red" href="Maison-Contact.html">Demande de devis</a></div>
+<div><h4>La maison</h4><ul><li><a href="Maison-Lignes.html">Lignes d’agencement</a></li><li><a href="Maison-Secteurs.html">Secteurs d’activité</a></li><li><a href="Maison-Realisations.html">Réalisations</a></li><li><a href="Maison-Contact.html">Showroom &amp; contact</a></li></ul></div>
+<div><h4>Informations</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Conditions de vente</a></li><li><a href="#">Plan du site</a></li><li><a href="#">Gestion des cookies</a></li></ul></div>
+</div>
+<div class="ft-b"><span>© RGTE — R.G. Technologies</span><span>Proposition de refonte — concept, non officiel · <a href="index.html">Toutes les propositions</a></span></div>
+</div></footer>
+
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#3B2A26","#B8955A"]}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { menu:false, ligne:'all', type:'all', sel:1, view:'grid' }; }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#D42A20';
+    const st = this.state;
+    const CAT = { pat:'Pâtisserie & chocolat', bou:'Boulangerie', sna:'Snacking & traiteur', bar:'Bars à composer' };
+    const REAL = [
+      { id:1, type:'Pâtisserie', lieu:'Paris 4e', ligne:'Stone', cat:'pat', mods:['Vitrine réfrigérée Plane','Caisse'], img:'assets/patisserie-interior.webp', alt:'Intérieur de pâtisserie avec suspensions' },
+      { id:2, type:'Bar à salades', lieu:'Département 13', ligne:'Stone', cat:'sna', mods:['Saladette','Caisse','Panorama'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes colorés' },
+      { id:3, type:'Chocolatier', lieu:'Gap & Grenoble', ligne:'Stone', cat:'pat', mods:['Plane','Caisse'], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs' },
+      { id:4, type:'Sandwicherie', lieu:'Chamonix', ligne:'Basique', cat:'sna', mods:['Panoramique','Basse','Murale self-service'], img:'assets/vitrine-wood.webp', alt:'Vitrine en bois et verre' },
+      { id:5, type:'Bar à olives', lieu:'Nice', ligne:'Stone', cat:'bar', mods:['Saladette sur mesure avec trous arrondis'], img:'assets/counter-domes.webp', alt:'Comptoir en marbre et cloches de verre' },
+      { id:6, type:'Bar à yogourt glacé (chaîne)', lieu:'Toute la France', ligne:'Stone', cat:'bar', mods:['Saladette sur mesure trous arrondis','Surface plane'], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:7, type:'Boulangerie pâtisserie', lieu:'La Réunion', ligne:'Basique', cat:'bou', mods:['Amandine','Caisse'], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:8, type:'Boulangerie', lieu:'Département 33', ligne:'Legno', cat:'bou', mods:['Réfrigérée statique','Neutre','Module arrière'], img:'assets/bakery-shelves.webp', alt:'Étagères de pains' },
+      { id:9, type:'Pizza sur composition', lieu:'Paris', ligne:'Stone', cat:'sna', mods:['Saladette','Caisse','Plane'], img:'assets/bakery-window.webp', alt:'Vitrine de rue' },
+      { id:10, type:'Pâtissier chocolatier', lieu:'Département 69', ligne:'Stone', cat:'pat', mods:['Centrale','Caisse','Plane'], img:'assets/vitrine-slice.webp', alt:'Parts de gâteaux derrière une vitre' },
+      { id:11, type:'Traiteur asiatique (chaîne)', lieu:'Marseille', ligne:'Stone', cat:'sna', mods:['Plane','Caisse','Saladette','Comptoir bar'], img:'assets/coffee-counter.webp', alt:'Comptoir en noir et blanc' },
+      { id:12, type:'Bar à couscous', lieu:'Isère', ligne:'Stone', cat:'bar', mods:['Bain-marie avec trous arrondis sur mesure'], img:'assets/bakery-domes.webp', alt:'Cloches en verre, ambiance rustique' },
+      { id:13, type:'Traiteur poissonnier', lieu:'Département 92', ligne:'Stone', cat:'sna', mods:['Panorama','Surface plane','Caisse'], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:14, type:'Pâtissier chocolatier Canet', lieu:'Nice 06', ligne:'Stone', cat:'pat', mods:['Plane pâtissière +2/+8','Plane chocolats +14/+18'], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés' }
+    ];
+    const pad = n => (n < 10 ? '0' : '') + n;
+    const on = 'background:#3B2A26;color:#FBF7F2;border-color:#3B2A26';
+    const fLignes = [['all','Toutes'],['Stone','Stone'],['Basique','Basique'],['Legno','Legno']].map(f => ({ label: f[1] + ' (' + (f[0]==='all' ? REAL.length : REAL.filter(r => r.ligne===f[0]).length) + ')', on: st.ligne===f[0] ? 'true' : 'false', st: st.ligne===f[0] ? on : '', pick: () => this.setState({ ligne:f[0] }) }));
+    const fTypes = [['all','Tous les métiers']].concat(Object.keys(CAT).map(k => [k, CAT[k]])).map(f => ({ label:f[1], on: st.type===f[0] ? 'true' : 'false', st: st.type===f[0] ? on : '', pick: () => this.setState({ type:f[0] }) }));
+    const list = REAL.filter(r => (st.ligne==='all' || r.ligne===st.ligne) && (st.type==='all' || r.cat===st.type));
+    const items = list.map((r, i) => { const s = r.id===st.sel; return { ...r, no: pad(r.id), modsTxt: r.mods.join(' · '), on: s ? 'true' : 'false',
+      cdStyle: (s ? 'box-shadow:0 0 0 2px #3B2A26;' : '') + 'animation-delay:' + (i * 0.05) + 's',
+      rbStyle: s ? 'transform:none' : 'transform:translateY(-101%)',
+      lrStyle: s ? 'background:#fff;box-shadow:inset 3px 0 0 #3B2A26' : '',
+      pick: () => this.setState({ sel:r.id }) }; });
+    const S = REAL.find(r => r.id===st.sel) || REAL[0];
+    const n = list.length;
+    return {
+      rootStyle:'--accent:' + accent,
+      navStyle: st.menu ? 'display:flex' : '',
+      toggleMenu: () => this.setState({ menu: !st.menu }),
+      fLignes, fTypes, items,
+      countLabel: n + (n > 1 ? ' réalisations' : ' réalisation') + ' sur 14',
+      sel: { ...S, no: pad(S.id), cat: CAT[S.cat], mods: S.mods.map(x => ({ nom:x })) },
+      isGrid: st.view==='grid' && n > 0, isList: st.view==='list' && n > 0, isEmpty: n === 0,
+      vwGrid: st.view==='grid' ? on : '', vwList: st.view==='list' ? on : '',
+      setGrid: () => this.setState({ view:'grid' }), setList: () => this.setState({ view:'list' }),
+      clear: () => this.setState({ ligne:'all', type:'all' })
+    };
+  }
+}
+</script>
+</body>
+</html>

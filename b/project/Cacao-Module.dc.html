@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cacao — Module Gourmandise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap">
+<style>
+body{margin:0;background:#1B110D}
+sc-for,sc-if{display:contents}
+.cc{font-family:'Albert Sans',system-ui,sans-serif;color:#F1E6DA;background:#1B110D;-webkit-font-smoothing:antialiased;line-height:1.55}
+.cc *{box-sizing:border-box}
+.pf{font-family:'Playfair Display',Georgia,serif}
+.wrap{max-width:1320px;margin:0 auto;padding:0 40px;position:relative}
+.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#C07A4A;font-weight:500}
+.muted{color:#B9A797}
+.hair{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;background-image:linear-gradient(to right,rgba(192,122,74,.11) 1px,transparent 1px);background-size:calc(100% / 6) 100%;background-position:center}
+.navl{color:#F1E6DA;text-decoration:none;font-size:14px;letter-spacing:.04em;padding:0 4px;min-height:44px;display:inline-flex;align-items:center;position:relative}
+.navl::after{content:'';position:absolute;left:4px;right:4px;bottom:9px;height:1px;background:#C07A4A;transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.navl:hover::after,.navl.on::after{transform:scaleX(1)}
+.btn-cu{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border-radius:999px;background:#C07A4A;color:#1B110D;font-weight:600;font-size:14px;letter-spacing:.02em;text-decoration:none;border:0;cursor:pointer;font-family:inherit;transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s,filter .3s}
+.btn-cu:hover{transform:translateY(-2px);box-shadow:0 16px 34px -14px rgba(192,122,74,.8);filter:brightness(1.08)}
+.btn-gh{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 22px;border-radius:999px;background:transparent;color:#F1E6DA;font-weight:500;font-size:14px;text-decoration:none;border:1px solid rgba(192,122,74,.55);cursor:pointer;font-family:inherit;transition:background .4s,border-color .4s}
+.btn-gh:hover{background:rgba(192,122,74,.12);border-color:#C07A4A}
+.btn-cu svg,.btn-gh svg{transition:transform .4s}
+.btn-cu:hover svg,.btn-gh:hover svg{transform:translateX(4px)}
+.cc :focus-visible{outline:2px solid #C07A4A;outline-offset:3px}
+.burger{display:none;width:46px;height:46px;border-radius:999px;border:1px solid rgba(192,122,74,.5);background:transparent;color:#F1E6DA;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.ft-h{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C07A4A;font-weight:500;margin:0 0 16px}
+.ft-l{color:#B9A797;text-decoration:none;display:flex;min-height:40px;align-items:center;transition:color .3s;font-size:15px}
+.ft-l:hover{color:#F1E6DA}
+.fade-up{animation:fu 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fu{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.melt{display:block;animation:melt 2s cubic-bezier(.6,.05,.3,1) both}
+@keyframes melt{
+0%{clip-path:polygon(0% 0%,100% 0%,100% 0%,87% 0%,75% 0%,62% 0%,50% 0%,37% 0%,25% 0%,12% 0%,0% 0%);transform:translateY(-10px)}
+55%{clip-path:polygon(0% 0%,100% 0%,100% 72%,87% 96%,75% 58%,62% 88%,50% 52%,37% 92%,25% 62%,12% 100%,0% 70%);transform:translateY(-2px)}
+100%{clip-path:polygon(0% 0%,100% 0%,100% 135%,87% 135%,75% 135%,62% 135%,50% 135%,37% 135%,25% 135%,12% 135%,0% 135%);transform:none}}
+.sheen{position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,224,190,0) 44%,rgba(255,224,190,.18) 50%,rgba(255,224,190,0) 56%,transparent 60%,transparent 100%);background-size:300% 100%;animation:sheen 9s cubic-bezier(.45,0,.2,1) infinite;mix-blend-mode:screen}
+@keyframes sheen{0%{background-position:100% 0}65%,100%{background-position:0% 0}}
+.ph{position:absolute;top:-20px;bottom:-20px;left:-20px;right:-20px;background-size:cover;background-position:center;transition:opacity 1.4s ease;animation:kb 26s ease-in-out infinite alternate}
+.ph-choco{background-image:url(assets/chocolate-display.webp)}
+.ph-patis{background-image:url(assets/macarons-rows.webp)}
+@keyframes kb{from{transform:scale(1.1)}to{transform:scale(1)}}
+.part{position:absolute;transition:all 1s cubic-bezier(.6,0,.2,1)}
+.opt{display:inline-flex;align-items:center;justify-content:center;min-height:46px;min-width:64px;padding:0 16px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:15px;transition:background .4s,border-color .4s,color .4s,transform .4s}
+.opt:hover{transform:translateY(-2px);border-color:#C07A4A}
+.tab{background:transparent;border:0;cursor:pointer;font-family:inherit;padding:0 2px;min-height:52px;font-size:16px;position:relative;transition:color .4s}
+.fld{display:block}
+.fld span{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#B9A797;margin-bottom:8px}
+.inp{width:100%;min-height:50px;padding:12px 16px;border-radius:12px;border:1px solid rgba(192,122,74,.35);background:#1B110D;color:#F1E6DA;font-family:inherit;font-size:15px;transition:border-color .3s,box-shadow .3s}
+.inp:focus{outline:none;border-color:#C07A4A;box-shadow:0 0 0 3px rgba(192,122,74,.2)}
+.inp[readonly]{color:#B9A797;background:rgba(42,27,21,.6)}
+textarea.inp{min-height:130px;resize:vertical}
+.lcard{position:relative;display:block;text-decoration:none;color:inherit;background:#2A1B15;border:1px solid rgba(192,122,74,.22);border-radius:16px;padding:26px;overflow:hidden;transition:border-color .5s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.lcard .l1,.lcard .l2,.lcard .l3{transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.lcard:hover{border-color:#C07A4A;transform:translateY(-6px)}
+.lcard:hover .l1{transform:translate(10px,-8px) scale(1.06)}
+.lcard:hover .l2{transform:translateY(-6px)}
+.lcard:hover .l3{transform:translateX(6px)}
+@media(max-width:960px){.navlinks{display:none}.burger{display:inline-flex}.hdr-tel{display:none}.mnav{display:block}.cfg-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.wrap{padding:0 20px}.hdr-cta{display:none}}
+@media(prefers-reduced-motion:reduce){.melt,.sheen,.fade-up,.ph{animation:none}}
+</style>
+</helmet>
+<div class="cc" style="position:relative;overflow:hidden">
+
+<header style="position:sticky;top:0;z-index:60;background:rgba(27,17,13,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(192,122,74,.22)">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:24px;height:84px">
+    <a href="Cacao-Accueil.dc.html" aria-label="RGTE, retour à l’accueil" style="text-decoration:none;display:flex;align-items:baseline;gap:12px;min-height:44px;padding-top:10px">
+      <span class="pf" style="font-size:30px;font-weight:600;letter-spacing:.06em;color:#F1E6DA;line-height:1">RGTE<span style="color:#D42A20">.</span></span>
+      <span style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#B9A797">R.G. Technologies</span>
+    </a>
+    <nav class="navlinks" aria-label="Navigation principale" style="display:flex;gap:30px">
+      <a class="navl on" href="Cacao-Lignes.dc.html">Lignes</a>
+      <a class="navl" href="Cacao-Secteurs.dc.html">Secteurs</a>
+      <a class="navl" href="Cacao-Realisations.dc.html">Réalisations</a>
+      <a class="navl" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:18px">
+      <a class="hdr-tel" href="tel:0800951313" style="text-decoration:none;color:#F1E6DA;display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;min-height:44px;justify-content:center">
+        <span style="font-size:15px;font-weight:600;letter-spacing:.04em">0 800 95 13 13</span>
+        <span style="font-size:11px;color:#B9A797;letter-spacing:.08em">appel gratuit</span>
+      </a>
+      <a class="btn-cu hdr-cta" href="#demande" style="{{ ctaStyle }}">Demande de devis</a>
+      <button type="button" class="burger" aria-label="Ouvrir le menu" onClick="{{ toggleMenu }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="mnav" style="border-top:1px solid rgba(192,122,74,.22);background:#1B110D">
+      <div class="wrap" style="display:flex;flex-direction:column;padding-top:12px;padding-bottom:20px">
+        <a class="navl" href="Cacao-Lignes.dc.html">Lignes</a>
+        <a class="navl" href="Cacao-Secteurs.dc.html">Secteurs</a>
+        <a class="navl" href="Cacao-Realisations.dc.html">Réalisations</a>
+        <a class="navl" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+        <a class="navl" href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+        <a class="btn-cu" href="Cacao-Contact.dc.html" style="margin-top:12px">Plan 3D offert</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<!-- CONFIGURATEUR -->
+<section aria-label="Configurateur du module Gourmandise" style="position:relative;padding:48px 0 100px">
+  <div class="hair" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav aria-label="Fil d’Ariane" class="fade-up" style="font-size:13px;color:#B9A797;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <a href="Cacao-Accueil.dc.html" style="color:#B9A797;text-decoration:none;min-height:44px;display:inline-flex;align-items:center">Accueil</a><span>/</span>
+      <a href="Cacao-Lignes.dc.html" style="color:#B9A797;text-decoration:none;min-height:44px;display:inline-flex;align-items:center">Lignes</a><span>/</span>
+      <a href="Cacao-Lignes.dc.html" style="color:#B9A797;text-decoration:none;min-height:44px;display:inline-flex;align-items:center">Stone</a><span>/</span>
+      <span style="color:#F1E6DA">Module Gourmandise</span>
+    </nav>
+    <div class="cfg-grid" style="display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:start;margin-top:18px">
+      <!-- Visuels -->
+      <div>
+        <h1 class="pf" style="margin:0 0 28px;font-weight:400;font-size:clamp(46px,6vw,92px);line-height:.98;letter-spacing:-.015em;overflow-wrap:anywhere">
+          <span class="melt" style="animation-delay:.2s">Module</span>
+          <span class="melt" style="animation-delay:.5s;font-style:italic;color:#C07A4A;padding-bottom:6px">Gourmandise.</span>
+        </h1>
+        <div style="position:relative;height:340px;border-radius:20px;overflow:hidden;border:1px solid rgba(192,122,74,.3)">
+          <div class="ph ph-choco" style="{{ phChoco }}" aria-hidden="true"></div>
+          <div class="ph ph-patis" style="{{ phPatis }}" aria-hidden="true"></div>
+          <div aria-hidden="true" style="position:absolute;top:0;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(27,17,13,0) 40%,rgba(27,17,13,.85))"></div>
+          <sc-if value="{{ sheenOn }}" hint-placeholder-val="{{ true }}"><div class="sheen" aria-hidden="true"></div></sc-if>
+          <div style="position:absolute;left:24px;right:24px;bottom:20px;display:flex;justify-content:space-between;align-items:end;gap:12px">
+            <p class="pf" style="margin:0;font-size:26px;font-style:italic">{{ univers }}</p>
+            <p class="muted" style="margin:0;font-size:12px">Image d’ambiance</p>
+          </div>
+        </div>
+        <!-- Dessin CSS -->
+        <div style="position:relative;margin-top:18px;background:#2A1B15;border:1px solid rgba(192,122,74,.28);border-radius:20px;padding:26px 26px 18px;overflow:hidden">
+          <div style="display:flex;justify-content:space-between;gap:12px">
+            <p class="eyebrow" style="margin:0">Vue de face · à l’échelle relative</p>
+            <p class="muted" style="margin:0;font-size:12px">{{ lenLabel }}</p>
+          </div>
+          <div role="img" aria-label="{{ drawLabel }}" style="position:relative;height:300px;margin-top:16px">
+            <div style="{{ unitStyle }}">
+              <div class="part" style="{{ glassStyle }}">
+                <div style="position:absolute;top:0;bottom:0;left:0;width:52%;border-right:1px solid rgba(241,230,218,.4)"></div>
+                <div style="position:absolute;top:8px;bottom:0;left:48%;right:0;border-left:1px solid rgba(241,230,218,.3)"></div>
+                <div class="part" style="{{ prodChoco }}">
+                  <span style="width:9%;height:16px;border-radius:3px;background:#3b2216;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                  <span style="width:9%;height:16px;border-radius:3px;background:#5a3420;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                  <span style="width:9%;height:16px;border-radius:3px;background:#2e1a11;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                  <span style="width:9%;height:16px;border-radius:3px;background:#6b3f26;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                  <span style="width:9%;height:16px;border-radius:3px;background:#3b2216;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                  <span style="width:9%;height:16px;border-radius:3px;background:#5a3420;box-shadow:inset 0 2px 0 rgba(255,220,190,.25)"></span>
+                </div>
+                <div class="part" style="{{ prodPatis }}">
+                  <span style="width:11%;height:30px;border-radius:30px 30px 4px 4px;background:#d9a5ae"></span>
+                  <span style="width:8%;height:18px;border-radius:999px;background:#e8d27c"></span>
+                  <span style="width:12%;height:34px;border-radius:6px;background:#7a4a30"></span>
+                  <span style="width:8%;height:18px;border-radius:999px;background:#b9c98a"></span>
+                  <span style="width:11%;height:28px;border-radius:30px 30px 4px 4px;background:#F1E6DA"></span>
+                </div>
+              </div>
+              <div class="part" style="{{ topStyle }}"></div>
+              <div class="part" style="{{ bodyStyle }}">
+                <div style="position:absolute;top:28px;left:38%;right:38%;height:34px;background:repeating-linear-gradient(90deg,rgba(27,17,13,.35) 0px,rgba(27,17,13,.35) 2px,transparent 2px,transparent 7px);border-radius:3px"></div>
+              </div>
+              <div class="part" style="{{ footStyle }}"></div>
+              <div style="position:absolute;left:0;right:0;top:262px;height:1px;background:#C07A4A"></div>
+              <div style="position:absolute;left:0;top:256px;width:1px;height:13px;background:#C07A4A"></div>
+              <div style="position:absolute;right:0;top:256px;width:1px;height:13px;background:#C07A4A"></div>
+              <p style="position:absolute;left:0;right:0;top:270px;margin:0;text-align:center;font-size:13px;letter-spacing:.12em;color:#F1E6DA">{{ lenDim }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configurateur -->
+      <div class="fade-up" style="position:sticky;top:104px;animation-delay:.4s;background:#2A1B15;border:1px solid rgba(192,122,74,.32);border-radius:22px;padding:30px">
+        <p class="eyebrow" style="margin:0">Ligne Stone · exposition centrale</p>
+        <p class="muted" style="margin:10px 0 0;font-size:15px;line-height:1.6">Vitrages coulissants des 2 côtés, profondeur d’exposition 60 cm. Pâtisseries, macarons ou chocolats.</p>
+
+        <p style="margin:26px 0 10px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B9A797">1 · Longueur</p>
+        <div role="group" aria-label="Longueur" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ lens }}" as="l" hint-placeholder-count="7">
+            <button type="button" class="opt" aria-pressed="{{ l.sel }}" style="{{ l.style }}" onClick="{{ l.pick }}">{{ l.label }}</button>
+          </sc-for>
+        </div>
+
+        <p style="margin:24px 0 10px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B9A797">2 · Tempérage</p>
+        <div role="group" aria-label="Plage de température" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <sc-for list="{{ temps }}" as="t" hint-placeholder-count="2">
+            <button type="button" class="opt" aria-pressed="{{ t.sel }}" style="{{ t.style }}" onClick="{{ t.pick }}">
+              <span style="display:flex;flex-direction:column;align-items:flex-start;padding:10px 0"><span class="pf" style="font-size:20px">{{ t.label }}</span><span style="font-size:12px;color:#B9A797">{{ t.sub }}</span></span>
+            </button>
+          </sc-for>
+        </div>
+
+        <p style="margin:24px 0 10px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B9A797">3 · Finition</p>
+        <div role="group" aria-label="Finition" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ fins }}" as="f" hint-placeholder-count="2">
+            <button type="button" class="opt" aria-pressed="{{ f.sel }}" style="{{ f.style }}" onClick="{{ f.pick }}">
+              <span style="{{ f.swatch }}"></span>{{ f.label }}
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:26px;padding:22px;border-radius:16px;background:#1B110D;border:1px solid rgba(192,122,74,.28)">
+          <p style="margin:0 0 12px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#C07A4A">Récapitulatif</p>
+          <sc-for list="{{ recap }}" as="r" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid rgba(192,122,74,.14);font-size:14px">
+              <span class="muted">{{ r.k }}</span><span style="text-align:right">{{ r.v }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px">
+            <span class="muted" style="font-size:13px">Prix</span>
+            <span class="pf" style="font-size:36px;line-height:1">{{ price }}</span>
+          </div>
+          <p class="muted" style="margin:6px 0 0;font-size:12px;text-align:right">{{ priceNote }}</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+          <a class="btn-cu" href="#demande" style="{{ ctaStyle }}">Demander ce modèle <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+          <a class="btn-gh" href="Cacao-Contact.dc.html">Plan 3D offert</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONGLETS -->
+<section aria-label="Fiche technique" style="position:relative;padding:90px 0;background:#2A1B15;border-top:1px solid rgba(192,122,74,.22);border-bottom:1px solid rgba(192,122,74,.22)">
+  <div class="wrap">
+    <div role="tablist" aria-label="Fiche produit" style="display:flex;flex-wrap:wrap;gap:36px;border-bottom:1px solid rgba(192,122,74,.3)">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button type="button" role="tab" class="tab" aria-selected="{{ t.sel }}" style="{{ t.style }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ tabDesc }}" hint-placeholder-val="{{ true }}">
+      <div class="fade-up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:48px;padding-top:48px">
+        <p class="pf" style="margin:0;font-size:clamp(28px,2.8vw,40px);line-height:1.25">Une vitrine <em style="color:#C07A4A">centrale</em>, à hauteur du plan de travail, que l’on sert des deux côtés.</p>
+        <div style="font-size:16px;line-height:1.75">
+          <p style="margin:0">Exposition centrale à hauteur du plan de travail ; vitrages coulissants des 2 côtés ; pour pâtisseries, macarons ou chocolats. Profondeur d’exposition 60 cm, plage +2 °C / +8 °C ou +14 °C / +18 °C.</p>
+          <p class="muted" style="margin:16px 0 0">Disponible en 101, 117, 146, 169, 191 et 222 cm, ou sur mesure. Structure en pierre acrylique type Corian, comme toute la Ligne Stone.</p>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tabCar }}" hint-placeholder-val="{{ false }}">
+      <div class="fade-up" style="padding-top:40px">
+        <p class="muted" style="margin:0 0 20px;font-size:14px">Modèle 101 cm</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:0 48px">
+          <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="10">
+            <div style="display:grid;grid-template-columns:28px 1fr;gap:12px;padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18);font-size:15px">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#C07A4A" stroke-width="1.4" aria-hidden="true" style="margin-top:2px"><path d="M3 9.5l4 4 8-9"></path></svg>
+              <span>{{ sp.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tabDim }}" hint-placeholder-val="{{ false }}">
+      <div class="fade-up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:40px;padding-top:44px;align-items:start">
+        <svg viewBox="0 0 520 300" role="img" aria-label="Cotes du modèle 101 cm : 101 × 80 × 80 cm plus 25 cm de pied, exposition 81 × 60 cm" style="width:100%;height:auto;display:block">
+          <g fill="none" stroke="#F1E6DA" stroke-opacity=".7" stroke-width="1.2">
+            <rect x="60" y="40" width="300" height="80" rx="4"></rect>
+            <rect x="50" y="120" width="320" height="12" fill="#EDE6DC" fill-opacity=".85" stroke="none"></rect>
+            <rect x="60" y="132" width="300" height="80" fill="#EDE6DC" fill-opacity=".14"></rect>
+            <rect x="150" y="212" width="120" height="40"></rect>
+            <rect x="400" y="40" width="80" height="80" rx="4"></rect>
+            <rect x="396" y="120" width="88" height="12" fill="#EDE6DC" fill-opacity=".85" stroke="none"></rect>
+            <rect x="400" y="132" width="80" height="80" fill="#EDE6DC" fill-opacity=".14"></rect>
+            <rect x="420" y="212" width="40" height="40"></rect>
+          </g>
+          <g stroke="#C07A4A" stroke-width="1" fill="#C07A4A" font-family="Albert Sans, sans-serif" font-size="12">
+            <line x1="60" y1="275" x2="360" y2="275"></line><line x1="60" y1="268" x2="60" y2="282"></line><line x1="360" y1="268" x2="360" y2="282"></line>
+            <text x="210" y="295" text-anchor="middle" stroke="none">101 cm</text>
+            <line x1="30" y1="40" x2="30" y2="212"></line><line x1="23" y1="40" x2="37" y2="40"></line><line x1="23" y1="212" x2="37" y2="212"></line>
+            <text x="22" y="130" text-anchor="middle" stroke="none" transform="rotate(-90 22 130)">80 cm</text>
+            <line x1="400" y1="275" x2="480" y2="275"></line><line x1="400" y1="268" x2="400" y2="282"></line><line x1="480" y1="268" x2="480" y2="282"></line>
+            <text x="440" y="295" text-anchor="middle" stroke="none">80 cm</text>
+            <line x1="500" y1="212" x2="500" y2="252"></line><line x1="494" y1="212" x2="506" y2="212"></line><line x1="494" y1="252" x2="506" y2="252"></line>
+            <text x="508" y="236" stroke="none" text-anchor="start" font-size="11">+25</text>
+            <text x="210" y="30" text-anchor="middle" stroke="none">exposition en verre 81 × 60 cm</text>
+          </g>
+        </svg>
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(192,122,74,.3)">
+            <div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)" class="muted">Dimensions extérieures</div><div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)">101 × 80 × 80 + 25 h</div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)" class="muted">Exposition en verre</div><div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)">81 × 60 cm</div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)" class="muted">Profondeur d’exposition</div><div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)">60 cm</div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)" class="muted">Longueurs</div><div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)">101 · 117 · 146 · 169 · 191 · 222 cm · sur mesure</div>
+            <div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)" class="muted">Réserve réfrigérée</div><div style="padding:16px 0;border-bottom:1px solid rgba(192,122,74,.18)">Sans (modèle 101)</div>
+          </div>
+          <p class="muted" style="margin:16px 0 0;font-size:13px">Cotes des autres longueurs : [DIMENSIONS] — communiquées avec le plan 3D.</p>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- FORMULAIRE -->
+<section id="demande" aria-labelledby="t-form" style="position:relative;padding:110px 0">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:56px;align-items:start">
+      <div>
+        <p class="eyebrow" style="margin:0 0 16px">Demande d’informations</p>
+        <h2 id="t-form" class="pf" style="margin:0;font-weight:400;font-size:clamp(36px,4vw,58px);line-height:1.05">Parlons de <em style="color:#C07A4A">votre</em> Gourmandise.</h2>
+        <p class="muted" style="margin:20px 0 0;font-size:16px;line-height:1.7;max-width:440px">La configuration choisie ci-dessus est reprise dans le champ « Modèle ». Le bureau d’études vous recontacte ; vous pouvez aussi appeler le numéro vert.</p>
+        <a href="tel:0800951313" style="display:inline-flex;align-items:center;gap:12px;margin-top:28px;color:#F1E6DA;text-decoration:none;font-size:24px;min-height:44px" class="pf">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C07A4A" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>
+          0 800 95 13 13</a>
+      </div>
+
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submit }}" novalidate="novalidate" style="background:#2A1B15;border:1px solid rgba(192,122,74,.3);border-radius:22px;padding:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:18px">
+          <label class="fld"><span>Produit</span><input class="inp" type="text" readonly="readonly" value="Module Gourmandise — Ligne Stone"></label>
+          <label class="fld"><span>Modèle</span><input class="inp" type="text" readonly="readonly" value="{{ modele }}"></label>
+          <label class="fld"><span>Nom *</span><input class="inp" type="text" autocomplete="name" style="{{ err.nom }}" onInput="{{ inNom }}"></label>
+          <label class="fld"><span>Téléphone *</span><input class="inp" type="tel" autocomplete="tel" style="{{ err.tel }}" onInput="{{ inTel }}"></label>
+          <label class="fld"><span>Email *</span><input class="inp" type="email" autocomplete="email" style="{{ err.email }}" onInput="{{ inEmail }}"></label>
+          <label class="fld"><span>Secteur d’activité</span>
+            <select class="inp" onChange="{{ inSect }}">
+              <option value="">Choisir…</option>
+              <option>Boulangerie</option><option>Pâtisserie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+            </select>
+          </label>
+          <label class="fld"><span>Code postal</span><input class="inp" type="text" inputmode="numeric" autocomplete="postal-code" onInput="{{ inCp }}"></label>
+          <label class="fld"><span>Ville</span><input class="inp" type="text" autocomplete="address-level2" onInput="{{ inVille }}"></label>
+          <label class="fld" style="grid-column:1 / -1"><span>Message *</span><textarea class="inp" style="{{ err.msg }}" onInput="{{ inMsg }}"></textarea></label>
+          <sc-if value="{{ showErr }}" hint-placeholder-val="{{ false }}">
+            <p role="alert" style="grid-column:1 / -1;margin:0;padding:14px 16px;border-radius:12px;border:1px solid rgba(212,42,32,.6);background:rgba(212,42,32,.1);color:#F4C7BF;font-size:14px">{{ errMsg }}</p>
+          </sc-if>
+          <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px">
+            <span class="muted" style="font-size:12px">* champs obligatoires · prototype, rien n’est envoyé</span>
+            <button type="submit" class="btn-cu" style="{{ ctaStyle }}">Envoyer la demande <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+          </div>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div class="fade-up" role="status" style="position:relative;overflow:hidden;background:#2A1B15;border:1px solid #C07A4A;border-radius:22px;padding:44px">
+          <div class="sheen" aria-hidden="true"></div>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="#C07A4A" stroke-width="1.4" aria-hidden="true"><circle cx="22" cy="22" r="20"></circle><path d="M13 22.5l6 6 12-13"></path></svg>
+          <p class="pf" style="margin:18px 0 0;font-size:34px;line-height:1.1">Merci, {{ nomAff }}.</p>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.6">Demande enregistrée pour : <em class="pf" style="color:#C07A4A">{{ modele }}</em>.</p>
+          <p class="muted" style="margin:10px 0 0;font-size:14px">Prototype — rien n’est envoyé.</p>
+          <button type="button" class="btn-gh" style="margin-top:24px" onClick="{{ reset }}">Nouvelle demande</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES ASSOCIES -->
+<section aria-labelledby="t-assoc" style="position:relative;padding:0 0 120px">
+  <div class="wrap">
+    <p class="eyebrow" style="margin:0 0 16px">Modules associés · Ligne Stone</p>
+    <h2 id="t-assoc" class="pf" style="margin:0 0 40px;font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05">À composer <em style="color:#C07A4A">autour.</em></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px">
+      <sc-for list="{{ assoc }}" as="a" hint-placeholder-count="4">
+        <a class="lcard" href="Cacao-Module.dc.html">
+          <svg class="l1" width="110" height="56" viewBox="0 0 110 56" fill="none" stroke="#C07A4A" stroke-width="1.2" aria-hidden="true"><path d="M10 26 Q10 8 28 8 H82 Q100 8 100 26"></path><path d="M5 26 H105"></path><path d="M10 26 V46 H100 V26"></path><path d="M10 46 V50 H100 V46"></path></svg>
+          <p class="pf l2" style="margin:20px 0 0;font-size:26px">{{ a.nom }}</p>
+          <p class="muted l3" style="margin:8px 0 0;font-size:14px;line-height:1.5">{{ a.note }}</p>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer style="position:relative;background:#120B08;border-top:1px solid rgba(192,122,74,.28);overflow:hidden">
+  <div class="hair" aria-hidden="true"></div>
+  <div class="wrap" style="padding-top:88px;padding-bottom:32px">
+    <p class="pf" style="margin:0 0 64px;font-size:clamp(40px,6vw,88px);line-height:1;font-weight:400;letter-spacing:-.01em">Le froid, <em style="color:#C07A4A">sur mesure.</em></p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px;padding-bottom:52px;border-bottom:1px solid rgba(192,122,74,.2)">
+      <div>
+        <p class="pf" style="margin:0;font-size:30px;font-weight:600;letter-spacing:.06em">RGTE<span style="color:#D42A20">.</span></p>
+        <p style="margin:4px 0 0;font-size:10px;letter-spacing:.26em;text-transform:uppercase" class="muted">R.G. Technologies</p>
+        <p class="muted" style="margin:18px 0 0;font-size:15px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <h3 class="ft-h">Bureau d’études &amp; show-room</h3>
+        <address style="font-style:normal;font-size:15px;line-height:1.7" class="muted">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</address>
+        <p class="muted" style="margin:10px 0 0;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div>
+        <h3 class="ft-h">Navigation</h3>
+        <a class="ft-l" href="Cacao-Lignes.dc.html">Lignes d’agencement</a>
+        <a class="ft-l" href="Cacao-Secteurs.dc.html">Secteurs d’activité</a>
+        <a class="ft-l" href="Cacao-Realisations.dc.html">Réalisations</a>
+        <a class="ft-l" href="Cacao-Contact.dc.html">Showroom &amp; contact</a>
+      </div>
+      <div>
+        <h3 class="ft-h">Contact</h3>
+        <a href="tel:0800951313" style="color:#F1E6DA;text-decoration:none;font-size:22px;font-weight:600;display:flex;min-height:44px;align-items:center">0 800 95 13 13</a>
+        <p class="muted" style="margin:0 0 12px;font-size:13px">Numéro vert — appel gratuit</p>
+        <a class="ft-l" href="#">Mentions légales</a>
+        <a class="ft-l" href="#">Conditions de vente</a>
+        <a class="ft-l" href="#">Plan du site</a>
+        <a class="ft-l" href="#">Gestion des cookies</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-top:20px;font-size:13px" class="muted">
+      <span>© RGTE — R.G. Technologies</span>
+      <span>Proposition de refonte — concept, non officiel · Direction 08 « Cacao »</span>
+      <a class="ft-l" href="Main.dc.html" style="font-size:13px">Toutes les propositions →</a>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#C07A4A","options":["#C07A4A","#D4A373","#D42A20"]},"sheen":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, len:'101', temp:'choco', fin:'blanc', tab:'desc', f:{}, tried:false, sent:false };
+  }
+  renderVals(){
+    const p = this.props || {};
+    const accent = p.accent || '#C07A4A';
+    const s = this.state;
+    const choco = s.temp === 'choco';
+    const ON = 'opacity:1;', OFF = 'opacity:0;';
+    const optOn = 'background:#C07A4A;color:#1B110D;border:1px solid #C07A4A;font-weight:600;';
+    const optOff = 'background:#1B110D;color:#F1E6DA;border:1px solid rgba(192,122,74,.32);';
+
+    const LENS = ['101','117','146','169','191','222','mesure'];
+    const lens = LENS.map(v => ({ label: v === 'mesure' ? 'Sur mesure' : v + ' cm', sel: v === s.len ? 'true' : 'false', style: v === s.len ? optOn : optOff, pick: () => this.setState({ len:v }) }));
+    const TEMPS = [['patis','+2 / +8 °C','Pâtisserie'],['choco','+14 / +18 °C','Chocolat']];
+    const temps = TEMPS.map(t => ({ label:t[1], sub:t[2], sel: t[0] === s.temp ? 'true' : 'false', style: (t[0] === s.temp ? optOn.replace('color:#1B110D','color:#1B110D') : optOff) + 'justify-content:flex-start;', pick: () => this.setState({ temp:t[0] }) }));
+    const FINS = [['blanc','Pierre acrylique blanche','#EDE6DC'],['autre','Autre coloris [COLORIS]','repeating-linear-gradient(45deg,#8a5a3c 0px,#8a5a3c 4px,#5d3a22 4px,#5d3a22 8px)']];
+    const fins = FINS.map(f => ({ label:f[1], sel: f[0] === s.fin ? 'true' : 'false', style: (f[0] === s.fin ? optOn : optOff) + 'gap:10px;', swatch:'width:18px;height:18px;border-radius:999px;display:inline-block;border:1px solid rgba(241,230,218,.5);background:' + f[2] + ';', pick: () => this.setState({ fin:f[0] }) }));
+
+    const mesure = s.len === 'mesure';
+    const lenTxt = mesure ? 'Sur mesure' : s.len + ' cm';
+    const tempTxt = choco ? '+14 °C / +18 °C' : '+2 °C / +8 °C';
+    const finTxt = s.fin === 'blanc' ? 'Pierre acrylique blanche' : 'Coloris [COLORIS]';
+    const priced = s.len === '101' && s.fin === 'blanc';
+    const modele = 'Gourmandise ' + lenTxt + ' · ' + tempTxt + ' · ' + finTxt;
+
+    const w = mesure ? 100 : Math.round(42 + (parseInt(s.len, 10) - 101) / (222 - 101) * 52);
+    const finCol = s.fin === 'blanc' ? '#EDE6DC' : 'repeating-linear-gradient(45deg,#8a5a3c 0px,#8a5a3c 6px,#6d4429 6px,#6d4429 12px)';
+    const glassBg = choco
+      ? 'background:linear-gradient(180deg,rgba(192,122,74,.32),rgba(192,122,74,.06));box-shadow:0 0 50px rgba(192,122,74,.35);'
+      : 'background:linear-gradient(180deg,rgba(241,230,218,.26),rgba(217,184,184,.08));box-shadow:0 0 50px rgba(241,230,218,.2);';
+
+    const TABS = [['desc','Description'],['car','Caractéristiques'],['dim','Dimensions']];
+    const tabs = TABS.map(t => ({ label:t[1], sel: t[0] === s.tab ? 'true' : 'false', style: t[0] === s.tab ? 'color:#F1E6DA;box-shadow:inset 0 -2px 0 #C07A4A;' : 'color:#B9A797;', pick: () => this.setState({ tab:t[0] }) }));
+
+    const SPECS = ['Piliers et plan de travail en pierre acrylique blanche','Monté sur pied en pierre acrylique blanche','Groupe logé','Froid ventilé','Fréon R134A','Contrôle électronique de la température','Dégivrage automatique','Ré-évaporation automatique des eaux de condensation','Dimensions extérieures 101 × 80 × 80 + 25 h','Sans réserve réfrigérée','Exposition en verre 81 × 60 cm','Prix : 5 800,00 € HT'];
+
+    const f = s.f || {};
+    const miss = [];
+    if (!f.nom) miss.push('Nom');
+    if (!f.tel) miss.push('Téléphone');
+    const emailOk = !!f.email && /.+@.+\..+/.test(f.email);
+    if (!emailOk) miss.push('Email valide');
+    if (!f.msg) miss.push('Message');
+    const bad = 'border-color:#D42A20;';
+    const fld = k => e => this.setState({ f: Object.assign({}, this.state.f, { [k]: e.target.value }) });
+
+    return {
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      ctaStyle: 'background:' + accent + ';',
+      sheenOn: p.sheen !== false,
+      phChoco: choco ? ON : OFF,
+      phPatis: choco ? OFF : ON,
+      univers: choco ? 'Univers chocolat · +14 / +18 °C' : 'Univers pâtisserie · +2 / +8 °C',
+      lens, temps, fins,
+      lenLabel: mesure ? 'longueur libre' : 'longueur ' + s.len + ' cm sur 222 max. catalogue',
+      lenDim: mesure ? 'SUR MESURE' : s.len + ' CM',
+      drawLabel: 'Vue de face du module Gourmandise, ' + lenTxt + ', ' + tempTxt,
+      unitStyle: 'position:relative;height:300px;margin:0 auto;transition:width 1.1s cubic-bezier(.6,0,.2,1);width:' + w + '%;',
+      glassStyle: 'left:3%;right:3%;top:30px;height:110px;border:1px solid rgba(241,230,218,.6);border-bottom:0;border-radius:6px 6px 0 0;overflow:hidden;' + glassBg,
+      prodChoco: 'left:6%;right:6%;bottom:8px;height:20px;display:flex;justify-content:space-around;align-items:flex-end;' + (choco ? ON : OFF),
+      prodPatis: 'left:6%;right:6%;bottom:8px;height:36px;display:flex;justify-content:space-around;align-items:flex-end;' + (choco ? OFF : ON),
+      topStyle: 'left:0;right:0;top:140px;height:16px;border-radius:3px;background:' + finCol + ';',
+      bodyStyle: 'left:2%;right:2%;top:156px;height:90px;background:' + finCol + ';opacity:.92;border-left:10px solid rgba(27,17,13,.18);border-right:10px solid rgba(27,17,13,.18);' + (mesure ? 'outline:1px dashed #C07A4A;outline-offset:4px;' : ''),
+      footStyle: 'left:32%;right:32%;top:246px;height:12px;background:' + finCol + ';opacity:.8;',
+      recap: [ { k:'Module', v:'Gourmandise — Stone' }, { k:'Longueur', v:lenTxt }, { k:'Plage', v:tempTxt + (choco ? ' · chocolat' : ' · pâtisserie') }, { k:'Finition', v:finTxt } ],
+      price: priced ? '5 800,00 € HT' : 'Sur devis',
+      priceNote: priced ? 'Modèle 101 cm, pierre acrylique blanche' : (s.len === '101' ? 'Coloris hors standard : [PRIX]' : 'Tarif de cette longueur : [PRIX] — sur devis'),
+      modele,
+      tabs,
+      tabDesc: s.tab === 'desc', tabCar: s.tab === 'car', tabDim: s.tab === 'dim',
+      specs: SPECS.map(v => ({ v })),
+      notSent: !s.sent, sent: s.sent,
+      showErr: s.tried && miss.length > 0,
+      errMsg: 'À compléter : ' + miss.join(', ') + '.',
+      err: { nom: s.tried && !f.nom ? bad : '', tel: s.tried && !f.tel ? bad : '', email: s.tried && !emailOk ? bad : '', msg: s.tried && !f.msg ? bad : '' },
+      inNom: fld('nom'), inTel: fld('tel'), inEmail: fld('email'), inSect: fld('sect'), inCp: fld('cp'), inVille: fld('ville'), inMsg: fld('msg'),
+      submit: e => { if (e && e.preventDefault) e.preventDefault(); this.setState({ tried:true, sent: miss.length === 0 }); },
+      reset: () => this.setState({ sent:false, tried:false, f:{} }),
+      nomAff: f.nom || '',
+      assoc: [
+        { nom:'Réfrigérée Plane', note:'Exposition à hauteur du plan · prof. 53 ou 60 cm · +2/+8 ou +14/+18' },
+        { nom:'Vision', note:'Exposition 8 cm sous le plan · prof. 53 ou 60 cm · +2/+8 ou +14/+18' },
+        { nom:'Centrale', note:'Vitrages coulissants des 2 côtés · prof. 60 cm · +2/+8 ou +14/+18' },
+        { nom:'Comptoir caisse', note:'Tout commerce · avec ou sans tablette PMR' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

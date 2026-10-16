@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Studio — Secteurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#FAFAF8}
+sc-for,sc-if{display:contents}
+.st{--acc:#D42A20;font-family:'Onest',system-ui,sans-serif;color:#16181A;background:#FAFAF8;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.st *,.st *::before,.st *::after{box-sizing:border-box}
+.st img{display:block;max-width:100%}
+.st h1,.st h2,.st h3,.st h4,.st p{margin:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.topbar{background:#16181A;color:#B9BCB7;font-size:12px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.topbar a{color:#FAFAF8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:38px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(250,250,248,.9);-webkit-backdrop-filter:saturate(1.3) blur(14px);backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid #E2E3DF}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#16181A;min-height:44px}
+.logo-glyph{display:flex;align-items:flex-end;gap:2px;height:24px}
+.logo-glyph i{display:block;width:7px;border-radius:1px;background:#16181A}
+.logo-word{display:block;font-weight:800;font-size:25px;letter-spacing:-.045em;line-height:1}
+.logo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-top:4px;line-height:1}
+.nav{display:flex;gap:2px;background:#ECEDEA;padding:4px;border-radius:999px}
+.nav-a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;color:#5B6066;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+.nav-a:hover{color:#16181A;background:rgba(255,255,255,.65)}
+.nav-a.on{background:#fff;color:#16181A;box-shadow:0 1px 3px rgba(22,24,26,.1)}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#16181A;min-height:44px}
+.tel-ico{width:38px;height:38px;border-radius:50%;background:#D8EDE3;display:grid;place-items:center;flex:none}
+.tel b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;line-height:1.15}
+.tel small{display:block;font-size:11px;color:#5B6066;line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:0;font:600 15px/1 'Onest',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,color .2s}
+.btn svg{transition:transform .25s ease;flex:none}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 12px 26px -12px var(--acc)}
+.btn-ink{background:#16181A;color:#FAFAF8}
+.btn-ink:hover{transform:translateY(-1px);box-shadow:0 12px 26px -14px #16181A}
+.btn-ghost{background:transparent;color:#16181A;box-shadow:inset 0 0 0 1px #C4C6C1}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px #16181A}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid #D5D7D2;background:#fff;align-items:center;justify-content:center;cursor:pointer;color:#16181A}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:0 16px;border-radius:12px;background:#ECEDEA;text-decoration:none;color:#16181A;font-weight:600}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6066}
+.eyebrow i{width:8px;height:8px;border-radius:2px;background:var(--acc);display:block}
+.h2{font-size:clamp(32px,4.4vw,60px);line-height:1.02;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.4vw,19px);color:#5B6066;line-height:1.55}
+.sec{padding:120px 0}
+.ftr{background:#ECEDEA;padding:80px 0 28px}
+.ftr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr-h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-bottom:14px;font-weight:500}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#16181A;font-size:15px}
+.ftr-links a:hover{color:var(--acc)}
+.ftr-tel{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;text-decoration:none;letter-spacing:-.02em;display:inline-block;color:#16181A}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:64px;padding-top:14px;border-top:1px solid #D5D7D2;font-size:13px;color:#5B6066}
+.ftr-bot a{color:#5B6066;font-size:13px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#16181A}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.st :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@media(max-width:1080px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 16px 16px}}
+@media(max-width:720px){.wrap{padding:0 16px}.sec{padding:80px 0}.topbar-note{display:none}.hdr-cta{display:none}}
+@media (prefers-reduced-motion:reduce){.st *{animation:none !important;transition:none !important}}
+
+/* ---- Secteurs ---- */
+.phero{padding:64px 0 44px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:end}
+.h1{font-size:clamp(44px,7vw,104px);line-height:.92;letter-spacing:-.055em;font-weight:800;margin-top:18px;overflow-wrap:anywhere}
+.h1 em{font-style:normal;color:var(--acc)}
+.layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:8px;background:#ECEDEA;border-radius:30px;padding:8px;align-items:start}
+.list{background:#FAFAF8;border-radius:24px;padding:10px;display:grid;gap:2px;position:sticky;top:92px}
+.sbtn{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 12px;border:0;border-radius:14px;text-align:left;cursor:pointer;font:500 15px/1.2 'Onest',sans-serif;color:#16181A;transition:background .2s,color .2s,padding .25s}
+.sbtn:hover{background:#ECEDEA;padding-left:16px}
+.sbtn .ix{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
+.sbtn .tp{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 7px;border-radius:6px;white-space:nowrap}
+.detail{display:flex;flex-direction:column;gap:8px;min-width:0}
+.dhero{position:relative;border-radius:24px;overflow:hidden;height:380px;background:#16181A}
+.dhero img{width:100%;height:380px;object-fit:cover;opacity:.88;animation:kb 9s ease-out both}
+@keyframes kb{from{transform:scale(1.12)}to{transform:scale(1)}}
+.dcap{position:absolute;left:0;right:0;bottom:0;padding:28px;background:linear-gradient(0deg,rgba(22,24,26,.82),rgba(22,24,26,0));color:#fff}
+.dcap h2{font-size:clamp(36px,5vw,72px);font-weight:800;letter-spacing:-.05em;line-height:.95;animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.card{background:#fff;border-radius:24px;padding:28px}
+.ctitle{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.ctitle h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.flag{font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 9px;border-radius:7px;background:#FBEFD9;color:#6A4A12}
+.scale{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.band{position:relative;border-radius:16px;padding:16px 14px 14px;min-height:108px;display:flex;flex-direction:column;justify-content:space-between;transition:background .35s,color .35s,transform .35s,box-shadow .35s}
+.band b{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;letter-spacing:-.03em}
+.band span{font-size:12px;line-height:1.3}
+.band .dot{position:absolute;top:14px;right:14px;width:10px;height:10px;border-radius:50%;background:var(--acc);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,42,32,.45)}50%{box-shadow:0 0 0 8px rgba(212,42,32,0)}}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,100%),1fr));gap:8px}
+.mcard{display:flex;flex-direction:column;text-decoration:none;color:#16181A;border-radius:18px;overflow:hidden;background:#F5F5F2;transition:transform .3s,box-shadow .3s;animation:fade .45s ease both}
+.mcard:hover{transform:translateY(-3px);box-shadow:0 0 0 1px #16181A}
+.mst{height:130px;padding:58px 44px 20px 24px;display:flex;align-items:flex-end;background-image:linear-gradient(#ECEDEA 1px,transparent 1px),linear-gradient(90deg,#ECEDEA 1px,transparent 1px);background-size:14px 14px}
+.counter{position:relative;z-index:0;display:flex;align-items:flex-end;width:100%;max-width:120px;transition:transform .35s}
+.mcard:hover .counter{transform:translateY(-3px)}
+.mbd{padding:12px 14px 14px;background:#fff;flex:1}
+.mbd b{display:block;font-size:14px;line-height:1.25}
+.mbd span{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B6066;margin-top:4px}
+.reals{display:grid;gap:6px}
+.ritem{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:60px;padding:0 16px;border-radius:14px;background:#F5F5F2;text-decoration:none;color:#16181A;transition:background .2s,transform .2s}
+.ritem:hover{background:#ECEDEA;transform:translateX(4px)}
+.ritem .n{font-family:'JetBrains Mono',monospace;font-size:12px;color:#5B6066}
+.badge{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:#16181A;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px}
+.none{padding:18px;border-radius:14px;border:1.5px dashed #C4C6C1;color:#5B6066;font-size:14px}
+.matrix{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:40px}
+.col{background:#ECEDEA;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:280px}
+.col h3{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;letter-spacing:-.03em}
+.col p{font-size:12px;color:#5B6066;margin-bottom:8px}
+.mchip{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 12px;border:0;border-radius:12px;font:500 14px/1.2 'Onest',sans-serif;cursor:pointer;text-align:left;transition:background .2s,color .2s,transform .15s}
+.mchip:hover{transform:translateX(3px)}
+@media(max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}.list{position:static;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr))}.matrix{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:960px){.phero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.scale{grid-template-columns:repeat(2,minmax(0,1fr))}.dhero,.dhero img{height:280px}.card{padding:20px}.matrix{grid-template-columns:minmax(0,1fr)}.col{min-height:0}}
+</style>
+</helmet>
+<div class="st" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="mono topbar-note">Proposition 06 · Studio — configurateur</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Studio-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span>
+      <span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="nav-a" href="Studio-Lignes.dc.html">Lignes</a>
+      <a class="nav-a on" href="Studio-Secteurs.dc.html" aria-current="page">Secteurs</a>
+      <a class="nav-a" href="Studio-Realisations.dc.html">Réalisations</a>
+      <a class="nav-a" href="Studio-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16181A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Studio-Contact.dc.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Studio-Lignes.dc.html">Lignes <span class="mono">01</span></a>
+      <a href="Studio-Secteurs.dc.html">Secteurs <span class="mono">02</span></a>
+      <a href="Studio-Realisations.dc.html">Réalisations <span class="mono">03</span></a>
+      <a href="Studio-Contact.dc.html">Showroom &amp; contact <span class="mono">04</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span class="mono">Gratuit</span></a>
+      <a href="Studio-Contact.dc.html" style="background:var(--acc);color:#fff">Plan 3D offert <span class="mono">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="wrap">
+  <div class="phero">
+    <div class="rise">
+      <span class="eyebrow"><i></i>Secteurs d'activité</span>
+      <h1 class="h1">Votre métier,<br><em>votre froid.</em></h1>
+    </div>
+    <p class="lead rise d2">Treize métiers de bouche. Sélectionnez le vôtre : plage de température, modules conseillés et réalisations liées s'affichent. Les recommandations marquées « à valider » sont confirmées par le bureau d'études.</p>
+  </div>
+
+  <div class="layout rise d3">
+    <div class="list" role="tablist" aria-label="Secteurs d'activité">
+      <sc-for list="{{ sectors }}" as="s" hint-placeholder-count="13">
+        <button type="button" role="tab" class="sbtn" style="{{ s.style }}" aria-selected="{{ s.on }}" onClick="{{ s.pick }}"><span class="ix">{{ s.n }}</span><span>{{ s.name }}</span><span class="tp" style="{{ s.tpStyle }}">{{ s.short }}</span></button>
+      </sc-for>
+    </div>
+
+    <div class="detail">
+      <div class="dhero">
+        <sc-for list="{{ heroImg }}" as="h" hint-placeholder-count="1"><img src="{{ h.img }}" alt="{{ h.alt }}"></sc-for>
+        <div class="dcap">
+          <span class="mono" style="font-size:12px;opacity:.85">SECTEUR {{ cur.n }} / 13 · image d'ambiance</span>
+          <h2 style="margin-top:8px">{{ cur.name }}</h2>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle"><h3>Plage de température</h3><sc-if value="{{ cur.tFlag }}" hint-placeholder-val="{{ false }}"><span class="flag">à valider</span></sc-if></div>
+        <div class="scale">
+          <sc-for list="{{ bands }}" as="b" hint-placeholder-count="4">
+            <div class="band" style="{{ b.style }}">
+              <sc-if value="{{ b.on }}" hint-placeholder-val="{{ false }}"><span class="dot" aria-hidden="true"></span></sc-if>
+              <b>{{ b.range }}</b><span>{{ b.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p class="mono" style="font-size:12px;color:#5B6066;margin-top:14px">{{ cur.tNote }}</p>
+      </div>
+
+      <div class="card">
+        <div class="ctitle"><h3>Modules conseillés</h3><sc-if value="{{ cur.mFlag }}" hint-placeholder-val="{{ false }}"><span class="flag">à valider</span></sc-if></div>
+        <div class="mods">
+          <sc-for list="{{ mods }}" as="m" hint-placeholder-count="4">
+            <a class="mcard" href="Studio-Module.dc.html" aria-label="{{ m.aria }}">
+              <div class="mst">
+                <div class="counter">
+                  <sc-for list="{{ m.blk }}" as="b" hint-placeholder-count="1">
+                    <div style="{{ b.wStyle }}">
+                      <span style="{{ b.topStyle }}"></span>
+                      <sc-if value="{{ b.hasGlass }}" hint-placeholder-val="{{ true }}">
+                        <span style="{{ b.glassStyle }}"><span style="{{ b.glassTopStyle }}"></span><span style="{{ b.shelfStyle }}"></span><span style="{{ b.treat2Style }}"></span><span style="{{ b.treatStyle }}"></span></span>
+                      </sc-if>
+                      <sc-if value="{{ b.isCaisse }}" hint-placeholder-val="{{ false }}"><span style="{{ b.regStyle }}"></span></sc-if>
+                      <span style="{{ b.edgeStyle }}"></span>
+                      <span style="{{ b.panelStyle }}"></span>
+                      <span style="{{ b.plinthStyle }}"></span>
+                    </div>
+                  </sc-for>
+                  <span style="{{ m.side }}"></span>
+                </div>
+              </div>
+              <div class="mbd"><b>{{ m.name }}</b><span>Ligne {{ m.line }}</span></div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle"><h3>Réalisations liées</h3><span class="mono" style="font-size:12px;color:#5B6066">{{ realCount }}</span></div>
+        <sc-if value="{{ hasReals }}" hint-placeholder-val="{{ true }}">
+          <div class="reals">
+            <sc-for list="{{ reals }}" as="r" hint-placeholder-count="2">
+              <a class="ritem" href="Studio-Realisations.dc.html"><span class="n">N° {{ r.n }}</span><span><b style="font-size:15px">{{ r.title }}</b><br><span style="font-size:13px;color:#5B6066">{{ r.place }} · {{ r.mods }}</span></span><span class="badge">{{ r.line }}</span></a>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noReals }}" hint-placeholder-val="{{ false }}">
+          <p class="none">Aucune réalisation présentée pour ce secteur pour l'instant — [À COMPLÉTER].</p>
+        </sc-if>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+          <a class="btn btn-acc" href="Studio-Accueil.dc.html#composer">Composer ce linéaire<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a class="btn btn-ghost" href="Studio-Contact.dc.html">Demande de devis</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Vue d'ensemble</span>
+    <h2 class="h2" style="margin-top:16px;max-width:880px">Les secteurs rangés par plage de température.</h2>
+    <p class="lead" style="margin-top:14px;max-width:640px">Plages issues des modules RGTE. Un astérisque signale une association à valider. Cliquez un secteur pour l'ouvrir plus haut.</p>
+    <div class="matrix">
+      <sc-for list="{{ matrix }}" as="c" hint-placeholder-count="5">
+        <div class="col">
+          <h3>{{ c.range }}</h3>
+          <p>{{ c.label }}</p>
+          <sc-for list="{{ c.items }}" as="i" hint-placeholder-count="3">
+            <button type="button" class="mchip" style="{{ i.style }}" onClick="{{ i.pick }}">{{ i.name }}<span class="mono" style="font-size:11px">{{ i.star }}</span></button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a class="logo" href="Studio-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span><span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span></a>
+        <p style="color:#5B6066;margin-top:16px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#5B6066;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Studio-Lignes.dc.html">Lignes d'agencement</a>
+        <a href="Studio-Secteurs.dc.html">Secteurs d'activité</a>
+        <a href="Studio-Realisations.dc.html">Réalisations</a>
+        <a href="Studio-Contact.dc.html">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span class="mono" style="font-size:12px">Proposition de refonte — concept, non officiel · <a href="Main.dc.html" style="font-size:12px;min-height:0;display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3100},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#16181A","#1E6B48"]},"secteurInitial":{"editor":"enum","default":"patisserie","options":["patisserie","chocolats","poissonnerie","boulangerie","traiteur"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.MAT = {
+      basique:{front:'repeating-linear-gradient(90deg,#DCCBAE 0 16px,#D4C2A3 16px 17px)',top:'#3E4245',edge:'#2B2E31',plinth:'#2B2E31',side:'#C4B08F',panel:'border:1px solid rgba(22,24,26,.16)'},
+      stone:{front:'#F2F1EC',top:'#FFFFFF',edge:'#E2E1DB',plinth:'#D9D8D2',side:'#DEDDD7',panel:'background:linear-gradient(180deg,rgba(206,226,234,.6),rgba(206,226,234,.25));border:1px solid rgba(22,24,26,.14)'},
+      legno:{front:'repeating-linear-gradient(90deg,#BE9268 0 10px,#B7895E 10px 11px,#C29770 11px 23px)',top:'#4A4E53',edge:'#3A3D41',plinth:'#2F3236',side:'#9C744C',panel:'border:1px solid rgba(22,24,26,.2)'},
+      industry:{front:'#E6E8E9',top:'#CDD1D4',edge:'#B8BDC1',plinth:'#5B6066',side:'#CBCFD2',panel:'border:1px solid rgba(22,24,26,.15)'}
+    };
+    this.BANDS = [
+      { id:'neg', range:'−2 / 0 °C', label:'Poissonnerie, froid statique', on:'background:#CFE3EE;color:#16181A' },
+      { id:'cold', range:'+2 / +8 °C', label:'Pâtisserie, saladette, frais', on:'background:#D8EDE3;color:#16181A' },
+      { id:'choc', range:'+14 / +18 °C', label:'Chocolats', on:'background:#EBDDCB;color:#16181A' },
+      { id:'hot', range:'+30 / +90 °C', label:'Chaud bain-marie', on:'background:#F6D6CF;color:#16181A' }
+    ];
+    this.R = {
+      1:['01','Pâtisserie','Paris 4e','Stone','Plane & Caisse'],
+      2:['02','Bar à salades','Département 13','Stone','Saladette & Caisse & Panorama'],
+      3:['03','Chocolatier','Gap & Grenoble','Stone','Plane & Caisse'],
+      4:['04','Sandwicherie','Chamonix','Basique','Panoramique & Basse & Murale self-service'],
+      6:['06','Bar à yogourt glacé (chaîne)','Toute la France','Stone','Saladette sur mesure & Surface plane'],
+      7:['07','Boulangerie pâtisserie','La Réunion','Basique','Amandine & Caisse'],
+      8:['08','Boulangerie','Département 33','Legno','Réfrigérée statique & Neutre & Module arrière'],
+      9:['09','Pizza sur composition','Paris','Stone','Saladette & Caisse & Plane'],
+      10:['10','Pâtissier chocolatier','Département 69','Stone','Centrale & Caisse & Plane'],
+      11:['11','Traiteur asiatique (chaîne)','Marseille','Stone','Plane & Caisse & Saladette & Comptoir bar'],
+      12:['12','Bar à couscous','Isère','Stone','Bain-marie sur mesure'],
+      13:['13','Traiteur poissonnier','Département 92','Stone','Panorama & Surface plane & Caisse'],
+      14:['14','Pâtissier chocolatier Canet','Nice 06','Stone','Plane +2/+8 et chocolats +14/+18']
+    };
+    this.S = [
+      { id:'boulangerie', name:'Boulangerie', bands:[], tFlag:true, tNote:'[TEMPÉRATURE] — selon vos produits, à définir avec le bureau d\'études.', mFlag:true, mods:[['Amandine','basique','h'],['Pastry Show','basique','h'],['Réfrigérée statique','legno','h'],['Vitrine neutre','legno','h']], reals:[7,8], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées' },
+      { id:'patisserie', name:'Pâtisserie', bands:['cold'], tFlag:false, tNote:'Pâtisserie : +2 °C / +8 °C.', mFlag:false, mods:[['Plane','stone','p'],['Vision','stone','p'],['Panorama','stone','h'],['Centrale','stone','h'],['Gourmandise','stone','h'],['Pastry Show','basique','h'],['Cube','basique','h'],['Amandine','basique','h']], reals:[1,7,10,14], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés en vitrine' },
+      { id:'chocolats', name:'Chocolats', bands:['choc'], tFlag:false, tNote:'Chocolats : +14 °C / +18 °C.', mFlag:true, mods:[['Plane','stone','p'],['Centrale','stone','h'],['Gourmandise','stone','h']], reals:[3,10,14], img:'assets/chocolates-dark.webp', alt:'Bonbons de chocolat sur fond blanc' },
+      { id:'sandwichs', name:'Sandwichs', bands:['cold'], tFlag:true, tNote:'+2 °C / +8 °C proposé par la Réfrigérée Plane (pâtisseries, sandwichs ou chocolats).', mFlag:true, mods:[['Panoramique','basique','h'],['Basse','basique','b'],['Murale self-service','basique','h'],['Réfrigérée Plane','stone','p']], reals:[4], img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir' },
+      { id:'traiteur', name:'Traiteur', bands:['cold'], tFlag:true, tNote:'+2 °C / +8 °C — à valider selon vos produits.', mFlag:true, mods:[['Réfrigérée Plane','stone','p'],['Saladette','stone','b'],['Comptoir bar','stone','c'],['Panorama','stone','h']], reals:[11,13], img:'assets/counter-domes.webp', alt:'Comptoir en marbre avec cloches de verre' },
+      { id:'poissonnerie', name:'Poissonnerie', bands:['neg'], tFlag:false, tNote:'Poissonnerie : −2 °C / 0 °C, froid statique avec serpentin de cuve et vidange de cuve.', mFlag:true, mods:[['Poissonnerie','stone','b'],['Panorama','stone','h'],['Surface plane','stone','p'],['Hanoi','industry','b']], reals:[13], img:'assets/fish-ice.webp', alt:'Poissons sur glace' },
+      { id:'salades', name:'Bar à salades', bands:['cold'], tFlag:true, tNote:'Saladette : +2 °C / +8 °C, bacs gastronormes (non fournis).', mFlag:false, mods:[['Saladette','stone','b'],['Panorama','stone','h'],['Comptoir caisse','stone','c']], reals:[2], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox colorés' },
+      { id:'couscous', name:'Bar à couscous', bands:['hot'], tFlag:true, tNote:'Chaud bain-marie : +30 °C / +90 °C, bacs gastronormes.', mFlag:false, mods:[['Chaud bain-marie','stone','b']], reals:[12], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre' },
+      { id:'fromagerie', name:'Fromagerie', bands:[], tFlag:true, tNote:'[TEMPÉRATURE] — à définir avec le bureau d\'études.', mFlag:true, mods:[['Panorama','stone','h'],['Réfrigérée Plane','stone','p']], reals:[], img:'assets/fromagerie.webp', alt:'Meules de fromage sur étagères' },
+      { id:'bar', name:'Bar', bands:[], tFlag:false, tNote:'Comptoir bar neutre ou réfrigéré.', mFlag:false, mods:[['Comptoir bar','stone','c'],['Comptoir caisse','stone','c']], reals:[], img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc' },
+      { id:'topping', name:'Bar à topping', bands:['cold'], tFlag:true, tNote:'+2 °C / +8 °C via saladette — à valider.', mFlag:false, mods:[['Saladette sur mesure','stone','b'],['Surface plane','stone','p']], reals:[6], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+      { id:'cafe', name:'Coffee shop / Café', bands:[], tFlag:true, tNote:'[TEMPÉRATURE] — selon l\'offre (pâtisseries, boissons).', mFlag:true, mods:[['Comptoir bar','stone','c'],['Comptoir caisse','stone','c'],['Pastry Show','basique','h'],['Cube','basique','h']], reals:[], img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc' },
+      { id:'pizza', name:'Pizza al taglio', bands:['cold'], tFlag:true, tNote:'+2 °C / +8 °C via saladette — à valider.', mFlag:true, mods:[['Saladette','stone','b'],['Comptoir caisse','stone','c'],['Réfrigérée Plane','stone','p']], reals:[9], img:'assets/baker-table.webp', alt:'Pains et rouleau sur un plan de travail' }
+    ];
+    const ids = this.S.map(x => x.id);
+    this.state = { menuOpen:false, sel: (props && ids.indexOf(props.secteurInitial) > -1) ? props.secteurInitial : 'patisserie' };
+  }
+  blocks(list, key, o){
+    const M = this.MAT[key], H = o.H, D = o.D, k = H / 110, lift = Math.round(D * 0.3), r = Math.max(2, Math.round(4 * k));
+    const G = { c:0, p:22, b:40, h:74 };
+    const treats = (h, bottom, show) => 'position:absolute;left:3px;right:3px;bottom:' + bottom + 'px;height:' + h + 'px;background:radial-gradient(circle at 8px 60%,#E9A99C 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/24px 100% repeat-x,radial-gradient(circle at 16px 60%,#B5D19B 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/24px 100% repeat-x;' + (show ? '' : 'display:none;');
+    return list.map(m => {
+      const g = Math.round(G[m.kind] * k);
+      return Object.assign({}, m, {
+        wStyle: 'position:relative;flex:1 1 0;min-width:0;height:' + H + 'px;background:' + M.front + ';box-shadow:inset -1px 0 0 rgba(22,24,26,.22);',
+        topStyle: 'position:absolute;left:0;bottom:100%;width:100%;height:' + D + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:' + M.top + ';box-shadow:inset 0 0 0 1px rgba(22,24,26,.08);',
+        edgeStyle: 'position:absolute;left:0;top:0;width:100%;height:' + Math.max(3, Math.round(9 * k)) + 'px;background:' + M.edge,
+        plinthStyle: 'position:absolute;left:0;bottom:0;width:100%;height:' + Math.round(14 * k) + 'px;background:' + M.plinth,
+        panelStyle: 'position:absolute;left:' + Math.round(10 * k) + 'px;right:' + Math.round(10 * k) + 'px;top:' + Math.round(20 * k) + 'px;bottom:' + Math.round(24 * k) + 'px;' + M.panel,
+        hasGlass: g > 0,
+        glassStyle: 'position:absolute;left:' + (Math.round(8 * k) + lift) + 'px;right:' + (Math.round(6 * k) - lift) + 'px;bottom:calc(100% + ' + lift + 'px);height:' + g + 'px;background:linear-gradient(180deg,rgba(206,226,234,.62),rgba(206,226,234,.2));border:1px solid rgba(22,24,26,.32);border-bottom:0;',
+        glassTopStyle: 'position:absolute;left:-1px;right:-1px;bottom:100%;height:' + Math.round(D * 0.5) + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:rgba(206,226,234,.42);border:1px solid rgba(22,24,26,.26);border-bottom:0;',
+        shelfStyle: 'position:absolute;left:0;right:0;top:' + Math.round(g * 0.42) + 'px;height:2px;background:rgba(22,24,26,.28);' + (m.kind === 'h' ? '' : 'display:none;'),
+        treat2Style: treats(Math.round(10 * k), Math.round(g * 0.58), m.kind === 'h'),
+        treatStyle: treats(Math.round(10 * k), 0, true),
+        isCaisse: /caisse/i.test(m.name) && m.kind === 'c',
+        regStyle: 'position:absolute;left:30%;bottom:calc(100% + ' + (lift + 1) + 'px);width:' + Math.round(26 * k) + 'px;height:' + Math.round(18 * k) + 'px;border-radius:2px;background:#2A2D30;'
+      });
+    });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const ci = this.S.findIndex(x => x.id === s.sel);
+    const c = this.S[ci];
+    const short = (x) => x.bands.length ? this.BANDS.find(b => b.id === x.bands[0]).range.replace(' °C', '°') : (x.id === 'bar' ? 'neutre/froid' : '[T°]');
+    const sectors = this.S.map((x, i) => ({ n:String(i + 1).padStart(2, '0'), name:x.name, short:short(x), on: x.id === s.sel ? 'true' : 'false',
+      style: x.id === s.sel ? 'background:#16181A;color:#fff' : 'background:transparent;color:#16181A',
+      tpStyle: x.id === s.sel ? 'background:rgba(255,255,255,.14);color:#fff' : 'background:#ECEDEA;color:#5B6066',
+      pick: () => this.setState({ sel:x.id }) }));
+    const bands = this.BANDS.map(b => { const on = c.bands.indexOf(b.id) > -1; return { range:b.range, label:b.label, on, style: on ? b.on + ';box-shadow:inset 0 0 0 2px #16181A;transform:translateY(-4px)' : 'background:#F5F5F2;color:#5B6066' }; });
+    const mods = c.mods.map(m => ({ name:m[0], line: m[1].charAt(0).toUpperCase() + m[1].slice(1), aria:'Voir le module ' + m[0],
+      blk: this.blocks([{ name:m[0], kind:m[2] }], m[1], { H:48, D:18 }),
+      side: 'position:absolute;left:100%;bottom:0;width:18px;height:48px;transform:skewY(-45deg);transform-origin:bottom left;background:' + this.MAT[m[1]].side }));
+    const reals = c.reals.map(id => { const r = this.R[id]; return { n:r[0], title:r[1], place:r[2], line:r[3], mods:r[4] }; });
+    const COLS = [
+      { id:'neg', range:'−2 / 0 °C', label:'Froid négatif léger' },
+      { id:'cold', range:'+2 / +8 °C', label:'Froid positif' },
+      { id:'choc', range:'+14 / +18 °C', label:'Chocolat' },
+      { id:'hot', range:'+30 / +90 °C', label:'Chaud' },
+      { id:'none', range:'[T°]', label:'À préciser / neutre' }
+    ];
+    const matrix = COLS.map(col => ({ range:col.range, label:col.label,
+      items: this.S.filter(x => col.id === 'none' ? x.bands.length === 0 : x.bands.indexOf(col.id) > -1).map(x => ({ name:x.name, star: x.tFlag && col.id !== 'none' ? '*' : '',
+        style: x.id === s.sel ? 'background:#16181A;color:#fff' : 'background:#fff;color:#16181A',
+        pick: () => this.setState({ sel:x.id }) })) }));
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      sectors,
+      heroImg: [{ img:c.img, alt:c.alt, key:c.id }],
+      cur: { n:String(ci + 1).padStart(2, '0'), name:c.name, tFlag:c.tFlag, tNote:c.tNote, mFlag:c.mFlag },
+      bands, mods, reals,
+      hasReals: reals.length > 0, noReals: reals.length === 0,
+      realCount: reals.length + (reals.length > 1 ? ' projets' : ' projet') + ' / 14',
+      matrix
+    };
+  }
+}
+</script>
+</body>
+</html>

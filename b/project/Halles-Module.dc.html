@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Halles — Module Gourmandise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<style>
+body{margin:0;background:#F7F5F0}
+sc-for,sc-if{display:contents}
+.h{font-family:'Epilogue',system-ui,sans-serif;color:#1C1B19;background:#F7F5F0;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.h *,.h *::before,.h *::after{box-sizing:border-box}
+.h img{display:block;max-width:100%}
+.h p{margin:0}
+.h h1,.h h2,.h h3,.h h4{margin:0;font-weight:800;letter-spacing:-.03em;line-height:.98}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.lora{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:0}
+.muted{color:#5C574F}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.slate{display:inline-flex;align-items:center;gap:8px;background:#22211E;color:#F7F5F0;font-family:'Lora',Georgia,serif;font-style:italic;font-size:15px;line-height:1.2;padding:8px 14px 9px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(247,245,240,.25),inset 0 0 0 4px #22211E,inset 0 0 0 5px rgba(247,245,240,.12)}
+.sign{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font-family:inherit;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,filter .25s,box-shadow .25s,background .25s,color .25s}
+.btn-red{background:#D42A20;color:#FFFFFF}
+.btn-red:hover{filter:brightness(.9);transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(212,42,32,.8)}
+.btn-ghost{background:transparent;color:#1C1B19;box-shadow:inset 0 0 0 1.5px #1C1B19}
+.btn-ghost:hover{background:#1C1B19;color:#F7F5F0}
+.btn-light{background:#F7F5F0;color:#1C1B19}
+.btn svg{transition:transform .25s}
+.btn:hover svg{transform:translateX(4px)}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#FFFFFF;box-shadow:inset 0 0 0 1px #D8D2C6;font-family:inherit;font-size:14px;font-weight:600;color:#1C1B19;cursor:pointer;transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+.chip:hover{transform:translateY(-2px)}
+.h a:focus-visible,.h button:focus-visible,.h input:focus-visible,.h select:focus-visible,.h textarea:focus-visible{outline:3px solid #D42A20;outline-offset:3px}
+.sec{padding:110px 0}
+.sec-h{font-size:clamp(36px,5.2vw,76px);font-weight:900;letter-spacing:-.05em;line-height:.94}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px;margin-bottom:40px}
+.sec-head p{max-width:440px;font-size:17px;line-height:1.6}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.12) translate(-1%,-1%)}}
+@keyframes drop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+/* header */
+.topbar{background:#1C1B19;color:#F7F5F0;font-size:13px}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:40px}
+.tb-l,.tb-r{display:inline-flex;align-items:center;gap:10px}
+.tb-r{gap:22px}
+.tb-link{color:#F7F5F0;text-underline-offset:3px;min-height:40px;display:inline-flex;align-items:center}
+.hd{position:sticky;top:0;z-index:50;background:rgba(247,245,240,.94);backdrop-filter:blur(10px);border-bottom:1px solid #E4DFD5}
+.hd-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:84px}
+.logo{display:inline-grid;text-decoration:none;color:#1C1B19;line-height:1}
+.logo-w{font-weight:900;font-size:30px;letter-spacing:-.06em}
+.logo-w::after{content:"";display:inline-block;width:.22em;height:.22em;background:#D42A20;margin-left:.07em}
+.logo-s{font-family:'Lora',Georgia,serif;font-style:italic;font-size:13px;margin-top:3px;color:#5C574F}
+.logo-bar{height:4px;margin-top:7px;border-radius:2px;background:linear-gradient(90deg,#D9A866 0 7.7%,#D98C8C 0 15.4%,#5A3A2C 0 23.1%,#C8B79C 0 30.8%,#9AA27A 0 38.5%,#3F6C8C 0 46.2%,#4A7538 0 53.8%,#E0A23B 0 61.5%,#E3B85C 0 69.2%,#6E2E3A 0 76.9%,#B9A3D0 0 84.6%,#3A2A22 0 92.3%,#B4502E 0 100%)}
+.navd{display:flex;gap:2px}
+.nav-a{min-height:44px;display:inline-flex;align-items:center;padding:0 16px;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;color:#1C1B19;transition:background .2s,color .2s}
+.nav-a:hover{background:#ECE8DF}
+.nav-a.on{background:#1C1B19;color:#F7F5F0}
+.hd-r{display:flex;align-items:center;gap:16px}
+.hd-tel{display:inline-flex;flex-direction:column;justify-content:center;min-height:44px;text-decoration:none;color:#1C1B19;font-weight:800;font-size:16px;line-height:1.15}
+.hd-tel span{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:400;font-size:12px;color:#5C574F}
+.burger{display:none;width:48px;height:48px;border-radius:999px;border:0;background:#1C1B19;color:#F7F5F0;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+@media (max-width:1100px){.hd-tel{display:none}}
+@media (max-width:920px){.navd{display:none}.burger{display:inline-flex}.mnav{display:grid;padding:4px 32px 24px;border-top:1px solid #E4DFD5}.mnav a{min-height:56px;display:flex;align-items:center;font-weight:800;font-size:22px;letter-spacing:-.02em;text-decoration:none;color:#1C1B19;border-bottom:1px solid #E4DFD5}.tb-hide{display:none}}
+@media (max-width:560px){.wrap{padding:0 16px}.hd-r .btn{display:none}.mnav{padding:4px 16px 20px}.sec{padding:72px 0}}
+/* footer */
+.awning{display:flex;height:26px}
+.awning span{flex:1;border-radius:0 0 999px 999px}
+.ft{background:#1C1B19;color:#F7F5F0;padding:72px 0 28px}
+.ft-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ft-h{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#B5AFA4;margin-bottom:14px !important}
+.ft a{color:#F7F5F0;text-decoration:none}
+.ft-l{display:flex;align-items:center;min-height:40px;font-size:15px}
+.ft-l:hover{text-decoration:underline;text-underline-offset:4px}
+.ft-addr{font-size:15px;line-height:1.6;color:#E4DFD5}
+.ft-tel{display:inline-flex;min-height:44px;align-items:center;font-size:30px;font-weight:900;letter-spacing:-.04em;margin-top:10px}
+.ft-small{font-family:'Lora',Georgia,serif;font-style:italic;font-size:14px;color:#B5AFA4}
+.logo-inv{color:#F7F5F0}
+.logo-inv .logo-s{color:#B5AFA4}
+.ft-p{margin-top:18px !important;max-width:280px;font-size:15px;line-height:1.6;color:#B5AFA4}
+.ft-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-top:56px;padding-top:22px;border-top:1px solid #3A3833;font-size:13px;color:#B5AFA4}
+.ft-bot a{color:#F7F5F0;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+/* produit */
+.crumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:#5C574F;margin:28px 0 20px}
+.crumb a{color:#5C574F;min-height:44px;display:inline-flex;align-items:center}
+.prod{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:start}
+.stage{position:relative;border-radius:26px;overflow:hidden;background:#ECE8DF;min-height:620px}
+.stage-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(28,27,25,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(28,27,25,.06) 1px,transparent 1px);background-size:32px 32px}
+.stage-bar{position:absolute;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:3}
+.seg{display:inline-flex;background:#FFFFFF;border-radius:999px;padding:4px;box-shadow:0 1px 0 #DDD7CB}
+.seg button{min-height:44px;padding:0 16px;border:0;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:background .25s,color .25s}
+.draw{position:absolute;left:40px;right:40px;bottom:70px;height:430px}
+.gm{position:absolute;left:0;right:0;margin:0 auto;bottom:40px;height:360px;transition:width .8s cubic-bezier(.7,0,.2,1)}
+.gm-glass{position:absolute;left:4%;right:4%;top:0;height:86px;box-shadow:inset 0 0 0 2px rgba(28,27,25,.65);transition:background .6s}
+.gm-glass::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(28,27,25,.35)}
+.gm-glass::after{content:"";position:absolute;left:8%;top:12px;width:22%;height:2px;background:rgba(255,255,255,.8);box-shadow:0 8px 0 rgba(255,255,255,.5)}
+.gm-prods{position:absolute;left:7%;right:7%;bottom:8px;display:flex;justify-content:space-between;align-items:flex-end}
+.gm-pr{width:18px;height:12px;border-radius:9px 9px 3px 3px;transition:background .6s}
+.gm-top{position:absolute;left:0;right:0;top:86px;height:22px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(28,27,25,.25);transition:background .6s}
+.gm-body{position:absolute;left:3%;right:3%;top:108px;height:172px;display:flex;justify-content:space-between;transition:background .6s;box-shadow:inset 0 0 0 1px rgba(28,27,25,.18)}
+.gm-pil{width:14%;height:100%;box-shadow:inset -1px 0 0 rgba(28,27,25,.18),inset 1px 0 0 rgba(28,27,25,.18);transition:background .6s}
+.gm-mid{flex:1;margin:18px 6%;box-shadow:inset 0 0 0 1px rgba(28,27,25,.15);display:flex;align-items:center;justify-content:center;font-family:'Lora',Georgia,serif;font-style:italic;font-size:13px}
+.gm-foot{position:absolute;left:12%;right:12%;top:280px;height:62px;box-shadow:inset 0 0 0 1px rgba(28,27,25,.2);transition:background .6s}
+.gm-dim{position:absolute;left:0;right:0;bottom:0;height:24px;display:flex;align-items:center;justify-content:center}
+.gm-dim::before{content:"";position:absolute;left:0;right:0;top:12px;height:1.5px;background:#1C1B19}
+.gm-dim i{position:absolute;top:4px;width:1.5px;height:16px;background:#1C1B19}
+.gm-dim b{position:relative;background:#ECE8DF;padding:0 10px;font-size:15px;font-weight:800}
+.gm-h{position:absolute;right:-34px;top:0;height:342px;width:24px;display:flex;align-items:center;justify-content:center}
+.gm-h::before{content:"";position:absolute;top:0;bottom:0;left:11px;width:1.5px;background:#1C1B19}
+.gm-h b{position:relative;transform:rotate(-90deg);white-space:nowrap;background:#ECE8DF;padding:0 8px;font-size:13px;font-weight:700}
+.stage-ph{position:absolute;inset:0;z-index:2;transition:opacity .6s,visibility .6s}
+.stage-ph img{width:100%;height:100%;object-fit:cover;animation:kb 18s ease-in-out infinite alternate}
+.stage-cap{position:absolute;left:18px;bottom:18px;z-index:3}
+.cfg{background:#FFFFFF;border-radius:26px;padding:30px;position:relative}
+.p-name{font-size:clamp(40px,4.9vw,72px);font-weight:900;letter-spacing:-.065em;line-height:.88;margin-top:14px !important}
+.p-lead{font-size:16px;line-height:1.6;color:#3D3A35;margin-top:14px !important}
+.cfg-g{margin-top:26px}
+.cfg-l{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.cfg-l em{font-family:'Lora',Georgia,serif;font-size:14px;letter-spacing:0;text-transform:none;font-weight:400;color:#5C574F}
+.lens{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.lens .chip{padding:0 8px}
+.temps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tp{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:84px;padding:14px 16px;border:0;border-radius:14px;font-family:inherit;text-align:left;cursor:pointer;transition:transform .3s,box-shadow .3s,opacity .3s}
+.tp:hover{transform:translateY(-3px)}
+.tp b{font-size:22px;font-weight:900;letter-spacing:-.03em}
+.tp span{font-size:13px;font-weight:600}
+.fins{display:flex;flex-wrap:wrap;gap:10px}
+.fin{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 16px 0 6px;border:0;border-radius:999px;background:#F7F5F0;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:box-shadow .25s}
+.fin i{width:36px;height:36px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(28,27,25,.2)}
+.recap{margin-top:26px;background:#22211E;color:#F7F5F0;border-radius:18px;padding:20px 22px}
+.recap-r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed rgba(247,245,240,.18);font-size:14px}
+.recap-r span{color:#B5AFA4}
+.price{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-top:14px}
+.price b{font-size:36px;font-weight:900;letter-spacing:-.04em;animation:drop .45s cubic-bezier(.2,.7,.2,1) both}
+.price small{font-family:'Lora',Georgia,serif;font-style:italic;font-size:13px;color:#B5AFA4;max-width:180px;text-align:right}
+@media (max-width:1000px){.prod{grid-template-columns:1fr}.stage{min-height:520px}.draw{left:20px;right:44px;height:380px;bottom:60px}}
+@media (max-width:560px){.cfg{padding:20px 16px}.lens{grid-template-columns:repeat(3,minmax(0,1fr))}.temps{grid-template-columns:1fr}.stage{min-height:460px}.gm{height:300px;transform:scale(.82);transform-origin:center bottom}}
+/* onglets */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #DDD7CB;margin-bottom:30px}
+.tab{min-height:56px;padding:0 20px;border:0;background:transparent;font-family:inherit;font-weight:800;font-size:17px;letter-spacing:-.02em;cursor:pointer;color:#1C1B19;transition:box-shadow .3s,color .3s}
+.tab:hover{color:#5C574F}
+.tpane{animation:pop .5s cubic-bezier(.2,.7,.2,1) both}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}
+.two p{font-size:18px;line-height:1.65;color:#3D3A35}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:10px}
+.spec{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:16px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E4DFD5;font-size:15px;line-height:1.45;transition:transform .3s}
+.spec:hover{transform:translateY(-3px)}
+.spec svg{flex:none;margin-top:1px}
+.dims{border-radius:20px;overflow:hidden;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E4DFD5}
+.dim-r{display:grid;grid-template-columns:120px minmax(0,1.3fr) minmax(0,1fr) minmax(0,.9fr);gap:12px;padding:16px 22px;border-top:1px solid #EEE9E0;font-size:15px;align-items:center;transition:background .35s}
+.dim-r:first-child{border-top:0;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#5C574F}
+.dim-r b{font-size:18px;font-weight:900}
+@media (max-width:800px){.two{grid-template-columns:1fr;gap:20px}.dim-r{grid-template-columns:70px 1fr 1fr;padding:14px}.dim-r > :nth-child(3){display:none}}
+/* formulaire */
+.form-w{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:40px;align-items:start}
+.form{background:#FFFFFF;border-radius:26px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:13px;font-weight:700}
+.fld input,.fld select,.fld textarea{min-height:50px;padding:12px 14px;border:0;border-radius:12px;background:#F7F5F0;box-shadow:inset 0 0 0 1px #D8D2C6;font-family:inherit;font-size:16px;color:#1C1B19;transition:box-shadow .2s,background .2s}
+.fld input:focus,.fld select:focus,.fld textarea:focus{background:#FFFFFF;box-shadow:inset 0 0 0 2px #1C1B19;outline:none}
+.fld textarea{min-height:120px;resize:vertical}
+.err{font-size:13px;color:#B0221A;font-weight:600}
+.ok{grid-column:1/-1;display:flex;gap:14px;align-items:flex-start;padding:22px;border-radius:18px;background:#4A7538;color:#F7F5F0;animation:pop .5s both}
+@media (max-width:900px){.form-w{grid-template-columns:1fr}.form{grid-template-columns:1fr;padding:22px 16px}}
+/* associés */
+.assoc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:12px}
+.as{display:flex;flex-direction:column;justify-content:space-between;gap:24px;min-height:220px;padding:22px;border-radius:20px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E4DFD5;text-decoration:none;color:#1C1B19;transition:transform .35s,background .35s,color .35s}
+.as:hover{transform:translateY(-5px);background:#1C1B19;color:#F7F5F0}
+.as h3{font-size:26px;letter-spacing:-.04em}
+.as p{font-size:14px;line-height:1.5;margin-top:8px !important;opacity:.8}
+.as-t{font-family:'Lora',Georgia,serif;font-style:italic;font-size:14px}
+@media (prefers-reduced-motion:reduce){.h *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="h">
+
+<div class="topbar"><div class="wrap">
+<span class="tb-l"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>Numéro vert <strong>0 800 95 13 13</strong> — appel gratuit</span>
+<span class="tb-r"><span class="tb-hide">Bureau d'études &amp; show-room · Puget-sur-Argens (83)</span><a class="tb-link" href="Main.dc.html">Toutes les propositions</a></span>
+</div></div>
+
+<header class="hd">
+<div class="wrap hd-in">
+<a class="logo" href="Halles-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span><span class="logo-bar"></span></a>
+<nav class="navd" aria-label="Navigation principale">
+<a class="nav-a on" href="Halles-Lignes.dc.html">Lignes</a>
+<a class="nav-a" href="Halles-Secteurs.dc.html">Secteurs</a>
+<a class="nav-a" href="Halles-Realisations.dc.html">Réalisations</a>
+<a class="nav-a" href="Halles-Contact.dc.html">Showroom &amp; contact</a>
+</nav>
+<div class="hd-r">
+<a class="hd-tel" href="tel:0800951313">0 800 95 13 13<span>appel gratuit</span></a>
+<a class="btn btn-red" href="Halles-Contact.dc.html" style="{{ cta }}">Plan 3D offert</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div>
+</div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="mnav" aria-label="Navigation mobile">
+<a href="Halles-Lignes.dc.html">Lignes</a>
+<a href="Halles-Secteurs.dc.html">Secteurs</a>
+<a href="Halles-Realisations.dc.html">Réalisations</a>
+<a href="Halles-Contact.dc.html">Showroom &amp; contact</a>
+<a href="tel:0800951313">0 800 95 13 13</a>
+<a href="Halles-Contact.dc.html">Plan 3D offert</a>
+</nav>
+</sc-if>
+</header>
+
+<section>
+<div class="wrap">
+<nav class="crumb" aria-label="Fil d'Ariane"><a href="Halles-Accueil.dc.html">Accueil</a><span aria-hidden="true">/</span><a href="Halles-Lignes.dc.html">Lignes</a><span aria-hidden="true">/</span><a href="Halles-Lignes.dc.html">Stone</a><span aria-hidden="true">/</span><span>Module Gourmandise</span></nav>
+<div class="prod">
+<!-- visuel -->
+<div class="stage rise">
+<span class="stage-grid" aria-hidden="true"></span>
+<div class="stage-bar">
+<div class="seg" role="group" aria-label="Type de visuel">
+<button type="button" style="{{ vDraw }}" onClick="{{ showDraw }}">Dessin coté</button>
+<button type="button" style="{{ vPhoto }}" onClick="{{ showPhoto }}">Photo d'ambiance</button>
+</div>
+<span class="slate">{{ c.len }} · {{ c.tempShort }}</span>
+</div>
+<div class="draw" aria-label="Dessin de la vitrine Gourmandise à la longueur choisie">
+<div class="gm" style="{{ gmStyle }}">
+<div class="gm-glass" style="{{ glassStyle }}"><div class="gm-prods"><sc-for list="{{ prods }}" as="p" hint-placeholder-count="8"><span class="gm-pr" style="{{ p.style }}"></span></sc-for></div></div>
+<div class="gm-top" style="{{ finStyle }}"></div>
+<div class="gm-body" style="{{ finStyle }}"><span class="gm-pil" style="{{ finStyle }}"></span><span class="gm-mid">groupe logé · froid ventilé</span><span class="gm-pil" style="{{ finStyle }}"></span></div>
+<div class="gm-foot" style="{{ finStyle }}"></div>
+<div class="gm-h"><b>80 + 25 h</b></div>
+<div class="gm-dim"><i style="left:0"></i><i style="right:0"></i><b>{{ c.len }}</b></div>
+</div>
+</div>
+<div class="stage-ph" style="{{ phStyle }}"><img src="assets/vitrine-glass-pastry.webp" alt="Vitrine vitrée garnie de pâtisseries (photo d'ambiance)"></div>
+<span class="stage-cap lora muted" style="font-size:13px">Dessin indicatif, proportions selon la longueur choisie.</span>
+</div>
+
+<!-- configurateur -->
+<div class="cfg rise d1">
+<div style="display:flex;flex-wrap:wrap;gap:8px"><span class="sign" style="background:#1C1B19;color:#F7F5F0">Ligne Stone</span><span class="sign" style="background:#ECE8DF;color:#1C1B19">Exposition centrale</span></div>
+<h1 class="p-name">Gourmandise</h1>
+<p class="p-lead">Exposition centrale à hauteur du plan de travail, vitrages coulissants des 2 côtés : pâtisseries, macarons ou chocolats. Profondeur d'exposition 60 cm.</p>
+
+<div class="cfg-g">
+<p class="cfg-l">Longueur <em>{{ c.len }}</em></p>
+<div class="lens" role="group" aria-label="Longueur">
+<sc-for list="{{ lens }}" as="l" hint-placeholder-count="7"><button type="button" class="chip" style="{{ l.style }}" onClick="{{ l.pick }}" aria-pressed="{{ l.sel }}">{{ l.n }}</button></sc-for>
+</div>
+</div>
+
+<div class="cfg-g">
+<p class="cfg-l">Température <em>selon vos produits</em></p>
+<div class="temps" role="group" aria-label="Plage de température">
+<sc-for list="{{ temps }}" as="t" hint-placeholder-count="2"><button type="button" class="tp" style="{{ t.style }}" onClick="{{ t.pick }}" aria-pressed="{{ t.sel }}"><span>{{ t.sector }}</span><b>{{ t.n }}</b></button></sc-for>
+</div>
+</div>
+
+<div class="cfg-g">
+<p class="cfg-l">Finition <em>{{ c.fin }}</em></p>
+<div class="fins" role="group" aria-label="Finition">
+<sc-for list="{{ fins }}" as="f" hint-placeholder-count="3"><button type="button" class="fin" style="{{ f.style }}" onClick="{{ f.pick }}" aria-pressed="{{ f.sel }}"><i style="{{ f.sw }}"></i>{{ f.n }}</button></sc-for>
+</div>
+</div>
+
+<div class="recap" aria-live="polite">
+<div class="recap-r"><span>Module</span><b>Gourmandise · Stone</b></div>
+<div class="recap-r"><span>Longueur</span><b>{{ c.len }}</b></div>
+<div class="recap-r"><span>Température</span><b>{{ c.temp }}</b></div>
+<div class="recap-r"><span>Finition</span><b>{{ c.fin }}</b></div>
+<div class="price"><sc-for list="{{ priceList }}" as="pr" hint-placeholder-count="1"><b>{{ pr.v }}</b><small>{{ pr.note }}</small></sc-for></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+<a class="btn btn-red" href="#demande" style="{{ cta }}">Demander ce module <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a class="btn btn-ghost" href="Halles-Contact.dc.html">Plan 3D offert</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ONGLETS -->
+<section class="sec" style="padding-bottom:0">
+<div class="wrap">
+<div class="tabs" role="tablist" aria-label="Fiche technique">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button type="button" class="tab" role="tab" style="{{ t.style }}" onClick="{{ t.pick }}" aria-selected="{{ t.sel }}">{{ t.n }}</button></sc-for>
+</div>
+
+<sc-if value="{{ isDesc }}" hint-placeholder-val="{{ true }}">
+<div class="tpane two">
+<h2 class="sec-h" style="font-size:clamp(34px,4vw,58px)">La vitrine <span class="lora">qu'on fait le tour.</span></h2>
+<div>
+<p>Le module Gourmandise expose vos produits au centre de la boutique, à hauteur du plan de travail. Ses vitrages coulissent des deux côtés : on sert d'un côté, on présente de l'autre.</p>
+<p style="margin-top:16px">Deux plages au choix : <strong>+2 °C / +8 °C</strong> pour les pâtisseries et macarons, <strong>+14 °C / +18 °C</strong> pour les chocolats. Six longueurs de 101 à 222 cm, ou sur mesure.</p>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCar }}" hint-placeholder-val="{{ false }}">
+<div class="tpane">
+<p class="lora muted" style="margin-bottom:18px;font-size:16px">Caractéristiques du modèle 101 cm.</p>
+<div class="specs">
+<sc-for list="{{ specs }}" as="s" hint-placeholder-count="9"><div class="spec"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7538" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><span>{{ s.n }}</span></div></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDim }}" hint-placeholder-val="{{ false }}">
+<div class="tpane dims">
+<div class="dim-r"><span>Longueur</span><span>Dimensions extérieures</span><span>Exposition</span><span>Prix HT</span></div>
+<sc-for list="{{ dimRows }}" as="d" hint-placeholder-count="7"><div class="dim-r" style="{{ d.style }}"><b>{{ d.n }}</b><span>{{ d.ext }}</span><span>{{ d.expo }}</span><span>{{ d.prix }}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</section>
+
+<!-- FORMULAIRE -->
+<section class="sec" id="demande">
+<div class="wrap form-w">
+<div>
+<span class="eyebrow muted">Demande d'informations</span>
+<h2 class="sec-h" style="margin-top:14px;font-size:clamp(36px,4.4vw,64px)">Parlons <span class="lora">de votre comptoir.</span></h2>
+<p class="muted" style="margin-top:18px;font-size:17px;line-height:1.6">Votre configuration est reprise dans le formulaire. Les champs marqués * sont obligatoires.</p>
+<div class="slate" style="margin-top:24px">Gourmandise · {{ c.len }} · {{ c.tempShort }}</div>
+<p style="margin-top:24px;font-size:15px">Ou directement : <a href="tel:0800951313" style="font-weight:800;color:#1C1B19">0 800 95 13 13</a> <span class="lora muted">(appel gratuit)</span></p>
+</div>
+<form class="form" onSubmit="{{ submit }}" novalidate="novalidate">
+<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+<div class="ok" role="status"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg><div><p style="font-weight:800;font-size:18px">Merci {{ f.nom }}, demande prête.</p><p style="margin-top:4px">Prototype — rien n'est envoyé.</p></div></div>
+</sc-if>
+<div class="fld"><label for="g-prod">Produit</label><input id="g-prod" type="text" value="Gourmandise — Ligne Stone" readonly="readonly"></div>
+<div class="fld"><label for="g-mod">Modèle</label>
+<select id="g-mod" onChange="{{ setModel }}" value="{{ c.lenId }}">
+<option value="101">101 cm</option>
+<option value="117">117 cm</option>
+<option value="146">146 cm</option>
+<option value="169">169 cm</option>
+<option value="191">191 cm</option>
+<option value="222">222 cm</option>
+<option value="mesure">Sur mesure</option>
+</select></div>
+<div class="fld"><label for="g-nom">Nom *</label><input id="g-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ setNom }}"><sc-if value="{{ e.nom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+<div class="fld"><label for="g-tel">Téléphone *</label><input id="g-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ setTel }}"><sc-if value="{{ e.tel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un téléphone.</span></sc-if></div>
+<div class="fld"><label for="g-mail">Email *</label><input id="g-mail" type="email" autocomplete="email" value="{{ f.email }}" onInput="{{ setEmail }}"><sc-if value="{{ e.email }}" hint-placeholder-val="{{ false }}"><span class="err">Email invalide.</span></sc-if></div>
+<div class="fld"><label for="g-sec">Secteur d'activité</label>
+<select id="g-sec" onChange="{{ setSec }}" value="{{ f.sec }}">
+<option value="">Choisir…</option>
+<option>Boulangerie</option><option>Pâtisserie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+</select></div>
+<div class="fld"><label for="g-cp">Code postal</label><input id="g-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ setCp }}"></div>
+<div class="fld"><label for="g-ville">Ville</label><input id="g-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ setVille }}"></div>
+<div class="fld full"><label for="g-msg">Message *</label><textarea id="g-msg" value="{{ f.msg }}" onInput="{{ setMsg }}"></textarea><sc-if value="{{ e.msg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez quelques mots sur votre projet.</span></sc-if></div>
+<div class="fld full" style="flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px"><span class="lora muted" style="font-size:14px">Prototype : aucune donnée n'est transmise.</span><button type="submit" class="btn btn-red" style="{{ cta }}">Envoyer la demande</button></div>
+</form>
+</div>
+</section>
+
+<!-- ASSOCIÉS -->
+<section class="sec" style="padding-top:0">
+<div class="wrap">
+<div class="sec-head"><div><span class="eyebrow muted">Même ligne, même comptoir</span><h2 class="sec-h" style="margin-top:14px">Modules <span class="lora">associés.</span></h2></div><a class="btn btn-ghost" href="Halles-Lignes.dc.html">Toute la ligne Stone</a></div>
+<div class="assoc">
+<sc-for list="{{ assoc }}" as="a" hint-placeholder-count="4">
+<a class="as" href="Halles-Module.dc.html"><div><h3>{{ a.n }}</h3><p>{{ a.s }}</p></div><span style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="as-t">{{ a.t }}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</sc-for>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="awning" aria-hidden="true"><span style="background:#D9A866"></span><span style="background:#D98C8C"></span><span style="background:#5A3A2C"></span><span style="background:#C8B79C"></span><span style="background:#9AA27A"></span><span style="background:#3F6C8C"></span><span style="background:#4A7538"></span><span style="background:#E0A23B"></span><span style="background:#E3B85C"></span><span style="background:#6E2E3A"></span><span style="background:#B9A3D0"></span><span style="background:#3A2A22"></span><span style="background:#B4502E"></span></div>
+<div class="ft"><div class="wrap">
+<div class="ft-grid">
+<div><a class="logo logo-inv" href="Halles-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span><span class="logo-bar"></span></a><p class="ft-p">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p></div>
+<div><p class="ft-h">Navigation</p><a class="ft-l" href="Halles-Lignes.dc.html">Lignes d'agencement</a><a class="ft-l" href="Halles-Secteurs.dc.html">Secteurs d'activité</a><a class="ft-l" href="Halles-Realisations.dc.html">Réalisations</a><a class="ft-l" href="Halles-Contact.dc.html">Showroom &amp; contact</a></div>
+<div><p class="ft-h">Bureau d'études &amp; show-room</p><p class="ft-addr">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p><a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a><p class="ft-small">Appel gratuit · Horaires [HORAIRES]</p></div>
+<div><p class="ft-h">Informations</p><a class="ft-l" href="#">Mentions légales</a><a class="ft-l" href="#">Conditions de vente</a><a class="ft-l" href="#">Plan du site</a><a class="ft-l" href="#">Gestion des cookies</a></div>
+</div>
+<div class="ft-bot"><span>© RGTE — R.G. Technologies</span><span>Proposition de refonte — concept, non officiel · Direction Halles</span><a href="Main.dc.html">Toutes les propositions</a></div>
+</div></div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3600},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1B19","#3F6C8C"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { len: '101', temp: 'p', fin: 'blanc', view: 'draw', tab: 'desc', menu: false, sent: false, tried: false,
+      nom: '', tel: '', email: '', sec: '', cp: '', ville: '', msg: '' };
+  }
+  renderVals() {
+    const st = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const LENS = ['101','117','146','169','191','222','mesure'];
+    const lenLabel = id => id === 'mesure' ? 'Sur mesure' : id + ' cm';
+    const TEMPS = [
+      { id:'p', n:'+2 / +8 °C', sector:'Pâtisserie · macarons', bg:'#D98C8C', fg:'#1C1B19', glass:'rgba(217,140,140,.28)', prods:['#D98C8C','#E3B85C','#F2EFE8','#B9A3D0','#9AA27A'] },
+      { id:'c', n:'+14 / +18 °C', sector:'Chocolats', bg:'#5A3A2C', fg:'#F7F5F0', glass:'rgba(90,58,44,.22)', prods:['#5A3A2C','#3A2A22','#7A4E3A','#2B1E18'] }
+    ];
+    const FINS = [
+      { id:'blanc', n:'Pierre acrylique blanche', c:'#F2EFE8' },
+      { id:'c1', n:'[COLORIS] clair', c:'#CDBFA8' },
+      { id:'c2', n:'[COLORIS] foncé', c:'#3B3A37' }
+    ];
+    const t = TEMPS.find(x => x.id === st.temp) || TEMPS[0];
+    const fin = FINS.find(x => x.id === st.fin) || FINS[0];
+    const lenN = st.len === 'mesure' ? 240 : parseInt(st.len, 10);
+    const widthPct = st.len === 'mesure' ? 96 : Math.round(lenN / 240 * 96);
+    const nProds = Math.max(4, Math.round(lenN / 17));
+    const prods = [];
+    for (let i = 0; i < nProds; i++) prods.push({ style: 'background:' + t.prods[i % t.prods.length] + ';box-shadow:inset 0 0 0 1px rgba(28,27,25,.15)' });
+    const priced = st.len === '101' && st.fin === 'blanc';
+    const priceList = [ priced
+      ? { v: '5 800,00 € HT', note: 'Modèle 101 cm, pierre acrylique blanche.' }
+      : { v: 'Sur devis', note: st.len === '101' ? 'Autre coloris : [PRIX] sur devis.' : 'Autres longueurs : [PRIX] sur devis.' } ];
+    const set = k => e => this.setState({ [k]: e.target.value });
+    const f = { nom: st.nom, tel: st.tel, email: st.email, sec: st.sec, cp: st.cp, ville: st.ville, msg: st.msg };
+    const bad = {
+      nom: !st.nom.trim(), tel: !st.tel.trim(),
+      email: !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(st.email.trim()), msg: !st.msg.trim()
+    };
+    const e = { nom: st.tried && bad.nom, tel: st.tried && bad.tel, email: st.tried && bad.email, msg: st.tried && bad.msg };
+    const TABS = [['desc','Description'],['car','Caractéristiques'],['dim','Dimensions']];
+    const SPECS = ['Piliers et plan de travail en pierre acrylique blanche','Monté sur pied en pierre acrylique blanche','Groupe logé','Froid ventilé','Fréon R134A','Contrôle électronique de la température','Dégivrage automatique','Ré-évaporation automatique des eaux de condensation','Sans réserve réfrigérée','Dimensions extérieures 101 × 80 × 80 + 25 h','Exposition en verre 81 × 60 cm','Vitrages coulissants des 2 côtés'];
+    const dimRows = LENS.map(id => ({
+      n: lenLabel(id),
+      ext: id === '101' ? '101 × 80 × 80 + 25 h' : (id === 'mesure' ? 'Selon votre local' : '[DIMENSIONS]'),
+      expo: id === '101' ? '81 × 60 cm' : (id === 'mesure' ? 'Profondeur 60 cm' : '[EXPOSITION] × 60 cm'),
+      prix: id === '101' ? '5 800,00 €' : 'Sur devis',
+      style: id === st.len ? 'background:#F2EEE6;box-shadow:inset 4px 0 0 #1C1B19' : ''
+    }));
+    return {
+      cta: 'background:' + acc,
+      menuOpen: st.menu,
+      toggleMenu: () => this.setState({ menu: !st.menu }),
+      vDraw: st.view === 'draw' ? 'background:#1C1B19;color:#F7F5F0' : 'background:transparent;color:#1C1B19',
+      vPhoto: st.view === 'photo' ? 'background:#1C1B19;color:#F7F5F0' : 'background:transparent;color:#1C1B19',
+      showDraw: () => this.setState({ view: 'draw' }),
+      showPhoto: () => this.setState({ view: 'photo' }),
+      phStyle: st.view === 'photo' ? 'opacity:1;visibility:visible' : 'opacity:0;visibility:hidden',
+      gmStyle: 'width:' + widthPct + '%' + (st.len === 'mesure' ? ';outline:2px dashed rgba(28,27,25,.45);outline-offset:10px' : ''),
+      glassStyle: 'background:' + t.glass,
+      finStyle: 'background:' + fin.c,
+      prods,
+      c: { len: lenLabel(st.len), lenId: st.len, temp: t.n + ' — ' + t.sector, tempShort: t.n, fin: fin.n },
+      lens: LENS.map(id => ({ n: id === 'mesure' ? 'Sur mesure' : id, sel: id === st.len ? 'true' : 'false',
+        pick: () => this.setState({ len: id }),
+        style: (id === st.len ? 'background:#1C1B19;color:#F7F5F0;box-shadow:none' : '') + (id === 'mesure' ? ';grid-column:span 2' : '') })),
+      temps: TEMPS.map(x => ({ n: x.n, sector: x.sector, sel: x.id === st.temp ? 'true' : 'false',
+        pick: () => this.setState({ temp: x.id }),
+        style: 'background:' + x.bg + ';color:' + x.fg + ';' + (x.id === st.temp ? 'box-shadow:0 0 0 3px #F7F5F0,0 0 0 5px #1C1B19' : 'box-shadow:inset 0 0 0 1px rgba(28,27,25,.15)') })),
+      fins: FINS.map(x => ({ n: x.n, sel: x.id === st.fin ? 'true' : 'false', pick: () => this.setState({ fin: x.id }),
+        sw: 'background:' + x.c, style: x.id === st.fin ? 'box-shadow:inset 0 0 0 2px #1C1B19' : 'box-shadow:inset 0 0 0 1px #D8D2C6' })),
+      priceList,
+      tabs: TABS.map(x => ({ n: x[1], sel: x[0] === st.tab ? 'true' : 'false', pick: () => this.setState({ tab: x[0] }),
+        style: x[0] === st.tab ? 'box-shadow:inset 0 -3px 0 #D42A20' : 'color:#5C574F' })),
+      isDesc: st.tab === 'desc', isCar: st.tab === 'car', isDim: st.tab === 'dim',
+      specs: SPECS.map(n => ({ n })),
+      dimRows,
+      f, e, sent: st.sent,
+      setNom: set('nom'), setTel: set('tel'), setEmail: set('email'), setSec: set('sec'), setCp: set('cp'), setVille: set('ville'), setMsg: set('msg'),
+      setModel: ev => this.setState({ len: ev.target.value }),
+      submit: ev => {
+        ev.preventDefault();
+        const ok = !bad.nom && !bad.tel && !bad.email && !bad.msg;
+        this.setState({ tried: true, sent: ok });
+      },
+      assoc: [
+        { n:'Réfrigérée Centrale', s:'Exposition centrale, vitrages coulissants des 2 côtés, profondeur 60 cm.', t:'+2/+8 ou +14/+18 °C' },
+        { n:'Réfrigérée Plane', s:'Exposition à hauteur du plan de travail, profondeur 53 ou 60 cm.', t:'+2/+8 ou +14/+18 °C' },
+        { n:'Réfrigérée Vision', s:'Exposition 8 cm sous le plan de travail, profondeur 53 ou 60 cm.', t:'+2/+8 ou +14/+18 °C' },
+        { n:'Comptoir caisse', s:'Tout commerce, avec ou sans tablette PMR.', t:'Neutre' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Halles — Secteurs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<style>
+body{margin:0;background:#F7F5F0}
+sc-for,sc-if{display:contents}
+.h{font-family:'Epilogue',system-ui,sans-serif;color:#1C1B19;background:#F7F5F0;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.h *,.h *::before,.h *::after{box-sizing:border-box}
+.h img{display:block;max-width:100%}
+.h p{margin:0}
+.h h1,.h h2,.h h3,.h h4{margin:0;font-weight:800;letter-spacing:-.03em;line-height:.98}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.lora{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:0}
+.muted{color:#5C574F}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.slate{display:inline-flex;align-items:center;gap:8px;background:#22211E;color:#F7F5F0;font-family:'Lora',Georgia,serif;font-style:italic;font-size:15px;line-height:1.2;padding:8px 14px 9px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(247,245,240,.25),inset 0 0 0 4px #22211E,inset 0 0 0 5px rgba(247,245,240,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;font-family:inherit;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:transform .25s,filter .25s,box-shadow .25s,background .25s,color .25s}
+.btn-red{background:#D42A20;color:#FFFFFF}
+.btn-red:hover{filter:brightness(.9);transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(212,42,32,.8)}
+.btn-ghost{background:transparent;color:#1C1B19;box-shadow:inset 0 0 0 1.5px #1C1B19}
+.btn-ghost:hover{background:#1C1B19;color:#F7F5F0}
+.btn-light{background:#F7F5F0;color:#1C1B19}
+.btn svg{transition:transform .25s}
+.btn:hover svg{transform:translateX(4px)}
+.h a:focus-visible,.h button:focus-visible{outline:3px solid #D42A20;outline-offset:3px}
+.sec{padding:110px 0}
+.sec-h{font-size:clamp(36px,5.2vw,76px);font-weight:900;letter-spacing:-.05em;line-height:.94}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes clipin{from{clip-path:inset(0 0 100% 0);transform:translateY(30%)}to{clip-path:inset(0 0 0 0);transform:none}}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.14) translate(-1.5%,-1%)}}
+@keyframes tick{to{transform:translateX(-50%)}}
+@keyframes swing{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rise{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+.ln-clip{display:block;animation:clipin 1s cubic-bezier(.7,0,.2,1) both}
+/* header */
+.topbar{background:#1C1B19;color:#F7F5F0;font-size:13px}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:40px}
+.tb-l,.tb-r{display:inline-flex;align-items:center;gap:10px}
+.tb-r{gap:22px}
+.tb-link{color:#F7F5F0;text-underline-offset:3px;min-height:40px;display:inline-flex;align-items:center}
+.hd{position:sticky;top:0;z-index:50;background:rgba(247,245,240,.94);backdrop-filter:blur(10px);border-bottom:1px solid #E4DFD5}
+.hd-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:84px}
+.logo{display:inline-grid;text-decoration:none;color:#1C1B19;line-height:1}
+.logo-w{font-weight:900;font-size:30px;letter-spacing:-.06em}
+.logo-w::after{content:"";display:inline-block;width:.22em;height:.22em;background:#D42A20;margin-left:.07em}
+.logo-s{font-family:'Lora',Georgia,serif;font-style:italic;font-size:13px;margin-top:3px;color:#5C574F}
+.logo-bar{height:4px;margin-top:7px;border-radius:2px;background:linear-gradient(90deg,#D9A866 0 7.7%,#D98C8C 0 15.4%,#5A3A2C 0 23.1%,#C8B79C 0 30.8%,#9AA27A 0 38.5%,#3F6C8C 0 46.2%,#4A7538 0 53.8%,#E0A23B 0 61.5%,#E3B85C 0 69.2%,#6E2E3A 0 76.9%,#B9A3D0 0 84.6%,#3A2A22 0 92.3%,#B4502E 0 100%)}
+.navd{display:flex;gap:2px}
+.nav-a{min-height:44px;display:inline-flex;align-items:center;padding:0 16px;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;color:#1C1B19;transition:background .2s,color .2s}
+.nav-a:hover{background:#ECE8DF}
+.nav-a.on{background:#1C1B19;color:#F7F5F0}
+.hd-r{display:flex;align-items:center;gap:16px}
+.hd-tel{display:inline-flex;flex-direction:column;justify-content:center;min-height:44px;text-decoration:none;color:#1C1B19;font-weight:800;font-size:16px;line-height:1.15}
+.hd-tel span{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:400;font-size:12px;color:#5C574F}
+.burger{display:none;width:48px;height:48px;border-radius:999px;border:0;background:#1C1B19;color:#F7F5F0;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+@media (max-width:1100px){.hd-tel{display:none}}
+@media (max-width:920px){.navd{display:none}.burger{display:inline-flex}.mnav{display:grid;padding:4px 32px 24px;border-top:1px solid #E4DFD5}.mnav a{min-height:56px;display:flex;align-items:center;font-weight:800;font-size:22px;letter-spacing:-.02em;text-decoration:none;color:#1C1B19;border-bottom:1px solid #E4DFD5}.tb-hide{display:none}}
+@media (max-width:560px){.wrap{padding:0 16px}.hd-r .btn{display:none}.mnav{padding:4px 16px 20px}.sec{padding:72px 0}}
+/* footer */
+.awning{display:flex;height:26px}
+.awning span{flex:1;border-radius:0 0 999px 999px}
+.ft{background:#1C1B19;color:#F7F5F0;padding:72px 0 28px}
+.ft-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ft-h{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#B5AFA4;margin-bottom:14px !important}
+.ft a{color:#F7F5F0;text-decoration:none}
+.ft-l{display:flex;align-items:center;min-height:40px;font-size:15px}
+.ft-l:hover{text-decoration:underline;text-underline-offset:4px}
+.ft-addr{font-size:15px;line-height:1.6;color:#E4DFD5}
+.ft-tel{display:inline-flex;min-height:44px;align-items:center;font-size:30px;font-weight:900;letter-spacing:-.04em;margin-top:10px}
+.ft-small{font-family:'Lora',Georgia,serif;font-style:italic;font-size:14px;color:#B5AFA4}
+.logo-inv{color:#F7F5F0}
+.logo-inv .logo-s{color:#B5AFA4}
+.ft-p{margin-top:18px !important;max-width:280px;font-size:15px;line-height:1.6;color:#B5AFA4}
+.ft-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-top:56px;padding-top:22px;border-top:1px solid #3A3833;font-size:13px;color:#B5AFA4}
+.ft-bot a{color:#F7F5F0;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+/* page */
+.pg-hero{padding:64px 0 44px}
+.crumb{display:flex;gap:8px;align-items:center;font-size:14px;color:#5C574F;margin-bottom:24px}
+.crumb a{color:#5C574F;min-height:44px;display:inline-flex;align-items:center}
+.h1{font-size:clamp(44px,7.2vw,112px);font-weight:900;letter-spacing:-.058em;line-height:.9}
+.pg-top{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px;align-items:end}
+.pg-top p{font-size:18px;line-height:1.6;color:#3D3A35}
+@media (max-width:900px){.pg-top{grid-template-columns:1fr;gap:20px}}
+.wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:10px;margin-top:44px}
+.st{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-height:132px;padding:14px 16px 16px;border:0;border-radius:16px;font-family:inherit;text-align:left;cursor:pointer;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .35s,filter .35s}
+.st:hover{transform:translateY(-5px) rotate(-.6deg)}
+.st-top{display:flex;justify-content:space-between;align-items:center}
+.st-no{font-size:12px;font-weight:800;letter-spacing:.14em}
+.st-n{font-size:21px;font-weight:800;letter-spacing:-.035em;line-height:1}
+.st-t{font-family:'Lora',Georgia,serif;font-style:italic;font-size:14px;margin-top:4px}
+.st-ck{width:26px;height:26px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;transition:opacity .3s,transform .4s}
+/* ticker */
+.tick{overflow:hidden;background:#1C1B19;color:#F7F5F0;padding:16px 0}
+.tick-track{display:flex;width:max-content;animation:tick 55s linear infinite}
+.tick:hover .tick-track{animation-play-state:paused}
+.tick-i{display:inline-flex;align-items:center;gap:14px;padding:0 26px;white-space:nowrap}
+.tick-n{font-weight:900;font-size:24px;letter-spacing:-.03em;text-transform:uppercase}
+.tick-t{font-family:'Lora',Georgia,serif;font-style:italic;font-size:16px;color:#B5AFA4}
+.tick-d{width:14px;height:14px;border-radius:3px;transform:rotate(45deg)}
+/* étal détail */
+.etal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:0;border-radius:28px;overflow:hidden;min-height:640px}
+.etal-ph{position:relative;min-height:640px;background:#1C1B19;overflow:hidden}
+.etal-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .8s ease}
+.etal-ph img.kb{animation:kb 18s ease-in-out infinite alternate}
+.hang{position:absolute;top:0;left:40px;display:flex;flex-direction:column;align-items:center;transform-origin:top center;animation:swing 4s ease-in-out infinite;z-index:2}
+.hang i{width:2px;height:46px;background:#E4DFD5}
+.hang .slate{font-size:20px;padding:14px 22px 15px}
+.etal-c{padding:48px;display:flex;flex-direction:column;gap:26px;transition:background .7s ease,color .7s ease}
+.etal-n{font-size:clamp(46px,5.6vw,92px);font-weight:900;letter-spacing:-.065em;line-height:.88;animation:pop .6s cubic-bezier(.2,.7,.2,1) both}
+.etal-d{font-size:17px;line-height:1.6;max-width:520px}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.sc{display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:84px;padding:10px 12px;border-radius:12px;font-size:12px;font-weight:700;transition:background .5s,color .5s,transform .5s}
+.sc b{font-size:16px;font-weight:900;letter-spacing:-.02em}
+.lab{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px !important;opacity:.85}
+.mods{display:flex;flex-wrap:wrap;gap:8px}
+.mchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:700;text-decoration:none;transition:transform .25s,background .25s}
+.mchip:hover{transform:translateY(-2px)}
+.rlist{display:grid;gap:6px}
+.rl{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:0 16px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;transition:transform .25s,background .25s}
+.rl:hover{transform:translateX(6px)}
+.rl em{font-family:'Lora',Georgia,serif;font-weight:400;font-size:14px}
+.nav2{display:flex;gap:8px;margin-top:auto}
+.nav2 button{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border:0;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:transform .25s}
+.nav2 button:hover{transform:translateY(-2px)}
+@media (max-width:980px){.etal{grid-template-columns:1fr}.etal-ph{min-height:360px}.etal-c{padding:28px 20px}}
+@media (max-width:560px){.scale{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* cta */
+.cta{background:#1C1B19;color:#F7F5F0;border-radius:28px;padding:64px 56px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:32px}
+.cta h2{font-size:clamp(34px,4.6vw,64px);font-weight:900;letter-spacing:-.05em;line-height:.95;color:#F7F5F0;max-width:720px}
+@media (max-width:700px){.cta{padding:40px 22px}}
+@media (prefers-reduced-motion:reduce){.h *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="h">
+
+<div class="topbar"><div class="wrap">
+<span class="tb-l"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>Numéro vert <strong>0 800 95 13 13</strong> — appel gratuit</span>
+<span class="tb-r"><span class="tb-hide">Bureau d'études &amp; show-room · Puget-sur-Argens (83)</span><a class="tb-link" href="Main.dc.html">Toutes les propositions</a></span>
+</div></div>
+
+<header class="hd">
+<div class="wrap hd-in">
+<a class="logo" href="Halles-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span><span class="logo-bar"></span></a>
+<nav class="navd" aria-label="Navigation principale">
+<a class="nav-a" href="Halles-Lignes.dc.html">Lignes</a>
+<a class="nav-a on" href="Halles-Secteurs.dc.html" aria-current="page">Secteurs</a>
+<a class="nav-a" href="Halles-Realisations.dc.html">Réalisations</a>
+<a class="nav-a" href="Halles-Contact.dc.html">Showroom &amp; contact</a>
+</nav>
+<div class="hd-r">
+<a class="hd-tel" href="tel:0800951313">0 800 95 13 13<span>appel gratuit</span></a>
+<a class="btn btn-red" href="Halles-Contact.dc.html" style="{{ cta }}">Plan 3D offert</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div>
+</div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="mnav" aria-label="Navigation mobile">
+<a href="Halles-Lignes.dc.html">Lignes</a>
+<a href="Halles-Secteurs.dc.html">Secteurs</a>
+<a href="Halles-Realisations.dc.html">Réalisations</a>
+<a href="Halles-Contact.dc.html">Showroom &amp; contact</a>
+<a href="tel:0800951313">0 800 95 13 13</a>
+<a href="Halles-Contact.dc.html">Plan 3D offert</a>
+</nav>
+</sc-if>
+</header>
+
+<section class="pg-hero">
+<div class="wrap">
+<nav class="crumb" aria-label="Fil d'Ariane"><a href="Halles-Accueil.dc.html">Accueil</a><span aria-hidden="true">/</span><span>Secteurs d'activité</span></nav>
+<div class="pg-top">
+<h1 class="h1"><span class="ln-clip">Treize étals,</span><span class="ln-clip d1 lora">treize froids.</span></h1>
+<p class="rise d2">Chaque métier a sa couleur, sa température et ses modules. Choisissez votre étal : la fiche s'ouvre juste en dessous.</p>
+</div>
+<div class="wall" role="group" aria-label="Choisir un secteur">
+<sc-for list="{{ wall }}" as="s" hint-placeholder-count="13">
+<button type="button" class="st" style="{{ s.style }}" onClick="{{ s.pick }}" aria-pressed="{{ s.sel }}">
+<span class="st-top"><span class="st-no">N°{{ s.no }}</span><span class="st-ck" style="{{ s.ck }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span></span>
+<span><span class="st-n" style="display:block">{{ s.n }}</span><span class="st-t" style="display:block">{{ s.t }}</span></span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+
+<div class="tick" aria-hidden="true">
+<div class="tick-track">
+<sc-for list="{{ tick }}" as="k" hint-placeholder-count="13"><span class="tick-i"><span class="tick-d" style="{{ k.dot }}"></span><span class="tick-n">{{ k.n }}</span><span class="tick-t">{{ k.t }}</span></span></sc-for>
+<sc-for list="{{ tick }}" as="k" hint-placeholder-count="13"><span class="tick-i"><span class="tick-d" style="{{ k.dot }}"></span><span class="tick-n">{{ k.n }}</span><span class="tick-t">{{ k.t }}</span></span></sc-for>
+</div>
+</div>
+
+<!-- ÉTAL SÉLECTIONNÉ -->
+<section class="sec" style="padding-top:80px">
+<div class="wrap">
+<div class="etal" aria-live="polite">
+<div class="etal-ph">
+<sc-for list="{{ photos }}" as="p" hint-placeholder-count="13"><img class="kb" src="{{ p.img }}" alt="{{ p.alt }}" style="{{ p.style }}"></sc-for>
+<div class="hang" aria-hidden="true"><i></i><span class="slate">{{ cur.n }} · {{ cur.t }}</span></div>
+</div>
+<div class="etal-c" style="{{ cur.panel }}">
+<sc-for list="{{ curList }}" as="c" hint-placeholder-count="1">
+<div>
+<span class="eyebrow">Secteur N°{{ c.no }}</span>
+<h2 class="etal-n" style="margin-top:10px">{{ c.n }}</h2>
+<p class="etal-d" style="margin-top:16px">{{ c.d }}</p>
+</div>
+</sc-for>
+<div>
+<p class="lab">Température</p>
+<div class="scale">
+<sc-for list="{{ scale }}" as="b" hint-placeholder-count="5"><span class="sc" style="{{ b.style }}"><b>{{ b.n }}</b>{{ b.t }}</span></sc-for>
+</div>
+<p class="lora" style="margin-top:10px;font-size:14px">{{ cur.vnote }}</p>
+</div>
+<div>
+<p class="lab">Modules conseillés</p>
+<div class="mods">
+<sc-for list="{{ mods }}" as="m" hint-placeholder-count="5"><a class="mchip" href="Halles-Module.dc.html" style="{{ m.style }}">{{ m.n }} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></sc-for>
+</div>
+</div>
+<div>
+<p class="lab">Réalisations liées · {{ cur.rcount }}</p>
+<sc-if value="{{ hasReal }}" hint-placeholder-val="{{ true }}">
+<div class="rlist">
+<sc-for list="{{ reals }}" as="r" hint-placeholder-count="3"><a class="rl" href="Halles-Realisations.dc.html" style="{{ r.style }}"><span>{{ r.t }}</span><em>Ligne {{ r.ln }}</em></a></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noReal }}" hint-placeholder-val="{{ false }}">
+<p class="lora" style="font-size:16px">Pas encore de réalisation présentée pour ce métier — [RÉALISATION À VENIR].</p>
+</sc-if>
+</div>
+<div class="nav2">
+<button type="button" style="{{ cur.btn }}" onClick="{{ prev }}" aria-label="Secteur précédent"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>{{ cur.prevN }}</button>
+<button type="button" style="{{ cur.btn }}" onClick="{{ next }}" aria-label="Secteur suivant">{{ cur.nextN }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" style="padding-top:0">
+<div class="wrap">
+<div class="cta">
+<div><span class="eyebrow" style="color:#B5AFA4">{{ cur.n }} · {{ cur.t }}</span><h2 style="margin-top:14px">Votre étal, <span class="lora">dessiné en 3D.</span></h2><p style="margin-top:16px;font-size:17px;line-height:1.6;color:#E4DFD5;max-width:520px">Le bureau d'études compose votre agencement avec les modules adaptés à votre métier et à votre local.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-red" href="Halles-Contact.dc.html" style="{{ cta }}">Demander mon plan 3D</a><a class="btn btn-light" href="Halles-Lignes.dc.html">Voir les lignes</a></div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="awning" aria-hidden="true"><span style="background:#D9A866"></span><span style="background:#D98C8C"></span><span style="background:#5A3A2C"></span><span style="background:#C8B79C"></span><span style="background:#9AA27A"></span><span style="background:#3F6C8C"></span><span style="background:#4A7538"></span><span style="background:#E0A23B"></span><span style="background:#E3B85C"></span><span style="background:#6E2E3A"></span><span style="background:#B9A3D0"></span><span style="background:#3A2A22"></span><span style="background:#B4502E"></span></div>
+<div class="ft"><div class="wrap">
+<div class="ft-grid">
+<div><a class="logo logo-inv" href="Halles-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span><span class="logo-bar"></span></a><p class="ft-p">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p></div>
+<div><p class="ft-h">Navigation</p><a class="ft-l" href="Halles-Lignes.dc.html">Lignes d'agencement</a><a class="ft-l" href="Halles-Secteurs.dc.html">Secteurs d'activité</a><a class="ft-l" href="Halles-Realisations.dc.html">Réalisations</a><a class="ft-l" href="Halles-Contact.dc.html">Showroom &amp; contact</a></div>
+<div><p class="ft-h">Bureau d'études &amp; show-room</p><p class="ft-addr">423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p><a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a><p class="ft-small">Appel gratuit · Horaires [HORAIRES]</p></div>
+<div><p class="ft-h">Informations</p><a class="ft-l" href="#">Mentions légales</a><a class="ft-l" href="#">Conditions de vente</a><a class="ft-l" href="#">Plan du site</a><a class="ft-l" href="#">Gestion des cookies</a></div>
+</div>
+<div class="ft-bot"><span>© RGTE — R.G. Technologies</span><span>Proposition de refonte — concept, non officiel · Direction Halles</span><a href="Main.dc.html">Toutes les propositions</a></div>
+</div></div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1B19","#3F6C8C"]}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = { sel: 'patisserie', menu: false }; }
+  renderVals() {
+    const st = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const R = {
+      1:['Pâtisserie — Paris 4e','Stone'], 2:['Bar à salades — Département 13','Stone'], 3:['Chocolatier — Gap & Grenoble','Stone'],
+      4:['Sandwicherie — Chamonix','Basique'], 5:['Bar à olives — Nice','Stone'], 6:['Bar à yogourt glacé — toute la France','Stone'],
+      7:['Boulangerie pâtisserie — La Réunion','Basique'], 8:['Boulangerie — Département 33','Legno'], 9:['Pizza sur composition — Paris','Stone'],
+      10:['Pâtissier chocolatier — Département 69','Stone'], 11:['Traiteur asiatique — Marseille','Stone'], 12:['Bar à couscous — Isère','Stone'],
+      13:['Traiteur poissonnier — Département 92','Stone'], 14:['Pâtissier chocolatier Canet — Nice 06','Stone']
+    };
+    const S = [
+      { id:'boulangerie', no:'01', n:'Boulangerie', bg:'#D9A866', fg:'#1C1B19', t:'Neutre · +2 / +8 °C', v:false, b:['p28','neu'], img:'assets/vitrine-viennoiserie.webp', alt:'Vitrine de viennoiseries étiquetées', mods:['Amandine','Pastry Show','Réfrigérée statique','Vitrine neutre','Loire (Industry)'], r:[7,8], d:'Viennoiseries, pains et pâtisseries : des vitrines neutres pour le sec, réfrigérées pour le frais, et la caisse au bout du comptoir.' },
+      { id:'patisserie', no:'02', n:'Pâtisserie', bg:'#D98C8C', fg:'#1C1B19', t:'+2 / +8 °C', v:true, b:['p28'], img:'assets/vitrine-colorful.webp', alt:'Entremets colorés étagés en vitrine', mods:['Plane','Vision','Panorama','Centrale','Gourmandise','Pastry Show','Cube','Amandine'], r:[1,10,14], d:'Entremets, parts et macarons exposés entre +2 et +8 °C : à hauteur du plan de travail, légèrement en contrebas, en centrale ou sur étagères.' },
+      { id:'chocolats', no:'03', n:'Chocolats', bg:'#5A3A2C', fg:'#F7F5F0', t:'+14 / +18 °C', v:true, b:['p1418'], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs', mods:['Plane','Vision','Centrale','Gourmandise'], r:[3,10,14], d:'Les bonbons de chocolat demandent +14 à +18 °C : plusieurs modules Stone proposent cette plage en alternative au +2/+8.' },
+      { id:'sandwichs', no:'04', n:'Sandwichs', bg:'#C8B79C', fg:'#1C1B19', t:'+2 / +8 °C', v:false, b:['p28'], img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir', mods:['Panoramique','Basse','Murale self-service','Nepal (Industry)'], r:[4], d:'Vente à emporter : vitrines panoramiques, basses et murales en self-service, comme pour la sandwicherie de Chamonix.' },
+      { id:'traiteur', no:'05', n:'Traiteur', bg:'#9AA27A', fg:'#1C1B19', t:'+2 / +8 · +30 / +90 °C', v:false, b:['p28','hot'], img:'assets/bakery-domes.webp', alt:'Cloches en verre sur comptoir', mods:['Plane','Saladette','Chaud bain-marie','Comptoir bar','Panorama'], r:[11,13], d:'Du froid pour les plats frais, du bain-marie pour le chaud : le traiteur combine souvent plusieurs plages sur un même comptoir.' },
+      { id:'poissonnerie', no:'06', n:'Poissonnerie', bg:'#3F6C8C', fg:'#F7F5F0', t:'−2 / 0 °C', v:true, b:['neg'], img:'assets/fish-ice.webp', alt:'Poissons exposés sur glace', mods:['Poissonnerie (Stone)','Hanoi (Industry)','Panorama','Surface plane'], r:[13], d:'Froid statique avec serpentin de cuve, de −2 à 0 °C, et vidange de cuve : le module Poissonnerie de la ligne Stone.' },
+      { id:'salades', no:'07', n:'Bar à salades', bg:'#4A7538', fg:'#F7F5F0', t:'+2 / +8 °C', v:true, b:['p28'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes en inox', mods:['Saladette','Panorama','Comptoir caisse'], r:[2], d:'Ingrédients en bacs gastronormes à +2/+8 °C dans la saladette, présentation en panorama et caisse en sortie.' },
+      { id:'couscous', no:'08', n:'Bar à couscous', bg:'#E0A23B', fg:'#1C1B19', t:'+30 / +90 °C', v:true, b:['hot'], img:'assets/bakery-hall-dark.webp', alt:'Grande halle sombre', mods:['Chaud bain-marie','Saladette'], r:[12], d:'Bain-marie de +30 à +90 °C, avec trous arrondis sur mesure comme pour le bar à couscous en Isère.' },
+      { id:'fromagerie', no:'09', n:'Fromagerie', bg:'#E3B85C', fg:'#1C1B19', t:'[TEMP]', v:false, b:[], img:'assets/fromagerie-labels.webp', alt:'Fromages étiquetés', mods:['Plane','Panorama','Réfrigérée statique'], r:[], d:'Meules, coupes et étiquettes : une composition à définir avec le bureau d\'études selon vos produits.' },
+      { id:'bar', no:'10', n:'Bar', bg:'#6E2E3A', fg:'#F7F5F0', t:'Neutre ou réfrigéré', v:true, b:['neu','p28'], img:'assets/counter-domes.webp', alt:'Comptoir en marbre avec cloches en verre', mods:['Comptoir bar','Comptoir caisse','Surface plane'], r:[], d:'Le comptoir bar existe en version neutre ou réfrigérée, à associer à une caisse et à des surfaces planes.' },
+      { id:'topping', no:'11', n:'Bar à topping', bg:'#B9A3D0', fg:'#1C1B19', t:'+2 / +8 °C', v:true, b:['p28'], img:'assets/topping-bar.webp', alt:'Bar à toppings', mods:['Saladette sur mesure','Surface plane'], r:[5,6], d:'Saladettes sur mesure à trous arrondis et surfaces planes : le principe des bars à olives et à yogourt glacé.' },
+      { id:'cafe', no:'12', n:'Coffee shop', bg:'#3A2A22', fg:'#F7F5F0', t:'Neutre · +2 / +8 °C', v:false, b:['neu','p28'], img:'assets/coffee-counter.webp', alt:'Comptoir de café en noir et blanc', mods:['Comptoir bar','Pastry Show','Cube','Comptoir caisse'], r:[], d:'Comptoir bar, vitrine à pâtisseries et caisse : un coffee shop se compose comme un comptoir de pâtissier.' },
+      { id:'pizza', no:'13', n:'Pizza al taglio', bg:'#B4502E', fg:'#F7F5F0', t:'+2 / +8 °C', v:false, b:['p28'], img:'assets/baker-table.webp', alt:'Plan de travail avec pains', mods:['Saladette','Plane','Comptoir caisse'], r:[9], d:'Garnitures en saladette, exposition en vitrine plane et caisse, comme la pizzeria sur composition à Paris.' }
+    ];
+    const i = Math.max(0, S.findIndex(s => s.id === st.sel));
+    const cur = S[i];
+    const dark = cur.fg === '#F7F5F0';
+    const prev = S[(i + S.length - 1) % S.length];
+    const next = S[(i + 1) % S.length];
+    const BANDS = [['neg','−2 / 0 °C','Statique'],['p28','+2 / +8 °C','Frais'],['p1418','+14 / +18 °C','Chocolat'],['hot','+30 / +90 °C','Bain-marie'],['neu','Neutre','Comptoirs']];
+    return {
+      cta: 'background:' + acc,
+      menuOpen: st.menu,
+      toggleMenu: () => this.setState({ menu: !st.menu }),
+      wall: S.map(s => {
+        const on = s.id === st.sel;
+        return { no: s.no, n: s.n, t: s.t, sel: on ? 'true' : 'false', pick: () => this.setState({ sel: s.id }),
+          style: 'background:' + s.bg + ';color:' + s.fg + ';' + (on ? 'transform:translateY(-8px);box-shadow:0 0 0 3px #F7F5F0,0 0 0 6px #1C1B19,0 24px 40px -24px rgba(28,27,25,.7)' : ''),
+          ck: on ? 'opacity:1;background:#F7F5F0;color:#1C1B19;transform:scale(1)' : 'opacity:0;transform:scale(.4)' };
+      }),
+      tick: S.map(s => ({ n: s.n, t: s.t, dot: 'background:' + s.bg })),
+      photos: S.map(s => ({ img: s.img, alt: s.id === st.sel ? s.alt : '', style: 'opacity:' + (s.id === st.sel ? '1' : '0') })),
+      cur: {
+        n: cur.n, t: cur.t, rcount: cur.r.length,
+        panel: 'background:' + cur.bg + ';color:' + cur.fg,
+        vnote: cur.v ? 'Plage issue des fiches modules.' : 'Température et modules à valider avec le bureau d\'études.',
+        btn: dark ? 'background:#F7F5F0;color:#1C1B19' : 'background:#1C1B19;color:#F7F5F0',
+        prevN: prev.n, nextN: next.n
+      },
+      curList: [{ no: cur.no, n: cur.n, d: cur.d }],
+      scale: BANDS.map(b => {
+        const on = cur.b.indexOf(b[0]) > -1;
+        return { n: b[1], t: b[2], style: on
+          ? (dark ? 'background:#F7F5F0;color:#1C1B19;transform:translateY(-6px)' : 'background:#1C1B19;color:#F7F5F0;transform:translateY(-6px)')
+          : (dark ? 'background:transparent;box-shadow:inset 0 0 0 1px rgba(247,245,240,.4)' : 'background:transparent;box-shadow:inset 0 0 0 1px rgba(28,27,25,.35)') };
+      }),
+      mods: cur.mods.map(n => ({ n, style: dark ? 'background:rgba(247,245,240,.14);color:#F7F5F0;box-shadow:inset 0 0 0 1px rgba(247,245,240,.35)' : 'background:rgba(255,255,255,.6);color:#1C1B19;box-shadow:inset 0 0 0 1px rgba(28,27,25,.2)' })),
+      reals: cur.r.map(k => ({ t: R[k][0], ln: R[k][1], style: dark ? 'background:rgba(247,245,240,.12);color:#F7F5F0' : 'background:rgba(255,255,255,.55);color:#1C1B19' })),
+      hasReal: cur.r.length > 0, noReal: cur.r.length === 0,
+      prev: () => this.setState({ sel: prev.id }),
+      next: () => this.setState({ sel: next.id })
+    };
+  }
+}
+</script>
+</body>
+</html>

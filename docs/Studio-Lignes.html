@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio — Lignes</title>
+<script src="vendor/preact.min.js"></script>
+<script src="dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#FAFAF8}
+sc-for,sc-if{display:contents}
+.st{--acc:#D42A20;font-family:'Onest',system-ui,sans-serif;color:#16181A;background:#FAFAF8;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.st *,.st *::before,.st *::after{box-sizing:border-box}
+.st img{display:block;max-width:100%}
+.st h1,.st h2,.st h3,.st h4,.st p{margin:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.topbar{background:#16181A;color:#B9BCB7;font-size:12px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.topbar a{color:#FAFAF8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:38px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(250,250,248,.9);-webkit-backdrop-filter:saturate(1.3) blur(14px);backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid #E2E3DF}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#16181A;min-height:44px}
+.logo-glyph{display:flex;align-items:flex-end;gap:2px;height:24px}
+.logo-glyph i{display:block;width:7px;border-radius:1px;background:#16181A}
+.logo-word{display:block;font-weight:800;font-size:25px;letter-spacing:-.045em;line-height:1}
+.logo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-top:4px;line-height:1}
+.nav{display:flex;gap:2px;background:#ECEDEA;padding:4px;border-radius:999px}
+.nav-a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;color:#5B6066;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s}
+.nav-a:hover{color:#16181A;background:rgba(255,255,255,.65)}
+.nav-a.on{background:#fff;color:#16181A;box-shadow:0 1px 3px rgba(22,24,26,.1)}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#16181A;min-height:44px}
+.tel-ico{width:38px;height:38px;border-radius:50%;background:#D8EDE3;display:grid;place-items:center;flex:none}
+.tel b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;line-height:1.15}
+.tel small{display:block;font-size:11px;color:#5B6066;line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:0;font:600 15px/1 'Onest',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,color .2s}
+.btn svg{transition:transform .25s ease;flex:none}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 12px 26px -12px var(--acc)}
+.btn-ink{background:#16181A;color:#FAFAF8}
+.btn-ink:hover{transform:translateY(-1px);box-shadow:0 12px 26px -14px #16181A}
+.btn-ghost{background:transparent;color:#16181A;box-shadow:inset 0 0 0 1px #C4C6C1}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px #16181A}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid #D5D7D2;background:#fff;align-items:center;justify-content:center;cursor:pointer;color:#16181A}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:0 16px;border-radius:12px;background:#ECEDEA;text-decoration:none;color:#16181A;font-weight:600}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#5B6066}
+.eyebrow i{width:8px;height:8px;border-radius:2px;background:var(--acc);display:block}
+.h2{font-size:clamp(32px,4.4vw,60px);line-height:1.02;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.4vw,19px);color:#5B6066;line-height:1.55}
+.sec{padding:120px 0}
+.ftr{background:#ECEDEA;padding:80px 0 28px}
+.ftr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr-h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#5B6066;margin-bottom:14px;font-weight:500}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#16181A;font-size:15px}
+.ftr-links a:hover{color:var(--acc)}
+.ftr-tel{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;text-decoration:none;letter-spacing:-.02em;display:inline-block;color:#16181A}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:64px;padding-top:14px;border-top:1px solid #D5D7D2;font-size:13px;color:#5B6066}
+.ftr-bot a{color:#5B6066;font-size:13px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#16181A}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.st :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@media(max-width:1080px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 16px 16px}}
+@media(max-width:720px){.wrap{padding:0 16px}.sec{padding:80px 0}.topbar-note{display:none}.hdr-cta{display:none}}
+@media (prefers-reduced-motion:reduce){.st *{animation:none !important;transition:none !important}}
+
+/* ---- Lignes ---- */
+.phero{padding:64px 0 40px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:end}
+.h1{font-size:clamp(44px,7vw,104px);line-height:.92;letter-spacing:-.055em;font-weight:800;margin-top:18px;overflow-wrap:anywhere}
+.h1 em{font-style:normal;color:var(--acc)}
+.rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;background:#ECEDEA;border-radius:22px;padding:6px;position:sticky;top:86px;z-index:20}
+.rtab{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;border:0;border-radius:16px;cursor:pointer;text-align:left;font-family:'Onest',sans-serif;color:#16181A;transition:background .25s,box-shadow .25s}
+.rtab:hover{background:rgba(255,255,255,.6)}
+.rtab .sw{width:30px;height:30px;border-radius:9px;flex:none;box-shadow:inset 0 0 0 1px rgba(22,24,26,.15)}
+.rtab b{display:block;font-size:16px;letter-spacing:-.02em;line-height:1.1}
+.rtab span.mono{display:block;font-size:11px;color:#5B6066}
+.detail{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;margin-top:8px;background:#ECEDEA;border-radius:30px;padding:8px}
+.stage{position:relative;background:#fff;border-radius:24px;padding:200px 80px 56px 40px;min-height:500px;display:flex;flex-direction:column;justify-content:flex-end;background-image:linear-gradient(#F0F1EE 1px,transparent 1px),linear-gradient(90deg,#F0F1EE 1px,transparent 1px);background-size:24px 24px;overflow:hidden}
+.stag{position:absolute;top:18px;left:20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B6066;line-height:1.6}
+.vt{position:absolute;top:14px;right:14px;display:flex;background:#ECEDEA;border-radius:12px;padding:3px;gap:2px}
+.vt button{min-height:40px;padding:0 14px;border:0;border-radius:9px;font:600 13px/1 'Onest',sans-serif;cursor:pointer}
+.counter{position:relative;z-index:0;display:flex;align-items:flex-end;width:100%;max-width:640px}
+.blk{animation:blkIn .55s cubic-bezier(.2,.9,.3,1.15) both}
+.blk:nth-child(2){animation-delay:.07s}.blk:nth-child(3){animation-delay:.14s}.blk:nth-child(4){animation-delay:.21s}.blk:nth-child(5){animation-delay:.28s}
+@keyframes blkIn{from{opacity:0;transform:translateY(-34px)}to{opacity:1;transform:none}}
+.floor{position:absolute;left:-14px;right:-52px;bottom:-14px;height:20px;background:radial-gradient(ellipse at center,rgba(22,24,26,.2),transparent 70%);z-index:-1}
+.blabel{position:absolute;left:0;right:0;top:calc(100% + 14px);font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B6066;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.info{background:#FAFAF8;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px}
+.info h2{font-size:clamp(36px,4vw,56px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.srow{display:grid;grid-template-columns:140px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid #E2E3DF;font-size:14px}
+.srow span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5B6066;padding-top:2px}
+.srow b{font-weight:600}
+.mhead{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.search{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 16px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px #D5D7D2;min-width:min(340px,100%);transition:box-shadow .2s}
+.search:focus-within{box-shadow:inset 0 0 0 2px #16181A}
+.search input{border:0;outline:0;background:transparent;font:500 15px/1 'Onest',sans-serif;color:#16181A;flex:1;min-height:48px;min-width:0}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:12px}
+.mcard{position:relative;display:flex;flex-direction:column;text-decoration:none;color:#16181A;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 0 0 1px #E6E7E3;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s;animation:fade .4s ease both}
+.mcard:hover{transform:translateY(-4px);box-shadow:0 0 0 1px #16181A,0 24px 40px -30px rgba(22,24,26,.5)}
+.mst{height:170px;padding:72px 54px 26px 30px;display:flex;align-items:flex-end;background:#F5F5F2;background-image:linear-gradient(#ECEDEA 1px,transparent 1px),linear-gradient(90deg,#ECEDEA 1px,transparent 1px);background-size:16px 16px}
+.mst .counter{max-width:150px;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.mcard:hover .mst .counter{transform:translateY(-4px)}
+.mbd{padding:16px 18px 18px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex:1}
+.mbd b{display:block;font-size:16px;letter-spacing:-.015em;line-height:1.25}
+.mbd span.mono{display:block;font-size:11px;color:#5B6066;margin-top:6px;line-height:1.4}
+.arr{width:36px;height:36px;border-radius:50%;background:#ECEDEA;display:grid;place-items:center;flex:none;transition:background .25s,color .25s}
+.mcard:hover .arr{background:var(--acc);color:#fff}
+.flag{position:absolute;top:12px;left:12px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.04em;padding:5px 8px;border-radius:6px;background:var(--acc);color:#fff}
+.noresult{padding:40px;border-radius:22px;border:1.5px dashed #C4C6C1;text-align:center;color:#5B6066}
+.cmpw{overflow-x:auto;border-radius:24px;background:#ECEDEA;padding:6px;margin-top:36px}
+.cmp{display:grid;grid-template-columns:170px repeat(5,minmax(160px,1fr));min-width:980px}
+.cmp .c{padding:16px;font-size:14px;line-height:1.4;border-top:1px solid rgba(22,24,26,.07);transition:background .25s}
+.cmp .lab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5B6066}
+.cmp .hd{border-top:0}
+.cmp .hd button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:56px;border:0;background:transparent;cursor:pointer;font-family:'Onest',sans-serif;color:#16181A;text-align:left;padding:0}
+.cmp .hd b{font-size:20px;letter-spacing:-.03em}
+.ctaband{background:#16181A;color:#FAFAF8;border-radius:32px;padding:56px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:32px;align-items:center}
+@media(max-width:1080px){.rail{grid-template-columns:repeat(3,minmax(0,1fr));position:static}}
+@media(max-width:960px){.phero,.detail,.ctaband{grid-template-columns:minmax(0,1fr)}.ctaband{padding:36px}}
+@media(max-width:720px){.rail{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{padding:170px 60px 48px 20px;min-height:400px}.info{padding:22px}.srow{grid-template-columns:minmax(0,1fr)}}
+</style>
+</helmet>
+<div class="st" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="mono topbar-note">Proposition 06 · Studio — configurateur</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Studio-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span>
+      <span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="nav-a on" href="Studio-Lignes.html" aria-current="page">Lignes</a>
+      <a class="nav-a" href="Studio-Secteurs.html">Secteurs</a>
+      <a class="nav-a" href="Studio-Realisations.html">Réalisations</a>
+      <a class="nav-a" href="Studio-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16181A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Studio-Contact.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Studio-Lignes.html">Lignes <span class="mono">01</span></a>
+      <a href="Studio-Secteurs.html">Secteurs <span class="mono">02</span></a>
+      <a href="Studio-Realisations.html">Réalisations <span class="mono">03</span></a>
+      <a href="Studio-Contact.html">Showroom &amp; contact <span class="mono">04</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span class="mono">Gratuit</span></a>
+      <a href="Studio-Contact.html" style="background:var(--acc);color:#fff">Plan 3D offert <span class="mono">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="wrap">
+  <div class="phero">
+    <div class="rise">
+      <span class="eyebrow"><i></i>Lignes d'agencement</span>
+      <h1 class="h1">Cinq lignes.<br><em>45 modules.</em></h1>
+    </div>
+    <p class="lead rise d2">Trois lignes à composer module par module (Basique, Stone, Legno), un module brut à habiller (Encastrable) et des vitrines standardisées (Industry). Choisissez une ligne, comparez, puis ouvrez la fiche d'un module.</p>
+  </div>
+
+  <div class="rail" role="tablist" aria-label="Lignes">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+      <button type="button" role="tab" class="rtab" style="{{ t.style }}" aria-selected="{{ t.on }}" onClick="{{ t.pick }}">
+        <span class="sw" style="{{ t.sw }}"></span>
+        <span><span class="mono">{{ t.n }} · {{ t.count }} modules</span><b>{{ t.name }}</b></span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div class="detail">
+    <div class="stage">
+      <span class="stag">LIGNE {{ upper }} · VUE {{ viewTxt }}<br>Modules dessinés sans cote — longueurs sur étude</span>
+      <div class="vt" role="group" aria-label="Type de vue">
+        <button type="button" style="{{ isoStyle }}" onClick="{{ setIso }}">Vue 3/4</button>
+        <button type="button" style="{{ elevStyle }}" onClick="{{ setElev }}">Élévation</button>
+      </div>
+      <div class="counter" style="{{ stageW }}">
+        <sc-for list="{{ hero }}" as="b" hint-placeholder-count="5">
+          <div class="blk" style="{{ b.wStyle }}">
+            <span style="{{ b.topStyle }}"></span>
+            <sc-if value="{{ b.hasGlass }}" hint-placeholder-val="{{ true }}">
+              <span style="{{ b.glassStyle }}"><span style="{{ b.glassTopStyle }}"></span><span style="{{ b.shelfStyle }}"></span><span style="{{ b.treat2Style }}"></span><span style="{{ b.treatStyle }}"></span></span>
+            </sc-if>
+            <sc-if value="{{ b.isCaisse }}" hint-placeholder-val="{{ false }}"><span style="{{ b.regStyle }}"></span></sc-if>
+            <span style="{{ b.edgeStyle }}"></span>
+            <span style="{{ b.panelStyle }}"></span>
+            <span style="{{ b.plinthStyle }}"></span>
+            <span class="blabel">{{ b.name }}</span>
+          </div>
+        </sc-for>
+        <span style="{{ heroSide }}"></span>
+        <span class="floor"></span>
+      </div>
+    </div>
+    <div class="info fade">
+      <span class="eyebrow"><i></i>Ligne {{ num }}</span>
+      <h2>{{ name }}</h2>
+      <p style="color:#5B6066;font-size:16px">{{ desc }}</p>
+      <div>
+        <div class="srow"><span>Principe</span><b>{{ rule }}</b></div>
+        <div class="srow"><span>Structure</span><b>{{ structure }}</b></div>
+        <div class="srow"><span>Panneau frontal</span><b>{{ front }}</b></div>
+        <div class="srow"><span>Plan de travail</span><b>{{ top }}</b></div>
+        <div class="srow"><span>Plinthe</span><b>{{ plinth }}</b></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:auto">
+        <sc-if value="{{ conf }}" hint-placeholder-val="{{ true }}"><a class="btn btn-acc" href="Studio-Accueil.html#composer">Composer en {{ name }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></sc-if>
+        <sc-if value="{{ noConf }}" hint-placeholder-val="{{ false }}"><a class="btn btn-acc" href="Studio-Contact.html">Étudier mon projet<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></sc-if>
+        <a class="btn btn-ghost" href="Studio-Contact.html">Plan 3D offert</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:96px">
+  <div class="wrap">
+    <div class="mhead">
+      <div>
+        <span class="eyebrow"><i></i>Modules de la ligne {{ name }}</span>
+        <h2 class="h2" style="margin-top:16px">{{ countTxt }}</h2>
+      </div>
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6066" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Filtrer les modules</span>
+        <input type="search" placeholder="Filtrer : saladette, comptoir…" value="{{ q }}" onInput="{{ setQ }}">
+      </label>
+    </div>
+    <sc-if value="{{ hasMods }}" hint-placeholder-val="{{ true }}">
+      <div class="mgrid">
+        <sc-for list="{{ mods }}" as="m" hint-placeholder-count="8">
+          <a class="mcard" href="Studio-Module.html" aria-label="{{ m.aria }}">
+            <sc-if value="{{ m.isRef }}" hint-placeholder-val="{{ false }}"><span class="flag">FICHE COMPLÈTE</span></sc-if>
+            <div class="mst">
+              <div class="counter">
+                <sc-for list="{{ m.blk }}" as="b" hint-placeholder-count="1">
+                  <div style="{{ b.wStyle }}">
+                    <span style="{{ b.topStyle }}"></span>
+                    <sc-if value="{{ b.hasGlass }}" hint-placeholder-val="{{ true }}">
+                      <span style="{{ b.glassStyle }}"><span style="{{ b.glassTopStyle }}"></span><span style="{{ b.shelfStyle }}"></span><span style="{{ b.treat2Style }}"></span><span style="{{ b.treatStyle }}"></span></span>
+                    </sc-if>
+                    <sc-if value="{{ b.isCaisse }}" hint-placeholder-val="{{ false }}"><span style="{{ b.regStyle }}"></span></sc-if>
+                    <span style="{{ b.edgeStyle }}"></span>
+                    <span style="{{ b.panelStyle }}"></span>
+                    <span style="{{ b.plinthStyle }}"></span>
+                  </div>
+                </sc-for>
+                <span style="{{ m.side }}"></span>
+              </div>
+            </div>
+            <div class="mbd">
+              <span><b>{{ m.name }}</b><span class="mono">{{ m.spec }}</span></span>
+              <span class="arr" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noMods }}" hint-placeholder-val="{{ false }}">
+      <div class="noresult fade">Aucun module ne correspond à « {{ q }} » dans la ligne {{ name }}.</div>
+    </sc-if>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Comparateur</span>
+    <h2 class="h2" style="margin-top:16px;max-width:860px">Matériaux, façade, plan de travail : côte à côte.</h2>
+    <p class="lead" style="margin-top:14px;max-width:640px">Cliquez une colonne pour l'afficher en détail plus haut.</p>
+    <div class="cmpw">
+      <div class="cmp" role="table" aria-label="Comparateur des lignes">
+        <div class="c hd lab" role="columnheader">Ligne</div>
+        <sc-for list="{{ cmpHead }}" as="h" hint-placeholder-count="5">
+          <div class="c hd" role="columnheader" style="{{ h.style }}"><button type="button" onClick="{{ h.pick }}"><span class="mono" style="font-size:11px;color:#5B6066">{{ h.n }}</span><b>{{ h.name }}</b></button></div>
+        </sc-for>
+        <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="7">
+          <div class="c lab" role="rowheader">{{ r.label }}</div>
+          <sc-for list="{{ r.cells }}" as="x" hint-placeholder-count="5">
+            <div class="c" role="cell" style="{{ x.style }}">{{ x.v }}</div>
+          </sc-for>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="ctaband">
+      <div>
+        <span class="eyebrow" style="color:#B9BCB7"><i></i>Plan 3D offert</span>
+        <h2 class="h2" style="margin-top:16px;color:#FAFAF8">Hésitation entre deux lignes&nbsp;? Le plan 3D tranche.</h2>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn-acc" href="Studio-Contact.html">Demande de devis</a>
+        <a class="btn" href="Studio-Module.html" style="background:#FAFAF8;color:#16181A">Configurer la Gourmandise</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a class="logo" href="Studio-Accueil.html" aria-label="RGTE — accueil"><span class="logo-glyph" aria-hidden="true"><i style="height:12px"></i><i style="height:24px;background:var(--acc)"></i><i style="height:17px"></i></span><span><span class="logo-word">RGTE</span><span class="logo-sub">R.G. Technologies</span></span></a>
+        <p style="color:#5B6066;margin-top:16px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#5B6066;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Studio-Lignes.html">Lignes d'agencement</a>
+        <a href="Studio-Secteurs.html">Secteurs d'activité</a>
+        <a href="Studio-Realisations.html">Réalisations</a>
+        <a href="Studio-Contact.html">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span class="mono" style="font-size:12px">Proposition de refonte — concept, non officiel · <a href="index.html" style="font-size:12px;min-height:0;display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4000},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#16181A","#1E6B48"]},"ligneInitiale":{"editor":"enum","default":"stone","options":["basique","stone","legno","encastrable","industry"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.MAT = {
+      basique:{front:'repeating-linear-gradient(90deg,#DCCBAE 0 16px,#D4C2A3 16px 17px)',top:'radial-gradient(circle at 30% 40%,#62666A 0 1px,transparent 1.6px) 0 0/7px 7px,radial-gradient(circle at 70% 70%,#26282B 0 1px,transparent 1.6px) 0 0/5px 5px,#3E4245',edge:'#2B2E31',plinth:'#2B2E31',side:'#C4B08F',panel:'border:1px solid rgba(22,24,26,.16);box-shadow:inset 0 0 0 4px rgba(255,255,255,.2),inset 0 0 0 5px rgba(22,24,26,.1)',sw:'background:repeating-linear-gradient(90deg,#DCCBAE 0 5px,#D4C2A3 5px 6px)'},
+      stone:{front:'#F2F1EC',top:'#FFFFFF',edge:'#E2E1DB',plinth:'#D9D8D2',side:'#DEDDD7',panel:'background:linear-gradient(180deg,rgba(206,226,234,.6),rgba(206,226,234,.25));border:1px solid rgba(22,24,26,.14)',sw:'background:#F4F3EF'},
+      legno:{front:'repeating-linear-gradient(90deg,#BE9268 0 10px,#B7895E 10px 11px,#C29770 11px 23px,#B58A60 23px 24px)',top:'#4A4E53',edge:'#3A3D41',plinth:'#2F3236',side:'#9C744C',panel:'border:1px solid rgba(22,24,26,.2);box-shadow:inset 0 0 0 4px rgba(255,255,255,.12),inset 0 0 0 5px rgba(22,24,26,.12)',sw:'background:repeating-linear-gradient(90deg,#BE9268 0 5px,#B3865B 5px 6px)'},
+      encastrable:{front:'repeating-linear-gradient(45deg,#DADCD8 0 6px,#D1D3CF 6px 12px)',top:'#C5C8C4',edge:'#B2B5B1',plinth:'#9A9D99',side:'#C2C4C0',panel:'border:1px dashed rgba(22,24,26,.4)',sw:'background:repeating-linear-gradient(45deg,#DADCD8 0 4px,#C5C8C4 4px 8px)'},
+      industry:{front:'#E6E8E9',top:'#CDD1D4',edge:'#B8BDC1',plinth:'#5B6066',side:'#CBCFD2',panel:'border:1px solid rgba(22,24,26,.15)',sw:'background:linear-gradient(180deg,#CDD1D4 50%,#5B6066 50%)'}
+    };
+    this.ORDER = ['basique','stone','legno','encastrable','industry'];
+    this.L = {
+      basique:{n:'01',name:'Basique',desc:'Association de modules différents. Choix du coloris et des matériaux selon le souhait du client.',rule:'Association de modules',structure:'Coloris et matériaux au choix',front:'Bois mélaminé ou verre (option)',top:'Granit',plinth:'Granit',perso:'Coloris et matériaux au choix',conf:true,
+        mods:[['Comptoir bar','c',''],['Comptoir caisse','c',''],['Saladette réfrigérée','b',''],['Vitrine réfrigérée Cube','h','Vitrage cubique · 2 ou 3 étagères verre'],['Pastry Show','h','Ventilé · vitrage droit · plaques 600×400'],['Statique','h',''],['Basse','b',''],['Murale self-service','h',''],['Panoramique','h',''],['Chaud (bain-marie ou plaque chaude)','b','Bain-marie ou plaque chaude'],['Vitrine rétro','h',''],['Amandine','h','Ventilé · cuve plaques 600×400']]},
+      stone:{n:'02',name:'Stone',desc:'Association de modules : structure en pierre acrylique type Corian, panneau frontal en verre avec la sérigraphie du client.',rule:'Association de modules',structure:'Pierre acrylique type Corian',front:'Verre avec sérigraphie du client',top:'Pierre acrylique (Module Gourmandise)',plinth:'[À PRÉCISER]',perso:'Sérigraphie du client',conf:true,
+        mods:[['Réfrigérée Plane','p','Hauteur du plan · +2/+8 ou +14/+18 °C'],['Vision','p','8 cm sous le plan · prof. 53 ou 60 cm'],['Saladette','b','Bacs gastronormes · +2/+8 °C'],['Chaud bain-marie','b','Bacs gastronormes · +30/+90 °C'],['Centrale','h','Vitrages coulissants 2 côtés · prof. 60 cm'],['Gourmandise','h','101 → 222 cm · 101 cm : 5 800 € HT'],['Comptoir caisse','c','Avec ou sans tablette PMR'],['Comptoir bar','c','Neutre ou réfrigéré'],['Poissonnerie','b','Froid statique · −2/0 °C'],['Panorama','h','2 ou 3 étagères · +2/+8 ou +14/+18 °C'],['Surface plane','p','']]},
+      legno:{n:'03',name:'Legno',desc:'Association de modules avec panneau frontal en bois mélaminé.',rule:'Association de modules',structure:'[À PRÉCISER]',front:'Bois mélaminé',top:'[À PRÉCISER]',plinth:'[À PRÉCISER]',perso:'[À PRÉCISER]',conf:true,
+        mods:[['Plane','p',''],['Arrière neutre','c',''],['Caisse et vitrine neutre','b',''],['Comptoir bar','c',''],['Réfrigérée statique','h',''],['Vitrine réfrigérée ventilée plane','p',''],['Vitrine neutre','h',''],['Réfrigéré ventilé','h',''],['Vitrine chauffante sèche','h','']]},
+      encastrable:{n:'04',name:'Encastrable',desc:'Module brut prêt à être habillé : version comptoir ou meuble entier sur pied.',rule:'Module brut à habiller',structure:'Brut, prêt à être habillé',front:'À habiller',top:'À habiller',plinth:'Version comptoir ou sur pied',perso:'Habillage libre',conf:false,
+        mods:[['Cuve froid ventilé','b','Comptoir ou meuble sur pied'],['Cuve froid statique','b','Comptoir ou meuble sur pied']]},
+      industry:{n:'05',name:'Industry',desc:'Vitrines standardisées en longueurs et indépendantes.',rule:'Vitrines indépendantes',structure:'Standardisée',front:'Standard',top:'Standard',plinth:'Standard',perso:'Longueurs standardisées',conf:false,
+        mods:[['Olympe','h','Murale'],['Nepal','b','Snack'],['Aramis','b','Boucherie'],['Rubis','h',''],['Argentine','h',''],['Hanoi','b','Poissonnerie'],['Loire','h','Boulangerie'],['Argent','h','Murale froid'],['Sugar','p','Hauteur comptoir'],['Hawaii','h','Supermarché'],['4 faces vitrées','h','']]}
+    };
+    const init = (props && this.ORDER.indexOf(props.ligneInitiale) > -1) ? props.ligneInitiale : 'stone';
+    this.state = { menuOpen:false, ligne:init, view:'iso', q:'' };
+  }
+  blocks(list, key, o){
+    const M = this.MAT[key], H = o.H || 110, D = o.D || 38, k = H / 110, elev = !!o.elev;
+    const G = { c:0, p:22, b:40, h:74 };
+    const lift = elev ? 0 : Math.round(D * 0.3);
+    const r = Math.max(2, Math.round(4 * k));
+    const treats = (h, bottom, show) => 'position:absolute;left:4px;right:4px;bottom:' + bottom + 'px;height:' + h + 'px;background:radial-gradient(circle at 8px 60%,#E9A99C 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/30px 100% repeat-x,radial-gradient(circle at 18px 60%,#B5D19B 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/30px 100% repeat-x,radial-gradient(circle at 26px 60%,#6B4A3A 0 ' + r + 'px,transparent ' + (r + 1) + 'px) 0 0/30px 100% repeat-x;' + (show ? '' : 'display:none;');
+    return list.map((m) => {
+      const g = Math.round(G[m.kind] * k);
+      return Object.assign({}, m, {
+        wStyle: 'position:relative;flex:1 1 0;min-width:0;height:' + H + 'px;background:' + M.front + ';box-shadow:inset -1px 0 0 rgba(22,24,26,.22);',
+        topStyle: 'position:absolute;left:0;bottom:100%;width:100%;height:' + D + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:' + M.top + ';box-shadow:inset -1px 0 0 rgba(22,24,26,.1);' + (elev ? 'display:none;' : ''),
+        edgeStyle: 'position:absolute;left:0;top:0;width:100%;height:' + Math.max(4, Math.round(9 * k)) + 'px;background:' + M.edge,
+        plinthStyle: 'position:absolute;left:0;bottom:0;width:100%;height:' + Math.round(14 * k) + 'px;background:' + M.plinth,
+        panelStyle: 'position:absolute;left:' + Math.round(10 * k) + 'px;right:' + Math.round(10 * k) + 'px;top:' + Math.round(20 * k) + 'px;bottom:' + Math.round(24 * k) + 'px;' + M.panel,
+        hasGlass: g > 0,
+        glassStyle: 'position:absolute;left:' + (Math.round(8 * k) + lift) + 'px;right:' + (Math.round(6 * k) - lift) + 'px;bottom:calc(100% + ' + lift + 'px);height:' + g + 'px;background:linear-gradient(180deg,rgba(206,226,234,.62),rgba(206,226,234,.2));border:1px solid rgba(22,24,26,.32);border-bottom:0;',
+        glassTopStyle: 'position:absolute;left:-1px;right:-1px;bottom:100%;height:' + Math.round(D * 0.5) + 'px;transform:skewX(-45deg);transform-origin:bottom left;background:rgba(206,226,234,.42);border:1px solid rgba(22,24,26,.26);border-bottom:0;' + (elev ? 'display:none;' : ''),
+        shelfStyle: 'position:absolute;left:0;right:0;top:' + Math.round(g * 0.42) + 'px;height:2px;background:rgba(22,24,26,.28);' + (m.kind === 'h' ? '' : 'display:none;'),
+        treat2Style: treats(Math.round(12 * k), Math.round(g * 0.58), m.kind === 'h'),
+        treatStyle: treats(Math.round(12 * k), 0, true),
+        isCaisse: /caisse/i.test(m.name) && m.kind === 'c',
+        regStyle: 'position:absolute;left:30%;bottom:calc(100% + ' + (lift + 2) + 'px);width:' + Math.round(26 * k) + 'px;height:' + Math.round(18 * k) + 'px;border-radius:3px;background:#2A2D30;box-shadow:inset 0 3px 0 #5B6066;'
+      });
+    });
+  }
+  side(key, o){
+    const M = this.MAT[key], H = o.H || 110, D = o.D || 38;
+    return 'position:absolute;left:100%;bottom:0;width:' + D + 'px;height:' + H + 'px;transform:skewY(-45deg);transform-origin:bottom left;background:' + M.side + ';' + (o.elev ? 'display:none;' : '');
+  }
+  norm(t){ return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const L = this.L[s.ligne];
+    const elev = s.view === 'elev';
+    const off = 'background:transparent;color:#5B6066';
+    const onv = 'background:#fff;color:#16181A;box-shadow:0 1px 3px rgba(22,24,26,.15)';
+    const tabs = this.ORDER.map(id => ({ n:this.L[id].n, name:this.L[id].name, count:this.L[id].mods.length, sw:this.MAT[id].sw, on: s.ligne === id ? 'true' : 'false',
+      style: s.ligne === id ? 'background:#fff;box-shadow:0 2px 8px rgba(22,24,26,.12)' : 'background:transparent',
+      pick: () => this.setState({ ligne:id, q:'' }) }));
+    const heroList = L.mods.slice(0, 5).map(m => ({ name:m[0], kind:m[1] }));
+    const q = this.norm(s.q);
+    const filtered = L.mods.filter(m => !q || this.norm(m[0] + ' ' + m[2]).indexOf(q) > -1);
+    const mods = filtered.map(m => ({
+      name: m[0], spec: m[2] || 'Ligne ' + L.name, isRef: m[0] === 'Gourmandise', aria: 'Ouvrir la fiche : ' + m[0],
+      blk: this.blocks([{ name:m[0], kind:m[1] }], s.ligne, { H:56, D:20 }),
+      side: this.side(s.ligne, { H:56, D:20 })
+    }));
+    const ROWS = [['Principe','rule'],['Structure','structure'],['Panneau frontal','front'],['Plan de travail','top'],['Plinthe','plinth'],['Personnalisation','perso'],['Modules','count'],['Configurateur en ligne','cfg']];
+    const hi = 'background:#fff';
+    const cmpHead = this.ORDER.map(id => ({ n:this.L[id].n, name:this.L[id].name, style: id === s.ligne ? hi + ';box-shadow:inset 0 3px 0 var(--acc)' : '', pick: () => this.setState({ ligne:id, q:'' }) }));
+    const cmpRows = ROWS.map(([label, key]) => ({ label, cells: this.ORDER.map(id => {
+      const l = this.L[id];
+      const v = key === 'count' ? l.mods.length + ' modules' : key === 'cfg' ? (l.conf ? 'Oui — Accueil' : 'Sur étude') : l[key];
+      return { v, style: id === s.ligne ? hi + ';font-weight:600' : '' };
+    }) }));
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      tabs,
+      num: L.n, name: L.name, upper: L.name.toUpperCase(), desc: L.desc, rule: L.rule, structure: L.structure, front: L.front, top: L.top, plinth: L.plinth,
+      conf: L.conf, noConf: !L.conf,
+      viewTxt: elev ? 'ÉLÉVATION' : '3/4',
+      isoStyle: elev ? off : onv, elevStyle: elev ? onv : off,
+      setIso: () => this.setState({ view:'iso' }), setElev: () => this.setState({ view:'elev' }),
+      hero: this.blocks(heroList, s.ligne, { elev, H:130, D:44 }),
+      heroSide: this.side(s.ligne, { elev, H:130, D:44 }),
+      stageW: 'max-width:' + (heroList.length * 128) + 'px',
+      q: s.q,
+      setQ: (e) => this.setState({ q: e.target.value }),
+      mods, hasMods: mods.length > 0, noMods: mods.length === 0,
+      countTxt: filtered.length + (filtered.length > 1 ? ' modules' : ' module') + (q ? ' trouvés' : ''),
+      cmpHead, cmpRows
+    };
+  }
+}
+</script>
+</body>
+</html>

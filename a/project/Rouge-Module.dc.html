@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rouge — Module Gourmandise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&amp;family=Instrument+Sans:wdth,wght@75..100,400..700&amp;display=swap">
+<style>
+body{margin:0;background:#F5F2EC}
+sc-for,sc-if{display:contents}
+.rg{--red:#D42A20;--redd:#B8231A;--paper:#F5F2EC;--ink:#121212;--pink:#F2D6D0;--line:2px solid #121212;background:var(--paper);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.rg *,.rg *::before,.rg *::after{box-sizing:border-box}
+.rg a{color:inherit}
+.rg img{display:block;max-width:100%}
+.rg button,.rg input,.rg select,.rg textarea{font:inherit;color:inherit;border-radius:0}
+.rg button{cursor:pointer}
+.rg h1,.rg h2,.rg h3,.rg p{margin:0}
+.d{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-stretch:75%;font-variation-settings:"wdth" 75,"opsz" 96;font-weight:800;letter-spacing:-.025em;line-height:.88}
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s9{grid-column:span 9}.s12{grid-column:1/-1}
+.ey{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.redt{color:var(--redd)}
+.top{background:var(--ink);color:var(--paper);font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px}
+.top a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;min-height:44px}
+.top a:hover{text-decoration:underline}
+.hd{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:var(--line)}
+.hd-in{display:flex;align-items:center;gap:24px;min-height:84px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.logo-w{background:var(--red);color:#fff;font-size:34px;padding:9px 10px 5px;line-height:.9;letter-spacing:-.01em}
+.logo-s{font-size:12px;font-weight:700;line-height:1.15;letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nl{display:flex;align-items:baseline;gap:6px;padding:12px;min-height:44px;text-decoration:none;font-weight:600;font-size:15px;position:relative}
+.nl span{font-size:11px;color:var(--redd);font-weight:700}
+.nl::after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.7,0,.2,1)}
+.nl:hover::after,.nl[aria-current="page"]::after{transform:scaleX(1)}
+.tel{display:flex;align-items:center;gap:10px;text-decoration:none;min-height:44px}
+.tel b{display:block;font-size:16px;line-height:1.1}
+.tel small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--redd);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 22px;font-weight:600;font-size:15px;text-decoration:none;border:2px solid var(--ink);background:transparent;color:var(--ink);transition:background .25s,color .25s,border-color .25s;white-space:nowrap}
+.btn svg{transition:transform .3s}
+.btn:hover svg{transform:translateX(4px)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn-red{background:var(--red);border-color:var(--red);color:#fff}
+.btn-red:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-paper{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.btn-paper:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.burger{display:none;width:48px;height:48px;border:2px solid var(--ink);background:transparent;align-items:center;justify-content:center;margin-left:auto}
+.mnav{display:none}
+.rg :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.on-red :focus-visible{outline-color:#fff}
+.ft{background:var(--ink);color:var(--paper);padding-top:72px;overflow:hidden}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ft-claim{font-size:clamp(32px,4vw,56px);max-width:720px}
+.ft-big{color:var(--red);font-size:clamp(96px,38vw,560px);line-height:.74;letter-spacing:-.04em;margin:56px 0 0 -.03em;overflow-wrap:anywhere}
+.ft-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:32px;padding:48px 0;border-top:1px solid #3a3a3a;margin-top:40px}
+.ft-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#bdb8b0;margin-bottom:14px!important;font-weight:700}
+.ft p{font-size:15px}
+.ft-tel{font-size:36px;text-decoration:none;color:#fff}
+.ft-mut{color:#bdb8b0;margin-top:8px!important}
+.ft-l a{display:flex;align-items:center;min-height:44px;text-decoration:none;font-size:15px;border-bottom:1px solid #2a2a2a;transition:padding .2s}
+.ft-l a:hover{color:#fff;padding-left:6px}
+.ft-b{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 0 24px;border-top:1px solid #3a3a3a;font-size:13px;color:#bdb8b0}
+.ft-b a{min-height:44px;display:inline-flex;align-items:center}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes up{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.12)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.dl2{animation-delay:.16s}.dl4{animation-delay:.32s}
+
+/* module */
+.crumb{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;font-weight:600;padding:28px 0 20px}
+.crumb a{text-decoration:none;border-bottom:2px solid var(--red)}
+.mtitle{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-bottom:24px;border-bottom:var(--line)}
+.mt{font-size:clamp(64px,10vw,160px);line-height:.8;overflow-wrap:anywhere;animation:up 1s cubic-bezier(.7,0,.2,1) both}
+.stage{background:var(--red);border:var(--line);position:relative;overflow:hidden;min-height:620px;display:flex;flex-direction:column}
+.stage-n{position:absolute;right:-10px;bottom:-40px;font-size:420px;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.55);pointer-events:none}
+.views{display:flex;gap:0;border-bottom:var(--line);background:var(--paper);position:relative;z-index:2}
+.vbtn{flex:1;min-height:52px;border:0;border-right:var(--line);background:transparent;font-weight:600;font-size:14px;transition:background .2s,color .2s}
+.vbtn:last-child{border-right:0}
+.vbtn:hover{background:var(--pink)}
+.view{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:36px;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.photo{position:relative;width:min(560px,100%);border:var(--line);background:var(--ink);overflow:hidden;box-shadow:16px 16px 0 #121212}
+.photo img{width:100%;height:420px;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
+.photo-cap{position:absolute;left:0;bottom:0;background:var(--paper);font-size:13px;font-weight:600;padding:8px 12px}
+.elev{width:100%;max-width:640px;background:var(--paper);border:var(--line);padding:28px 24px 20px;box-shadow:16px 16px 0 #121212}
+.elev-stage{height:300px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.eb{display:flex;flex-direction:column;align-items:center;transition:width .7s cubic-bezier(.7,0,.2,1)}
+.eg{width:100%;height:86px;border:2px solid var(--ink);border-bottom:0;position:relative;transition:background .5s}
+.eg::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--ink)}
+.ep{width:100%;display:flex;gap:6px;position:absolute;left:0;bottom:6px;padding:0 10px}
+.ep i{flex:1;height:14px;border-radius:0;background:var(--red);opacity:.85}
+.ep i:nth-child(2n){background:var(--pink);border:1px solid var(--ink)}
+.et{width:104%;height:14px;border:2px solid var(--ink);transition:background .5s}
+.ebody{width:100%;height:120px;border:2px solid var(--ink);border-top:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;letter-spacing:.14em;transition:background .5s}
+.efoot{width:60%;height:40px;border:2px solid var(--ink);border-top:0;transition:background .5s}
+.dim{position:relative;height:30px;margin-top:10px;transition:width .7s cubic-bezier(.7,0,.2,1)}
+.dim::before{content:"";position:absolute;left:0;right:0;top:8px;border-top:2px solid var(--redd)}
+.dim::after{content:"";position:absolute;left:0;right:0;top:2px;height:14px;border-left:2px solid var(--redd);border-right:2px solid var(--redd)}
+.dim span{position:absolute;left:50%;top:0;transform:translateX(-50%);background:var(--paper);padding:0 8px;color:var(--redd);font-weight:700;font-size:14px}
+.coupe{width:100%;max-width:600px;height:auto;background:var(--paper);border:var(--line);box-shadow:16px 16px 0 #121212}
+.cfg{display:flex;flex-direction:column;gap:22px}
+.grp-t{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{min-height:48px;min-width:64px;padding:0 14px;border:2px solid var(--ink);background:transparent;font-weight:600;font-size:15px;transition:background .2s,color .2s,transform .2s}
+.opt:hover{transform:translateY(-2px);background:var(--pink)}
+.temps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.topt{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;min-height:88px;border:2px solid var(--ink);background:transparent;text-align:left;transition:background .2s,color .2s}
+.topt b{font-size:30px}
+.topt span{font-size:13px}
+.topt:hover{background:var(--pink)}
+.fins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fin{display:flex;flex-direction:column;gap:8px;border:2px solid var(--ink);background:transparent;padding:8px;text-align:left;font-size:13px;font-weight:600;min-height:44px;transition:transform .2s}
+.fin:hover{transform:translateY(-2px)}
+.fin i{display:block;height:44px;border:1px solid var(--ink)}
+.recap{border:var(--line);background:#fff}
+.recap-r{display:flex;justify-content:space-between;gap:16px;padding:10px 16px;border-bottom:1px solid var(--ink);font-size:14px}
+.recap-r span:last-child{font-weight:600;text-align:right}
+.price{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:18px 16px;background:var(--ink);color:var(--paper)}
+.price b{font-size:clamp(40px,4vw,60px);line-height:.9}
+.price small{display:block;font-size:12px;color:#bdb8b0;max-width:220px}
+.tabs{display:flex;border-bottom:var(--line);margin-top:96px;overflow-x:auto}
+.tab{min-height:64px;padding:0 26px;border:0;background:transparent;font-size:clamp(22px,2.4vw,34px);transition:background .2s,color .2s;white-space:nowrap}
+.tab:hover{background:var(--pink)}
+.tpanel{padding:40px 0;animation:rise .5s both}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));border-top:var(--line);border-left:var(--line)}
+.spec{padding:16px;border-right:var(--line);border-bottom:var(--line);display:flex;flex-direction:column;gap:4px;transition:background .2s}
+.spec:hover{background:var(--pink)}
+.spec span{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--redd)}
+.spec b{font-size:18px;font-weight:600}
+.dtab{border-top:var(--line)}
+.drow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1.4fr) minmax(0,1.4fr);gap:16px;align-items:center;width:100%;padding:14px 16px;min-height:64px;border:0;border-bottom:var(--line);background:transparent;text-align:left;transition:background .2s,color .2s}
+.drow:hover{background:var(--pink)}
+.drow b{font-size:30px}
+.dh{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;min-height:44px;cursor:default}
+.dh:hover{background:transparent}
+.formwrap{background:var(--pink);border-top:var(--line);border-bottom:var(--line);margin-top:96px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl-w{grid-column:1/-1}
+.fl label{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.fl input,.fl select,.fl textarea{border:2px solid var(--ink);background:#fff;min-height:52px;padding:0 14px;font-size:16px;width:100%}
+.fl textarea{min-height:140px;padding:12px 14px;resize:vertical}
+.fl input:focus,.fl select:focus,.fl textarea:focus{outline:3px solid var(--red);outline-offset:1px}
+.fl input[readonly]{background:var(--paper)}
+.err{font-size:13px;font-weight:600;color:var(--redd)}
+.ok{background:var(--ink);color:var(--paper);padding:40px;animation:wipe .7s cubic-bezier(.7,0,.2,1) both}
+.ok b{font-size:clamp(40px,5vw,72px);color:var(--red);display:block}
+.assoc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));border-top:var(--line);border-left:var(--line)}
+.as{position:relative;display:flex;flex-direction:column;gap:12px;min-height:240px;padding:18px;border-right:var(--line);border-bottom:var(--line);text-decoration:none;overflow:hidden;transition:color .3s}
+.as::before{content:"";position:absolute;inset:0;background:var(--red);transform:translateY(101%);transition:transform .45s cubic-bezier(.7,0,.2,1)}
+.as>*{position:relative}
+.as:hover::before{transform:none}
+.as:hover{color:#fff}
+.as:hover .redt{color:#fff}
+.as b{font-size:40px}
+.as p{margin-top:auto}
+.sh{padding:96px 0 32px;align-items:end}
+.h2{font-size:clamp(40px,5.8vw,92px);overflow-wrap:anywhere}
+@media (max-width:1100px){.nav,.tel,.hd-in>.btn{display:none}.burger{display:flex}.mnav{display:grid;border-top:var(--line)}.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 24px;border-bottom:1px solid var(--ink);text-decoration:none;font-weight:600;font-size:18px}}
+@media (max-width:900px){.g12>*{grid-column:1/-1}.stage{min-height:520px}.stage-n{font-size:260px}}
+@media (max-width:640px){.top-r{display:none}.form{grid-template-columns:1fr}.fins{grid-template-columns:1fr}.drow{grid-template-columns:1fr 1fr}.photo img{height:300px}.view{padding:20px}}
+@media (prefers-reduced-motion:reduce){.rg *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="rg" style="{{ rootStyle }}">
+
+<div class="top"><div class="wrap top-in">
+<a href="Main.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Toutes les propositions</a>
+<span>Proposition 05 — Rouge</span>
+<span class="top-r">Bureau d’études &amp; show-room · Puget-sur-Argens (Var)</span>
+</div></div>
+
+<header class="hd">
+<div class="wrap hd-in">
+<a class="logo" href="Rouge-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w d">RGTE</span><span class="logo-s">R.G.<br>Technologies</span></a>
+<nav class="nav" aria-label="Navigation principale">
+<a class="nl" href="Rouge-Lignes.dc.html" aria-current="page"><span>01</span>Lignes</a>
+<a class="nl" href="Rouge-Secteurs.dc.html"><span>02</span>Secteurs</a>
+<a class="nl" href="Rouge-Realisations.dc.html"><span>03</span>Réalisations</a>
+<a class="nl" href="Rouge-Contact.dc.html"><span>04</span>Showroom &amp; contact</a>
+</nav>
+<a class="tel" href="tel:0800951313"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+<a class="btn btn-red" href="Rouge-Contact.dc.html">Plan 3D offert</a>
+<button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
+</div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="mnav" aria-label="Navigation mobile">
+<a href="Rouge-Lignes.dc.html">Lignes d’agencement <span class="redt">01</span></a>
+<a href="Rouge-Secteurs.dc.html">Secteurs d’activité <span class="redt">02</span></a>
+<a href="Rouge-Realisations.dc.html">Réalisations <span class="redt">03</span></a>
+<a href="Rouge-Contact.dc.html">Showroom &amp; contact <span class="redt">04</span></a>
+<a href="tel:0800951313">0 800 95 13 13 — appel gratuit</a>
+<a href="Rouge-Contact.dc.html" style="background:#D42A20;color:#fff">Plan 3D offert</a>
+</nav>
+</sc-if>
+</header>
+
+<main>
+<div class="wrap">
+<nav class="crumb" aria-label="Fil d’Ariane"><a href="Rouge-Accueil.dc.html">Accueil</a><span>/</span><a href="Rouge-Lignes.dc.html">Lignes</a><span>/</span><a href="Rouge-Lignes.dc.html">Ligne Stone</a><span>/</span><span>Gourmandise</span></nav>
+<div class="mtitle">
+<div><p class="ey redt" style="margin-bottom:10px">Ligne 02 — Stone · Module réfrigéré</p><h1 class="mt d">Gourmandise</h1></div>
+<p style="max-width:420px;font-size:17px" class="rise dl2">Exposition centrale à hauteur du plan de travail, vitrages coulissants des deux côtés : pâtisseries, macarons ou chocolats.</p>
+</div>
+
+<div class="g12" style="padding-top:32px">
+<!-- visuel -->
+<div class="s7">
+<div class="stage on-red">
+<span class="stage-n d" aria-hidden="true">02</span>
+<div class="views" role="tablist" aria-label="Vue du module">
+<button type="button" role="tab" class="vbtn" style="{{ v.photo }}" aria-selected="{{ va.photo }}" onClick="{{ vp.photo }}">Photo</button>
+<button type="button" role="tab" class="vbtn" style="{{ v.plan }}" aria-selected="{{ va.plan }}" onClick="{{ vp.plan }}">Élévation</button>
+<button type="button" role="tab" class="vbtn" style="{{ v.coupe }}" aria-selected="{{ va.coupe }}" onClick="{{ vp.coupe }}">Coupe</button>
+</div>
+<sc-if value="{{ show.photo }}" hint-placeholder-val="{{ true }}">
+<div class="view"><figure class="photo" style="margin:0"><img src="assets/macarons-tray.webp" alt="Plateau de macarons (visuel d’illustration)"><figcaption class="photo-cap">Visuel d’illustration — photo produit [À FOURNIR]</figcaption></figure></div>
+</sc-if>
+<sc-if value="{{ show.plan }}" hint-placeholder-val="{{ false }}">
+<div class="view">
+<div class="elev" role="img" aria-label="{{ cfg.aria }}">
+<p class="ey" style="display:flex;justify-content:space-between"><span>Élévation face client</span><span class="redt">{{ cfg.lenLabel }}</span></p>
+<div class="elev-stage">
+<div class="eb" style="{{ cfg.boxStyle }}">
+<div class="eg" style="{{ cfg.glassStyle }}"><div class="ep"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="et" style="{{ cfg.stoneStyle }}"></div>
+<div class="ebody" style="{{ cfg.stoneStyle }}">VERRE SÉRIGRAPHIÉ</div>
+<div class="efoot" style="{{ cfg.stoneStyle }}"></div>
+</div>
+</div>
+<div style="display:flex;justify-content:center"><div class="dim" style="{{ cfg.boxStyle }}"><span>{{ cfg.lenLabel }}</span></div></div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ show.coupe }}" hint-placeholder-val="{{ false }}">
+<div class="view">
+<svg class="coupe" viewBox="0 0 600 380" role="img" aria-label="Coupe schématique : exposition 60 cm, vitrages coulissants des deux côtés, groupe logé">
+<text x="24" y="34" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#121212">COUPE TRANSVERSALE — SCHÉMA</text>
+<path d="M150 70 L450 70 L470 170 L130 170 Z" fill="#ffffff" stroke="#121212" stroke-width="2"></path>
+<path d="M150 70 L130 170 M450 70 L470 170" stroke="#D42A20" stroke-width="5"></path>
+<rect x="170" y="150" width="260" height="16" fill="#F2D6D0" stroke="#121212" stroke-width="1.5"></rect>
+<circle cx="210" cy="140" r="9" fill="#D42A20"></circle><circle cx="240" cy="140" r="9" fill="#F2D6D0" stroke="#121212"></circle><circle cx="270" cy="140" r="9" fill="#D42A20"></circle><rect x="310" y="128" width="40" height="20" fill="#121212"></rect><rect x="362" y="130" width="46" height="18" fill="#F2D6D0" stroke="#121212"></rect>
+<rect x="110" y="170" width="380" height="18" fill="#EFECE6" stroke="#121212" stroke-width="2"></rect>
+<rect x="130" y="188" width="340" height="110" fill="#EFECE6" stroke="#121212" stroke-width="2"></rect>
+<rect x="250" y="220" width="100" height="50" fill="none" stroke="#121212" stroke-width="1.5" stroke-dasharray="5 4"></rect>
+<text x="300" y="250" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="12" font-weight="700" fill="#121212">GROUPE LOGÉ</text>
+<rect x="210" y="298" width="180" height="34" fill="#EFECE6" stroke="#121212" stroke-width="2"></rect>
+<path d="M150 56 L450 56" stroke="#B8231A" stroke-width="1.5"></path><path d="M150 50 L150 62 M450 50 L450 62" stroke="#B8231A" stroke-width="1.5"></path>
+<text x="300" y="50" text-anchor="middle" font-family="Instrument Sans, sans-serif" font-size="13" font-weight="700" fill="#B8231A">EXPOSITION 60 CM</text>
+<text x="18" y="120" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">Vitrage</text><text x="18" y="136" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">coulissant</text>
+<text x="490" y="120" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">Vitrage</text><text x="490" y="136" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">coulissant</text>
+<path d="M300 92 C290 104 310 112 300 124" fill="none" stroke="#121212" stroke-width="1.5"></path><path d="M330 92 C320 104 340 112 330 124" fill="none" stroke="#121212" stroke-width="1.5"></path>
+<text x="350" y="104" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">Froid ventilé</text>
+<text x="24" y="360" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">Côté client</text><text x="500" y="360" font-family="Instrument Sans, sans-serif" font-size="12" fill="#121212">Côté vendeur</text>
+</svg>
+</div>
+</sc-if>
+</div>
+</div>
+
+<!-- configurateur -->
+<div class="s5">
+<div class="cfg">
+<div>
+<div class="grp-t"><p class="ey">01 — Longueur</p><p class="redt" style="font-weight:700">{{ cfg.lenLabel }}</p></div>
+<div class="opts" role="radiogroup" aria-label="Longueur du module">
+<sc-for list="{{ lens }}" as="o" hint-placeholder-count="7"><button type="button" role="radio" class="opt" style="{{ o.style }}" aria-checked="{{ o.aria }}" onClick="{{ o.pick }}">{{ o.label }}</button></sc-for>
+</div>
+</div>
+<div>
+<div class="grp-t"><p class="ey">02 — Plage de température</p></div>
+<div class="temps" role="radiogroup" aria-label="Plage de température">
+<button type="button" role="radio" class="topt" style="{{ t.patis }}" aria-checked="{{ ta.patis }}" onClick="{{ tp.patis }}"><b class="d">+2 / +8 °C</b><span>Pâtisseries, macarons</span></button>
+<button type="button" role="radio" class="topt" style="{{ t.choco }}" aria-checked="{{ ta.choco }}" onClick="{{ tp.choco }}"><b class="d">+14 / +18 °C</b><span>Chocolats</span></button>
+</div>
+</div>
+<div>
+<div class="grp-t"><p class="ey">03 — Finition</p><p style="font-size:13px;font-weight:600">{{ cfg.finLabel }}</p></div>
+<div class="fins" role="radiogroup" aria-label="Finition">
+<button type="button" role="radio" class="fin" style="{{ f.blanc }}" aria-checked="{{ fa.blanc }}" onClick="{{ fp.blanc }}"><i style="background:#F4F2EE"></i>Pierre acrylique blanche</button>
+<button type="button" role="radio" class="fin" style="{{ f.c1 }}" aria-checked="{{ fa.c1 }}" onClick="{{ fp.c1 }}"><i style="background:repeating-linear-gradient(45deg,#cfc9bf 0 6px,#F5F2EC 6px 12px)"></i>Coloris A [COLORIS]</button>
+<button type="button" role="radio" class="fin" style="{{ f.c2 }}" aria-checked="{{ fa.c2 }}" onClick="{{ fp.c2 }}"><i style="background:repeating-linear-gradient(-45deg,#9a948a 0 6px,#e4dfd6 6px 12px)"></i>Coloris B [COLORIS]</button>
+</div>
+</div>
+<div class="recap" aria-live="polite">
+<div class="recap-r"><span>Modèle</span><span>{{ cfg.model }}</span></div>
+<div class="recap-r"><span>Température</span><span>{{ cfg.tempLabel }}</span></div>
+<div class="recap-r"><span>Finition</span><span>{{ cfg.finLabel }}</span></div>
+<div class="recap-r"><span>Dimensions extérieures</span><span>{{ cfg.ext }}</span></div>
+<div class="recap-r"><span>Exposition</span><span>{{ cfg.expo }}</span></div>
+<div class="price"><div><p class="ey" style="color:#bdb8b0">Prix</p><small>{{ cfg.priceNote }}</small></div><b class="d">{{ cfg.price }}</b></div>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-red" href="#demande">Demande d’informations <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a><a class="btn" href="Rouge-Contact.dc.html">Plan 3D offert</a></div>
+</div>
+</div>
+</div>
+
+<!-- onglets -->
+<div class="tabs" role="tablist" aria-label="Informations produit">
+<button type="button" role="tab" class="tab d" style="{{ tb.desc }}" aria-selected="{{ tba.desc }}" onClick="{{ tbp.desc }}">Description</button>
+<button type="button" role="tab" class="tab d" style="{{ tb.carac }}" aria-selected="{{ tba.carac }}" onClick="{{ tbp.carac }}">Caractéristiques</button>
+<button type="button" role="tab" class="tab d" style="{{ tb.dim }}" aria-selected="{{ tba.dim }}" onClick="{{ tbp.dim }}">Dimensions</button>
+</div>
+<sc-if value="{{ tshow.desc }}" hint-placeholder-val="{{ true }}">
+<div class="tpanel g12" role="tabpanel">
+<p class="s7 d" style="font-size:clamp(30px,3.2vw,48px);line-height:1.02">Une vitrine centrale, accessible des deux côtés, pour exposer pâtisseries, macarons ou chocolats à hauteur du plan de travail.</p>
+<div class="s5" style="display:flex;flex-direction:column;gap:14px;font-size:17px">
+<p>Le module Gourmandise appartient à la Ligne Stone : structure en pierre acrylique type Corian, panneau frontal en verre sérigraphié au nom du client.</p>
+<p>Profondeur d’exposition de 60 cm, vitrages coulissants des deux côtés, deux plages de température : +2 °C / +8 °C pour la pâtisserie, +14 °C / +18 °C pour le chocolat.</p>
+<p>Six longueurs — 101, 117, 146, 169, 191 et 222 cm — ou sur mesure.</p>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ tshow.carac }}" hint-placeholder-val="{{ false }}">
+<div class="tpanel" role="tabpanel">
+<p class="ey" style="margin-bottom:14px">Modèle 101 cm</p>
+<div class="specs">
+<sc-for list="{{ specs }}" as="x" hint-placeholder-count="12"><div class="spec"><span>{{ x.k }}</span><b>{{ x.v }}</b></div></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ tshow.dim }}" hint-placeholder-val="{{ false }}">
+<div class="tpanel" role="tabpanel">
+<div class="dtab">
+<div class="drow dh"><span>Longueur</span><span>Dimensions extérieures</span><span>Exposition</span><span>Prix</span></div>
+<sc-for list="{{ lens }}" as="o" hint-placeholder-count="7"><button type="button" class="drow" style="{{ o.style }}" aria-pressed="{{ o.aria }}" onClick="{{ o.pick }}"><b class="d">{{ o.label }}</b><span>{{ o.ext }}</span><span>{{ o.expo }}</span><span>{{ o.price }}</span></button></sc-for>
+</div>
+<p style="font-size:13px;margin-top:12px">Cliquez une ligne pour configurer cette longueur. [DIMENSIONS] / [PRIX] : à communiquer par RGTE.</p>
+</div>
+</sc-if>
+</div>
+
+<!-- formulaire -->
+<section class="formwrap" id="demande" aria-labelledby="t-form">
+<div class="wrap g12" style="padding-top:72px;padding-bottom:72px">
+<div class="s4">
+<p class="ey redt">Demande d’informations</p>
+<h2 id="t-form" class="d h2" style="margin:16px 0 20px">Parlons de votre Gourmandise.</h2>
+<p style="font-size:17px;margin-bottom:16px">Votre configuration est jointe à la demande :</p>
+<p style="font-weight:700;font-size:18px;border-top:2px solid #121212;border-bottom:2px solid #121212;padding:14px 0">{{ cfg.summary }}</p>
+<p style="margin-top:16px">Ou appelez le <a href="tel:0800951313"><strong>0 800 95 13 13</strong></a> — appel gratuit.</p>
+</div>
+<div class="s8">
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+<form class="form" onSubmit="{{ submit }}" novalidate="novalidate">
+<div class="fl"><label for="f-prod">Produit</label><input id="f-prod" type="text" value="Module Gourmandise — Ligne Stone" readonly="readonly"></div>
+<div class="fl"><label for="f-mod">Modèle</label>
+<select id="f-mod" onChange="{{ setModele }}">
+<option value="Gourmandise 101 cm">Gourmandise 101 cm</option>
+<option value="Gourmandise 117 cm">Gourmandise 117 cm</option>
+<option value="Gourmandise 146 cm">Gourmandise 146 cm</option>
+<option value="Gourmandise 169 cm">Gourmandise 169 cm</option>
+<option value="Gourmandise 191 cm">Gourmandise 191 cm</option>
+<option value="Gourmandise 222 cm">Gourmandise 222 cm</option>
+<option value="Gourmandise sur mesure">Gourmandise sur mesure</option>
+</select></div>
+<div class="fl"><label for="f-nom">Nom *</label><input id="f-nom" type="text" autocomplete="name" value="{{ fv.nom }}" onInput="{{ set.nom }}"><sc-if value="{{ err.nom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+<div class="fl"><label for="f-tel">Téléphone *</label><input id="f-tel" type="tel" autocomplete="tel" value="{{ fv.tel }}" onInput="{{ set.tel }}"><sc-if value="{{ err.tel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro de téléphone.</span></sc-if></div>
+<div class="fl"><label for="f-mail">Email *</label><input id="f-mail" type="email" autocomplete="email" value="{{ fv.mail }}" onInput="{{ set.mail }}"><sc-if value="{{ err.mail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide.</span></sc-if></div>
+<div class="fl"><label for="f-sect">Secteur d’activité</label>
+<select id="f-sect" onChange="{{ set.sect }}">
+<option value="">— Choisir —</option>
+<option>Boulangerie</option><option>Pâtisserie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+</select></div>
+<div class="fl"><label for="f-cp">Code postal</label><input id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ fv.cp }}" onInput="{{ set.cp }}"></div>
+<div class="fl"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ fv.ville }}" onInput="{{ set.ville }}"></div>
+<div class="fl fl-w"><label for="f-msg">Message *</label><textarea id="f-msg" onInput="{{ set.msg }}">{{ fv.msg }}</textarea><sc-if value="{{ err.msg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez quelques mots sur votre projet.</span></sc-if></div>
+<div class="fl-w" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap"><p style="font-size:13px">* Champs obligatoires. Prototype : aucune donnée n’est transmise.</p><button type="submit" class="btn btn-red">Envoyer la demande <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+</form>
+</sc-if>
+<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+<div class="ok" role="status">
+<b class="d">Demande prête.</b>
+<p style="font-size:18px;margin:16px 0">Prototype — rien n’est envoyé. Dans la version en ligne, le bureau d’études recevrait : <strong>{{ cfg.summary }}</strong>.</p>
+<button type="button" class="btn btn-paper" onClick="{{ reset }}">Nouvelle demande</button>
+</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<!-- associés -->
+<section class="wrap" aria-labelledby="t-as">
+<div class="g12 sh">
+<p class="s3 ey redt">Ligne Stone</p>
+<h2 id="t-as" class="s9 d h2">Modules associés.</h2>
+</div>
+<div class="assoc">
+<a class="as" href="Rouge-Module.dc.html"><span class="redt ey">M05</span><b class="d">Centrale</b><p>Exposition centrale, vitrages coulissants des 2 côtés, profondeur 60 cm.</p></a>
+<a class="as" href="Rouge-Module.dc.html"><span class="redt ey">M01</span><b class="d">Réfrigérée Plane</b><p>Hauteur du plan de travail ; profondeur 53 ou 60 cm.</p></a>
+<a class="as" href="Rouge-Module.dc.html"><span class="redt ey">M02</span><b class="d">Vision</b><p>8 cm sous la hauteur du plan de travail.</p></a>
+<a class="as" href="Rouge-Module.dc.html"><span class="redt ey">M10</span><b class="d">Panorama</b><p>2 ou 3 étagères réfrigérées +4 / +8 °C.</p></a>
+<a class="as" href="Rouge-Module.dc.html"><span class="redt ey">M07</span><b class="d">Comptoir caisse</b><p>Tout commerce, avec ou sans tablette PMR.</p></a>
+</div>
+<div style="padding:32px 0 104px"><a class="btn" href="Rouge-Lignes.dc.html">Toute la Ligne Stone <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+</section>
+</main>
+
+<footer class="ft">
+<div class="wrap">
+<div class="ft-top">
+<p class="ft-claim d">Agencement de vitrines réfrigérées sur mesure.</p>
+<a class="btn btn-red" href="Rouge-Contact.dc.html">Demande de devis <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div class="ft-big d" aria-hidden="true">RGTE</div>
+<div class="ft-cols">
+<div><p class="ft-h">Bureau d’études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+<div><p class="ft-h">Numéro vert</p><p><a class="ft-tel d" href="tel:0800951313">0 800 95 13 13</a></p><p class="ft-mut">Appel gratuit · Horaires [HORAIRES]</p></div>
+<div class="ft-l"><p class="ft-h">Navigation</p><a href="Rouge-Lignes.dc.html">Lignes d’agencement</a><a href="Rouge-Secteurs.dc.html">Secteurs d’activité</a><a href="Rouge-Realisations.dc.html">Réalisations</a><a href="Rouge-Contact.dc.html">Showroom &amp; contact</a></div>
+<div class="ft-l"><p class="ft-h">Informations</p><a href="#mentions">Mentions légales</a><a href="#cgv">Conditions de vente</a><a href="#plan">Plan du site</a><a href="#cookies">Gestion des cookies</a></div>
+</div>
+<div class="ft-b"><span>RGTE — R.G. Technologies</span><a href="Main.dc.html">Toutes les propositions</a><span>Proposition de refonte — concept, non officiel</span></div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4600},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#B8231A","#121212"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = {
+      menuOpen:false, len:101, temp:"patis", fin:"blanc", view:"plan", tab:"desc",
+      modele:"Gourmandise 101 cm", sent:false, tried:false,
+      nom:"", tel:"", mail:"", sect:"", cp:"", ville:"", msg:""
+    };
+  }
+  renderVals(){
+    const s = this.state;
+    const accent = (this.props && this.props.accent) || "#D42A20";
+    const ON = "background:var(--red);color:#fff;border-color:var(--red)";
+    const INK = "background:#121212;color:#F5F2EC;border-color:#121212";
+    const pickset = (keys, cur, field, onStyle) => {
+      const st = {}, ar = {}, pk = {};
+      keys.forEach(k => {
+        st[k] = k === cur ? onStyle : "";
+        ar[k] = k === cur ? "true" : "false";
+        pk[k] = () => { const o = {}; o[field] = k; this.setState(o); };
+      });
+      return [st, ar, pk];
+    };
+
+    const LENS = [101,117,146,169,191,222,"sm"];
+    const lens = LENS.map(L => {
+      const on = L === s.len;
+      const is101 = L === 101;
+      return {
+        label: L === "sm" ? "Sur mesure" : L + " cm",
+        ext: is101 ? "101 × 80 × 80 + 25 h cm" : "[DIMENSIONS]",
+        expo: is101 ? "Verre 81 × 60 cm" : (L === "sm" ? "Selon votre local" : "[DIMENSIONS] · prof. 60 cm"),
+        price: is101 ? "5 800,00 € HT" : "Sur devis",
+        style: on ? ON : "", aria: on ? "true" : "false",
+        pick: () => this.setState({ len:L, modele: "Gourmandise " + (L === "sm" ? "sur mesure" : L + " cm") })
+      };
+    });
+
+    const isSM = s.len === "sm";
+    const pct = isSM ? 100 : Math.round(42 + (s.len - 101) / (222 - 101) * 56);
+    const lenLabel = isSM ? "Sur mesure" : s.len + " cm";
+    const FIN = { blanc:"Pierre acrylique blanche", c1:"Coloris A [COLORIS]", c2:"Coloris B [COLORIS]" };
+    const STONE = { blanc:"background:#F4F2EE", c1:"background:repeating-linear-gradient(45deg,#cfc9bf 0 6px,#F5F2EC 6px 12px)", c2:"background:repeating-linear-gradient(-45deg,#9a948a 0 6px,#e4dfd6 6px 12px)" };
+    const tempLabel = s.temp === "patis" ? "+2 °C / +8 °C — pâtisserie" : "+14 °C / +18 °C — chocolat";
+    const catalogue = s.len === 101 && s.fin === "blanc";
+    const cfg = {
+      lenLabel, finLabel: FIN[s.fin], tempLabel,
+      model: "Gourmandise " + lenLabel,
+      ext: s.len === 101 ? "101 × 80 × 80 + 25 h" : "[DIMENSIONS]",
+      expo: s.len === 101 ? "Verre 81 × 60 cm" : "Profondeur 60 cm",
+      price: catalogue ? "5 800,00 € HT" : "Sur devis",
+      priceNote: catalogue ? "Modèle 101 cm, pierre acrylique blanche — prix catalogue" : (s.len === 101 ? "Coloris spécifique : [PRIX], chiffrage par le bureau d’études" : "Autres longueurs : [PRIX], chiffrage par le bureau d’études"),
+      boxStyle: "width:" + pct + "%" + (isSM ? ";outline:2px dashed #B8231A;outline-offset:6px" : ""),
+      glassStyle: s.temp === "patis" ? "background:#FBEDEA" : "background:#EFE4D8",
+      stoneStyle: STONE[s.fin],
+      aria: "Élévation du module Gourmandise, longueur " + lenLabel,
+      summary: "Gourmandise " + lenLabel + " · " + tempLabel + " · " + FIN[s.fin]
+    };
+
+    const [v, va, vp] = pickset(["photo","plan","coupe"], s.view, "view", INK);
+    const show = { photo: s.view === "photo", plan: s.view === "plan", coupe: s.view === "coupe" };
+    const [t, ta, tp] = pickset(["patis","choco"], s.temp, "temp", ON);
+    const [f, fa, fp] = pickset(["blanc","c1","c2"], s.fin, "fin", "outline:4px solid var(--red);outline-offset:-2px");
+    const [tb, tba, tbp] = pickset(["desc","carac","dim"], s.tab, "tab", ON);
+    const tshow = { desc: s.tab === "desc", carac: s.tab === "carac", dim: s.tab === "dim" };
+
+    const specs = [
+      {k:"Piliers et plan de travail", v:"Pierre acrylique blanche"},
+      {k:"Pied", v:"Monté sur pied en pierre acrylique blanche"},
+      {k:"Groupe", v:"Logé"},
+      {k:"Froid", v:"Ventilé"},
+      {k:"Fluide", v:"Fréon R134A"},
+      {k:"Régulation", v:"Contrôle électronique de la température"},
+      {k:"Dégivrage", v:"Automatique"},
+      {k:"Condensats", v:"Ré-évaporation automatique"},
+      {k:"Dimensions extérieures", v:"101 × 80 × 80 + 25 h cm"},
+      {k:"Réserve", v:"Sans réserve réfrigérée"},
+      {k:"Exposition", v:"Verre 81 × 60 cm"},
+      {k:"Températures", v:"+2 / +8 °C ou +14 / +18 °C"}
+    ];
+
+    const tried = s.tried;
+    const err = {
+      nom: tried && !s.nom.trim(),
+      tel: tried && !s.tel.trim(),
+      mail: tried && s.mail.indexOf("@") < 1,
+      msg: tried && !s.msg.trim()
+    };
+    const field = k => e => { const o = {}; o[k] = e.target.value; this.setState(o); };
+
+    return {
+      rootStyle: "--red:" + accent,
+      menuOpen: s.menuOpen, menuAria: s.menuOpen ? "true" : "false",
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      lens, cfg, v, va, vp, show, t, ta, tp, f, fa, fp, tb, tba, tbp, tshow, specs,
+      fv: { nom:s.nom, tel:s.tel, mail:s.mail, cp:s.cp, ville:s.ville, msg:s.msg },
+      set: { nom:field("nom"), tel:field("tel"), mail:field("mail"), sect:field("sect"), cp:field("cp"), ville:field("ville"), msg:field("msg") },
+      setModele: e => this.setState({ modele: e.target.value }),
+      err, sent: s.sent, notSent: !s.sent,
+      submit: e => {
+        if (e && e.preventDefault) e.preventDefault();
+        const ok = s.nom.trim() && s.tel.trim() && s.mail.indexOf("@") > 0 && s.msg.trim();
+        this.setState(ok ? { sent:true, tried:false } : { tried:true });
+      },
+      reset: () => this.setState({ sent:false, tried:false, nom:"", tel:"", mail:"", sect:"", cp:"", ville:"", msg:"" })
+    };
+  }
+}
+</script>
+</body>
+</html>
