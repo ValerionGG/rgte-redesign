@@ -2,7 +2,7 @@
 
 Concepts de refonte complète de [rgte.eu](https://www.rgte.eu) (RGTE · R.G. Technologies, vitrines réfrigérées sur mesure, Puget-sur-Argens). **Ce n'est pas le site officiel** : chaque page porte la mention « Proposition de refonte — concept, non officiel », et les pages sont en `noindex`.
 
-**Site en ligne :** https://valeriongg.github.io/rgte-redesign/
+**Site en ligne :** https://valeriongg.github.io/rgte-redesign/ (tour 1) · **Tour 2 :** https://valeriongg.github.io/rgte-redesign/v2/
 
 | # | Direction | Esprit |
 |---|---|---|
@@ -28,3 +28,17 @@ Chaque direction comprend 6 pages interactives : Accueil, Lignes d'agencement, M
 - `BRIEF.md` — brief commun (contenus réels de rgte.eu, règles).
 
 Contenus repris de rgte.eu ; les informations manquantes sont des marqueurs visibles ([PRIX], [HORAIRES]…).
+
+## Tour 2 — 5 propositions recentrées sur le produit (`v2/`)
+
+Retour client : le tour 1 était trop éloigné du sujet (univers des clients plutôt que du fabricant). Le tour 2 garde l'identité RGTE, met les vitrines en héros (rendus SVG `assets/v2/`) et fait de l'accueil une landing orientée plan 3D / devis.
+
+| # | Direction | Esprit |
+|---|---|---|
+| 1 | Showroom | Le showroom en ligne — évolution directe du site actuel |
+| 2 | Fabricant | Le fabricant du froid sur mesure — vitrine annotée, fiches techniques |
+| 3 | Métiers | Votre métier, vos vitrines — recommandation par métier |
+| 4 | Gamme | Le catalogue pro — recherche, filtres, comparateur |
+| 5 | Projet 3D | Votre agencement dessiné et offert — demande de plan 3D dans le héros |
+
+3 pages par direction : Accueil (landing), Lignes d'agencement (45 modules), Module Gourmandise. Sources : `v2/project/*.dc.html`, cadrage : `v2/BRIEF-v2.md`, kit : `v2/kit/vitrines.html`.

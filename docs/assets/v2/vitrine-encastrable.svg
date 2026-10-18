@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Cuve encastrable prête à habiller">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="150" width="400" height="134" fill="#B9BDC1"></rect>
+  <rect x="40" y="150" width="12" height="134" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="150" width="12" height="134" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <!-- cuve basse : exposition à hauteur du plan -->
+  <polygon points="40,150 440,150 426,138 54,138" fill="#ECE9E3"></polygon>
+  <rect x="40" y="148" width="400" height="4" fill="#000" opacity=".06"></rect>
+  <!-- vitre droite basse -->
+  <rect x="54" y="96" width="372" height="42" fill="#F1EEE8"></rect>
+  <rect x="54" y="96" width="372" height="2" fill="#FFE7B0"></rect>
+  <g>
+    <rect x="70" y="122" width="30" height="14" rx="2" fill="#F3DCD5"></rect><rect x="70" y="120" width="30" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="110" y="123" width="30" height="13" rx="2" fill="#EADBC4"></rect><rect x="110" y="121" width="30" height="4" rx="2" fill="#6B4433"></rect>
+    <ellipse cx="164" cy="132" rx="12" ry="4" fill="#D9A866"></ellipse><circle cx="161" cy="128.5" r="2.8" fill="#C8475B"></circle><circle cx="167" cy="128" r="2.8" fill="#8E2F45"></circle>
+    <rect x="186" y="121" width="34" height="15" rx="7" fill="#B7CB93"></rect>
+    <ellipse cx="242" cy="132" rx="12" ry="4" fill="#D9A866"></ellipse><ellipse cx="242" cy="129" rx="9" ry="2.6" fill="#F1D36A"></ellipse>
+    <rect x="264" y="122" width="44" height="14" rx="2" fill="#4A3127"></rect><rect x="264" y="122" width="44" height="3" fill="#7A5240"></rect>
+    <rect x="318" y="121" width="30" height="15" rx="2" fill="#F7F1E6"></rect><rect x="318" y="119" width="30" height="4" rx="2" fill="#E9C46A"></rect>
+    <rect x="358" y="122" width="54" height="14" rx="2" fill="#E8D2B8"></rect><rect x="358" y="120" width="54" height="4" rx="2" fill="#C8475B" opacity=".85"></rect>
+  </g>
+  <rect x="54" y="96" width="372" height="42" fill="#CFE3EA" opacity=".26"></rect>
+  <polygon points="96,96 116,96 98,138 78,138" fill="#fff" opacity=".32"></polygon>
+  <polygon points="300,96 310,96 292,138 282,138" fill="#fff" opacity=".22"></polygon>
+  <rect x="54" y="96" width="372" height="42" fill="none" stroke="#A9BAC0"></rect>
+  <rect x="50" y="92" width="380" height="5" fill="#C9CDD0"></rect>
+  <rect x="396" y="164" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="174" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <g stroke="#9EA3A8" stroke-dasharray="6 5" fill="none"><rect x="46" y="156" width="388" height="124"></rect></g><text x="240" y="222" text-anchor="middle" font-family="sans-serif" font-size="9" letter-spacing="3" fill="#6F757B">À HABILLER</text>
+</svg>

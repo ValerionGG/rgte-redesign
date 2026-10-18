@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE · Fabricant — Module Gourmandise</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#1C1C1E}
+sc-for,sc-if{display:contents}
+.fb{--acc:#D42A20;font-family:'Archivo',system-ui,sans-serif;color:#1C1C1E;background:#F4F3EF;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+.fb *,.fb *::before,.fb *::after{box-sizing:border-box}
+.fb img{display:block;max-width:100%}
+.fb h1,.fb h2,.fb h3,.fb h4,.fb p,.fb dl,.fb dd{margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.wrap{max-width:1320px;margin:0 auto;padding:0 40px}
+.fb :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+/* topbar + header */
+.topbar{background:#121214;color:#A5A5AA;font-size:12px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:36px}
+.topbar a{color:#E6E6E8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:36px}
+.topbar a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:80;background:rgba(28,28,30,.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #333338;color:#F4F3EF}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:72px}
+.logo{display:inline-flex;flex-direction:column;justify-content:center;text-decoration:none;color:#F4F3EF;min-height:44px}
+.logo-w{display:flex;align-items:center;gap:8px;font-weight:800;font-stretch:125%;font-size:26px;letter-spacing:.01em;line-height:1}
+.logo-w i{display:block;width:9px;height:9px;background:var(--acc)}
+.logo-s{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#A5A5AA;margin-top:5px;line-height:1}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:14px;font-weight:500;color:#D6D6D9;text-decoration:none;transition:color .2s}
+.nav a::after{content:'';position:absolute;left:14px;right:14px;bottom:8px;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover,.nav a.on{color:#fff}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.hdr-r{display:flex;align-items:center;gap:18px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#F4F3EF;min-height:44px}
+.tel b{display:block;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;line-height:1.1}
+.tel small{display:block;font-size:11px;color:#A5A5AA;line-height:1.2}
+.burger{display:none;width:44px;height:44px;border:1px solid #4A4A50;background:transparent;color:#F4F3EF;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 4px;border-top:1px solid #333338;text-decoration:none;color:#F4F3EF;font-weight:600}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border:0;border-radius:2px;font:600 15px/1 'Archivo',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:transform .2s,background .2s,box-shadow .25s,color .2s}
+.btn svg{flex:none;transition:transform .25s}
+.btn:hover svg{transform:translateX(4px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{background:#B8231A;box-shadow:0 14px 30px -16px var(--acc)}
+.btn-line{background:transparent;color:#F4F3EF;box-shadow:inset 0 0 0 1px #5A5A60}
+.btn-line:hover{box-shadow:inset 0 0 0 1px #F4F3EF}
+.btn-ink{background:#1C1C1E;color:#F4F3EF}
+.btn-ink:hover{background:#000}
+.btn-ghost{background:transparent;color:#1C1C1E;box-shadow:inset 0 0 0 1px #B9B8B3}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px #1C1C1E}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.btn-block{width:100%}
+
+/* typo */
+.kicker{display:inline-flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#5E5E63}
+.kicker i{display:block;width:8px;height:8px;background:var(--acc)}
+.h2{font-family:'Archivo Narrow','Archivo',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(30px,3.4vw,46px);line-height:.95;overflow-wrap:anywhere}
+.lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#5E5E63}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@keyframes pulse{0%{transform:scale(.9);opacity:.7}100%{transform:scale(2);opacity:0}}
+@keyframes drawx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* fiche */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E5E63}
+.crumbs a{color:#5E5E63;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumbs a:hover{color:#1C1C1E}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:24px;align-items:start}
+.top2{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:24px;padding-bottom:72px}
+.title{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;padding-bottom:20px;border-bottom:2px solid #1C1C1E}
+.h1{font-family:'Archivo Narrow','Archivo',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(44px,5.4vw,80px);line-height:.9;margin-top:10px;overflow-wrap:anywhere}
+.ref{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E5E63;text-align:left;line-height:1.7;padding:8px 12px;background:#ECEBE8}
+.ref b{color:#1C1C1E;font-weight:600}
+.stage{position:relative;margin-top:20px;background:#ECEBE8;background-image:linear-gradient(#E2E1DD 1px,transparent 1px),linear-gradient(90deg,#E2E1DD 1px,transparent 1px);background-size:32px 32px;padding:70px 72px 34px 40px;display:flex;flex-direction:column;align-items:center;min-height:620px;justify-content:flex-end}
+.stag{position:absolute;top:16px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5E5E63;line-height:1.7}
+.sbadge{position:absolute;top:16px;right:16px;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.sbadge span{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:5px 8px;background:#1C1C1E;color:#F4F3EF}
+.sbadge .t{color:#7FE3A2}
+.fig{position:relative;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.cap{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#5E5E63;margin:0 8.3% 6px}
+.tv{position:relative;margin:0 8.3% 22px;border:1.5px solid #1C1C1E;background:#F6F4F0}
+.tvg{position:absolute;left:10%;right:10%;top:12.5%;bottom:12.5%;border:1px dashed #5E5E63;background:rgba(207,227,234,.45);transition:background .4s}
+.tvs{position:absolute;left:10%;right:10%;height:3px;background:var(--acc)}
+.tvs.t{top:-2px}.tvs.b{bottom:-2px}
+.tvl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;white-space:nowrap;background:#F6F4F0;padding:0 4px}
+.front{position:relative}
+.front img{width:100%;height:auto;aspect-ratio:3/2;transition:filter .4s}
+.hs{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border:0;padding:0;background:transparent;cursor:pointer;display:grid;place-items:center;z-index:2}
+.hs .dot{position:relative;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 10.5px/1 'IBM Plex Mono',monospace;background:#1C1C1E;color:#fff;box-shadow:0 0 0 2px #F4F3EF;transition:background .2s,transform .2s}
+.hs .ring{position:absolute;width:24px;height:24px;border-radius:50%;border:1.5px solid #1C1C1E;animation:pulse 2.4s ease-out infinite}
+.hs:hover .dot{transform:scale(1.15)}
+.dimh{position:relative;margin:4px 8.3% 0;height:18px;border-left:1px solid #1C1C1E;border-right:1px solid #1C1C1E}
+.dimh::before{content:'';position:absolute;left:0;right:0;top:9px;border-top:1px solid #1C1C1E;transform-origin:left;animation:drawx .6s ease both}
+.dimh span{position:absolute;left:50%;top:0;transform:translateX(-50%);background:#ECEBE8;padding:0 10px;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;line-height:18px;white-space:nowrap}
+.dimv{position:absolute;right:-30px;top:30%;bottom:6%;width:12px;border-top:1px solid #1C1C1E;border-bottom:1px solid #1C1C1E}
+.dimv::before{content:'';position:absolute;left:6px;top:0;bottom:0;border-left:1px solid #1C1C1E}
+.dimv span{position:absolute;left:14px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));border-top:1px solid #D2D1CC;border-left:1px solid #D2D1CC}
+.legend .lg{border-right:1px solid #D2D1CC;border-bottom:1px solid #D2D1CC}
+.lg{display:flex;align-items:flex-start;gap:10px;min-height:56px;padding:10px 12px;border:0;text-align:left;cursor:pointer;font:500 13px/1.35 'Archivo',sans-serif;color:#1C1C1E;transition:background .2s}
+.lg i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 10px/1 'IBM Plex Mono',monospace;font-style:normal;transition:background .2s,color .2s}
+.lg small{display:block;color:#5E5E63;font-size:12px;margin-top:2px}
+
+/* tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid #1C1C1E;margin-top:48px;overflow-x:auto}
+.tabs button{min-height:52px;padding:0 22px;border:0;font:600 15px/1 'Archivo',sans-serif;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.tabbody{padding-top:24px;animation:fade .4s ease both}
+.desc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;font-size:15px;color:#3E3E43}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid #1C1C1E}
+.kv div{display:grid;grid-template-columns:170px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid #D2D1CC;font-size:14px}
+.kv div:nth-child(odd){padding-right:24px}
+.kv dt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#5E5E63;padding-top:2px}
+.kv dd{font-weight:500}
+.dtab{display:grid;gap:4px}
+.drow,.dhead{display:grid;grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:center;padding:0 16px}
+.dhead{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#5E5E63;padding-bottom:4px}
+.drow{min-height:50px;border:0;cursor:pointer;text-align:left;font:500 14px/1.3 'Archivo',sans-serif;transition:background .2s,color .2s,box-shadow .2s}
+.drow:hover{box-shadow:inset 0 0 0 1.5px #1C1C1E}
+.drow b{font-family:'IBM Plex Mono',monospace;font-weight:600}
+
+/* configurateur */
+.cfg{position:sticky;top:88px;background:#1C1C1E;color:#F4F3EF;padding:24px 22px 22px;display:flex;flex-direction:column;gap:20px}
+.cfg-h{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #3A3A40;padding-bottom:14px}
+.cfg-h b{font-family:'Archivo Narrow',sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.01em}
+.step-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.step-h span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#A5A5AA}
+.step-h b{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:#fff}
+.lens{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.lbtn{min-height:48px;border:0;font:600 14px/1 'IBM Plex Mono',monospace;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.lbtn small{display:block;font:500 9.5px/1.1 'IBM Plex Mono',monospace;margin-top:4px;opacity:.8}
+.lbtn:hover{box-shadow:inset 0 0 0 1px #F4F3EF}
+.custom{display:flex;align-items:center;gap:8px;margin-top:6px;padding:0 12px;background:#2A2A2F;border:1px solid #4A4A50}
+.custom input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font:600 15px/1 'IBM Plex Mono',monospace;min-height:46px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.obtn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:64px;padding:10px 12px;border:0;cursor:pointer;text-align:left;font:500 13px/1.3 'Archivo',sans-serif;transition:background .2s,color .2s,box-shadow .2s}
+.obtn b{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600}
+.obtn:hover{box-shadow:inset 0 0 0 1px #F4F3EF}
+.sw{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.recap{background:#F4F3EF;color:#1C1C1E;padding:16px}
+.price{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:600;letter-spacing:-.04em;line-height:1;animation:fade .35s ease both}
+.psub{font-size:12px;color:#5E5E63;margin-top:6px;line-height:1.4}
+.rrow{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid #DEDDD8;font-size:13px}
+.rrow span{color:#5E5E63}
+.rrow b{font-weight:600;text-align:right}
+.code{margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px 10px;background:#1C1C1E;color:#F4F3EF;overflow-wrap:anywhere}
+
+/* formulaire */
+.req{background:#1C1C1E;color:#F4F3EF;padding:72px 0}
+.reqw{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.form{background:#F4F3EF;color:#1C1C1E;padding:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:13px;font-weight:600}
+.fld input,.fld select,.fld textarea{width:100%;font:500 15px/1.4 'Archivo',sans-serif;color:#1C1C1E;background:#fff;border:1px solid #D2D1CC;border-radius:0;min-height:48px;padding:11px 13px;outline:0;transition:border-color .2s,box-shadow .2s}
+.fld textarea{min-height:96px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#1C1C1E;box-shadow:inset 0 0 0 1px #1C1C1E}
+.fld input[readonly]{background:#ECEBE8;color:#3E3E43}
+.err{font-size:12px;color:#B3241B}
+.done{background:#F4F3EF;color:#1C1C1E;padding:36px;border-top:4px solid var(--acc);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+
+/* associés */
+.rel{padding:64px 0 72px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:8px;margin-top:26px}
+.card{display:flex;flex-direction:column;background:#fff;text-decoration:none;color:#1C1C1E;transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 0 0 1px #1C1C1E,0 22px 36px -26px rgba(28,28,30,.6)}
+.card .im{position:relative;background:#ECEBE8;padding:24px 14px 4px;overflow:hidden}
+.card .im img{width:100%;aspect-ratio:3/2;height:auto;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.card:hover .im img{transform:scale(1.07)}
+.card .tp{position:absolute;top:6px;right:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;background:#1C1C1E;color:#7FE3A2;padding:3px 6px}
+.card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.card .bd b{font-size:16px}
+.card .bd p{font-size:13px;color:#5E5E63;line-height:1.4}
+.card .bd span{font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:6px;display:flex;justify-content:space-between}
+.card .bd span i{font-style:normal;color:var(--acc);font-weight:600}
+
+/* footer */
+.ftr{background:#121214;color:#D6D6D9;padding:56px 0 20px}
+.ftr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr .ftr-h{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8E8E94;margin-bottom:14px}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#D6D6D9;font-size:15px}
+.ftr-links a:hover{color:#fff}
+.ftr-tel{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;text-decoration:none;color:#fff;display:inline-block}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:40px;padding-top:10px;border-top:1px solid #333338;font-size:13px;color:#8E8E94}
+.ftr-bot a{color:#A5A5AA;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#fff}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;padding:0 24px 12px}}
+@media(max-width:1080px){.top,.top2{grid-template-columns:minmax(0,1fr)}.cfg{position:static}.reqw{grid-template-columns:minmax(0,1fr)}.desc{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){
+.wrap{padding:0 16px}.topbar-note{display:none}.hdr-cta{display:none}.mnav{padding:0 16px 12px}
+.ref{text-align:left}
+.stage{padding:20px 30px 22px 14px;min-height:0}.stag{position:static;margin-bottom:8px;align-self:flex-start}.sbadge{position:static;flex-direction:row;flex-wrap:wrap;align-self:flex-start;margin-bottom:16px}.fig{min-width:80%}.hs{display:none}.tabs{margin-top:32px}.dimv{right:-22px}.hs{width:36px;height:36px;margin:-18px 0 0 -18px}.hs .dot,.hs .ring{width:20px;height:20px;font-size:9px}
+.kv{grid-template-columns:minmax(0,1fr)}.kv div{grid-template-columns:minmax(0,1fr);gap:2px}.kv div:nth-child(odd){padding-right:0}
+.drow,.dhead{grid-template-columns:76px minmax(0,1fr) minmax(0,1fr);padding:0 10px}.drow .hide,.dhead .hide{display:none}
+.req{padding:56px 0}.form{grid-template-columns:minmax(0,1fr);padding:18px}.rel{padding:48px 0 56px}
+}
+@media (prefers-reduced-motion:reduce){.fb *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="fb" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="mono topbar-note">Fabricant · bureau d'études &amp; show-room · Puget-sur-Argens (83)</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Fabricant-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-w">RGTE<i></i></span><span class="logo-s">R.G. Technologies</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Fabricant-Lignes.html">Lignes d'agencement</a>
+      <a href="Fabricant-Accueil.html#secteurs">Secteurs</a>
+      <a href="Fabricant-Accueil.html#realisations">Réalisations</a>
+      <a href="Fabricant-Accueil.html#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F06A5F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Fabricant-Accueil.html#contact">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Fabricant-Lignes.html">Lignes d'agencement <span class="mono">01</span></a>
+      <a href="Fabricant-Accueil.html#secteurs">Secteurs <span class="mono">02</span></a>
+      <a href="Fabricant-Accueil.html#realisations">Réalisations <span class="mono">03</span></a>
+      <a href="Fabricant-Accueil.html#contact">Showroom &amp; contact <span class="mono">04</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span class="mono">Appel gratuit</span></a>
+      <a href="#demande" style="background:var(--acc);padding:0 14px;border-top:0">Demande d'informations <span class="mono">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<div class="wrap">
+  <nav class="crumbs" aria-label="Fil d'Ariane"><a href="Fabricant-Accueil.html">Accueil</a><span aria-hidden="true">/</span><a href="Fabricant-Lignes.html">Lignes d'agencement</a><span aria-hidden="true">/</span><a href="Fabricant-Lignes.html">Ligne Stone</a><span aria-hidden="true">/</span><span style="color:#1C1C1E">Module Gourmandise</span></nav>
+
+  <div class="top">
+    <!-- FICHE TECHNIQUE -->
+    <div class="rise">
+      <div class="title">
+        <div>
+          <span class="kicker"><i></i>Ligne Stone · module réfrigéré</span>
+          <h1 class="h1">Module Gourmandise</h1>
+          <p style="margin-top:12px;color:#3E3E43;max-width:560px">Exposition centrale à hauteur du plan de travail, vitrages coulissants des deux côtés — pour pâtisseries, macarons ou chocolats.</p>
+        </div>
+        <div class="ref">Configuration<br><b>{{ code }}</b><br>Prix : <b>{{ priceTxt }}</b></div>
+      </div>
+
+      <div class="stage">
+        <span class="stag">Fig. 01 — échelle relative<br>{{ stageTag }}</span>
+        <div class="sbadge"><span class="t">{{ tempBadge }}</span><span>{{ finBadge }}</span></div>
+        <div class="fig" style="{{ figStyle }}">
+          <p class="cap">Vue de dessus</p>
+          <div class="tv" style="{{ tvStyle }}" aria-hidden="true"><span class="tvg" style="{{ tvgStyle }}"></span><span class="tvs t"></span><span class="tvs b"></span><span class="tvl">{{ lenShort }} × 80</span></div>
+          <p class="cap">Vue de face</p>
+          <div class="front">
+            <img src="../assets/v2/vitrine-gourmandise.svg" alt="Vitrine Gourmandise, vue de face, à l'échelle de la longueur choisie" width="480" height="320" style="{{ imgStyle }}">
+            <sc-for list="{{ hots }}" as="h" hint-placeholder-count="7">
+              <button type="button" class="hs" style="{{ h.pos }}" aria-label="{{ h.aria }}" aria-pressed="{{ h.on }}" onClick="{{ h.pick }}" onMouseEnter="{{ h.pick }}"><span class="ring" style="{{ h.ring }}"></span><span class="dot" style="{{ h.dot }}">{{ h.n }}</span></button>
+            </sc-for>
+            <span class="dimv"><span>{{ hTxt }}</span></span>
+          </div>
+          <div class="dimh" key="{{ lenTxt }}"><span>{{ lenTxt }}</span></div>
+        </div>
+      </div>
+      <div class="legend" role="group" aria-label="Repères techniques">
+        <sc-for list="{{ hots }}" as="h" hint-placeholder-count="7">
+          <button type="button" class="lg" style="{{ h.lgStyle }}" aria-pressed="{{ h.on }}" onClick="{{ h.pick }}" onMouseEnter="{{ h.pick }}"><i style="{{ h.lgDot }}">{{ h.n }}</i><span>{{ h.t }}<small>{{ h.k }}</small></span></button>
+        </sc-for>
+      </div>
+
+    </div>
+
+    <!-- CONFIGURATEUR -->
+    <aside class="cfg rise d1" aria-label="Configurateur">
+      <div class="cfg-h"><b>Configurer</b><span class="lbl" style="color:#A5A5AA">3 étapes</span></div>
+      <div>
+        <div class="step-h"><span>01 · Longueur</span><b>{{ lenTxt }}</b></div>
+        <div class="lens" role="group" aria-label="Longueur">
+          <sc-for list="{{ lens }}" as="l" hint-placeholder-count="7">
+            <button type="button" class="lbtn" style="{{ l.style }}" aria-pressed="{{ l.on }}" onClick="{{ l.pick }}">{{ l.label }}<small>{{ l.sub }}</small></button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+          <label class="custom fade"><span class="lbl" style="color:#A5A5AA;white-space:nowrap">Longueur</span><input type="text" inputmode="numeric" placeholder="ex. 250" value="{{ custom }}" onInput="{{ setCustom }}" aria-label="Longueur souhaitée en centimètres"><span class="mono" style="font-size:13px">cm</span></label>
+        </sc-if>
+      </div>
+      <div>
+        <div class="step-h"><span>02 · Température</span><b>{{ tempTxt }}</b></div>
+        <div class="opts" role="group" aria-label="Plage de température">
+          <sc-for list="{{ temps }}" as="t" hint-placeholder-count="2">
+            <button type="button" class="obtn" style="{{ t.style }}" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}"><b>{{ t.range }}</b>{{ t.use }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div class="step-h"><span>03 · Finition</span><b>{{ finShort }}</b></div>
+        <div class="opts" role="group" aria-label="Finition">
+          <sc-for list="{{ fins }}" as="f" hint-placeholder-count="2">
+            <button type="button" class="obtn" style="{{ f.style }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}"><span><span class="sw" style="{{ f.sw }}"></span>{{ f.name }}</span><span style="font-size:11.5px;opacity:.75">{{ f.sub }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+      <div class="recap" aria-live="polite">
+        <p class="lbl">Prix</p>
+        <div class="price" key="{{ priceKey }}" style="margin-top:6px">{{ priceTxt }}</div>
+        <p class="psub">{{ priceSub }}</p>
+        <div style="margin-top:10px">
+          <div class="rrow"><span>Longueur</span><b class="mono">{{ lenTxt }}</b></div>
+          <div class="rrow"><span>Température</span><b class="mono">{{ tempTxt }}</b></div>
+          <div class="rrow"><span>Finition</span><b>{{ finTxt }}</b></div>
+          <div class="rrow"><span>Dim. ext.</span><b class="mono">{{ dimTxt }}</b></div>
+        </div>
+        <div class="code">{{ code }}</div>
+      </div>
+      <div style="display:grid;gap:6px">
+        <a class="btn btn-acc btn-block" href="#demande">Demander un devis<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></a>
+        <a class="btn btn-line btn-block" href="Fabricant-Accueil.html#contact">L'intégrer à mon plan 3D offert</a>
+        <a class="btn btn-line btn-block btn-sm" href="tel:0800951313"><span class="mono" style="font-weight:600">0 800 95 13 13</span><span style="font-weight:500;color:#A5A5AA">appel gratuit</span></a>
+      </div>
+    </aside>
+  </div>
+  <div class="top2">
+    <div>
+      <!-- ONGLETS -->
+      <div class="tabs" role="tablist" aria-label="Fiche produit">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <button type="button" role="tab" style="{{ t.style }}" aria-selected="{{ t.on }}" onClick="{{ t.pick }}">{{ t.name }}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ tabDesc }}" hint-placeholder-val="{{ true }}">
+        <div class="tabbody desc" role="tabpanel">
+          <div style="display:grid;gap:12px">
+            <p>Le Module Gourmandise appartient à la Ligne Stone : structure en pierre acrylique type Corian, panneau frontal en verre avec sérigraphie du client. Exposition centrale à hauteur du plan de travail, avec vitrages coulissants des deux côtés.</p>
+            <p>Pâtisseries, macarons ou chocolats : deux plages de température, +2 °C / +8 °C ou +14 °C / +18 °C. Profondeur d'exposition 60 cm.</p>
+          </div>
+          <div style="display:grid;gap:12px">
+            <p>Six longueurs — 101, 117, 146, 169, 191 et 222 cm — ou sur mesure. Le modèle 101 cm, en pierre acrylique blanche, est proposé à 5 800,00 € HT ; les autres longueurs sont chiffrées sur devis.</p>
+            <p>Le bureau d'études peut intégrer le module à votre plan 3D d'agencement, avec les autres modules Stone : Plane, Vision, Centrale, Panorama, Comptoir caisse…</p>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tabCarac }}" hint-placeholder-val="{{ false }}">
+        <div class="tabbody" role="tabpanel">
+          <p class="lbl" style="margin-bottom:10px">Fiche du modèle 101 cm · autres longueurs : [À CONFIRMER]</p>
+          <dl class="kv">
+            <div><dt>Piliers &amp; plan</dt><dd>Pierre acrylique blanche</dd></div>
+            <div><dt>Support</dt><dd>Monté sur pied en pierre acrylique blanche</dd></div>
+            <div><dt>Groupe</dt><dd>Groupe logé</dd></div>
+            <div><dt>Froid</dt><dd>Froid ventilé</dd></div>
+            <div><dt>Fluide</dt><dd>Fréon R134A</dd></div>
+            <div><dt>Régulation</dt><dd>Contrôle électronique de la température</dd></div>
+            <div><dt>Dégivrage</dt><dd>Automatique</dd></div>
+            <div><dt>Condensats</dt><dd>Ré-évaporation automatique des eaux de condensation</dd></div>
+            <div><dt>Réserve</dt><dd>Sans réserve réfrigérée</dd></div>
+            <div><dt>Températures</dt><dd>+2 °C / +8 °C ou +14 °C / +18 °C</dd></div>
+            <div><dt>Dim. extérieures</dt><dd>101 × 80 × 80 + 25 h</dd></div>
+            <div><dt>Exposition</dt><dd>En verre 81 × 60 cm</dd></div>
+          </dl>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tabDim }}" hint-placeholder-val="{{ false }}">
+        <div class="tabbody" role="tabpanel">
+          <div class="dtab">
+            <div class="dhead"><span>Longueur</span><span>Dim. extérieures</span><span class="hide">Exposition</span><span>Prix</span></div>
+            <sc-for list="{{ dimRows }}" as="d" hint-placeholder-count="7">
+              <button type="button" class="drow" style="{{ d.style }}" aria-pressed="{{ d.on }}" onClick="{{ d.pick }}"><b>{{ d.len }}</b><span class="mono" style="font-size:13px">{{ d.dim }}</span><span class="hide">{{ d.expo }}</span><span class="mono" style="font-size:13px">{{ d.price }}</span></button>
+            </sc-for>
+          </div>
+          <p class="lbl" style="margin-top:10px">Cliquez une ligne pour mettre à jour le configurateur</p>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+
+<!-- DEMANDE -->
+<section class="req" id="demande">
+  <div class="wrap reqw">
+    <div>
+      <span class="kicker" style="color:#A5A5AA"><i></i>Demande d'informations</span>
+      <h2 class="h2" style="margin-top:14px">Recevez la fiche et le chiffrage.</h2>
+      <p style="margin-top:14px;color:#B4B4B9;font-size:16px">Votre configuration est reprise dans la demande. Le bureau d'études vous rappelle et peut intégrer le module à votre plan 3D d'agencement.</p>
+      <div class="code" style="margin-top:20px;background:#2A2A2F;font-size:12px">{{ code }}</div>
+    </div>
+    <div>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form class="form" onSubmit="{{ submit }}" novalidate>
+          <div class="fld"><label for="f-prod">Produit</label><input id="f-prod" type="text" value="Module Gourmandise — Ligne Stone" readonly></div>
+          <div class="fld"><label for="f-mod">Modèle</label><input id="f-mod" type="text" value="{{ modelTxt }}" readonly></div>
+          <div class="fld"><label for="f-nom">Nom *</label><input id="f-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ inNom }}" style="{{ eNomS }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+          <div class="fld"><label for="f-tel">Téléphone *</label><input id="f-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ inTel }}" style="{{ eTelS }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+          <div class="fld"><label for="f-mail">Email *</label><input id="f-mail" type="email" autocomplete="email" value="{{ f.mail }}" onInput="{{ inMail }}" style="{{ eMailS }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide.</span></sc-if></div>
+          <div class="fld"><label for="f-sec">Secteur d'activité</label>
+            <select id="f-sec" onChange="{{ inSec }}">
+              <option value="">Choisir…</option>
+              <option>Boulangerie</option><option>Pâtisserie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+            </select>
+          </div>
+          <div class="fld"><label for="f-cp">Code postal</label><input id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ inCp }}"></div>
+          <div class="fld"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
+          <div class="fld full"><label for="f-msg">Message *</label><textarea id="f-msg" value="{{ f.msg }}" onInput="{{ inMsg }}" style="{{ eMsgS }}"></textarea><sc-if value="{{ eMsg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez votre message.</span></sc-if></div>
+          <div class="fld full" style="flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <span style="font-size:12px;color:#5E5E63">* Obligatoire · prototype, rien n'est envoyé</span>
+            <button type="submit" class="btn btn-acc">Envoyer la demande<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+          </div>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div class="done" role="status">
+          <p class="lbl">Demande prête — prototype</p>
+          <h3 style="font-family:'Archivo Narrow',sans-serif;font-size:36px;text-transform:uppercase;line-height:1;margin-top:12px">Merci {{ f.nom }}.</h3>
+          <p style="margin-top:12px;color:#3E3E43">Configuration retenue : <span class="mono">{{ modelTxt }}</span>. Prototype — rien n'est envoyé.</p>
+          <button type="button" class="btn btn-ink btn-sm" style="margin-top:20px" onClick="{{ reset }}">Modifier la demande</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- ASSOCIES -->
+<section class="rel">
+  <div class="wrap">
+    <span class="kicker"><i></i>Modules associés · Ligne Stone</span>
+    <h2 class="h2" style="margin-top:12px">À composer avec la Gourmandise.</h2>
+    <div class="rgrid">
+      <sc-for list="{{ related }}" as="m" hint-placeholder-count="5">
+        <a class="card" href="Fabricant-Module.html">
+          <span class="im"><sc-if value="{{ m.hasTemp }}" hint-placeholder-val="{{ true }}"><span class="tp">{{ m.temp }}</span></sc-if><img src="{{ m.img }}" alt="" width="480" height="320" loading="lazy"></span>
+          <span class="bd"><b>{{ m.name }}</b><p>{{ m.spec }}</p><span>Sur devis<i>Fiche →</i></span></span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a class="logo" href="Fabricant-Accueil.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE<i></i></span><span class="logo-s">R.G. Technologies</span></a>
+        <p style="color:#A5A5AA;margin-top:16px;max-width:260px">Fabricant et agenceur de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#A5A5AA;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Fabricant-Lignes.html">Lignes d'agencement</a>
+        <a href="Fabricant-Accueil.html#secteurs">Secteurs d'activité</a>
+        <a href="Fabricant-Accueil.html#realisations">Réalisations</a>
+        <a href="Fabricant-Accueil.html#contact">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span class="mono" style="font-size:12px">Proposition de refonte (tour 2) — concept, non officiel · <a href="index.html" style="font-size:12px;min-height:0;display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#B3241B"]},"longueurInitiale":{"editor":"enum","default":"101","options":["101","117","146","169","191","222"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const init = props && props.longueurInitiale ? parseInt(props.longueurInitiale, 10) : 101;
+    this.state = { menuOpen:false, len: [101,117,146,169,191,222].indexOf(init) > -1 ? init : 101, custom:'', temp:'pat', fin:'blanc', hot:0, tab:'desc',
+      f:{ nom:'', tel:'', mail:'', sec:'', cp:'', ville:'', msg:'' }, err:{}, sent:false };
+  }
+  setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
+  submit(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const f = this.state.f;
+    const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg: !f.msg.trim() };
+    if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; }
+    this.setState({ sent:true, err:{} });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const LENS = [101,117,146,169,191,222];
+    const isCustom = s.len === 'sm';
+    const cv = parseInt(s.custom, 10);
+    const eff = isCustom ? (cv > 0 ? cv : 180) : s.len;
+    const lenTxt = isCustom ? (cv > 0 ? 'Sur mesure · ' + cv + ' cm' : 'Sur mesure') : s.len + ' cm';
+    const lenShort = isCustom ? (cv > 0 ? String(cv) : 'L') : String(s.len);
+    const blanc = s.fin === 'blanc';
+    const choc = s.temp === 'choc';
+    const isCatalog = s.len === 101 && blanc;
+    const pct = Math.max(46, Math.min(100, Math.round(eff / 222 * 100)));
+
+    const HOT = [
+      { x:68.8, y:30, t:'Vitrages coulissants des 2 côtés', k:'Exposition centrale' },
+      { x:22.9, y:25.6, t:'Froid ventilé', k:'+2/+8 ou +14/+18 °C' },
+      { x:45, y:43.8, t:'Dégivrage automatique', k:'Automatique' },
+      { x:16, y:50.5, t:'Pierre acrylique blanche', k:'Piliers, plan, pied' },
+      { x:85.6, y:58.1, t:'Contrôle électronique', k:'De la température' },
+      { x:74, y:85.4, t:'Groupe logé', k:'Fréon R134A' },
+      { x:31, y:92, t:'Ré-évaporation des condensats', k:'Automatique' }
+    ];
+    const hots = HOT.map((h, i) => {
+      const on = s.hot === i;
+      return { n: String(i + 1), t:h.t, k:h.k, on: on ? 'true' : 'false', aria:'Repère ' + (i + 1) + ' : ' + h.t,
+        pos:'left:' + h.x + '%;top:' + h.y + '%',
+        dot: on ? 'background:' + acc + ';transform:scale(1.2)' : '',
+        ring: on ? 'border-color:' + acc : '',
+        lgStyle: on ? 'background:#fff;box-shadow:inset 3px 0 0 ' + acc : 'background:#F4F3EF',
+        lgDot: on ? 'background:' + acc + ';color:#fff' : 'background:#1C1C1E;color:#fff',
+        pick: () => { if (this.state.hot !== i) this.setState({ hot:i }); } };
+    });
+
+    const sel = 'background:#F4F3EF;color:#1C1C1E';
+    const uns = 'background:#2A2A2F;color:#F4F3EF';
+    const lens = LENS.map(l => ({ label:String(l), sub: l === 101 ? '5 800 €' : 'devis', on: s.len === l ? 'true' : 'false', style: s.len === l ? sel : uns, pick: () => this.setState({ len:l }) }))
+      .concat([{ label:'S/M', sub:'sur mesure', on: isCustom ? 'true' : 'false', style: isCustom ? sel : uns, pick: () => this.setState({ len:'sm' }) }]);
+    const temps = [{ id:'pat', range:'+2/+8 °C', use:'Pâtisseries, macarons' }, { id:'choc', range:'+14/+18 °C', use:'Chocolats' }]
+      .map(t => ({ range:t.range, use:t.use, on: s.temp === t.id ? 'true' : 'false', style: s.temp === t.id ? sel + ';box-shadow:inset 0 -3px 0 ' + acc : uns, pick: () => this.setState({ temp:t.id }) }));
+    const fins = [
+      { id:'blanc', name:'Pierre acrylique blanche', sub:'Par défaut', sw:'background:#F6F4F0' },
+      { id:'autre', name:'Autre coloris', sub:'[COLORIS] · sur devis', sw:'background:repeating-linear-gradient(45deg,#8E8E94 0 3px,#5E5E63 3px 6px)' }
+    ].map(x => ({ name:x.name, sub:x.sub, sw:x.sw, on: s.fin === x.id ? 'true' : 'false', style: s.fin === x.id ? sel + ';box-shadow:inset 0 -3px 0 ' + acc : uns, pick: () => this.setState({ fin:x.id }) }));
+
+    const tempTxt = choc ? '+14 / +18 °C' : '+2 / +8 °C';
+    const finTxt = blanc ? 'Pierre acrylique blanche' : 'Autre coloris [COLORIS]';
+    let priceTxt = 'Sur devis', priceSub;
+    if (isCatalog) priceSub = '';
+    if (isCatalog) { priceTxt = '5 800,00 € HT'; priceSub = 'Modèle 101 cm, pierre acrylique blanche — prix catalogue.'; }
+    else if (s.len === 101) priceSub = 'Le prix de 5 800,00 € HT s’entend en pierre acrylique blanche. Autre coloris : sur devis.';
+    else if (isCustom) priceSub = 'Longueur sur mesure : chiffrage par le bureau d’études.';
+    else priceSub = 'Longueur ' + s.len + ' cm : [PRIX] — communiqué sur devis.';
+    const code = 'GOURMANDISE · STONE · ' + (isCustom ? 'SM-' + (cv > 0 ? cv : '___') : 'L' + s.len) + ' · ' + (choc ? '+14/+18' : '+2/+8') + ' · ' + (blanc ? 'BLANC' : '[COLORIS]');
+
+    const tabsDef = [['desc','Description'],['carac','Caractéristiques'],['dim','Dimensions']];
+    const tabs = tabsDef.map(([id, name]) => ({ name, on: s.tab === id ? 'true' : 'false',
+      style: s.tab === id ? 'background:#1C1C1E;color:#fff' : 'background:transparent;color:#5E5E63',
+      pick: () => this.setState({ tab:id }) }));
+    const rowOn = 'background:#1C1C1E;color:#fff';
+    const rowOff = 'background:#fff;color:#1C1C1E';
+    const dimRows = LENS.map(l => ({ len: l + ' cm', dim: l === 101 ? '101 × 80 × 80 + 25 h' : '[DIMENSIONS]', expo: l === 101 ? 'Verre 81 × 60 cm' : 'Profondeur 60 cm', price: l === 101 ? '5 800,00 € HT' : 'Sur devis', on: s.len === l ? 'true' : 'false', style: s.len === l ? rowOn : rowOff, pick: () => this.setState({ len:l }) }))
+      .concat([{ len:'Sur mesure', dim:'Selon votre local', expo:'Profondeur 60 cm', price:'Sur devis', on: isCustom ? 'true' : 'false', style: isCustom ? rowOn : rowOff, pick: () => this.setState({ len:'sm' }) }]);
+
+    const REL = [
+      ['Réfrigérée Centrale','gourmandise','+2/+8 · +14/+18 °C','Vitrages coulissants des 2 côtés · prof. 60 cm'],
+      ['Réfrigérée Plane','plane','+2/+8 · +14/+18 °C','Hauteur du plan · prof. 53 ou 60 cm'],
+      ['Réfrigérée Vision','plane','+2/+8 · +14/+18 °C','8 cm sous le plan de travail'],
+      ['Réfrigérée Panorama','panorama','+2/+8 · +14/+18 °C','2 ou 3 étagères réfrigérées +4/+8'],
+      ['Comptoir caisse','caisse',null,'Avec ou sans tablette PMR']
+    ];
+    const f = s.f, e = s.err || {};
+    const bad = 'border-color:#B3241B;box-shadow:inset 0 0 0 1px #B3241B';
+    return {
+      rootStyle:'--acc:' + acc,
+      menuOpen: s.menuOpen, menuAria: s.menuOpen ? 'true' : 'false', toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      hots,
+      figStyle:'width:' + pct + '%',
+      tvStyle:'aspect-ratio:' + eff + ' / 80',
+      tvgStyle: choc ? 'background:rgba(236,222,200,.6)' : '',
+      imgStyle: blanc ? '' : 'filter:grayscale(.4) brightness(.93)',
+      stageTag: (choc ? 'Chocolats · +14/+18 °C' : 'Pâtisserie · +2/+8 °C') + ' · prof. d’exposition 60 cm',
+      tempBadge: choc ? '+14/+18 °C' : '+2/+8 °C',
+      finBadge: blanc ? 'Pierre acrylique blanche' : 'Coloris [COLORIS]',
+      hTxt: s.len === 101 ? 'H 80 + 25' : 'H [DIM.]',
+      lenTxt, lenShort, isCustom, custom: s.custom,
+      setCustom: (ev) => this.setState({ custom: ev.target.value.replace(/[^0-9]/g, '').slice(0, 3) }),
+      lens, temps, fins, tempTxt, finTxt, finShort: blanc ? 'Blanche' : '[COLORIS]',
+      priceTxt, priceSub, priceKey: priceTxt + lenTxt,
+      dimTxt: s.len === 101 ? '101 × 80 × 80 + 25 h' : '[DIMENSIONS]',
+      code,
+      tabs, tabDesc: s.tab === 'desc', tabCarac: s.tab === 'carac', tabDim: s.tab === 'dim', dimRows,
+      modelTxt: 'Gourmandise ' + lenTxt + ' · ' + tempTxt + ' · ' + (blanc ? 'pierre acrylique blanche' : '[COLORIS]'),
+      f,
+      inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev),
+      inSec: (ev) => this.setF('sec', ev), inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev), inMsg: (ev) => this.setF('msg', ev),
+      eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, eMsg: !!e.msg,
+      eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '', eMsgS: e.msg ? bad : '',
+      submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent,
+      reset: () => this.setState({ sent:false }),
+      related: REL.map(r => ({ name:r[0], img:'../assets/v2/vitrine-' + r[1] + '.svg', hasTemp: !!r[2], temp: r[2] || '', spec:r[3] }))
+    };
+  }
+}
+</script>
+</body>
+</html>

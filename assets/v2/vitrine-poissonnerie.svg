@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Poissonnerie">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="160" width="400" height="124" fill="#F6F4F0"></rect>
+  <rect x="40" y="160" width="12" height="124" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="160" width="12" height="124" fill="#000" opacity=".07"></rect>
+  <polygon points="40,160 440,160 424,104 56,104" fill="#E9F1F4"></polygon>
+  <g fill="#fff"><circle cx="90" cy="150" r="5"></circle><circle cx="120" cy="146" r="6"></circle><circle cx="160" cy="151" r="5"></circle><circle cx="210" cy="147" r="6"></circle><circle cx="260" cy="151" r="5"></circle><circle cx="310" cy="147" r="6"></circle><circle cx="360" cy="150" r="5"></circle><circle cx="400" cy="147" r="6"></circle></g>
+  <g>
+    <path d="M90 134 q34 -14 70 0 q-34 14 -70 0z" fill="#9AA7B0"></path><path d="M160 134 l12 -8 v16z" fill="#8A97A0"></path>
+    <path d="M200 128 q40 -16 82 0 q-40 16 -82 0z" fill="#B7C0C6"></path><path d="M282 128 l13 -9 v18z" fill="#A6B0B6"></path>
+    <path d="M314 138 q30 -12 62 0 q-30 12 -62 0z" fill="#E7A58C"></path>
+    <path d="M110 116 q26 -10 54 0 q-26 10 -54 0z" fill="#8C99A3"></path>
+  </g>
+  <path d="M56 104 L424 104 L410 58 L70 58 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M56 104 L424 104 L410 58 L70 58 Z" fill="none" stroke="#A9BAC0"></path>
+  <polygon points="120,58 136,58 124,104 108,104" fill="#fff" opacity=".35"></polygon>
+  <rect x="396" y="176" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="186" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#8FD3FF">−1°</text>
+  <rect x="62" y="178" width="320" height="74" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="178" width="320" height="74" fill="none" stroke="#DDD9D2"></rect>
+</svg>

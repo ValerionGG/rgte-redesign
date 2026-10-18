@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE · Gamme — Lignes d'agencement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+body{margin:0;background:#fff}
+sc-for,sc-if{display:contents}
+.g{--acc:#D42A20;--ink:#1C1C1E;--mut:#55555A;--ln:#D6D5D1;--ln2:#E7E6E2;--st:#ECEBE8;--st2:#F5F5F3;font-family:'Barlow',system-ui,sans-serif;font-size:16px;color:var(--ink);background:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.g *,.g *::before,.g *::after{box-sizing:border-box}
+.g img{display:block;max-width:100%}
+.g h1,.g h2,.g h3,.g h4,.g p,.g dl,.g dd,.g dt,.g ul{margin:0}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1360px;margin:0 auto;padding:0 32px}
+.g :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mk{display:inline-block;padding:0 4px;background:#FFF1EF;color:#A3221A;font-weight:600;font-size:.92em;border-radius:2px}
+.top{background:var(--ink);color:#C9C9CC;font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:36px}
+.top a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:36px}
+.top a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);border-bottom:1px solid var(--ln)}
+.hdr-in{display:flex;align-items:center;gap:28px;min-height:72px}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px;flex:none}
+.logo-b{width:8px;height:34px;background:var(--acc);display:block}
+.logo-w{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;letter-spacing:.01em;line-height:.9;display:block}
+.logo-s{display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);line-height:1.15}
+.nav{display:flex;gap:4px;margin-left:12px}
+.nav a{white-space:nowrap;display:inline-flex;align-items:center;min-height:72px;padding:0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);text-decoration:none;box-shadow:inset 0 -3px 0 transparent;transition:box-shadow .2s}
+.nav a:hover{box-shadow:inset 0 -3px 0 var(--acc)}
+.nav a.on{box-shadow:inset 0 -3px 0 var(--ink)}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:18px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px}
+.tel b{white-space:nowrap;display:block;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1;letter-spacing:.02em}
+.tel small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);line-height:1.3}
+.tel-i{width:36px;height:36px;border:1px solid var(--ln);display:grid;place-items:center;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:0;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap}
+.btn svg{flex:none;transition:transform .2s}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{background:#B5231A}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:#000}
+.btn-out{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn-out:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:16px}
+.btn[disabled]{background:#E3E2DE;color:#6B6B70;cursor:not-allowed}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--ln);background:#fff;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);border-radius:2px}
+.mnav{display:none}
+.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:0 16px;border-top:1px solid var(--ln2);text-decoration:none;color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase}
+.lab{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.sh{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 18px;border-top:2px solid var(--ink);padding-top:14px;margin-bottom:20px}
+.sh-n{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--acc);letter-spacing:.06em}
+.sh-t{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(28px,3vw,40px);line-height:1;text-transform:uppercase;overflow-wrap:anywhere}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .35s ease both}
+
+/* page head */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--mut);padding-top:14px}
+.crumbs a{color:var(--mut);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumbs a:hover{color:var(--ink)}
+.phead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-bottom:22px}
+.h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(40px,4.6vw,66px);line-height:.92;text-transform:uppercase;overflow-wrap:anywhere}
+.h1 em{font-style:normal;color:var(--acc)}
+.phead p{max-width:520px;color:var(--mut);font-size:17px;margin-top:10px}
+
+/* line comparator / selector */
+.lcmp-w{overflow-x:auto;border:1px solid var(--ink)}
+.lcmp{min-width:900px}
+.lrow{display:grid;grid-template-columns:150px repeat(5,minmax(0,1fr))}
+.lrow > *{padding:10px 14px;border-left:1px solid var(--ln2);font-size:14px;line-height:1.35;min-width:0;transition:background .25s}
+.lrow > :first-child{border-left:0;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--st2)}
+.lrow + .lrow{border-top:1px solid var(--ln2)}
+.lrow .on{background:#FFF5F4}
+.lhead > :first-child{display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
+.lbtn{display:flex;flex-direction:column;align-items:stretch;gap:4px;border:0;border-left:1px solid var(--ln2);background:#fff;cursor:pointer;text-align:left;font-family:'Barlow',sans-serif;color:var(--ink);padding:12px 14px 12px;border-top:3px solid transparent;transition:background .2s,border-color .2s}
+.lbtn:hover{background:var(--st2)}
+.lbtn img{height:84px;width:100%;object-fit:contain;background:var(--st);padding:8px;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.lbtn:hover img{transform:translateY(-3px)}
+.lbtn b{font-family:'Barlow Condensed',sans-serif;font-size:26px;line-height:1;text-transform:uppercase;margin-top:6px}
+.lbtn span{font-size:13px;color:var(--mut)}
+.allbtn{border:1px solid var(--ln);background:#fff;min-height:44px;font:600 14px 'Barlow',sans-serif;cursor:pointer;color:var(--ink);padding:0 10px;text-align:left;letter-spacing:0;text-transform:none}
+.allbtn:hover{border-color:var(--ink)}
+.mlist{font-size:13px;color:var(--mut)}
+
+/* catalogue */
+.cat{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;align-items:start;margin-top:40px}
+.fpanel{border-top:1px solid var(--ink)}
+.fgrp{padding:12px 0 10px;border-bottom:1px solid var(--ln)}
+.fgrp h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.fopt{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:15px}
+.fopt em{margin-left:auto;font-style:normal;font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+.fopt:hover span{text-decoration:underline;text-underline-offset:3px}
+.fopt.zero{color:#8A8A8F}
+.g input[type=checkbox],.g input[type=radio]{appearance:none;-webkit-appearance:none;margin:0;width:18px;height:18px;border:1.5px solid #77777C;background:#fff;flex:none;cursor:pointer;transition:background .15s,border-color .15s}
+.g input[type=radio]{border-radius:50%}
+.g input[type=checkbox]:checked{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/14px no-repeat;border-color:var(--ink)}
+.g input[type=radio]:checked{border:5px solid var(--ink)}
+.g input[type=checkbox]:disabled{opacity:.4;cursor:not-allowed}
+.fsel,.fq{width:100%;min-height:44px;border:1px solid #9A9A9F;border-radius:2px;padding:0 10px;font:500 15px 'Barlow',sans-serif;color:var(--ink);background:#fff}
+.fq:focus{outline:0;border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.reset{border:0;background:none;color:var(--acc);font:600 13px 'Barlow',sans-serif;cursor:pointer;min-height:36px;padding:0}
+.reset:hover{text-decoration:underline}
+.ftog{display:none}
+.tbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;min-height:56px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ln);margin-bottom:16px;padding:4px 0}
+.tbar-c{font-size:15px}
+.tbar-c b{font-family:'Barlow Condensed',sans-serif;font-size:24px}
+.tbar-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.seg{display:flex;border:1px solid var(--ln)}
+.seg button{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 12px;border:0;background:#fff;cursor:pointer;font:600 14px 'Barlow',sans-serif;color:var(--ink);transition:background .2s,color .2s}
+.seg button + button{border-left:1px solid var(--ln)}
+.sort{min-height:44px;border:1px solid var(--ln);border-radius:2px;padding:0 8px;font:500 14px 'Barlow',sans-serif;color:var(--ink);background:#fff}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 6px 0 12px;background:var(--st2);border:1px solid var(--ln);font-size:14px;border-radius:2px;cursor:pointer;color:var(--ink);font-family:'Barlow',sans-serif}
+.pill:hover{border-color:var(--ink)}
+.grp{margin-bottom:22px}
+.grp-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:8px 0;margin-bottom:10px;border-bottom:1px solid var(--ln)}
+.grp-h b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;text-transform:uppercase;line-height:1}
+.grp-h span{font-size:13px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,100%),1fr));gap:10px}
+.card{display:flex;flex-direction:column;border:1px solid var(--ln);background:#fff;transition:border-color .2s,box-shadow .25s,transform .25s;animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.card:hover{border-color:var(--ink);box-shadow:0 16px 26px -22px rgba(28,28,30,.6);transform:translateY(-2px)}
+.card.sel{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.card-img{position:relative;display:block;background:var(--st);height:128px;padding:24px 10px 6px;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.card:hover .card-img img{transform:scale(1.05)}
+.card-ix{position:absolute;left:8px;top:6px;font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.card-bd{display:flex;flex-direction:column;gap:6px;padding:10px 12px 6px;flex:1}
+.card-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;line-height:1.05;text-transform:uppercase}
+.card-n a{color:var(--ink);text-decoration:none}
+.card-n a:hover{color:var(--acc)}
+.card-t{font-size:13px;color:var(--mut)}
+.card-ft{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:auto;padding-top:4px;border-top:1px solid var(--ln2)}
+.price{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px}
+.price.on{color:var(--acc)}
+.cmpck{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:13px;font-weight:500;cursor:pointer}
+.lst{border-top:1px solid var(--ln)}
+.lr{display:grid;grid-template-columns:96px 64px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) 92px 118px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--ln);transition:background .2s;animation:fade .3s ease both}
+.lr:hover{background:var(--st2)}
+.lr.sel{background:#FFF5F4}
+.lr img{width:96px;height:62px;object-fit:contain;background:var(--st);padding:4px}
+.lr .ix{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+.lr .nm a{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;text-transform:uppercase;color:var(--ink);text-decoration:none;line-height:1.05;display:block}
+.lr .nm a:hover{color:var(--acc)}
+.lr .nm span{display:block;font-size:13px;color:var(--mut);line-height:1.35}
+.lr .c{font-size:14px}
+.lhd{display:grid;grid-template-columns:96px 64px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) 92px 118px;gap:12px;padding:0 0 6px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.empty{border:1px dashed var(--ln);padding:40px;text-align:center;color:var(--mut)}
+.cbar{position:sticky;top:73px;z-index:40;margin:0 0 16px;background:var(--ink);color:#fff;animation:rise .4s ease both}
+.cbar-in{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 12px}
+.cbar-h{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase}
+.cbar-h b{color:#FF8A80}
+.cslots{display:flex;gap:6px;flex:1;min-width:0;flex-wrap:wrap}
+.cslot{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 4px 0 6px;background:#2C2C2F;flex:1 1 190px;min-width:0}
+.cslot img{width:52px;height:36px;object-fit:contain;background:var(--st);flex:none}
+.cslot span{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.cslot button{width:44px;height:44px;border:0;background:none;color:#fff;cursor:pointer;display:grid;place-items:center;flex:none}
+.cslot.e{background:transparent;border:1px dashed #5C5C61;justify-content:center;color:#B9B9BE;font-size:13px}
+.cbar .btn-out{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px #77777C}
+.ctab{scroll-margin-top:170px;margin:0 0 24px;border-top:2px solid var(--ink);animation:rise .45s ease both}
+.ctab-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0}
+.crow{display:grid;border-bottom:1px solid var(--ln)}
+.crow > *{padding:10px 14px;font-size:15px;min-width:0;overflow-wrap:anywhere}
+.crow .cl{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);background:var(--st2)}
+.crow .cimg{background:var(--st);height:120px;display:flex;align-items:center;justify-content:center;border-left:1px solid #fff}
+.crow .cimg img{max-height:100px;width:100%;object-fit:contain}
+.crow .cv{border-left:1px solid var(--ln2)}
+.crow .cv.diff{background:#FFF7F6}
+.cta{margin:48px 0 64px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);border:1px solid var(--ink)}
+.cta-l{padding:28px 32px;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.cta-l h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(30px,3vw,42px);line-height:1;text-transform:uppercase}
+.cta-l p{color:var(--mut)}
+.cta-r{background:var(--ink);color:#fff;padding:28px 32px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.cta-r a.t{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:700;color:#fff;text-decoration:none;line-height:1}
+.ftr{background:var(--st);padding:56px 0 18px;border-top:1px solid var(--ln)}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:32px}
+.ftr-h{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.ftr p{font-size:15px}
+.ftr-l a{display:flex;align-items:center;min-height:36px;color:var(--ink);text-decoration:none;font-size:15px}
+.ftr-l a:hover{color:var(--acc)}
+.ftr-tel{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--ink);text-decoration:none}
+.ftr-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin-top:40px;padding-top:12px;border-top:1px solid var(--ln);font-size:13px;color:var(--mut)}
+.ftr-b a{color:var(--mut);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-b a:hover{color:var(--ink)}
+.legal{display:flex;flex-wrap:wrap;gap:0 18px}
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;border-top:1px solid var(--ln)}.lr,.lhd{grid-template-columns:80px minmax(0,1.6fr) minmax(0,1fr) 92px 118px}.lr .ix,.lhd .ix,.lr .uu,.lhd .uu{display:none}.lr img{width:80px}}
+@media(max-width:980px){.cat{grid-template-columns:minmax(0,1fr)}.ftog{display:inline-flex}.fpanel{display:none}.fpanel.open{display:block}.cta{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.wrap{padding:0 16px}.hdr-cta{display:none}.hdr-in{gap:12px}.top-note{display:none}.tbar-r{margin-left:0;width:100%}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card-img{height:108px}.card-n{font-size:17px}.card-ft{flex-direction:column;align-items:flex-start;gap:0}.lhd{display:none}.lr{grid-template-columns:72px minmax(0,1fr);gap:4px 10px}.lr img{width:72px;height:52px;grid-row:span 3}.lr .tt,.lr .pp{font-size:13px}.lr .ck{grid-column:2}.crow{grid-template-columns:repeat(var(--n),minmax(0,1fr)) !important}.crow .cl{grid-column:1/-1}.crow > *{padding:8px;font-size:13px}.crow .cimg{height:80px}.cbar{top:61px}.cbar-in{gap:8px}.cslots{flex:1 1 100%;order:3}.cslot.e{display:none}.cbar-h{flex:1}.cta-l,.cta-r{padding:20px}.cta-r a.t{font-size:32px}.lcmp{min-width:780px}.lrow{grid-template-columns:104px repeat(5,minmax(0,1fr))}.lrow > *{padding:8px 10px}.lbtn{padding:10px}.lbtn b{font-size:21px}.lbtn img{height:64px}.scrollhint{display:block !important}}
+@media (prefers-reduced-motion:reduce){.g *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="g" style="{{ rootStyle }}">
+
+<div class="top">
+  <div class="wrap top-in">
+    <span class="top-note">Bureau d'études &amp; show-room · Puget-sur-Argens (Var) · Catalogue professionnel</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Gamme-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-b" aria-hidden="true"></span>
+      <span><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Gamme-Lignes.dc.html" aria-current="page">Lignes d'agencement</a>
+      <a href="Gamme-Accueil.dc.html#secteurs">Secteurs</a>
+      <a href="Gamme-Accueil.dc.html#realisations">Réalisations</a>
+      <a href="Gamme-Accueil.dc.html#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Gamme-Accueil.dc.html#contact">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Gamme-Lignes.dc.html">Lignes d'agencement <span>→</span></a>
+      <a href="Gamme-Accueil.dc.html#secteurs">Secteurs <span>→</span></a>
+      <a href="Gamme-Accueil.dc.html#realisations">Réalisations <span>→</span></a>
+      <a href="Gamme-Accueil.dc.html#contact">Showroom &amp; contact <span>→</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span style="font-size:14px">Appel gratuit</span></a>
+      <a href="Gamme-Accueil.dc.html#contact" style="background:var(--acc);color:#fff">Plan 3D offert <span>→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Fil d'Ariane"><a href="Gamme-Accueil.dc.html">Accueil</a><span aria-hidden="true">/</span><span style="color:var(--ink)">Lignes d'agencement</span></nav>
+  <div class="phead rise">
+    <div>
+      <span class="lab">Catalogue · 5 lignes · {{ total }} modules</span>
+      <h1 class="h1" style="margin-top:8px">Lignes <em>d'agencement</em></h1>
+      <p>Choisissez une ligne pour filtrer le catalogue : chaque module se combine aux autres, adapté à votre local et à vos dimensions.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-acc" href="Gamme-Accueil.dc.html#contact">Plan 3D offert</a>
+      <a class="btn btn-out" href="tel:0800951313">0 800 95 13 13</a>
+    </div>
+  </div>
+
+  <!-- comparateur des lignes = sélecteur -->
+  <p class="lab scrollhint" style="display:none;margin-bottom:6px">Faites défiler le tableau →</p>
+  <div class="lcmp-w rise" role="region" aria-label="Comparateur des lignes">
+    <div class="lcmp">
+      <div class="lrow lhead">
+        <div><span>Comparer les lignes</span><button type="button" class="allbtn" style="{{ allStyle }}" onClick="{{ pickAll }}" aria-pressed="{{ allOn }}">Toutes les lignes · {{ total }}</button></div>
+        <sc-for list="{{ lines }}" as="l" hint-placeholder-count="5">
+          <button type="button" class="lbtn" style="{{ l.style }}" aria-pressed="{{ l.on }}" onClick="{{ l.pick }}"><img src="{{ l.img }}" alt="{{ l.alt }}"><b>{{ l.n }}</b><span>{{ l.code }} · {{ l.c }} modules</span></button>
+        </sc-for>
+      </div>
+      <sc-for list="{{ lrows }}" as="r" hint-placeholder-count="5">
+        <div class="lrow">
+          <div>{{ r.l }}</div>
+          <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5"><div class="{{ c.cls }}">{{ c.v }}</div></sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div class="cat" id="modules">
+    <aside>
+      <button type="button" class="btn btn-out ftog" style="width:100%;margin-bottom:12px" onClick="{{ toggleF }}" aria-expanded="{{ fOpenAria }}">{{ fBtn }}</button>
+      <div class="{{ fCls }}">
+        <div class="fgrp">
+          <h3><label for="fq">Recherche</label><button type="button" class="reset" onClick="{{ resetAll }}">Tout effacer</button></h3>
+          <input id="fq" class="fq" type="search" placeholder="nom, usage, métier…" value="{{ q }}" onInput="{{ setQ }}" autocomplete="off">
+        </div>
+        <div class="fgrp">
+          <h3>Usage</h3>
+          <sc-for list="{{ fUses }}" as="o" hint-placeholder-count="8">
+            <label class="{{ o.cls }}"><input type="checkbox" checked="{{ o.on }}" onChange="{{ o.tog }}"><span>{{ o.n }}</span><em>{{ o.c }}</em></label>
+          </sc-for>
+        </div>
+        <div class="fgrp">
+          <h3>Température</h3>
+          <sc-for list="{{ fTemps }}" as="o" hint-placeholder-count="5">
+            <label class="{{ o.cls }}"><input type="radio" name="ft" checked="{{ o.on }}" onChange="{{ o.tog }}"><span>{{ o.n }}</span><em>{{ o.c }}</em></label>
+          </sc-for>
+        </div>
+        <div class="fgrp">
+          <h3>Type de froid</h3>
+          <sc-for list="{{ fCold }}" as="o" hint-placeholder-count="3">
+            <label class="{{ o.cls }}"><input type="radio" name="ff" checked="{{ o.on }}" onChange="{{ o.tog }}"><span>{{ o.n }}</span><em>{{ o.c }}</em></label>
+          </sc-for>
+        </div>
+        <div class="fgrp" style="border-bottom:0">
+          <h3><label for="fsec">Métier</label></h3>
+          <select id="fsec" class="fsel" value="{{ sec }}" onChange="{{ setSec }}">
+            <option value="">Tous les métiers</option>
+            <option value="boul">Boulangerie</option><option value="pat">Pâtisserie</option><option value="choc">Chocolats</option><option value="sand">Sandwichs</option><option value="trait">Traiteur</option><option value="poiss">Poissonnerie</option><option value="salad">Bar à salades</option><option value="cous">Bar à couscous</option><option value="from">Fromagerie</option><option value="bar">Bar</option><option value="top">Bar à topping</option><option value="cafe">Coffee shop / Café</option><option value="pizza">Pizza al taglio</option>
+          </select>
+          <p style="font-size:12px;color:var(--mut);margin-top:8px">Correspondances métier d'après les fiches, les réalisations ou à valider avec le bureau d'études.</p>
+        </div>
+      </div>
+    </aside>
+
+    <div>
+      <div class="tbar">
+        <span class="tbar-c"><b class="num">{{ count }}</b> / {{ total }} modules</span>
+        <sc-for list="{{ pills }}" as="p" hint-placeholder-count="1">
+          <button type="button" class="pill" onClick="{{ p.rm }}" aria-label="{{ p.aria }}">{{ p.n }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        </sc-for>
+        <div class="tbar-r">
+          <label class="lab" for="sort" style="letter-spacing:.06em">Trier</label>
+          <select id="sort" class="sort" value="{{ sort }}" onChange="{{ setSort }}">
+            <option value="ligne">Par ligne</option>
+            <option value="az">A → Z</option>
+          </select>
+          <div class="seg" role="group" aria-label="Affichage">
+            <button type="button" style="{{ gridBtn }}" aria-pressed="{{ isGridS }}" onClick="{{ setGrid }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="6" height="6"></rect><rect x="14" y="4" width="6" height="6"></rect><rect x="4" y="14" width="6" height="6"></rect><rect x="14" y="14" width="6" height="6"></rect></svg>Grille</button>
+            <button type="button" style="{{ listBtn }}" aria-pressed="{{ isListS }}" onClick="{{ setList }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h1M4 12h1M4 18h1"></path></svg>Liste</button>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasCmp }}" hint-placeholder-val="{{ true }}">
+        <div class="cbar" role="region" aria-label="Comparateur de modules">
+          <div class="cbar-in">
+            <span class="cbar-h">Comparer <b>{{ cmpN }}/3</b></span>
+            <div class="cslots">
+              <sc-for list="{{ slots }}" as="c" hint-placeholder-count="3">
+                <sc-if value="{{ c.has }}" hint-placeholder-val="{{ true }}">
+                  <div class="cslot"><img src="{{ c.img }}" alt=""><span>{{ c.n }}</span><button type="button" aria-label="{{ c.aria }}" onClick="{{ c.rm }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+                </sc-if>
+                <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}"><div class="cslot e">Cochez un module</div></sc-if>
+              </sc-for>
+            </div>
+            <sc-if value="{{ canCmp }}" hint-placeholder-val="{{ true }}"><button type="button" class="btn btn-acc btn-sm" onClick="{{ toggleCmp }}">{{ cmpBtn }}</button></sc-if>
+            <sc-if value="{{ cantCmp }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-sm" disabled>Comparer (2 min.)</button></sc-if>
+            <button type="button" class="btn btn-out btn-sm" onClick="{{ clearCmp }}">Vider</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showTable }}" hint-placeholder-val="{{ false }}">
+        <div class="ctab" id="comparaison">
+          <div class="ctab-h"><span class="sh-t" style="font-size:26px">Comparaison de modules</span><span class="lab">Teinte = valeurs différentes</span></div>
+          <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="8">
+            <div class="crow" style="{{ cmpCols }}">
+              <span class="cl">{{ r.l }}</span>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
+                <sc-if value="{{ c.isImg }}" hint-placeholder-val="{{ false }}"><span class="cimg"><img src="{{ c.v }}" alt=""></span></sc-if>
+                <sc-if value="{{ c.isTxt }}" hint-placeholder-val="{{ true }}"><span class="{{ c.cls }}">{{ c.v }}</span></sc-if>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ noRes }}" hint-placeholder-val="{{ false }}">
+        <div class="empty">Aucun module ne correspond. <button type="button" class="reset" onClick="{{ resetAll }}" style="font-size:15px">Effacer les filtres</button> — ou décrivez votre besoin au <a href="tel:0800951313" style="color:var(--ink);font-weight:600">0 800 95 13 13</a>.</div>
+      </sc-if>
+
+      <sc-for list="{{ groups }}" as="gr" hint-placeholder-count="5">
+        <section class="grp" aria-label="{{ gr.n }}">
+          <div class="grp-h"><b>{{ gr.n }}</b><span>{{ gr.sub }}</span></div>
+          <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+            <div class="grid">
+              <sc-for list="{{ gr.mods }}" as="m" hint-placeholder-count="10">
+                <article class="{{ m.cls }}">
+                  <a class="card-img" href="Gamme-Module.dc.html" aria-label="{{ m.aria }}"><span class="card-ix">N° {{ m.ix }}</span><img src="{{ m.img }}" alt="{{ m.alt }}"></a>
+                  <div class="card-bd">
+                    <h3 class="card-n"><a href="Gamme-Module.dc.html" title="{{ m.d }}">{{ m.n }}</a></h3>
+                    <span class="card-t">{{ m.tT }}{{ m.fSep }}{{ m.fT }}</span>
+                    <div class="card-ft">
+                      <span class="{{ m.pCls }}">{{ m.p }}</span>
+                      <label class="cmpck"><input type="checkbox" checked="{{ m.cOn }}" disabled="{{ m.cDis }}" onChange="{{ m.cTog }}"><span>Comparer</span></label>
+                    </div>
+                  </div>
+                </article>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+            <div class="lhd"><span>Visuel</span><span class="ix">N°</span><span>Module</span><span class="uu">Usage</span><span>Température / froid</span><span>Prix</span><span>Comparer</span></div>
+            <div class="lst">
+              <sc-for list="{{ gr.mods }}" as="m" hint-placeholder-count="10">
+                <div class="{{ m.lcls }}">
+                  <img src="{{ m.img }}" alt="{{ m.alt }}">
+                  <span class="ix">{{ m.ix }}</span>
+                  <span class="nm"><a href="Gamme-Module.dc.html">{{ m.n }}</a><span>{{ m.lnFull }} · {{ m.d }}</span></span>
+                  <span class="c uu">{{ m.uT }}</span>
+                  <span class="c tt">{{ m.tT }}{{ m.fSep }}{{ m.fT }}</span>
+                  <span class="{{ m.pCls }} pp">{{ m.p }}</span>
+                  <label class="cmpck ck"><input type="checkbox" checked="{{ m.cOn }}" disabled="{{ m.cDis }}" onChange="{{ m.cTog }}"><span>Comparer</span></label>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+      </sc-for>
+    </div>
+  </div>
+
+  <section class="cta" aria-label="Demande de plan 3D">
+    <div class="cta-l">
+      <span class="lab">Bureau d'études</span>
+      <h2>Composez votre linéaire, on dessine le plan 3D.</h2>
+      <p>Indiquez vos dimensions et les modules repérés : le bureau d'études élabore votre plan 3D d'agencement.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-acc" href="Gamme-Accueil.dc.html#contact">Plan 3D offert<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a><a class="btn btn-out" href="Gamme-Module.dc.html">Voir une fiche produit</a></div>
+    </div>
+    <div class="cta-r">
+      <span class="lab" style="color:#B9B9BE">Appel gratuit</span>
+      <a class="t" href="tel:0800951313">0 800 95 13 13</a>
+      <p style="color:#C9C9CC;font-size:15px">Show-room : 423, Chemin des Vernèdes — Espace Vernèdes 3 — 83480 Puget-sur-Argens · Horaires <span class="mk">[HORAIRES]</span></p>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="logo" href="Gamme-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-b" aria-hidden="true"></span><span><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></span></a>
+        <p style="color:var(--mut);margin-top:12px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div><p class="ftr-h">Bureau d'études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ftr-h">Appel gratuit</p><a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a><p style="color:var(--mut);font-size:14px;margin-top:4px">Horaires : <span class="mk">[HORAIRES]</span></p></div>
+      <div class="ftr-l"><p class="ftr-h">Catalogue</p><a href="Gamme-Lignes.dc.html">Lignes d'agencement</a><a href="Gamme-Module.dc.html">Module Gourmandise</a><a href="Gamme-Accueil.dc.html#secteurs">Secteurs</a><a href="Gamme-Accueil.dc.html#realisations">Réalisations</a><a href="Gamme-Accueil.dc.html#contact">Showroom &amp; contact</a></div>
+    </div>
+    <div class="ftr-b">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 2) — concept, non officiel · <a href="Main.dc.html" style="display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5400},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#9E1E17"]},"vueInitiale":{"editor":"enum","default":"grille","options":["grille","liste"]}}'>
+const IMG = (k) => 'assets/v2/vitrine-' + k + '.svg';
+const LINES = [
+  { id:'basique', n:'Basique', code:'BA', img:'cube', principe:'Association de modules différents', struct:'Coloris et matériaux selon le souhait du client', front:'Bois mélaminé, ou verre en option', top:'Granit — plan de travail et plinthe' },
+  { id:'stone', n:'Stone', code:'ST', img:'gourmandise', principe:'Association de modules', struct:'Pierre acrylique type Corian', front:'Verre avec sérigraphie du client', top:'Pierre acrylique (ex. Gourmandise)' },
+  { id:'legno', n:'Legno', code:'LE', img:'legno', principe:'Association de modules', struct:'[À PRÉCISER]', front:'Bois mélaminé', top:'[À PRÉCISER]' },
+  { id:'encastrable', n:'Encastrable', code:'EN', img:'encastrable', principe:'Module brut prêt à être habillé', struct:'Version comptoir ou meuble entier sur pied', front:'À habiller', top:'À habiller' },
+  { id:'industry', n:'Industry', code:'IN', img:'industry', principe:'Vitrines standardisées en longueurs, indépendantes', struct:'Standardisée', front:'[À PRÉCISER]', top:'[À PRÉCISER]' }
+];
+const USES = [['expo','Vitrine réfrigérée'],['bacs','Bacs gastronormes'],['chaud','Maintien au chaud'],['maree','Marée'],['murale','Murale / self-service'],['comptoir','Comptoirs & surfaces'],['neutre','Neutre'],['cuve','Cuve à habiller']];
+const TEMPS = [['p','+2 / +8 °C'],['c','+14 / +18 °C'],['m','−2 / 0 °C'],['h','+30 / +90 °C']];
+const RAW = [
+  ['b-bar','Comptoir bar','basique','caisse','comptoir','','','Comptoir bar, à associer aux autres modules de la ligne.'],
+  ['b-caisse','Comptoir caisse','basique','caisse','comptoir','','','Comptoir caisse, coloris et matériaux au choix.'],
+  ['b-saladette','Saladette réfrigérée','basique','saladette','bacs','','','Saladette réfrigérée à bacs.'],
+  ['b-cube','Vitrine réfrigérée Cube','basique','cube','expo','','','Vitrage cubique, 2 ou 3 étagères verre.'],
+  ['b-pastry','Pastry Show','basique','cube','expo','','v','Vitrage droit, plaques 600×400 mm à hauteur de comptoir.'],
+  ['b-statique','Statique','basique','cube','expo','','s','Vitrine réfrigérée statique.'],
+  ['b-basse','Basse','basique','cube','expo','','','Vitrine basse.'],
+  ['b-murale','Murale self-service','basique','panorama','murale','','','Murale en libre-service.'],
+  ['b-panoramique','Panoramique','basique','panorama','expo','','','Vitrine panoramique.'],
+  ['b-chaud','Chaud','basique','bainmarie','chaud','','','Bain-marie ou plaque chaude.'],
+  ['b-retro','Vitrine rétro','basique','cube','expo','','','Vitrine de style rétro.'],
+  ['b-amandine','Amandine','basique','cube','expo','','v','Montants modernes, cuve pour plaques pâtissières 600×400.'],
+  ['s-plane','Réfrigérée Plane','stone','plane','expo','pc','','Exposition à hauteur du plan de travail · prof. 53 ou 60 cm.'],
+  ['s-vision','Réfrigérée Vision','stone','plane','expo','pc','','Exposition 8 cm sous le plan de travail · prof. 53 ou 60 cm.'],
+  ['s-saladette','Saladette','stone','saladette','bacs','p','','Ingrédients en bacs gastronormes (bacs non fournis).'],
+  ['s-bainmarie','Chaud bain-marie','stone','bainmarie','chaud','h','','Bacs gastronormes.'],
+  ['s-centrale','Réfrigérée Centrale','stone','gourmandise','expo','pc','','Exposition centrale, vitrages coulissants des 2 côtés · prof. 60 cm.'],
+  ['s-gourmandise','Gourmandise','stone','gourmandise','expo','pc','v','Exposition centrale, vitrages coulissants des 2 côtés · prof. 60 cm.'],
+  ['s-caisse','Comptoir caisse','stone','caisse','comptoir','','','Tout commerce, avec ou sans tablette PMR.'],
+  ['s-bar','Comptoir bar','stone','caisse','comptoir','','','Neutre ou réfrigéré.'],
+  ['s-poisson','Réfrigérée Poissonnerie','stone','poissonnerie','maree','m','s','Serpentin de cuve, vidange de cuve.'],
+  ['s-panorama','Réfrigérée Panorama','stone','panorama','expo','pc','','Étagères réfrigérées +4/+8 °C, 2 ou 3 étagères.'],
+  ['s-surface','Surface plane','stone','plane','comptoir','','','Surface plane de la ligne Stone.'],
+  ['l-plane','Plane','legno','legno','expo','','','Exposition plane, façade bois mélaminé.'],
+  ['l-arriere','Arrière neutre','legno','caisse','neutre','','','Module arrière neutre.'],
+  ['l-caisse','Caisse et vitrine neutre','legno','caisse','neutre','','','Caisse associée à une vitrine neutre.'],
+  ['l-bar','Comptoir bar','legno','caisse','comptoir','','','Comptoir bar, façade bois mélaminé.'],
+  ['l-statique','Réfrigérée statique','legno','legno','expo','','s','Vitrine réfrigérée, façade bois mélaminé.'],
+  ['l-ventplane','Vitrine réfrigérée ventilée plane','legno','legno','expo','','v','Exposition plane, façade bois mélaminé.'],
+  ['l-neutre','Vitrine neutre','legno','caisse','neutre','','','Vitrine non réfrigérée.'],
+  ['l-ventile','Réfrigéré ventilé','legno','legno','expo','','v','Module réfrigéré, façade bois mélaminé.'],
+  ['l-chauffante','Vitrine chauffante sèche','legno','bainmarie','chaud','','','Maintien au chaud, chaleur sèche.'],
+  ['e-vent','Cuve froid ventilé','encastrable','encastrable','cuve','','v','Module brut prêt à être habillé, comptoir ou meuble sur pied.'],
+  ['e-stat','Cuve froid statique','encastrable','encastrable','cuve','','s','Module brut prêt à être habillé, comptoir ou meuble sur pied.'],
+  ['i-olympe','Olympe','industry','panorama','murale','','','Vitrine murale standardisée.'],
+  ['i-nepal','Nepal','industry','saladette','expo','','','Vitrine snack standardisée.'],
+  ['i-aramis','Aramis','industry','industry','expo','','','Vitrine boucherie standardisée.'],
+  ['i-rubis','Rubis','industry','industry','expo','','','Vitrine standardisée en longueurs.'],
+  ['i-argentine','Argentine','industry','industry','expo','','','Vitrine standardisée en longueurs.'],
+  ['i-hanoi','Hanoi','industry','poissonnerie','maree','','','Vitrine poissonnerie standardisée.'],
+  ['i-loire','Loire','industry','industry','expo','','','Vitrine boulangerie standardisée.'],
+  ['i-argent','Argent','industry','panorama','murale','','','Vitrine murale froid.'],
+  ['i-sugar','Sugar','industry','industry','expo','','','Vitrine à hauteur de comptoir.'],
+  ['i-hawaii','Hawaii','industry','industry','expo','','','Vitrine supermarché.'],
+  ['i-4faces','4 faces vitrées','industry','industry','expo','','','Vitrine vitrée sur ses 4 faces.']
+];
+const SECT = [
+  ['boul','Boulangerie',['b-amandine','b-caisse','l-statique','l-neutre','l-arriere','i-loire']],
+  ['pat','Pâtisserie',['s-plane','s-vision','s-panorama','s-centrale','s-gourmandise','b-pastry','b-cube','b-amandine']],
+  ['choc','Chocolats',['s-plane','s-centrale','s-gourmandise','s-caisse']],
+  ['sand','Sandwichs',['s-plane','b-panoramique','b-basse','b-murale']],
+  ['trait','Traiteur',['s-plane','s-caisse','s-saladette','s-bar','s-panorama','s-surface']],
+  ['poiss','Poissonnerie',['s-poisson','i-hanoi']],
+  ['salad','Bar à salades',['s-saladette','s-caisse','s-panorama']],
+  ['cous','Bar à couscous',['s-bainmarie']],
+  ['from','Fromagerie',['s-plane','s-panorama']],
+  ['bar','Bar',['s-bar','b-bar','l-bar']],
+  ['top','Bar à topping',['s-saladette','s-surface']],
+  ['cafe','Coffee shop / Café',['b-pastry','s-caisse','s-bar']],
+  ['pizza','Pizza al taglio',['s-saladette','s-caisse','s-plane']]
+];
+const norm = (x) => String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const STOP = ['pour','une','des','les','avec','vitrine','vitrines','module','modules','mon','refrigeree','refrigerees'];
+const LBY = {}; LINES.forEach(l => { LBY[l.id] = l; });
+const UBY = {}; USES.forEach(u => { UBY[u[0]] = u[1]; });
+const TBY = {}; TEMPS.forEach(t => { TBY[t[0]] = t[1]; });
+const SBY = {}; SECT.forEach(s => { SBY[s[0]] = s; });
+const cnt = {};
+const MODS = RAW.map(r => {
+  cnt[r[2]] = (cnt[r[2]] || 0) + 1;
+  const temps = r[5] ? r[5].split('') : [];
+  const secs = SECT.filter(s => s[2].indexOf(r[0]) > -1).map(s => s[1]);
+  const tT = temps.length ? temps.map(t => TBY[t]).join(' · ') : (r[4] === 'neutre' ? 'Non réfrigéré' : 'T° sur demande');
+  const fT = r[6] === 'v' ? 'Froid ventilé' : r[6] === 's' ? 'Froid statique' : '';
+  return { id:r[0], n:r[1], l:r[2], k:r[3], u:r[4], t:temps, f:r[6], d:r[7], ix: LBY[r[2]].code + '-' + String(cnt[r[2]]).padStart(2, '0'), tT, fT, uT: UBY[r[4]],
+    hay: norm([r[1], LBY[r[2]].n, r[7], UBY[r[4]], tT, fT].concat(secs).join(' ')) };
+});
+const MBY = {}; MODS.forEach(m => { MBY[m.id] = m; });
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menu:false, tab:'', q:'', sec:'', fu:[], ft:'', ff:'', sort:'ligne', view: (props && props.vueInitiale === 'liste') ? 'list' : 'grid', cmp:['s-gourmandise','s-centrale'], cmpOpen:false, fOpen:false };
+  }
+  match(m, s, skip){
+    if (s.tab && m.l !== s.tab) return false;
+    if (skip !== 'u' && s.fu.length && s.fu.indexOf(m.u) < 0) return false;
+    if (skip !== 't' && s.ft && m.t.indexOf(s.ft) < 0) return false;
+    if (skip !== 'f' && s.ff && m.f !== s.ff) return false;
+    if (s.sec && SBY[s.sec][2].indexOf(m.id) < 0) return false;
+    const toks = norm(s.q).split(/[^a-z0-9+\-]+/).filter(w => w.length > 2 && STOP.indexOf(w) < 0);
+    for (let i = 0; i < toks.length; i++) { if (m.hay.indexOf(toks[i].replace(/s$/, '')) < 0) return false; }
+    return true;
+  }
+  tog(arr, v){ return arr.indexOf(v) > -1 ? arr.filter(x => x !== v) : arr.concat([v]); }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const res = MODS.filter(m => this.match(m, s, ''));
+    const full = s.cmp.length >= 3;
+    const card = (m) => {
+      const on = s.cmp.indexOf(m.id) > -1;
+      const feat = m.id === 's-gourmandise';
+      return { n:m.n, d:m.d, ix:m.ix, img:IMG(m.k), alt:'Rendu ' + m.n + ', ligne ' + LBY[m.l].n, aria:'Fiche ' + m.n, lnFull:'Ligne ' + LBY[m.l].n,
+        uT:m.uT, tT:m.tT, fT:m.fT, fSep: m.fT ? ' · ' : '', p: feat ? 'Dès 5 800 € HT' : 'Sur devis', pCls: feat ? 'price on' : 'price',
+        cls: on ? 'card sel' : 'card', lcls: on ? 'lr sel' : 'lr', cOn:on, cDis: !on && full,
+        cTog: () => { const c = this.tog(this.state.cmp, m.id).slice(0, 3); this.setState({ cmp:c, cmpOpen: c.length >= 2 && this.state.cmpOpen }); } };
+    };
+    let groups;
+    if (s.sort === 'ligne') {
+      groups = LINES.map(l => {
+        const ms = res.filter(m => m.l === l.id);
+        return { n:'Ligne ' + l.n, sub: ms.length + ' module' + (ms.length > 1 ? 's' : '') + ' · façade : ' + l.front, mods: ms.map(card) };
+      }).filter(g => g.mods.length);
+    } else {
+      const ms = res.slice().sort((a, b) => a.n.localeCompare(b.n, 'fr'));
+      groups = ms.length ? [{ n:'A → Z', sub: ms.length + ' modules, toutes lignes confondues', mods: ms.map(card) }] : [];
+    }
+    const optCls = (c, on) => 'fopt' + (c === 0 && !on ? ' zero' : '');
+    const fUses = USES.map(u => { const c = MODS.filter(m => m.u === u[0] && this.match(m, s, 'u')).length; const on = s.fu.indexOf(u[0]) > -1; return { n:u[1], c, on, cls: optCls(c, on), tog: () => this.setState({ fu: this.tog(this.state.fu, u[0]) }) }; });
+    const fTemps = [['', 'Toutes']].concat(TEMPS).map(t => { const c = MODS.filter(m => (t[0] === '' || m.t.indexOf(t[0]) > -1) && this.match(m, s, 't')).length; const on = s.ft === t[0]; return { n:t[1], c, on, cls: optCls(c, on), tog: () => this.setState({ ft:t[0] }) }; });
+    const fCold = [['', 'Tous'], ['v', 'Froid ventilé'], ['s', 'Froid statique']].map(t => { const c = MODS.filter(m => (t[0] === '' || m.f === t[0]) && this.match(m, s, 'f')).length; const on = s.ff === t[0]; return { n:t[1], c, on, cls: optCls(c, on), tog: () => this.setState({ ff:t[0] }) }; });
+    const pills = [];
+    if (s.tab) pills.push({ n:'Ligne ' + LBY[s.tab].n, rm: () => this.setState({ tab:'' }) });
+    if (s.q) pills.push({ n:'« ' + s.q + ' »', rm: () => this.setState({ q:'' }) });
+    if (s.sec) pills.push({ n:'Métier : ' + SBY[s.sec][1], rm: () => this.setState({ sec:'' }) });
+    s.fu.forEach(id => pills.push({ n:UBY[id], rm: () => this.setState({ fu: this.state.fu.filter(x => x !== id) }) }));
+    if (s.ft) pills.push({ n:TBY[s.ft], rm: () => this.setState({ ft:'' }) });
+    if (s.ff) pills.push({ n: s.ff === 'v' ? 'Froid ventilé' : 'Froid statique', rm: () => this.setState({ ff:'' }) });
+    pills.forEach(p => { p.aria = 'Retirer le filtre ' + p.n; });
+    const ROWS = [['Principe','principe'],['Structure','struct'],['Panneau frontal','front'],['Plan de travail','top'],['Modules', null]];
+    const lrows = ROWS.map(r => ({ l:r[0], cells: LINES.map(l => ({ v: r[1] ? l[r[1]] : MODS.filter(m => m.l === l.id).map(m => m.n).join(', '), cls: (s.tab === l.id ? 'on' : '') + (r[1] ? '' : ' mlist') })) }));
+    const lines = LINES.map(l => ({ n:l.n, code:l.code, c:cnt[l.id], img:IMG(l.img), alt:'Rendu ligne ' + l.n, on: s.tab === l.id ? 'true' : 'false',
+      style: s.tab === l.id ? 'border-top-color:' + acc + ';background:#FFF5F4' : '', pick: () => this.setState({ tab: this.state.tab === l.id ? '' : l.id }) }));
+    const sel = s.cmp.map(id => MBY[id]);
+    const slots = [0,1,2].map(i => { const m = sel[i]; return m ? { has:true, empty:false, img:IMG(m.k), n:m.n, aria:'Retirer ' + m.n + ' du comparateur', rm: () => { const c = this.state.cmp.filter(x => x !== m.id); this.setState({ cmp:c, cmpOpen: c.length >= 2 && this.state.cmpOpen }); } } : { has:false, empty:true }; });
+    const rowDef = [
+      ['Visuel', m => IMG(m.k), true],
+      ['Ligne', m => 'Ligne ' + LBY[m.l].n],
+      ['N° catalogue', m => m.ix],
+      ['Usage', m => m.uT],
+      ['Température', m => m.tT],
+      ['Froid', m => m.fT || 'À préciser'],
+      ['Panneau frontal', m => LBY[m.l].front],
+      ['Caractéristiques', m => m.d],
+      ['Prix', m => m.id === 's-gourmandise' ? '5 800,00 € HT (101 cm)' : 'Sur devis']
+    ];
+    const cmpRows = rowDef.map(r => {
+      const vals = sel.map(m => r[1](m));
+      const diff = !r[2] && vals.some(v => v !== vals[0]);
+      return { l:r[0], cells: vals.map(v => ({ v, isImg: !!r[2], isTxt: !r[2], cls: diff ? 'cv diff' : 'cv' })) };
+    });
+    const segOn = 'background:#1C1C1E;color:#fff';
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu: !s.menu }),
+      total: MODS.length, count: res.length, noRes: res.length === 0,
+      lines, lrows, allOn: s.tab === '' ? 'true' : 'false', allStyle: s.tab === '' ? 'background:#1C1C1E;color:#fff;border-color:#1C1C1E' : '', pickAll: () => this.setState({ tab:'' }),
+      q: s.q, setQ: (ev) => this.setState({ q: ev.target.value }),
+      sec: s.sec, setSec: (ev) => this.setState({ sec: ev.target.value }),
+      sort: s.sort, setSort: (ev) => this.setState({ sort: ev.target.value }),
+      fUses, fTemps, fCold, pills,
+      resetAll: () => this.setState({ tab:'', q:'', sec:'', fu:[], ft:'', ff:'' }),
+      fCls: s.fOpen ? 'fpanel open' : 'fpanel', toggleF: () => this.setState({ fOpen: !s.fOpen }), fOpenAria: s.fOpen ? 'true' : 'false',
+      fBtn: (s.fOpen ? 'Masquer les filtres' : 'Filtres') + (pills.length ? ' (' + pills.length + ')' : ''),
+      isGrid: s.view === 'grid', isList: s.view === 'list', isGridS: s.view === 'grid' ? 'true' : 'false', isListS: s.view === 'list' ? 'true' : 'false',
+      gridBtn: s.view === 'grid' ? segOn : '', listBtn: s.view === 'list' ? segOn : '',
+      setGrid: () => this.setState({ view:'grid' }), setList: () => this.setState({ view:'list' }),
+      groups,
+      hasCmp: s.cmp.length > 0, cmpN: s.cmp.length, slots, canCmp: s.cmp.length >= 2, cantCmp: s.cmp.length < 2,
+      cmpBtn: s.cmpOpen ? 'Masquer' : 'Comparer', toggleCmp: () => this.setState({ cmpOpen: !s.cmpOpen }),
+      clearCmp: () => this.setState({ cmp:[], cmpOpen:false }),
+      showTable: s.cmpOpen && s.cmp.length >= 2, cmpRows, cmpCols: 'grid-template-columns:160px repeat(' + sel.length + ',minmax(0,1fr));--n:' + sel.length
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Vitrine Ligne Industry à vitre bombée">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="170" width="400" height="114" fill="#5A5D61"></rect>
+  <rect x="40" y="170" width="400" height="10" fill="#6C7075"></rect>
+  <rect x="40" y="170" width="12" height="114" fill="#000" opacity=".12"></rect>
+  <rect x="428" y="170" width="12" height="114" fill="#000" opacity=".18"></rect>
+  <g stroke="#4A4D51" stroke-width="2"><path d="M70 262h340M70 268h340"></path></g>
+  <rect x="44" y="150" width="392" height="20" fill="#E8E6E2"></rect>
+  <g><rect x="70" y="134" width="44" height="16" rx="3" fill="#B8463D"></rect><rect x="122" y="136" width="44" height="14" rx="3" fill="#D46A5A"></rect><rect x="174" y="134" width="44" height="16" rx="3" fill="#E8C7A6"></rect><rect x="226" y="136" width="44" height="14" rx="3" fill="#B8463D"></rect><rect x="278" y="134" width="44" height="16" rx="3" fill="#C98F4E"></rect><rect x="330" y="136" width="44" height="14" rx="3" fill="#E3B2A0"></rect><rect x="382" y="136" width="36" height="14" rx="3" fill="#B8463D"></rect></g>
+  <path d="M46 150 L46 116 Q60 72 116 66 L432 66 L432 150 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M46 150 L46 116 Q60 72 116 66 L432 66" fill="none" stroke="#A9BAC0" stroke-width="1.5"></path>
+  <path d="M60 140 Q70 92 120 80" fill="none" stroke="#fff" stroke-width="6" opacity=".35"></path>
+  <rect x="112" y="62" width="324" height="6" fill="#5A5D61"></rect>
+  <rect x="396" y="186" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="196" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+2°</text>
+</svg>

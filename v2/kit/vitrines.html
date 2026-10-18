@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE v2 — kit de rendus vitrines (SVG)</title>
+<style>
+body{margin:0;padding:32px;background:#ECEBE8;font-family:system-ui,sans-serif;color:#1A1A1A}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:24px}
+figure{margin:0;background:#E9E8E5;padding:16px}
+figcaption{font-size:13px;margin-top:8px}
+svg{width:100%;height:auto;display:block}
+</style>
+</head>
+<body>
+<h1>Kit de rendus produits RGTE — SVG (viewBox 0 0 480 320, sol à y=300)</h1>
+<p>Règles : aucune balise &lt;defs&gt; / gradient / id (plusieurs SVG par page). Les ombrages sont des calques semi-transparents. Couleurs de structure modifiables : pierre acrylique #F6F4F0, granit #3B3B3D, bois mélaminé #B8875A, verre #CFE3EA.</p>
+<div class="grid">
+
+<!-- ============ 1. GOURMANDISE / CENTRALE — Ligne Stone ============ -->
+<figure id="gourmandise">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Gourmandise, ligne Stone">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <!-- pied pierre acrylique -->
+  <rect x="60" y="284" width="360" height="16" fill="#E2DFD9"></rect>
+  <rect x="60" y="284" width="360" height="4" fill="#000" opacity=".06"></rect>
+  <!-- caisson -->
+  <rect x="40" y="168" width="400" height="116" fill="#F6F4F0"></rect>
+  <rect x="40" y="168" width="12" height="116" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="168" width="12" height="116" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <!-- grille de ventilation groupe logé -->
+  <g stroke="#CFCAC2" stroke-width="2"><path d="M300 272h110M300 277h110"></path></g>
+  <!-- afficheur température -->
+  <rect x="396" y="180" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="190" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <!-- plan de travail pierre -->
+  <polygon points="34,156 446,156 434,146 46,146" fill="#ECE9E3"></polygon>
+  <rect x="34" y="156" width="412" height="12" fill="#FBFAF8"></rect>
+  <rect x="34" y="166" width="412" height="2" fill="#000" opacity=".07"></rect>
+  <!-- piliers -->
+  <rect x="54" y="62" width="14" height="84" fill="#F6F4F0"></rect>
+  <rect x="64" y="62" width="4" height="84" fill="#000" opacity=".06"></rect>
+  <rect x="412" y="62" width="14" height="84" fill="#F6F4F0"></rect>
+  <rect x="412" y="62" width="4" height="84" fill="#000" opacity=".06"></rect>
+  <!-- chapeau -->
+  <rect x="48" y="54" width="384" height="9" fill="#FBFAF8"></rect>
+  <rect x="48" y="61" width="384" height="2" fill="#000" opacity=".08"></rect>
+  <!-- cuve d'exposition -->
+  <rect x="68" y="63" width="344" height="83" fill="#F1EEE8"></rect>
+  <rect x="68" y="63" width="344" height="3" fill="#FFE7B0"></rect>
+  <rect x="68" y="66" width="344" height="40" fill="#FFF6DD" opacity=".35"></rect>
+  <rect x="68" y="134" width="344" height="12" fill="#E6E2DA"></rect>
+  <!-- produits : entremets, tartelettes, macarons -->
+  <g>
+    <rect x="84" y="118" width="34" height="16" rx="2" fill="#F3DCD5"></rect><rect x="84" y="116" width="34" height="5" rx="2" fill="#C8475B"></rect>
+    <rect x="128" y="120" width="30" height="14" rx="2" fill="#EADBC4"></rect><rect x="128" y="118" width="30" height="4" rx="2" fill="#6B4433"></rect>
+    <ellipse cx="180" cy="130" rx="13" ry="4.5" fill="#D9A866"></ellipse><circle cx="176" cy="126" r="3" fill="#C8475B"></circle><circle cx="183" cy="125" r="3" fill="#8E2F45"></circle>
+    <ellipse cx="212" cy="130" rx="13" ry="4.5" fill="#D9A866"></ellipse><ellipse cx="212" cy="126.5" rx="10" ry="3" fill="#F1D36A"></ellipse>
+    <rect x="236" y="117" width="36" height="17" rx="8" fill="#B7CB93"></rect><rect x="236" y="117" width="36" height="5" rx="2.5" fill="#D9E6C1"></rect>
+    <g><circle cx="290" cy="129" r="5" fill="#EDB3BF"></circle><circle cx="302" cy="129" r="5" fill="#B9CF9A"></circle><circle cx="314" cy="129" r="5" fill="#6B4A3A"></circle><circle cx="326" cy="129" r="5" fill="#F1E3C2"></circle><circle cx="296" cy="121" r="5" fill="#E9C46A"></circle><circle cx="308" cy="121" r="5" fill="#C7B6E0"></circle><circle cx="320" cy="121" r="5" fill="#EDB3BF"></circle></g>
+    <rect x="344" y="119" width="52" height="15" rx="2" fill="#4A3127"></rect><rect x="344" y="119" width="52" height="3" fill="#7A5240"></rect><g fill="#C9A15A"><circle cx="354" cy="126" r="1.4"></circle><circle cx="366" cy="126" r="1.4"></circle><circle cx="378" cy="126" r="1.4"></circle><circle cx="390" cy="126" r="1.4"></circle></g>
+  </g>
+  <!-- vitrages coulissants (verre) -->
+  <rect x="68" y="63" width="344" height="83" fill="#CFE3EA" opacity=".26"></rect>
+  <path d="M240 63v83" stroke="#9FB3BA" stroke-width="1.2" opacity=".8"></path>
+  <polygon points="104,63 132,63 96,146 68,146" fill="#fff" opacity=".32"></polygon>
+  <polygon points="140,63 148,63 112,146 104,146" fill="#fff" opacity=".25"></polygon>
+  <polygon points="300,63 316,63 280,146 264,146" fill="#fff" opacity=".22"></polygon>
+  <rect x="68" y="63" width="344" height="83" fill="none" stroke="#A9BAC0" stroke-width="1"></rect>
+  <!-- panneau frontal verre sérigraphié -->
+  <rect x="62" y="182" width="320" height="72" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="182" width="320" height="72" fill="none" stroke="#DDD9D2"></rect>
+  <text x="222" y="222" text-anchor="middle" font-family="sans-serif" font-size="9" letter-spacing="3" fill="#B3ADA4">SÉRIGRAPHIE CLIENT</text>
+</svg>
+<figcaption>gourmandise — Gourmandise / Centrale (Stone) : piliers + plan pierre blanche, vitrages coulissants, groupe logé.</figcaption>
+</figure>
+
+<!-- ============ 2. PLANE / VISION — Ligne Stone ============ -->
+<figure id="plane">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Plane, ligne Stone">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="150" width="400" height="134" fill="#F6F4F0"></rect>
+  <rect x="40" y="150" width="12" height="134" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="150" width="12" height="134" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <!-- cuve basse : exposition à hauteur du plan -->
+  <polygon points="40,150 440,150 426,138 54,138" fill="#ECE9E3"></polygon>
+  <rect x="40" y="148" width="400" height="4" fill="#000" opacity=".06"></rect>
+  <!-- vitre droite basse -->
+  <rect x="54" y="96" width="372" height="42" fill="#F1EEE8"></rect>
+  <rect x="54" y="96" width="372" height="2" fill="#FFE7B0"></rect>
+  <g>
+    <rect x="70" y="122" width="30" height="14" rx="2" fill="#F3DCD5"></rect><rect x="70" y="120" width="30" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="110" y="123" width="30" height="13" rx="2" fill="#EADBC4"></rect><rect x="110" y="121" width="30" height="4" rx="2" fill="#6B4433"></rect>
+    <ellipse cx="164" cy="132" rx="12" ry="4" fill="#D9A866"></ellipse><circle cx="161" cy="128.5" r="2.8" fill="#C8475B"></circle><circle cx="167" cy="128" r="2.8" fill="#8E2F45"></circle>
+    <rect x="186" y="121" width="34" height="15" rx="7" fill="#B7CB93"></rect>
+    <ellipse cx="242" cy="132" rx="12" ry="4" fill="#D9A866"></ellipse><ellipse cx="242" cy="129" rx="9" ry="2.6" fill="#F1D36A"></ellipse>
+    <rect x="264" y="122" width="44" height="14" rx="2" fill="#4A3127"></rect><rect x="264" y="122" width="44" height="3" fill="#7A5240"></rect>
+    <rect x="318" y="121" width="30" height="15" rx="2" fill="#F7F1E6"></rect><rect x="318" y="119" width="30" height="4" rx="2" fill="#E9C46A"></rect>
+    <rect x="358" y="122" width="54" height="14" rx="2" fill="#E8D2B8"></rect><rect x="358" y="120" width="54" height="4" rx="2" fill="#C8475B" opacity=".85"></rect>
+  </g>
+  <rect x="54" y="96" width="372" height="42" fill="#CFE3EA" opacity=".26"></rect>
+  <polygon points="96,96 116,96 98,138 78,138" fill="#fff" opacity=".32"></polygon>
+  <polygon points="300,96 310,96 292,138 282,138" fill="#fff" opacity=".22"></polygon>
+  <rect x="54" y="96" width="372" height="42" fill="none" stroke="#A9BAC0"></rect>
+  <rect x="50" y="92" width="380" height="5" fill="#C9CDD0"></rect>
+  <rect x="396" y="164" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="174" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <rect x="62" y="166" width="320" height="86" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="166" width="320" height="86" fill="none" stroke="#DDD9D2"></rect>
+  <text x="222" y="213" text-anchor="middle" font-family="sans-serif" font-size="9" letter-spacing="3" fill="#B3ADA4">SÉRIGRAPHIE CLIENT</text>
+</svg>
+<figcaption>plane — Plane / Vision (Stone) : exposition à hauteur du plan de travail, vitrage bas.</figcaption>
+</figure>
+
+<!-- ============ 3. PANORAMA / PANORAMIQUE ============ -->
+<figure id="panorama">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Panorama à étagères">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="176" width="400" height="108" fill="#F6F4F0"></rect>
+  <rect x="40" y="176" width="12" height="108" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="176" width="12" height="108" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <polygon points="34,176 446,176 434,166 46,166" fill="#ECE9E3"></polygon>
+  <rect x="34" y="174" width="412" height="4" fill="#000" opacity=".06"></rect>
+  <!-- grand volume vitré, verre bombé -->
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166 Z" fill="#F1EEE8"></path>
+  <rect x="56" y="30" width="368" height="2" fill="#FFE7B0"></rect>
+  <!-- étagères réfrigérées -->
+  <rect x="62" y="74" width="356" height="4" fill="#DCE6EA"></rect>
+  <rect x="62" y="118" width="356" height="4" fill="#DCE6EA"></rect>
+  <g>
+    <rect x="76" y="58" width="26" height="16" rx="2" fill="#F3DCD5"></rect><rect x="76" y="56" width="26" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="112" y="60" width="26" height="14" rx="2" fill="#EADBC4"></rect><rect x="112" y="58" width="26" height="4" rx="2" fill="#6B4433"></rect>
+    <rect x="148" y="58" width="30" height="16" rx="7" fill="#B7CB93"></rect>
+    <rect x="190" y="60" width="44" height="14" rx="2" fill="#4A3127"></rect>
+    <rect x="246" y="58" width="26" height="16" rx="2" fill="#F7F1E6"></rect><rect x="246" y="56" width="26" height="4" rx="2" fill="#E9C46A"></rect>
+    <rect x="284" y="59" width="30" height="15" rx="2" fill="#E8D2B8"></rect>
+    <rect x="326" y="58" width="26" height="16" rx="2" fill="#F3DCD5"></rect><rect x="326" y="56" width="26" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="362" y="60" width="44" height="14" rx="2" fill="#EADBC4"></rect>
+    <g fill="#F1E3C2"><rect x="76" y="104" width="40" height="14" rx="3"></rect><rect x="124" y="104" width="40" height="14" rx="3" fill="#E2B985"></rect><rect x="172" y="104" width="40" height="14" rx="3" fill="#C7D9A6"></rect><rect x="220" y="104" width="40" height="14" rx="3" fill="#EDB3BF"></rect><rect x="268" y="104" width="40" height="14" rx="3"></rect><rect x="316" y="104" width="40" height="14" rx="3" fill="#E2B985"></rect><rect x="364" y="104" width="40" height="14" rx="3" fill="#C7D9A6"></rect></g>
+    <g><ellipse cx="96" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="140" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="184" cy="160" rx="16" ry="5" fill="#C98F4E"></ellipse><rect x="214" y="146" width="56" height="16" rx="2" fill="#F3DCD5"></rect><ellipse cx="300" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="344" cy="160" rx="16" ry="5" fill="#C98F4E"></ellipse><ellipse cx="388" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse></g>
+  </g>
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166 Z" fill="#CFE3EA" opacity=".24"></path>
+  <polygon points="100,24 128,24 86,166 58,166" fill="#fff" opacity=".3"></polygon>
+  <polygon points="136,24 144,24 102,166 94,166" fill="#fff" opacity=".22"></polygon>
+  <polygon points="330,24 344,24 302,166 288,166" fill="#fff" opacity=".2"></polygon>
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166" fill="none" stroke="#A9BAC0"></path>
+  <rect x="396" y="190" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="200" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <rect x="62" y="190" width="320" height="64" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="190" width="320" height="64" fill="none" stroke="#DDD9D2"></rect>
+</svg>
+<figcaption>panorama — Panorama / Panoramique : grand volume vitré, 2 ou 3 étagères réfrigérées.</figcaption>
+</figure>
+
+<!-- ============ 4. SALADETTE (bacs gastronormes) ============ -->
+<figure id="saladette">
+<svg viewBox="0 0 480 320" role="img" aria-label="Saladette réfrigérée à bacs gastronormes">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="160" width="400" height="124" fill="#F6F4F0"></rect>
+  <rect x="40" y="160" width="12" height="124" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="160" width="12" height="124" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <!-- plan avec bacs vus en perspective -->
+  <polygon points="34,160 446,160 418,118 62,118" fill="#EFECE7"></polygon>
+  <g>
+    <polygon points="78,152 128,152 132,126 88,126" fill="#C9CED1"></polygon><polygon points="82,150 124,150 128,128 91,128" fill="#7FAF5A"></polygon>
+    <polygon points="136,152 186,152 186,126 142,126" fill="#C9CED1"></polygon><polygon points="140,150 182,150 182,128 145,128" fill="#D9473A"></polygon>
+    <polygon points="194,152 244,152 240,126 196,126" fill="#C9CED1"></polygon><polygon points="198,150 240,150 237,128 199,128" fill="#F1D36A"></polygon>
+    <polygon points="252,152 302,152 294,126 250,126" fill="#C9CED1"></polygon><polygon points="256,150 298,150 291,128 253,128" fill="#F2EEE4"></polygon>
+    <polygon points="310,152 360,152 348,126 304,126" fill="#C9CED1"></polygon><polygon points="314,150 356,150 345,128 307,128" fill="#5B3A2E"></polygon>
+    <polygon points="368,152 418,152 402,126 358,126" fill="#C9CED1"></polygon><polygon points="372,150 414,150 399,128 361,128" fill="#E58A3A"></polygon>
+  </g>
+  <rect x="34" y="158" width="412" height="4" fill="#000" opacity=".06"></rect>
+  <!-- pare-haleine -->
+  <path d="M70 70 L410 70 L418 112 L62 112 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M70 70 L410 70 L418 112 L62 112 Z" fill="none" stroke="#A9BAC0"></path>
+  <polygon points="110,70 126,70 118,112 102,112" fill="#fff" opacity=".35"></polygon>
+  <g stroke="#B9BEC2" stroke-width="3"><path d="M66 112V160M414 112V160"></path></g>
+  <rect x="396" y="176" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="186" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <rect x="62" y="178" width="320" height="74" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="178" width="320" height="74" fill="none" stroke="#DDD9D2"></rect>
+</svg>
+<figcaption>saladette — Saladette / bar à salades / topping : bacs gastronormes (+2/+8), pare-haleine. Variante bain-marie : remplacer les couleurs des bacs + afficheur « +65° ».</figcaption>
+</figure>
+
+<!-- ============ 5. COMPTOIR CAISSE ============ -->
+<figure id="caisse">
+<svg viewBox="0 0 480 320" role="img" aria-label="Comptoir caisse">
+  <ellipse cx="240" cy="301" rx="170" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="96" y="284" width="288" height="16" fill="#2E2E30"></rect>
+  <rect x="80" y="130" width="320" height="154" fill="#F6F4F0"></rect>
+  <rect x="80" y="130" width="12" height="154" fill="#000" opacity=".045"></rect>
+  <rect x="388" y="130" width="12" height="154" fill="#000" opacity=".07"></rect>
+  <rect x="80" y="262" width="320" height="22" fill="#000" opacity=".035"></rect>
+  <polygon points="74,130 406,130 394,120 86,120" fill="#ECE9E3"></polygon>
+  <rect x="74" y="128" width="332" height="4" fill="#000" opacity=".06"></rect>
+  <!-- tablette PMR (option) -->
+  <rect x="290" y="180" width="126" height="8" fill="#FBFAF8"></rect>
+  <rect x="290" y="186" width="126" height="3" fill="#000" opacity=".08"></rect>
+  <!-- terminal -->
+  <rect x="170" y="92" width="60" height="30" rx="3" fill="#1E1E1E"></rect>
+  <rect x="174" y="96" width="52" height="22" rx="1" fill="#3A4A52"></rect>
+  <rect x="194" y="120" width="12" height="6" fill="#1E1E1E"></rect>
+  <rect x="96" y="148" width="180" height="104" fill="#fff" opacity=".55"></rect>
+  <rect x="96" y="148" width="180" height="104" fill="none" stroke="#DDD9D2"></rect>
+</svg>
+<figcaption>caisse — Comptoir caisse (avec tablette PMR en option).</figcaption>
+</figure>
+
+<!-- ============ 6. CUBE / PASTRY SHOW / AMANDINE (vitrage droit, ligne Basique) ============ -->
+<figure id="cube">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Cube, ligne Basique">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#3B3B3D"></rect>
+  <!-- façade bois mélaminé -->
+  <rect x="40" y="168" width="400" height="116" fill="#B8875A"></rect>
+  <g stroke="#A67A4F" stroke-width="1"><path d="M40 196h400M40 224h400M40 252h400"></path></g>
+  <rect x="40" y="168" width="12" height="116" fill="#000" opacity=".08"></rect>
+  <rect x="428" y="168" width="12" height="116" fill="#000" opacity=".12"></rect>
+  <!-- moulures -->
+  <rect x="60" y="182" width="360" height="88" fill="none" stroke="#9E7046" stroke-width="3"></rect>
+  <!-- plan de travail granit -->
+  <polygon points="34,168 446,168 434,158 46,158" fill="#4A4A4D"></polygon>
+  <rect x="34" y="166" width="412" height="8" fill="#3B3B3D"></rect>
+  <g fill="#6A6A6E"><circle cx="80" cy="170" r=".9"></circle><circle cx="140" cy="171" r=".9"></circle><circle cx="230" cy="169" r=".9"></circle><circle cx="300" cy="171" r=".9"></circle><circle cx="380" cy="170" r=".9"></circle></g>
+  <!-- volume cubique 3 étagères verre -->
+  <rect x="54" y="38" width="372" height="120" fill="#F1EEE8"></rect>
+  <rect x="54" y="38" width="372" height="2" fill="#FFE7B0"></rect>
+  <rect x="58" y="78" width="364" height="3" fill="#DCE6EA"></rect>
+  <rect x="58" y="118" width="364" height="3" fill="#DCE6EA"></rect>
+  <g>
+    <g fill="#E2B985"><rect x="72" y="62" width="34" height="16" rx="4"></rect><rect x="116" y="62" width="34" height="16" rx="4" fill="#F1E3C2"></rect><rect x="160" y="62" width="34" height="16" rx="4"></rect><rect x="204" y="62" width="34" height="16" rx="4" fill="#C98F4E"></rect><rect x="248" y="62" width="34" height="16" rx="4"></rect><rect x="292" y="62" width="34" height="16" rx="4" fill="#F1E3C2"></rect><rect x="336" y="62" width="34" height="16" rx="4"></rect><rect x="380" y="62" width="34" height="16" rx="4" fill="#C98F4E"></rect></g>
+    <g><rect x="72" y="102" width="40" height="16" rx="2" fill="#F3DCD5"></rect><rect x="122" y="102" width="40" height="16" rx="2" fill="#EADBC4"></rect><rect x="172" y="102" width="40" height="16" rx="8" fill="#B7CB93"></rect><rect x="222" y="102" width="40" height="16" rx="2" fill="#4A3127"></rect><rect x="272" y="102" width="40" height="16" rx="2" fill="#F7F1E6"></rect><rect x="322" y="102" width="40" height="16" rx="2" fill="#E8D2B8"></rect><rect x="372" y="102" width="40" height="16" rx="2" fill="#F3DCD5"></rect></g>
+    <g><ellipse cx="94" cy="152" rx="18" ry="5" fill="#D9A866"></ellipse><ellipse cx="146" cy="152" rx="18" ry="5" fill="#C98F4E"></ellipse><ellipse cx="198" cy="152" rx="18" ry="5" fill="#D9A866"></ellipse><ellipse cx="250" cy="152" rx="18" ry="5" fill="#C98F4E"></ellipse><ellipse cx="302" cy="152" rx="18" ry="5" fill="#D9A866"></ellipse><ellipse cx="354" cy="152" rx="18" ry="5" fill="#C98F4E"></ellipse><ellipse cx="402" cy="152" rx="16" ry="5" fill="#D9A866"></ellipse></g>
+  </g>
+  <rect x="54" y="38" width="372" height="120" fill="#CFE3EA" opacity=".24"></rect>
+  <polygon points="96,38 124,38 84,158 56,158" fill="#fff" opacity=".3"></polygon>
+  <polygon points="320,38 332,38 292,158 280,158" fill="#fff" opacity=".2"></polygon>
+  <rect x="54" y="38" width="372" height="120" fill="none" stroke="#A9BAC0"></rect>
+  <rect x="50" y="32" width="380" height="7" fill="#C9CDD0"></rect>
+  <rect x="396" y="186" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="196" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+</svg>
+<figcaption>cube — Cube / Pastry Show / Amandine (Basique) : façade bois mélaminé à moulures, plan granit, vitrage droit à étagères.</figcaption>
+</figure>
+
+<!-- ============ 7. POISSONNERIE (cuve inclinée sur glace) ============ -->
+<figure id="poissonnerie">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Poissonnerie">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="160" width="400" height="124" fill="#F6F4F0"></rect>
+  <rect x="40" y="160" width="12" height="124" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="160" width="12" height="124" fill="#000" opacity=".07"></rect>
+  <polygon points="40,160 440,160 424,104 56,104" fill="#E9F1F4"></polygon>
+  <g fill="#fff"><circle cx="90" cy="150" r="5"></circle><circle cx="120" cy="146" r="6"></circle><circle cx="160" cy="151" r="5"></circle><circle cx="210" cy="147" r="6"></circle><circle cx="260" cy="151" r="5"></circle><circle cx="310" cy="147" r="6"></circle><circle cx="360" cy="150" r="5"></circle><circle cx="400" cy="147" r="6"></circle></g>
+  <g>
+    <path d="M90 134 q34 -14 70 0 q-34 14 -70 0z" fill="#9AA7B0"></path><path d="M160 134 l12 -8 v16z" fill="#8A97A0"></path>
+    <path d="M200 128 q40 -16 82 0 q-40 16 -82 0z" fill="#B7C0C6"></path><path d="M282 128 l13 -9 v18z" fill="#A6B0B6"></path>
+    <path d="M314 138 q30 -12 62 0 q-30 12 -62 0z" fill="#E7A58C"></path>
+    <path d="M110 116 q26 -10 54 0 q-26 10 -54 0z" fill="#8C99A3"></path>
+  </g>
+  <path d="M56 104 L424 104 L410 58 L70 58 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M56 104 L424 104 L410 58 L70 58 Z" fill="none" stroke="#A9BAC0"></path>
+  <polygon points="120,58 136,58 124,104 108,104" fill="#fff" opacity=".35"></polygon>
+  <rect x="396" y="176" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="186" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#8FD3FF">−1°</text>
+  <rect x="62" y="178" width="320" height="74" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="178" width="320" height="74" fill="none" stroke="#DDD9D2"></rect>
+</svg>
+<figcaption>poissonnerie — Poissonnerie : froid statique −2 °C/0 °C, présentation sur glace.</figcaption>
+</figure>
+
+<!-- ============ 8. INDUSTRY — vitre bombée (Rubis, Loire, Aramis…) ============ -->
+<figure id="industry">
+<svg viewBox="0 0 480 320" role="img" aria-label="Vitrine Ligne Industry à vitre bombée">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="170" width="400" height="114" fill="#5A5D61"></rect>
+  <rect x="40" y="170" width="400" height="10" fill="#6C7075"></rect>
+  <rect x="40" y="170" width="12" height="114" fill="#000" opacity=".12"></rect>
+  <rect x="428" y="170" width="12" height="114" fill="#000" opacity=".18"></rect>
+  <g stroke="#4A4D51" stroke-width="2"><path d="M70 262h340M70 268h340"></path></g>
+  <rect x="44" y="150" width="392" height="20" fill="#E8E6E2"></rect>
+  <g><rect x="70" y="134" width="44" height="16" rx="3" fill="#B8463D"></rect><rect x="122" y="136" width="44" height="14" rx="3" fill="#D46A5A"></rect><rect x="174" y="134" width="44" height="16" rx="3" fill="#E8C7A6"></rect><rect x="226" y="136" width="44" height="14" rx="3" fill="#B8463D"></rect><rect x="278" y="134" width="44" height="16" rx="3" fill="#C98F4E"></rect><rect x="330" y="136" width="44" height="14" rx="3" fill="#E3B2A0"></rect><rect x="382" y="136" width="36" height="14" rx="3" fill="#B8463D"></rect></g>
+  <path d="M46 150 L46 116 Q60 72 116 66 L432 66 L432 150 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M46 150 L46 116 Q60 72 116 66 L432 66" fill="none" stroke="#A9BAC0" stroke-width="1.5"></path>
+  <path d="M60 140 Q70 92 120 80" fill="none" stroke="#fff" stroke-width="6" opacity=".35"></path>
+  <rect x="112" y="62" width="324" height="6" fill="#5A5D61"></rect>
+  <rect x="396" y="186" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="196" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+2°</text>
+</svg>
+<figcaption>industry — Ligne Industry (vitrines standardisées : Aramis, Rubis, Loire…) : vitre bombée, façade laquée.</figcaption>
+</figure>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE · Projet 3D — Lignes d'agencement</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#FFFFFF}
+sc-for,sc-if{display:contents}
+.pj{--acc:#D42A20;--ink:#1C1C1E;--mute:#5C5C61;--line:#DAD9D5;--studio:#ECEBE8;--soft:#F6F5F3;font-family:'Manrope',system-ui,sans-serif;color:var(--ink);background:#FFFFFF;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1}
+.pj *,.pj *::before,.pj *::after{box-sizing:border-box}
+.pj img{display:block;max-width:100%}
+.pj h1,.pj h2,.pj h3,.pj h4,.pj p{margin:0}
+.pj button{font-family:inherit}
+.pj :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+section[id]{scroll-margin-top:84px}
+
+.topbar{background:var(--ink);color:#C9C9CC;font-size:13px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:36px}
+.topbar a{color:#FFFFFF;text-decoration:none;min-height:36px;display:inline-flex;align-items:center;gap:6px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:80;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px}
+.logo{display:inline-flex;flex-direction:column;text-decoration:none;color:var(--ink);min-height:44px;justify-content:center}
+.logo-w{font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1}
+.logo-c{display:block;height:7px;margin:4px 0 3px;border-left:1.5px solid var(--acc);border-right:1.5px solid var(--acc);position:relative}
+.logo-c::before{content:'';position:absolute;left:0;right:0;top:3px;border-top:1.5px solid var(--acc)}
+.logo-s{font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--mute);line-height:1}
+.nav{display:flex;gap:4px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;position:relative}
+.nav a::after{content:'';position:absolute;left:12px;right:12px;bottom:8px;height:1.5px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.tel{display:inline-flex;flex-direction:column;justify-content:center;text-decoration:none;color:var(--ink);min-height:44px;padding:0 6px;line-height:1.15}
+.tel b{font-size:16px;font-weight:800;letter-spacing:.01em}
+.tel small{font-size:11.5px;color:var(--mute);font-weight:600}
+.planbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:#FFFFFF;color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;transition:border-color .2s}
+.planbtn:hover{border-color:var(--ink)}
+.badge{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:12px;color:#FFFFFF;font-size:12.5px;font-weight:800;animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:8px;border:0;font-size:15px;font-weight:700;text-decoration:none;cursor:pointer;transition:background .2s,box-shadow .2s,transform .15s,color .2s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-acc{background:var(--acc);color:#FFFFFF}
+.btn-acc:hover{background:#B9231A}
+.btn-ink{background:var(--ink);color:#FFFFFF}
+.btn-ink:hover{background:#3A3A3E}
+.btn-line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px #BDBCB8}
+.btn-line:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:8px;border:1px solid var(--line);background:#FFFFFF;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+.mnav{display:none}
+.drop{border-top:1px solid var(--line);background:#FFFFFF;animation:fd .3s ease both}
+.drop-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:start;padding:20px 0 24px}
+.drop-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:8px}
+.drow{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 6px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+.drow img{width:64px;height:43px;object-fit:contain;flex:none;background:var(--studio);border-radius:4px}
+.drow b{display:block;font-size:14px;line-height:1.25}
+.drow span{display:block;font-size:12.5px;color:var(--mute)}
+.xbtn{margin-left:auto;flex:none;width:44px;height:44px;border:0;border-radius:6px;background:transparent;color:var(--mute);cursor:pointer;display:grid;place-items:center}
+.xbtn:hover{background:var(--studio);color:var(--ink)}
+@keyframes fd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+.kick{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--acc)}
+.kick::before{content:'';width:22px;height:9px;border-left:1.5px solid currentColor;border-right:1.5px solid currentColor;background:linear-gradient(currentColor,currentColor) center/100% 1.5px no-repeat}
+.h1{font-size:clamp(38px,4.6vw,64px);line-height:1;letter-spacing:-.035em;font-weight:800;overflow-wrap:anywhere}
+.h2{font-size:clamp(28px,3vw,42px);line-height:1.08;letter-spacing:-.03em;font-weight:800;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.3vw,18px);color:var(--mute);line-height:1.55;max-width:60ch}
+.note{font-size:12.5px;color:var(--mute)}
+
+/* head */
+.phead{padding:40px 0 0}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13.5px;color:var(--mute);margin-bottom:18px}
+.crumbs a{color:var(--mute);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumbs a:hover{color:var(--ink)}
+.ph-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
+.search{display:flex;align-items:center;gap:10px;padding:0 6px 0 16px;border-radius:8px;border:1px solid var(--line);background:var(--soft);transition:border-color .2s,background .2s}
+.search:focus-within{border-color:var(--ink);background:#FFFFFF}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:600 16px/1 'Manrope',sans-serif;min-height:54px;color:var(--ink)}
+.ltabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;margin-top:36px}
+.ltab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 22px 12px 0;margin-right:22px;border:0;background:transparent;cursor:pointer;text-align:left;white-space:nowrap;position:relative;color:var(--ink)}
+.ltab b{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.ltab span{font-size:12.5px;color:var(--mute);font-weight:600}
+.ltab i{position:absolute;left:0;right:22px;bottom:-1px;height:3px;transition:background .25s}
+
+/* line band */
+.band{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:center;margin-top:28px;animation:fd .4s ease both}
+.band-st{position:relative;background-color:var(--studio);background-image:linear-gradient(rgba(28,28,30,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(28,28,30,.05) 1px,transparent 1px);background-size:24px 24px;border-radius:6px;height:300px;display:flex;align-items:flex-end;justify-content:center;padding:0 24px 12px}
+.band-st img{width:100%;max-width:440px}
+.marks::before,.marks::after{content:'';position:absolute;width:14px;height:14px;pointer-events:none}
+.marks::before{left:10px;top:10px;border-left:1px solid var(--ink);border-top:1px solid var(--ink)}
+.marks::after{right:10px;bottom:10px;border-right:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.kv{display:grid;gap:0;margin-top:18px}
+.kv div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:11px 0;border-top:1px solid var(--line);font-size:15px}
+.kv span{color:var(--mute);font-size:13.5px}
+
+/* grid */
+.ghead{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:40px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:16px}
+.card{display:flex;flex-direction:column;border-radius:6px;background:#FFFFFF;box-shadow:0 0 0 1px var(--line);overflow:hidden;transition:box-shadow .25s,transform .25s;animation:fd .4s ease both}
+.card:hover{box-shadow:0 0 0 1.5px var(--ink);transform:translateY(-2px)}
+.card-st{position:relative;display:block;color:var(--ink);height:170px;background:var(--studio);padding:14px 16px 6px}
+.card-st img{width:100%;height:100%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.card:hover .card-st img{transform:scale(1.04)}
+.card-st em{position:absolute;left:10px;top:10px;font-style:normal;display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;background:#FFFFFF;font-size:11.5px;font-weight:700}
+.card-b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card-b h3{font-size:17px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+.card-b h3 a{color:inherit;text-decoration:none}
+.card-b h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.temp{font-size:13.5px;font-weight:800;color:var(--acc)}
+.spec{font-size:13.5px;color:var(--mute);line-height:1.4}
+.card-a{display:flex;gap:6px;margin-top:auto;padding-top:12px}
+.addbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:0;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.fiche{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:700;color:var(--ink);text-decoration:none;box-shadow:inset 0 0 0 1px var(--line)}
+.fiche:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.empty{padding:48px 24px;border-radius:6px;background:var(--soft);text-align:center;display:grid;gap:12px;justify-items:center}
+
+/* comparator */
+.cmpw{overflow-x:auto;margin-top:24px;border-radius:6px;box-shadow:0 0 0 1px var(--line)}
+.cmp{display:grid;grid-template-columns:170px repeat(5,minmax(150px,1fr));min-width:940px}
+.cmp > div{padding:13px 14px;border-top:1px solid var(--line);font-size:14px;line-height:1.4;transition:background .25s}
+.cmp .rh{color:var(--mute);font-size:13px;font-weight:700;background:var(--soft)}
+.cmp .ch{border-top:0;padding:10px}
+.chb{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;border:0;background:transparent;cursor:pointer;padding:4px;border-radius:4px;text-align:left;color:inherit}
+.chb img{width:100%;max-width:150px;height:auto}
+.chb b{font-size:16px;font-weight:800}
+.mark{color:var(--mute);font-weight:600}
+
+/* mon plan */
+.mp{background:var(--soft);border-top:1px solid var(--line);padding:72px 0}
+.mp-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start}
+.stage{position:relative;background-color:var(--studio);background-image:linear-gradient(rgba(28,28,30,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(28,28,30,.055) 1px,transparent 1px);background-size:24px 24px;border-radius:6px;height:330px;overflow:hidden}
+.face{position:absolute;left:24px;right:24px;bottom:24px;display:flex;flex-direction:column;align-items:center}
+.face-row{display:flex;align-items:flex-end;width:100%;max-width:700px}
+.mw{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;animation:mw .55s cubic-bezier(.2,.7,.2,1) both}
+.mw img{width:100%;height:auto}
+@keyframes mw{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tag{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 6px;border-radius:4px;background:var(--ink);color:#FFFFFF;font-size:12px;font-weight:800;margin-bottom:6px;position:relative}
+.tag::after{content:'';position:absolute;left:50%;top:100%;height:10px;border-left:1px solid var(--ink)}
+.cote{position:relative;height:16px;margin-top:8px;border-left:1.5px solid var(--acc);border-right:1.5px solid var(--acc)}
+.cote::before{content:'';position:absolute;left:0;right:0;top:7px;border-top:1.5px solid var(--acc)}
+.cote span{position:absolute;left:50%;top:-2px;transform:translateX(-50%);padding:0 8px;background:var(--studio);color:var(--acc);font-size:13px;font-weight:800;white-space:nowrap;line-height:20px}
+.cote-w{width:100%;max-width:700px}
+.st-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--mute);font-size:15px}
+.st-empty div{display:grid;gap:10px;justify-items:center;max-width:340px}
+.dashed{width:240px;height:70px;border:1.5px dashed #A9A8A4;border-radius:4px}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:8px;margin-top:12px}
+.lgi{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border-radius:6px;background:#FFFFFF;box-shadow:0 0 0 1px var(--line);font-size:13.5px;line-height:1.25;min-height:56px}
+.lgi .tag{margin:0;flex:none}
+.lgi .tag::after{display:none}
+.lgi small{display:block;color:var(--mute);font-size:12.5px}
+.form{background:#FFFFFF;border-radius:8px;box-shadow:0 0 0 1px var(--line);padding:26px;display:grid;gap:12px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:13.5px;font-weight:700}
+.fld input{font:500 15px/1.4 'Manrope',sans-serif;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:6px;min-height:48px;padding:11px 13px;outline:0;width:100%;transition:border-color .2s,box-shadow .2s}
+.fld input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(28,28,30,.08);background:#FFFFFF}
+.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.err{font-size:12.5px;color:#B3261C;font-weight:600}
+.ok{animation:fd .45s ease both}
+.okic{width:48px;height:48px;border-radius:50%;background:var(--acc);display:grid;place-items:center;color:#FFFFFF}
+
+.pbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 18px;border-radius:10px;background:var(--ink);color:#FFFFFF;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);animation:up .4s cubic-bezier(.2,.7,.2,1) both;max-width:calc(100% - 32px)}
+.pbar b{font-size:15px;white-space:nowrap}
+.pbar .thumbs{display:flex;gap:4px}
+.pbar .thumbs img{width:46px;height:31px;object-fit:contain;background:#3A3A3E;border-radius:3px}
+@keyframes up{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+
+.ftr{background:#FFFFFF;border-top:1px solid var(--line);padding:64px 0 24px}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:36px}
+.ftr-h{font-size:13px;font-weight:800;margin-bottom:12px}
+.ftr p{font-size:14.5px;color:var(--mute)}
+.ftr-l a{display:flex;align-items:center;min-height:36px;color:var(--ink);text-decoration:none;font-size:14.5px}
+.ftr-l a:hover{color:var(--acc)}
+.ftr-tel{font-size:24px;font-weight:800;color:var(--ink);text-decoration:none}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 20px;margin-top:48px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.ftr-bot a{color:var(--mute);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:var(--ink)}
+.legal{display:flex;flex-wrap:wrap;gap:0 18px}
+
+@media(max-width:1240px){.tel{display:none}}
+@media(max-width:1060px){.nav{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 0 16px}.mnav a{display:flex;align-items:center;min-height:48px;padding:0 14px;border-radius:6px;background:var(--soft);text-decoration:none;color:var(--ink);font-weight:700}
+.ph-g,.band,.mp-g{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.wrap{padding:0 16px}.hdr-cta,.topbar-note,.planbtn .pl-t{display:none}.band-st{height:220px}.kv div{grid-template-columns:110px minmax(0,1fr)}.stage{height:260px}.face{left:12px;right:12px}.f2{grid-template-columns:minmax(0,1fr)}.form{padding:18px}.pbar .thumbs{display:none}.drop-in{grid-template-columns:minmax(0,1fr)}.card-st{height:130px}}
+@media (prefers-reduced-motion:reduce){.pj *{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</helmet>
+<div class="pj" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="topbar-note">Bureau d'études et show-room à Puget-sur-Argens (Var)</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Projet-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-c" aria-hidden="true"></span><span class="logo-s">R.G. Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Projet-Lignes.html" aria-current="page">Lignes d'agencement</a>
+      <a href="Projet-Accueil.html#secteurs">Secteurs</a>
+      <a href="Projet-Accueil.html#realisations">Réalisations</a>
+      <a href="Projet-Accueil.html#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><b>0 800 95 13 13</b><small>Appel gratuit</small></a>
+      <button type="button" class="planbtn" onClick="{{ togglePlan }}" aria-expanded="{{ planOpenS }}" aria-label="Mon plan : voir les modules ajoutés"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="10"></rect><path d="M9 7v10M15 7v10"></path></svg><span class="pl-t">Mon plan</span><span class="badge" key="{{ badgeKey }}" style="{{ badgeStyle }}">{{ count }}</span></button>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Projet-Accueil.html#plan3d">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="wrap mnav" aria-label="Navigation mobile">
+      <a href="Projet-Lignes.html">Lignes d'agencement</a>
+      <a href="Projet-Accueil.html#secteurs">Secteurs</a>
+      <a href="Projet-Accueil.html#realisations">Réalisations</a>
+      <a href="Projet-Accueil.html#contact">Showroom &amp; contact</a>
+      <a href="tel:0800951313">0 800 95 13 13 · appel gratuit</a>
+      <a href="Projet-Accueil.html#plan3d" style="background:var(--acc);color:#FFFFFF">Plan 3D offert</a>
+    </nav>
+  </sc-if>
+  <sc-if value="{{ planOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="drop">
+      <div class="wrap drop-in">
+        <div>
+          <p style="font-size:15px;font-weight:800;margin-bottom:10px">Les modules de votre plan ({{ count }})</p>
+          <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ true }}">
+            <div class="drop-list">
+              <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+                <div class="drow"><img src="{{ m.src }}" alt=""><div><b>{{ m.name }}</b><span>Ligne {{ m.ligneName }}</span></div><button type="button" class="xbtn" onClick="{{ m.remove }}" aria-label="{{ m.removeLabel }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noPlan }}" hint-placeholder-val="{{ false }}"><p class="note" style="font-size:14px">Votre plan est vide. Utilisez « Ajouter à mon plan » sur les modules du catalogue.</p></sc-if>
+        </div>
+        <div style="display:grid;gap:8px">
+          <a class="btn btn-acc" href="#mon-plan" onClick="{{ closePlan }}">Voir et envoyer mon plan</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<main>
+<section class="phead">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Fil d'Ariane"><a href="Projet-Accueil.html">Accueil</a><span aria-hidden="true">/</span><span style="color:var(--ink)">Lignes d'agencement</span></nav>
+    <div class="ph-g">
+      <div>
+        <span class="kick">Les modules de votre plan</span>
+        <h1 class="h1" style="margin-top:14px">Lignes d'agencement</h1>
+        <p class="lead" style="margin-top:14px">5 lignes, 45 modules. Ajoutez à votre plan les modules qui vous intéressent : le bureau d'études les assemble dans votre plan 3D, offert.</p>
+      </div>
+      <div>
+        <label for="q" style="display:block;font-size:13.5px;font-weight:700;margin-bottom:8px">Rechercher un module, toutes lignes</label>
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+          <input id="q" type="search" placeholder="ex. saladette, caisse, murale…" value="{{ q }}" onInput="{{ setQ }}">
+          <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button type="button" class="xbtn" onClick="{{ clearQ }}" aria-label="Effacer la recherche"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if>
+        </div>
+      </div>
+    </div>
+
+    <div class="ltabs" role="tablist" aria-label="Filtrer par ligne">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+        <button type="button" class="ltab" role="tab" aria-selected="{{ t.on }}" onClick="{{ t.pick }}"><b>{{ t.name }}</b><span>{{ t.count }} modules</span><i style="{{ t.bar }}"></i></button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ hasLine }}" hint-placeholder-val="{{ true }}">
+      <div class="band" key="{{ line.id }}">
+        <div>
+          <h2 class="h2">Ligne {{ line.name }}</h2>
+          <p class="lead" style="margin-top:10px">{{ line.desc }}</p>
+          <div class="kv">
+            <div><span>Matériaux</span><b style="font-weight:600">{{ line.mat }}</b></div>
+            <div><span>Panneau frontal</span><b style="font-weight:600">{{ line.front }}</b></div>
+            <div><span>Plan de travail</span><b style="font-weight:600">{{ line.top }}</b></div>
+          </div>
+        </div>
+        <div class="band-st marks"><img src="{{ line.src }}" alt="{{ line.alt }}"></div>
+      </div>
+    </sc-if>
+
+    <div class="ghead">
+      <p style="font-size:15px;font-weight:700">{{ resultTxt }}</p>
+      <button type="button" class="btn btn-line btn-sm" onClick="{{ addAll }}">{{ addAllTxt }}</button>
+    </div>
+    <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+      <div class="grid">
+        <sc-for list="{{ cards }}" as="m" hint-placeholder-count="11">
+          <article class="card">
+            <a class="card-st" href="Projet-Module.html" aria-label="{{ m.ficheLabel }}"><em>{{ m.ligneName }}</em><img src="{{ m.src }}" alt="{{ m.alt }}"></a>
+            <div class="card-b">
+              <h3><a href="Projet-Module.html">{{ m.name }}</a></h3>
+              <span class="temp" style="{{ m.tempStyle }}">{{ m.tempTxt }}</span>
+              <p class="spec">{{ m.spec }}</p>
+              <div class="card-a">
+                <button type="button" class="addbtn" style="{{ m.addStyle }}" onClick="{{ m.toggle }}" aria-pressed="{{ m.inS }}">
+                  <sc-if value="{{ m.inPlan }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Dans mon plan</sc-if>
+                  <sc-if value="{{ m.notIn }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Ajouter à mon plan</sc-if>
+                </button>
+                <a class="fiche" href="Projet-Module.html">Fiche</a>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div class="empty"><p style="font-size:18px;font-weight:800">Aucun module ne correspond à « {{ q }} ».</p><p class="note" style="font-size:14px">Essayez un autre mot, ou décrivez votre besoin au bureau d'études.</p><button type="button" class="btn btn-ink btn-sm" onClick="{{ clearQ }}">Effacer la recherche</button></div>
+    </sc-if>
+  </div>
+</section>
+
+<section style="padding:80px 0 72px" id="comparer">
+  <div class="wrap">
+    <span class="kick">Comparer</span>
+    <h2 class="h2" style="margin-top:12px">Les 5 lignes, côte à côte</h2>
+    <p class="lead" style="margin-top:10px">Cliquez une ligne pour afficher ses modules.</p>
+    <div class="cmpw">
+      <div class="cmp">
+        <div class="rh ch"></div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5">
+          <div class="ch" style="{{ c.bg }}"><button type="button" class="chb" onClick="{{ c.pick }}" aria-pressed="{{ c.on }}"><img src="{{ c.src }}" alt=""><b>{{ c.name }}</b></button></div>
+        </sc-for>
+        <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="6">
+          <div class="rh">{{ r.label }}</div>
+          <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5">
+            <div style="{{ c.bg }}"><span style="{{ c.tStyle }}">{{ c.t }}</span></div>
+          </sc-for>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mp" id="mon-plan">
+  <div class="wrap">
+    <span class="kick">Mon plan</span>
+    <h2 class="h2" style="margin-top:12px">Votre sélection, assemblée en comptoir</h2>
+    <div class="mp-g" style="margin-top:28px">
+      <div>
+        <div class="stage marks">
+          <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ true }}">
+            <div class="face">
+              <div class="face-row">
+                <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+                  <div class="mw" style="{{ m.faceStyle }}" key="{{ m.id }}"><span class="tag">{{ m.n }}</span><img src="{{ m.src }}" alt="{{ m.alt }}"></div>
+                </sc-for>
+              </div>
+              <div class="cote-w"><div class="cote" style="{{ compo.coteStyle }}"><span>Longueur à définir avec vous</span></div></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noPlan }}" hint-placeholder-val="{{ false }}">
+            <div class="st-empty"><div><span class="dashed"></span><b style="color:var(--ink)">Votre comptoir apparaîtra ici</b><span>Ajoutez des modules depuis le catalogue ci-dessus.</span></div></div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ true }}">
+          <div class="legend">
+            <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+              <div class="lgi"><span class="tag">{{ m.n }}</span><div><b>{{ m.name }}</b><small>Ligne {{ m.ligneName }}</small></div><button type="button" class="xbtn" onClick="{{ m.remove }}" aria-label="{{ m.removeLabel }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+            </sc-for>
+          </div>
+          <p class="note" style="margin-top:10px">Vue de face indicative : 6 modules au plus sur ce croquis. L'ordre et les longueurs sont définis avec le bureau d'études.</p>
+        </sc-if>
+      </div>
+      <div>
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form class="form" onSubmit="{{ submit }}" novalidate>
+            <p style="font-size:22px;font-weight:800;letter-spacing:-.02em">Recevoir ce plan en 3D</p>
+            <p class="note" style="font-size:14px;margin-top:-6px">{{ formIntro }}</p>
+            <div class="fld"><label for="p-nom">Nom *</label><input id="p-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ inNom }}" style="{{ eNomS }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+            <div class="f2">
+              <div class="fld"><label for="p-tel">Téléphone *</label><input id="p-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ inTel }}" style="{{ eTelS }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+              <div class="fld"><label for="p-len">Longueur disponible (cm)</label><input id="p-len" type="text" inputmode="numeric" value="{{ f.len }}" onInput="{{ inLen }}" placeholder="ex. 420"></div>
+            </div>
+            <div class="fld"><label for="p-mail">Email *</label><input id="p-mail" type="email" autocomplete="email" value="{{ f.mail }}" onInput="{{ inMail }}" style="{{ eMailS }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide, ex. nom@domaine.fr</span></sc-if></div>
+            <sc-if value="{{ ePlan }}" hint-placeholder-val="{{ false }}"><p class="err">Ajoutez au moins un module à votre plan.</p></sc-if>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px"><span class="note">* obligatoires · prototype, rien n'est envoyé</span><button type="submit" class="btn btn-acc">Envoyer mon plan</button></div>
+          </form>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div class="form ok" role="status">
+            <span class="okic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+            <p style="font-size:22px;font-weight:800;letter-spacing:-.02em">Plan envoyé, {{ f.nom }}.</p>
+            <p class="note" style="font-size:14px">{{ count }} modules : {{ names }}. Prototype : rien n'est réellement envoyé.</p>
+            <button type="button" class="btn btn-ink" style="justify-self:start" onClick="{{ reset }}">Modifier mon plan</button>
+          </div>
+        </sc-if>
+        <p style="margin-top:16px;font-size:14px;color:var(--mute)">Une question sur un module ? <a href="tel:0800951313" style="color:var(--ink);font-weight:800;text-decoration:none">0 800 95 13 13</a>, appel gratuit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<sc-if value="{{ showBar }}" hint-placeholder-val="{{ false }}">
+  <div class="pbar" role="status">
+    <div class="thumbs"><sc-for list="{{ barThumbs }}" as="m" hint-placeholder-count="3"><img src="{{ m.src }}" alt=""></sc-for></div>
+    <b>{{ count }} dans mon plan</b>
+    <a class="btn btn-acc btn-sm" href="#mon-plan">Voir mon plan</a>
+  </div>
+</sc-if>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="logo" href="Projet-Accueil.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE</span><span class="logo-c" aria-hidden="true"></span><span class="logo-s">R.G. Technologies</span></a>
+        <p style="margin-top:14px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div><p class="ftr-h">Bureau d'études et show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ftr-h">Appel gratuit</p><a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a><p style="margin-top:6px">Horaires : [HORAIRES]</p></div>
+      <div class="ftr-l"><p class="ftr-h">Explorer</p><a href="Projet-Lignes.html">Lignes d'agencement</a><a href="Projet-Accueil.html#secteurs">Secteurs</a><a href="Projet-Accueil.html#realisations">Réalisations</a><a href="Projet-Accueil.html#contact">Showroom &amp; contact</a></div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 2) — concept, non officiel · <a href="index.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4000},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#9E1F17"]},"ligneInitiale":{"editor":"enum","default":"stone","options":["toutes","basique","stone","legno","encastrable","industry"]}}'>
+const LIGNES = [
+  { id:'basique', name:'Basique', hero:'cube', desc:'Association de modules différents. Coloris et matériaux selon le souhait du client.', mat:'Coloris et matériaux au choix', front:'Bois mélaminé, ou verre en option', top:'Granit, plinthe en granit', principe:'Association de modules différents', spec:'Façade bois mélaminé ou verre, plan granit' },
+  { id:'stone', name:'Stone', hero:'plane', desc:'Association de modules dont la structure est en pierre acrylique type Corian, avec un panneau frontal en verre à votre sérigraphie.', mat:'Pierre acrylique type Corian', front:'Verre avec sérigraphie du client', top:'Pierre acrylique (ex. Gourmandise)', principe:'Association de modules', spec:'Structure pierre acrylique type Corian' },
+  { id:'legno', name:'Legno', hero:'legno', desc:'Association de modules avec panneau frontal en bois mélaminé.', mat:'[À PRÉCISER]', front:'Bois mélaminé', top:'[À PRÉCISER]', principe:'Association de modules', spec:'Panneau frontal bois mélaminé' },
+  { id:'encastrable', name:'Encastrable', hero:'encastrable', desc:'Module brut prêt à être habillé, en version comptoir ou meuble entier sur pied.', mat:'Module brut, prêt à être habillé', front:'À habiller', top:'Version comptoir ou meuble entier sur pied', principe:'Cuve froid ventilé ou statique', spec:'Version comptoir ou meuble entier sur pied' },
+  { id:'industry', name:'Industry', hero:'industry', desc:'Vitrines standardisées en longueurs et indépendantes : murales, snack, boucherie, poissonnerie, boulangerie, supermarché…', mat:'[À PRÉCISER]', front:'[À PRÉCISER]', top:'[À PRÉCISER]', principe:'Vitrines standardisées en longueurs, indépendantes', spec:'Longueurs standardisées, vitrine indépendante' }
+];
+const T28 = '+2/+8 °C ou +14/+18 °C';
+const MODS = [
+  ['b-bar','Comptoir bar','basique','caisse','',''],
+  ['b-caisse','Comptoir caisse','basique','caisse','',''],
+  ['b-saladette','Saladette réfrigérée','basique','saladette','',''],
+  ['b-cube','Vitrine réfrigérée Cube','basique','cube','','Vitrage cubique, 2 ou 3 étagères verre'],
+  ['b-pastry','Pastry Show','basique','cube','','Froid ventilé, vitrage droit, plaques 600×400 à hauteur de comptoir'],
+  ['b-statique','Statique','basique','cube','',''],
+  ['b-basse','Basse','basique','cube','',''],
+  ['b-murale','Murale self-service','basique','panorama','',''],
+  ['b-panoramique','Panoramique','basique','panorama','',''],
+  ['b-chaud','Chaud','basique','bainmarie','','Bain-marie ou plaque chaude'],
+  ['b-retro','Vitrine rétro','basique','cube','',''],
+  ['b-amandine','Amandine','basique','cube','','Montants modernes, cuve pour plaques pâtissières 600×400, froid ventilé'],
+  ['s-plane','Réfrigérée Plane','stone','plane',T28,'Exposition à hauteur du plan de travail, profondeur 53 ou 60 cm'],
+  ['s-vision','Réfrigérée Vision','stone','plane',T28,'Exposition 8 cm sous le plan de travail, profondeur 53 ou 60 cm'],
+  ['s-saladette','Saladette','stone','saladette','+2/+8 °C','Ingrédients en bacs gastronormes (bacs non fournis)'],
+  ['s-bainmarie','Chaud bain-marie','stone','bainmarie','+30/+90 °C','Bacs gastronormes'],
+  ['s-centrale','Réfrigérée Centrale','stone','gourmandise',T28,'Vitrages coulissants des 2 côtés, profondeur 60 cm'],
+  ['s-gourmandise','Gourmandise','stone','gourmandise',T28,'Vitrages coulissants des 2 côtés. Dès 5 800 € HT (101 cm)'],
+  ['s-caisse','Comptoir caisse','stone','caisse','','Tout commerce, avec ou sans tablette PMR'],
+  ['s-bar','Comptoir bar','stone','caisse','','Neutre ou réfrigéré'],
+  ['s-poisson','Réfrigérée Poissonnerie','stone','poissonnerie','−2/0 °C','Froid statique avec serpentin de cuve, vidange de cuve'],
+  ['s-panorama','Réfrigérée Panorama','stone','panorama',T28,'2 ou 3 étagères réfrigérées +4/+8 °C'],
+  ['s-surface','Surface plane','stone','plane','',''],
+  ['l-plane','Plane','legno','legno','',''],
+  ['l-arriere','Arrière neutre','legno','caisse','',''],
+  ['l-caissevit','Caisse et vitrine neutre','legno','caisse','',''],
+  ['l-bar','Comptoir bar','legno','caisse','',''],
+  ['l-statique','Réfrigérée statique','legno','legno','','Froid statique'],
+  ['l-ventplane','Vitrine réfrigérée ventilée plane','legno','legno','','Froid ventilé'],
+  ['l-neutre','Vitrine neutre','legno','caisse','',''],
+  ['l-ventile','Réfrigéré ventilé','legno','legno','','Froid ventilé'],
+  ['l-chauffante','Vitrine chauffante sèche','legno','bainmarie','',''],
+  ['e-ventile','Cuve froid ventilé','encastrable','encastrable','','Version comptoir ou meuble entier sur pied'],
+  ['e-statique','Cuve froid statique','encastrable','encastrable','','Version comptoir ou meuble entier sur pied'],
+  ['i-olympe','Olympe','industry','panorama','','Murale'],
+  ['i-nepal','Nepal','industry','industry','','Snack'],
+  ['i-aramis','Aramis','industry','industry','','Boucherie'],
+  ['i-rubis','Rubis','industry','industry','',''],
+  ['i-argentine','Argentine','industry','industry','',''],
+  ['i-hanoi','Hanoi','industry','poissonnerie','','Poissonnerie'],
+  ['i-loire','Loire','industry','industry','','Boulangerie'],
+  ['i-argent','Argent','industry','panorama','','Murale froid'],
+  ['i-sugar','Sugar','industry','industry','','Hauteur comptoir'],
+  ['i-hawaii','Hawaii','industry','industry','','Supermarché'],
+  ['i-4faces','4 faces vitrées','industry','industry','','']
+];
+const MOD = {};
+MODS.forEach(r => { const l = LIGNES.find(x => x.id === r[2]); MOD[r[0]] = { id:r[0], name:r[1], ligne:r[2], ligneName:l.name, svg:r[3], temp:r[4], spec:r[5] || l.spec, src:'../assets/v2/vitrine-' + r[3] + '.svg', alt:r[1] + ', Ligne ' + l.name }; });
+const norm = t => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const li = props && props.ligneInitiale ? props.ligneInitiale : 'stone';
+    this.state = { menu:false, planOpen:false, ligne:li, q:'', plan:['s-gourmandise','s-caisse'], bump:0, f:{ nom:'', tel:'', mail:'', len:'' }, err:{}, sent:false };
+  }
+  toggle(id){
+    const p = this.state.plan.slice(); const i = p.indexOf(id);
+    if (i > -1) p.splice(i, 1); else p.push(id);
+    this.setState({ plan:p, bump:this.state.bump + 1, sent:false });
+  }
+  compose(ids){
+    const ms = ids.slice(-6).map(id => MOD[id]);
+    const sorted = ms.filter(m => m.svg !== 'caisse').concat(ms.filter(m => m.svg === 'caisse'));
+    const pad = m => m.svg === 'caisse' ? 80 : 40;
+    let total = 0; sorted.forEach((m, i) => { total += 480; if (i) total -= pad(sorted[i-1]) + pad(m); });
+    const items = sorted.map((m, i) => {
+      const ov = i ? pad(sorted[i-1]) + pad(m) : 0;
+      return Object.assign({}, m, { n: String(i + 1).padStart(2, '0'),
+        faceStyle: 'width:' + (480 / total * 100).toFixed(3) + '%;margin-left:' + (-ov / total * 100).toFixed(3) + '%;z-index:' + (20 - i),
+        removeLabel: 'Retirer ' + m.name + ' du plan', remove: () => this.toggle(m.id) });
+    });
+    const f = sorted.length ? pad(sorted[0]) : 0, l = sorted.length ? pad(sorted[sorted.length - 1]) : 0;
+    return { items, coteStyle: total ? 'margin-left:' + (f / total * 100).toFixed(3) + '%;margin-right:' + (l / total * 100).toFixed(3) + '%' : '' };
+  }
+  setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
+  submit(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const f = this.state.f;
+    const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), plan: this.state.plan.length === 0 };
+    if (err.nom || err.tel || err.mail || err.plan) { this.setState({ err }); return; }
+    this.setState({ sent:true, err:{} });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const qn = norm(s.q.trim());
+    const tabs = [{ id:'toutes', name:'Toutes' }].concat(LIGNES).map(l => ({ name:l.name, count: l.id === 'toutes' ? MODS.length : MODS.filter(r => r[2] === l.id).length, on: s.ligne === l.id ? 'true' : 'false', bar:'background:' + (s.ligne === l.id ? 'var(--acc)' : 'transparent'), pick: () => this.setState({ ligne:l.id }) }));
+    const lineObj = LIGNES.find(l => l.id === s.ligne);
+    const list = MODS.filter(r => (qn || s.ligne === 'toutes' || r[2] === s.ligne) && (!qn || norm(r[1] + ' ' + (r[5] || '') + ' ' + r[2]).indexOf(qn) > -1)).map(r => MOD[r[0]]);
+    const inPlan = id => s.plan.indexOf(id) > -1;
+    const cards = list.map(m => {
+      const ip = inPlan(m.id);
+      return Object.assign({}, m, { inPlan: ip, notIn: !ip, inS: ip ? 'true' : 'false',
+        tempTxt: m.temp, tempStyle: m.temp ? '' : 'display:none',
+        ficheLabel: 'Fiche ' + m.name,
+        addStyle: ip ? 'background:var(--acc);color:#FFFFFF' : 'background:var(--soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)',
+        toggle: () => this.toggle(m.id) });
+    });
+    const allIn = list.length > 0 && list.every(m => inPlan(m.id));
+    const compo = this.compose(s.plan);
+    const cmpRowsDef = [['Principe','principe'],['Matériaux','mat'],['Panneau frontal','front'],['Plan de travail','top'],['Modules','n'],['Prix','prix']];
+    const colBg = id => s.ligne === id ? 'background:#FCEDEC' : '';
+    const cmpCols = LIGNES.map(l => ({ name:l.name, src:'../assets/v2/vitrine-' + l.hero + '.svg', on: s.ligne === l.id ? 'true' : 'false', bg: colBg(l.id), pick: () => this.setState({ ligne:l.id, q:'' }) }));
+    const cmpRows = cmpRowsDef.map(d => ({ label:d[0], cells: LIGNES.map(l => {
+      let t = d[1] === 'n' ? MODS.filter(r => r[2] === l.id).length + ' modules' : d[1] === 'prix' ? (l.id === 'stone' ? 'Gourmandise 101 cm : 5 800 € HT ; autres sur devis' : 'Sur devis') : l[d[1]];
+      return { t, bg: colBg(l.id), tStyle: t.indexOf('[') === 0 ? 'color:var(--mute)' : '' };
+    }) }));
+    const e = s.err || {}, bad = 'border-color:#B3261C;box-shadow:0 0 0 3px rgba(179,38,28,.12)';
+    const count = s.plan.length;
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu: !s.menu, planOpen:false }),
+      planOpen: s.planOpen, planOpenS: s.planOpen ? 'true' : 'false', togglePlan: () => this.setState({ planOpen: !s.planOpen, menu:false }), closePlan: () => this.setState({ planOpen:false }),
+      count, badgeKey:'b' + s.bump, badgeStyle: count ? 'background:var(--acc)' : 'background:#8E8D89',
+      hasPlan: count > 0, noPlan: count === 0, compo, names: compo.items.map(m => m.name).join(', '),
+      q: s.q, hasQ: !!s.q, setQ: (ev) => this.setState({ q: ev.target.value }), clearQ: () => this.setState({ q:'' }),
+      tabs, hasLine: !!lineObj && !qn,
+      line: lineObj ? Object.assign({}, lineObj, { src:'../assets/v2/vitrine-' + lineObj.hero + '.svg', alt:'Vitrine de la Ligne ' + lineObj.name }) : { id:'', name:'', desc:'', mat:'', front:'', top:'', src:'', alt:'' },
+      resultTxt: list.length + (list.length > 1 ? ' modules' : ' module') + (lineObj && !qn ? ' · Ligne ' + lineObj.name : ' · toutes lignes') + (qn ? ' · « ' + s.q.trim() + ' »' : ''),
+      addAll: () => { const p = s.plan.slice(); if (allIn) { this.setState({ plan: p.filter(id => !list.some(m => m.id === id)), bump:s.bump + 1 }); } else { list.forEach(m => { if (p.indexOf(m.id) < 0) p.push(m.id); }); this.setState({ plan:p, bump:s.bump + 1 }); } },
+      addAllTxt: allIn ? 'Retirer ces modules du plan' : 'Tout ajouter à mon plan',
+      cards, hasResults: list.length > 0, noResults: list.length === 0,
+      cmpCols, cmpRows,
+      formIntro: count ? count + ' module' + (count > 1 ? 's' : '') + ' sélectionné' + (count > 1 ? 's' : '') + '. Le bureau d\'études vous rappelle pour élaborer le plan 3D.' : 'Ajoutez d\'abord des modules à votre plan.',
+      f: s.f, inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev), inLen: (ev) => { const f = Object.assign({}, s.f, { len: ev.target.value.replace(/[^0-9]/g, '').slice(0, 4) }); this.setState({ f }); },
+      eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, ePlan: !!e.plan, eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '',
+      submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent, reset: () => this.setState({ sent:false }),
+      showBar: count > 0 && !s.sent, barThumbs: compo.items.slice(0, 4)
+    };
+  }
+}
+</script>
+</body>
+</html>

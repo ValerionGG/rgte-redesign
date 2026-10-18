@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE · Projet 3D — Accueil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#FFFFFF}
+sc-for,sc-if{display:contents}
+.pj{--acc:#D42A20;--ink:#1C1C1E;--mute:#5C5C61;--line:#DAD9D5;--studio:#ECEBE8;--studio2:#E4E3DF;--soft:#F6F5F3;font-family:'Manrope',system-ui,sans-serif;color:var(--ink);background:#FFFFFF;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1}
+.pj *,.pj *::before,.pj *::after{box-sizing:border-box}
+.pj img{display:block;max-width:100%}
+.pj h1,.pj h2,.pj h3,.pj h4,.pj p{margin:0}
+.pj button{font-family:inherit}
+.pj :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+section[id]{scroll-margin-top:84px}
+
+/* top + header */
+.topbar{background:var(--ink);color:#C9C9CC;font-size:13px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:36px}
+.topbar a{color:#FFFFFF;text-decoration:none;min-height:36px;display:inline-flex;align-items:center;gap:6px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:80;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px}
+.logo{display:inline-flex;flex-direction:column;text-decoration:none;color:var(--ink);min-height:44px;justify-content:center}
+.logo-w{font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1}
+.logo-c{display:block;height:7px;margin:4px 0 3px;border-left:1.5px solid var(--acc);border-right:1.5px solid var(--acc);position:relative}
+.logo-c::before{content:'';position:absolute;left:0;right:0;top:3px;border-top:1.5px solid var(--acc)}
+.logo-s{font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--mute);line-height:1}
+.nav{display:flex;gap:4px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;position:relative}
+.nav a::after{content:'';position:absolute;left:12px;right:12px;bottom:8px;height:1.5px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.nav a:hover::after{transform:scaleX(1)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.tel{display:inline-flex;flex-direction:column;justify-content:center;text-decoration:none;color:var(--ink);min-height:44px;padding:0 6px;line-height:1.15}
+.tel b{font-size:16px;font-weight:800;letter-spacing:.01em}
+.tel small{font-size:11.5px;color:var(--mute);font-weight:600}
+.planbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:#FFFFFF;color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;transition:border-color .2s}
+.planbtn:hover{border-color:var(--ink)}
+.badge{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--acc);color:#FFFFFF;font-size:12.5px;font-weight:800;animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:8px;border:0;font-size:15px;font-weight:700;text-decoration:none;cursor:pointer;transition:background .2s,box-shadow .2s,transform .15s,color .2s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-acc{background:var(--acc);color:#FFFFFF}
+.btn-acc:hover{background:#B9231A}
+.btn-ink{background:var(--ink);color:#FFFFFF}
+.btn-ink:hover{background:#3A3A3E}
+.btn-line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px #BDBCB8}
+.btn-line:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:8px;border:1px solid var(--line);background:#FFFFFF;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+.mnav{display:none}
+.drop{border-top:1px solid var(--line);background:#FFFFFF;animation:fd .3s ease both}
+.drop-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:start;padding:20px 0 24px}
+.drop-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:8px}
+.drow{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 6px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+.drow img{width:64px;height:43px;object-fit:contain;flex:none;background:var(--studio);border-radius:4px}
+.drow b{display:block;font-size:14px;line-height:1.25}
+.drow span{display:block;font-size:12.5px;color:var(--mute)}
+.xbtn{margin-left:auto;flex:none;width:44px;height:44px;border:0;border-radius:6px;background:transparent;color:var(--mute);cursor:pointer;display:grid;place-items:center}
+.xbtn:hover{background:var(--studio);color:var(--ink)}
+@keyframes fd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* typography */
+.kick{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--acc)}
+.kick::before{content:'';width:22px;height:9px;border-left:1.5px solid currentColor;border-right:1.5px solid currentColor;background:linear-gradient(currentColor,currentColor) center/100% 1.5px no-repeat}
+.h1{font-size:clamp(38px,4.6vw,68px);line-height:1;letter-spacing:-.035em;font-weight:800;overflow-wrap:anywhere}
+.h2{font-size:clamp(30px,3.4vw,48px);line-height:1.06;letter-spacing:-.03em;font-weight:800;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.3vw,18px);color:var(--mute);line-height:1.55;max-width:60ch}
+.sec{padding:72px 0}
+.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:32px}
+
+/* hero */
+.hero{padding:40px 0 8px}
+.hero-g{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);gap:40px;align-items:start}
+.stage{position:relative;margin-top:28px;background-color:var(--studio);background-image:linear-gradient(rgba(28,28,30,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(28,28,30,.055) 1px,transparent 1px);background-size:24px 24px;border-radius:6px;height:370px;overflow:hidden}
+.marks::before,.marks::after{content:'';position:absolute;width:14px;height:14px;pointer-events:none;z-index:3}
+.marks::before{left:10px;top:10px;border-left:1px solid var(--ink);border-top:1px solid var(--ink)}
+.marks::after{right:10px;bottom:10px;border-right:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.st-top{position:absolute;left:22px;right:16px;top:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;z-index:6}
+.st-cap{font-size:13px;color:var(--mute);line-height:1.4;padding-top:6px}
+.st-cap b{color:var(--ink);font-weight:800}
+.tg{display:inline-flex;padding:3px;border-radius:8px;background:#FFFFFF;box-shadow:0 0 0 1px var(--line)}
+.tg button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:0;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;transition:background .25s,color .25s}
+.layer{position:absolute;inset:0;transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.face{position:absolute;left:24px;right:24px;bottom:26px;display:flex;flex-direction:column;align-items:center}
+.face-row{display:flex;align-items:flex-end;width:100%;max-width:680px}
+.mw{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;animation:mw .6s cubic-bezier(.2,.7,.2,1) both}
+.mw img{width:100%;height:auto}
+@keyframes mw{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tag{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 6px;border-radius:4px;background:var(--ink);color:#FFFFFF;font-size:12px;font-weight:800;margin-bottom:6px;position:relative}
+.tag::after{content:'';position:absolute;left:50%;top:100%;height:10px;border-left:1px solid var(--ink)}
+.cote{position:relative;height:16px;margin-top:8px;border-left:1.5px solid var(--acc);border-right:1.5px solid var(--acc)}
+.cote::before{content:'';position:absolute;left:0;right:0;top:7px;border-top:1.5px solid var(--acc)}
+.cote span{position:absolute;left:50%;top:-2px;transform:translateX(-50%);padding:0 8px;background:var(--studio);color:var(--acc);font-size:13px;font-weight:800;white-space:nowrap;line-height:20px}
+.cote-w{width:100%;max-width:680px}
+.plan{position:absolute;left:28px;right:28px;top:70px;bottom:18px;display:flex;flex-direction:column;justify-content:center}
+.pl-lab{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--mute)}
+.pl-room{position:relative;height:150px;margin:10px 0}
+.wall{position:absolute;top:0;bottom:0;width:16px;background:repeating-linear-gradient(45deg,var(--ink) 0 1px,transparent 1px 6px);border:1px solid var(--ink)}
+.backw{position:absolute;left:0;right:0;top:0;height:14px;background:repeating-linear-gradient(45deg,var(--ink) 0 1px,transparent 1px 6px);border:1px solid var(--ink)}
+.ctr{position:absolute;left:30px;right:30px;top:58px;height:66px;border:1.5px solid var(--ink);background:#FFFFFF}
+.pm{position:absolute;top:0;bottom:0;border-right:1px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px;overflow:hidden;animation:fd .4s ease both}
+.pm:last-child{border-right:0}
+.pm-x{position:absolute;left:4px;right:4px;top:22px;bottom:20px;border:1px dashed rgba(28,28,30,.45);background:rgba(207,227,234,.55)}
+.pm b{position:relative;font-size:12px;font-weight:800;line-height:1}
+.pm i{position:relative;font-style:normal;font-size:11px;color:var(--mute);line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.circ{position:absolute;left:30px;right:30px;bottom:-4px;border-top:1px dashed rgba(28,28,30,.4)}
+.pcote{margin:0 30px}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:8px;margin-top:12px}
+.lg{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:#FFFFFF;box-shadow:0 0 0 1px var(--line);font-size:13.5px;line-height:1.25;min-height:52px}
+.lg .tag{margin:0;flex:none}
+.lg .tag::after{display:none}
+.lg span{color:var(--mute);display:block;font-size:12.5px}
+.lg span.tag{color:#FFFFFF;display:inline-grid;font-size:12px}
+
+/* form card */
+.fcard{background:#FFFFFF;border-radius:8px;box-shadow:0 0 0 1px var(--line),0 30px 60px -40px rgba(28,28,30,.35);padding:28px;position:sticky;top:92px}
+.fc-h{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:20px 0 22px}
+.stp{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:52px;padding:0;border:0;background:transparent;cursor:pointer;text-align:left;font-size:13px;font-weight:700;color:var(--mute)}
+.stp i{display:block;width:100%;height:3px;border-radius:2px;transition:background .3s}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:22px;border:0;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s,color .2s}
+.chip:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:13.5px;font-weight:700}
+.fld input,.fld textarea,.fld select{font:500 15px/1.4 'Manrope',sans-serif;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:6px;min-height:48px;padding:11px 13px;outline:0;width:100%;transition:border-color .2s,box-shadow .2s}
+.fld textarea{min-height:92px;resize:vertical}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(28,28,30,.08);background:#FFFFFF}
+.unit{display:flex;align-items:center;gap:0;background:var(--soft);border:1px solid var(--line);border-radius:6px}
+.unit input{border:0;background:transparent;font:800 22px/1 'Manrope',sans-serif;min-height:56px;padding:0 14px;width:100%;outline:0;color:var(--ink)}
+.unit span{padding:0 16px;font-weight:700;color:var(--mute)}
+.err{font-size:12.5px;color:#B3261C;font-weight:600}
+.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap}
+.note{font-size:12.5px;color:var(--mute)}
+.ok{animation:fd .45s ease both}
+.okic{width:48px;height:48px;border-radius:50%;background:var(--acc);display:grid;place-items:center;color:#FFFFFF}
+.rr{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.rr span{color:var(--mute)}
+.rr b{text-align:right}
+.callrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+.callrow a{white-space:nowrap;color:var(--ink);font-weight:800;font-size:17px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.callrow a:hover{color:var(--acc)}
+
+/* proof strip */
+.proof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:40px;border-top:1px solid var(--line)}
+.proof div{padding:18px 18px 0 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.4;color:var(--mute)}
+.proof b{display:block;color:var(--ink);font-size:15px}
+.proof svg{flex:none;margin-top:2px;color:var(--acc)}
+
+/* lignes */
+.ltabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.ltab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 22px 12px 0;margin-right:22px;border:0;background:transparent;cursor:pointer;text-align:left;white-space:nowrap;position:relative;color:var(--ink)}
+.ltab b{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.ltab span{font-size:12.5px;color:var(--mute);font-weight:600}
+.ltab i{position:absolute;left:0;right:22px;bottom:-1px;height:3px;transition:background .25s}
+.lg-g{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;margin-top:32px}
+.lstage{position:relative;background-color:var(--studio);border-radius:6px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between;padding:20px 24px;overflow:hidden}
+.lstage img{width:100%;max-width:500px;margin:0 auto;animation:mw .55s cubic-bezier(.2,.7,.2,1) both}
+.ls-cap{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.ls-cap h3{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.ls-cap p{font-size:14px;color:var(--mute)}
+.mlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
+.mt{display:flex;align-items:center;border-radius:6px;background:#FFFFFF;box-shadow:0 0 0 1px var(--line);transition:box-shadow .2s;min-height:64px}
+.mt:hover{box-shadow:0 0 0 1.5px var(--ink)}
+.mt-p{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:62px;padding:6px 6px 6px 8px;border:0;background:transparent;cursor:pointer;text-align:left;color:var(--ink)}
+.mt-p img{width:58px;height:39px;object-fit:contain;flex:none}
+.mt-p b{display:block;font-size:14px;line-height:1.2}
+.mt-p span{display:block;font-size:12px;color:var(--mute);line-height:1.3}
+.addb{flex:none;width:44px;height:44px;margin-right:8px;border-radius:6px;border:0;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s}
+
+/* gourmandise */
+.gm{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gm-g{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px;align-items:center}
+.gstage{position:relative;background-color:var(--studio);background-image:linear-gradient(rgba(28,28,30,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(28,28,30,.05) 1px,transparent 1px);background-size:24px 24px;border-radius:6px;height:380px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 28px 30px}
+.gw{width:100%;transition:width .6s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column}
+.gw img{width:100%;height:auto}
+.gcote{margin:6px 8.33% 0}
+.lens{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.lb{min-width:64px;min-height:48px;padding:0 12px;border-radius:6px;border:0;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.price b{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.price span{font-size:14px;color:var(--mute)}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;margin-top:22px}
+.specs div{padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.specs span{display:block;color:var(--mute);font-size:12.5px}
+
+/* secteurs */
+.sc-g{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:start}
+.stiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(160px,100%),1fr));gap:8px}
+.stile{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:6px;min-height:76px;padding:12px 14px;border-radius:6px;border:0;cursor:pointer;text-align:left;transition:background .2s,box-shadow .2s,color .2s}
+.stile b{font-size:15px;line-height:1.2}
+.stile span{font-size:12.5px;font-weight:700}
+.sdet{background:var(--studio);border-radius:6px;padding:24px;animation:fd .35s ease both}
+.sdet h3{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.thumbs div{background:#FFFFFF;border-radius:4px;padding:8px 8px 10px;font-size:12.5px;line-height:1.25;font-weight:700}
+.thumbs img{width:100%;height:auto;margin-bottom:4px}
+
+/* réalisations */
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:24px}
+.rc{display:flex;flex-direction:column;background:#FFFFFF;border-radius:6px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.rc-ph{position:relative;height:180px;overflow:hidden;background:var(--studio)}
+.rc-ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.rc:hover .rc-ph img{transform:scale(1.05)}
+.rc-ph span{position:absolute;left:10px;bottom:10px;background:rgba(255,255,255,.92);border-radius:4px;padding:3px 8px;font-size:11.5px;font-weight:600;color:var(--mute)}
+.rc-b{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.rc-b h3{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.rc-meta{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--mute)}
+.lpill{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:12px;background:var(--ink);color:#FFFFFF;font-size:12px;font-weight:700;white-space:nowrap}
+.rc-m{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.rc-m div{display:flex;align-items:center;gap:6px;padding:3px 9px 3px 3px;border-radius:4px;background:var(--soft);font-size:12.5px;font-weight:700}
+.rc-m img{width:44px;height:29px;object-fit:contain;background:var(--studio);border-radius:3px}
+
+/* méthode */
+.meth{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;position:relative}
+.mstep{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:0 24px 0 0;border:0;background:transparent;cursor:pointer;text-align:left;color:var(--ink)}
+.mrule{position:relative;width:100%;height:18px;display:flex;align-items:center}
+.mrule::before{content:'';position:absolute;left:0;right:0;top:8px;border-top:1.5px solid currentColor}
+.mdot{position:relative;width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;background:#FFFFFF;transition:background .25s}
+.mstep h3{font-size:20px;font-weight:800;letter-spacing:-.01em}
+.mstep p{font-size:14.5px;color:var(--mute);line-height:1.5;transition:color .2s}
+.mnum{font-size:13px;font-weight:800}
+
+/* matières */
+.mat-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.mat{display:flex;flex-direction:column;border-radius:6px;border:0;padding:0;overflow:hidden;cursor:pointer;text-align:left;background:#FFFFFF;transition:box-shadow .2s,transform .2s;color:var(--ink)}
+.mat:hover{transform:translateY(-2px)}
+.sw{display:block;height:110px;width:100%;position:relative}
+.sw-corian{background:#F6F4F0;background-image:radial-gradient(ellipse at 30% 20%,#FFFFFF,transparent 60%)}
+.sw-granit{background-color:#3B3B3D;background-image:radial-gradient(#6A6A6D 1px,transparent 1.5px),radial-gradient(#252527 1px,transparent 1.5px),radial-gradient(#8C8C8F .7px,transparent 1.2px);background-size:9px 9px,13px 13px,7px 7px;background-position:0 0,4px 6px,2px 3px}
+.sw-bois{background-color:#B8875A;background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 2px,transparent 2px 9px),linear-gradient(transparent 46%,rgba(0,0,0,.22) 46% 49%,transparent 49%)}
+.sw-verre{background:#CFE3EA;display:grid;place-items:center;color:rgba(28,28,30,.55);font-size:12px;font-weight:700;letter-spacing:.2em}
+.mat-b{display:block;padding:14px 16px 16px}
+.mat-b b{display:block;font-size:16px}
+.mat-b span{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.matdet{margin-top:16px;padding:16px 18px;border-radius:6px;background:var(--soft);font-size:15px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;animation:fd .3s ease both}
+
+/* contact */
+.ct{background:var(--ink);color:#FFFFFF}
+.ct .lead{color:#BDBDC1}
+.ct-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+.map{position:relative;height:210px;border-radius:6px;overflow:hidden;background:#2A2A2D;margin-top:28px}
+.ct .kick{color:#FF8A80}
+.cform{background:#FFFFFF;color:var(--ink);border-radius:8px;padding:28px;display:grid;gap:14px}
+.addr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:24px;font-size:15px}
+.addr span{display:block;font-size:13px;color:#A9A9AE;font-weight:600;margin-bottom:4px}
+.addr a{color:#FFFFFF;font-weight:800;font-size:22px;text-decoration:none}
+.addr a:hover{color:#FF8A80}
+
+/* footer */
+.ftr{background:var(--soft);border-top:1px solid var(--line);padding:64px 0 24px}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:36px}
+.ftr-h{font-size:13px;font-weight:800;margin-bottom:12px}
+.ftr p{font-size:14.5px;color:var(--mute)}
+.ftr-l a{display:flex;align-items:center;min-height:36px;color:var(--ink);text-decoration:none;font-size:14.5px}
+.ftr-l a:hover{color:var(--acc)}
+.ftr-tel{font-size:24px;font-weight:800;color:var(--ink);text-decoration:none}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 20px;margin-top:48px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.ftr-bot a{color:var(--mute);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:var(--ink)}
+.legal{display:flex;flex-wrap:wrap;gap:0 18px}
+
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}
+
+@media(max-width:1240px){.tel{display:none}}
+@media(max-width:1060px){.nav{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 0 16px}.mnav a{display:flex;align-items:center;min-height:48px;padding:0 14px;border-radius:6px;background:var(--soft);text-decoration:none;color:var(--ink);font-weight:700}
+.hero-g,.lg-g,.gm-g,.sc-g,.ct-g{grid-template-columns:minmax(0,1fr)}.fcard{position:static}.meth{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}.mat-g{grid-template-columns:repeat(2,minmax(0,1fr))}.proof{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.wrap{padding:0 16px}.sec{padding:72px 0}.hdr-cta{display:none}.topbar-note{display:none}.planbtn .pl-t{display:none}
+.stage{height:380px}.face{left:12px;right:12px}.plan{left:12px;right:12px}.pm i{display:none}.st-cap{font-size:12px}
+.mlist{grid-template-columns:minmax(0,1fr)}.lstage{min-height:300px}.gstage{height:300px;padding:0 12px 24px}
+.specs,.f2,.addr{grid-template-columns:minmax(0,1fr)}.meth,.mat-g,.proof{grid-template-columns:minmax(0,1fr)}.fcard,.cform{padding:20px}.drop-in{grid-template-columns:minmax(0,1fr)}.thumbs{grid-template-columns:repeat(3,minmax(0,1fr))}.price b{font-size:32px}}
+@media (prefers-reduced-motion:reduce){.pj *{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</helmet>
+<div class="pj" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="topbar-note">Bureau d'études et show-room à Puget-sur-Argens (Var)</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Projet-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-c" aria-hidden="true"></span><span class="logo-s">R.G. Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="Projet-Lignes.dc.html">Lignes d'agencement</a>
+      <a href="#secteurs">Secteurs</a>
+      <a href="#realisations">Réalisations</a>
+      <a href="#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><b>0 800 95 13 13</b><small>Appel gratuit</small></a>
+      <button type="button" class="planbtn" onClick="{{ togglePlan }}" aria-expanded="{{ planOpenS }}" aria-label="Mon plan : voir les modules"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="10"></rect><path d="M9 7v10M15 7v10"></path></svg><span class="pl-t">Mon plan</span><span class="badge" key="{{ badgeKey }}">{{ planCount }}</span></button>
+      <a class="btn btn-acc btn-sm hdr-cta" href="#plan3d">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="wrap mnav" aria-label="Navigation mobile">
+      <a href="Projet-Lignes.dc.html">Lignes d'agencement</a>
+      <a href="#secteurs" onClick="{{ closeMenu }}">Secteurs</a>
+      <a href="#realisations" onClick="{{ closeMenu }}">Réalisations</a>
+      <a href="#contact" onClick="{{ closeMenu }}">Showroom &amp; contact</a>
+      <a href="tel:0800951313">0 800 95 13 13 · appel gratuit</a>
+      <a href="#plan3d" onClick="{{ closeMenu }}" style="background:var(--acc);color:#FFFFFF">Plan 3D offert</a>
+    </nav>
+  </sc-if>
+  <sc-if value="{{ planOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="drop">
+      <div class="wrap drop-in">
+        <div>
+          <p style="font-size:15px;font-weight:800;margin-bottom:10px">Les modules de votre plan · {{ metierName }}</p>
+          <div class="drop-list">
+            <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+              <div class="drow"><img src="{{ m.src }}" alt=""><div><b>{{ m.name }}</b><span>Ligne {{ m.ligneName }}</span></div>
+                <sc-if value="{{ m.removable }}" hint-placeholder-val="{{ false }}"><button type="button" class="xbtn" onClick="{{ m.remove }}" aria-label="{{ m.removeLabel }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:grid;gap:8px">
+          <a class="btn btn-acc" href="#plan3d" onClick="{{ closePlan }}">Recevoir ce plan en 3D</a>
+          <a class="btn btn-line" href="Projet-Lignes.dc.html">Ajouter d'autres modules</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="plan3d">
+  <div class="wrap hero-g">
+    <div class="rise">
+      <span class="kick">Fabricant de vitrines réfrigérées · Var</span>
+      <h1 class="h1" style="margin-top:18px">Agencement de vitrines réfrigérées sur mesure</h1>
+      <p class="lead" style="margin-top:16px">Pour les métiers de bouche, des vitrines adaptées à votre local et à vos dimensions. Choisissez votre métier et votre longueur : le bureau d'études élabore votre plan 3D d'agencement, offert.</p>
+
+      <div class="stage marks">
+        <div class="st-top">
+          <p class="st-cap"><b>Votre comptoir</b>, composé pour : {{ metierName }}<br>{{ viewCap }}</p>
+          <div class="tg" role="group" aria-label="Vue du comptoir">
+            <button type="button" style="{{ faceBtn }}" onClick="{{ setFace }}" aria-pressed="{{ isFaceS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="9" width="18" height="11"></rect><path d="M5 9V5h14v4"></path></svg>Face</button>
+            <button type="button" style="{{ planBtn }}" onClick="{{ setPlanV }}" aria-pressed="{{ isPlanS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="7" width="18" height="10"></rect><path d="M3 4h18M3 20h18"></path></svg>Plan</button>
+          </div>
+        </div>
+
+        <div class="layer" style="{{ faceLayer }}">
+          <div class="face">
+            <div class="face-row">
+              <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+                <div class="mw" style="{{ m.faceStyle }}" key="{{ m.key }}"><span class="tag">{{ m.n }}</span><img src="{{ m.src }}" alt="{{ m.alt }}"></div>
+              </sc-for>
+            </div>
+            <div class="cote-w"><div class="cote" style="{{ compo.coteStyle }}"><span>{{ lenTxt }}</span></div></div>
+          </div>
+        </div>
+
+        <div class="layer" style="{{ planLayer }}">
+          <div class="plan">
+            <div class="pl-lab"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Côté laboratoire, service</div>
+            <div class="pl-room">
+              <span class="backw"></span>
+              <span class="wall" style="left:0"></span>
+              <span class="wall" style="right:0"></span>
+              <div class="ctr">
+                <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+                  <div class="pm" style="{{ m.planStyle }}" key="{{ m.pkey }}"><sc-if value="{{ m.expo }}" hint-placeholder-val="{{ true }}"><span class="pm-x"></span></sc-if><b>{{ m.n }}</b><i>{{ m.name }}</i></div>
+                </sc-for>
+              </div>
+              <span class="circ"></span>
+            </div>
+            <div class="pcote"><div class="cote"><span>{{ lenTxt }}</span></div></div>
+            <div class="pl-lab" style="margin-top:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>Côté clientèle · zone vitrée en bleu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <sc-for list="{{ compo.items }}" as="m" hint-placeholder-count="3">
+          <div class="lg"><span class="tag">{{ m.n }}</span><div><b>{{ m.name }}</b><span>Ligne {{ m.ligneName }}{{ m.tempSep }}{{ m.temp }}</span></div></div>
+        </sc-for>
+      </div>
+      <p class="note" style="margin-top:10px">Composition indicative, proposée d'après nos réalisations : elle est validée avec vous par le bureau d'études.</p>
+    </div>
+
+    <!-- 3-step form -->
+    <div class="rise d1">
+      <div class="fcard">
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <p class="fc-h">Demandez votre plan 3D offert</p>
+            <p class="note" style="margin-top:6px;font-size:14px">Trois questions, et le bureau d'études vous recontacte.</p>
+            <div class="steps" role="list">
+              <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+                <button type="button" class="stp" role="listitem" style="{{ s.style }}" onClick="{{ s.go }}" aria-current="{{ s.cur }}"><i style="{{ s.bar }}"></i>{{ s.label }}</button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ isS1 }}" hint-placeholder-val="{{ true }}">
+              <div class="ok">
+                <p style="font-weight:800;font-size:16px;margin-bottom:12px">Quel est votre métier ?</p>
+                <div class="chips" role="group" aria-label="Métier">
+                  <sc-for list="{{ metiers }}" as="m" hint-placeholder-count="13">
+                    <button type="button" class="chip" style="{{ m.style }}" onClick="{{ m.pick }}" aria-pressed="{{ m.on }}">{{ m.name }}</button>
+                  </sc-for>
+                </div>
+                <div class="fnav"><span class="note">Le comptoir à gauche s'adapte.</span><button type="button" class="btn btn-acc" onClick="{{ next1 }}">Continuer<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isS2 }}" hint-placeholder-val="{{ false }}">
+              <div class="ok">
+                <label for="h-len" style="display:block;font-weight:800;font-size:16px;margin-bottom:12px">Quelle longueur est disponible pour vos vitrines ?</label>
+                <div class="unit"><input id="h-len" type="number" inputmode="numeric" min="50" max="3000" placeholder="ex. 420" value="{{ len }}" onInput="{{ setLen }}"><span>cm</span></div>
+                <div class="chips" style="margin-top:10px" role="group" aria-label="Longueurs rapides">
+                  <sc-for list="{{ quick }}" as="q" hint-placeholder-count="4">
+                    <button type="button" class="chip" style="{{ q.style }}" onClick="{{ q.pick }}">{{ q.label }}</button>
+                  </sc-for>
+                  <button type="button" class="chip" style="{{ noLenStyle }}" onClick="{{ toggleNoLen }}" aria-pressed="{{ noLenS }}">Je n'ai pas encore la cote</button>
+                </div>
+                <sc-if value="{{ lenErr }}" hint-placeholder-val="{{ false }}"><p class="err" style="margin-top:8px">Indiquez une longueur en centimètres, ou choisissez « Je n'ai pas encore la cote ».</p></sc-if>
+                <div class="fnav"><button type="button" class="btn btn-line" onClick="{{ back }}">Retour</button><button type="button" class="btn btn-acc" onClick="{{ next2 }}">Continuer<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isS3 }}" hint-placeholder-val="{{ false }}">
+              <form class="ok" onSubmit="{{ submit }}" novalidate>
+                <div style="display:grid;gap:10px">
+                  <div class="fld"><label for="h-nom">Nom *</label><input id="h-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ inNom }}" style="{{ eNomS }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+                  <div class="f2">
+                    <div class="fld"><label for="h-tel">Téléphone *</label><input id="h-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ inTel }}" style="{{ eTelS }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+                    <div class="fld"><label for="h-cp">Code postal</label><input id="h-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ inCp }}"></div>
+                  </div>
+                  <div class="fld"><label for="h-mail">Email *</label><input id="h-mail" type="email" autocomplete="email" value="{{ f.mail }}" onInput="{{ inMail }}" style="{{ eMailS }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un email valide, ex. nom@domaine.fr</span></sc-if></div>
+                </div>
+                <div class="fnav"><button type="button" class="btn btn-line" onClick="{{ back }}">Retour</button><button type="submit" class="btn btn-acc">Recevoir mon plan 3D</button></div>
+              </form>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div class="ok" role="status">
+            <span class="okic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+            <p class="fc-h" style="margin-top:14px">Demande de plan 3D prête, {{ f.nom }}.</p>
+            <p class="note" style="margin-top:6px;font-size:14px">Prototype : rien n'est envoyé.</p>
+            <div style="margin-top:14px">
+              <div class="rr"><span>Métier</span><b>{{ metierName }}</b></div>
+              <div class="rr"><span>Longueur</span><b>{{ lenTxt }}</b></div>
+              <div class="rr"><span>Modules</span><b>{{ compoNames }}</b></div>
+            </div>
+            <button type="button" class="btn btn-ink" style="margin-top:16px" onClick="{{ reset }}">Modifier ma demande</button>
+          </div>
+        </sc-if>
+        <div class="callrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg><span>Ou appelez</span><a href="tel:0800951313">0 800 95 13 13</a><span>appel gratuit</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="proof">
+      <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"></path></svg><span><b>Plan 3D offert</b>Élaboration de votre plan d'agencement</span></div>
+      <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13"></path><path d="M9 21v-6h6v6"></path></svg><span><b>Bureau d'études et show-room</b>Puget-sur-Argens, Var</span></div>
+      <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 12h18M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"></path></svg><span><b>Sur mesure</b>Adaptées à votre local et à vos dimensions</span></div>
+      <div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v18M5 7l14 10M19 7L5 17"></path></svg><span><b>Du froid au chaud</b>De −2 °C à +90 °C selon les modules</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGNES -->
+<section class="sec" id="lignes">
+  <div class="wrap">
+    <div class="sec-h">
+      <div>
+        <span class="kick">Les modules de votre plan</span>
+        <h2 class="h2" style="margin-top:14px">Cinq lignes d'agencement</h2>
+      </div>
+      <p class="lead" style="max-width:46ch">Chaque ligne associe des modules : choisissez-les, ajoutez-les à votre plan, le comptoir du haut se recompose.</p>
+    </div>
+    <div class="ltabs" role="tablist" aria-label="Lignes d'agencement">
+      <sc-for list="{{ lignes }}" as="l" hint-placeholder-count="5">
+        <button type="button" class="ltab" role="tab" aria-selected="{{ l.on }}" onClick="{{ l.pick }}"><b>{{ l.name }}</b><span>{{ l.count }} modules</span><i style="{{ l.bar }}"></i></button>
+      </sc-for>
+    </div>
+    <div class="lg-g">
+      <div class="lstage marks">
+        <div class="ls-cap" style="align-items:flex-start"><p style="font-size:13px;color:var(--mute)">{{ cur.tagline }}</p></div>
+        <img src="{{ lsel.src }}" alt="{{ lsel.alt }}" key="{{ lsel.key }}">
+        <div class="ls-cap">
+          <div><h3>{{ lsel.name }}</h3><p>Ligne {{ cur.name }}{{ lsel.tempSep }}{{ lsel.temp }}</p><p>{{ lsel.spec }}</p></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn-line btn-sm" href="Projet-Module.dc.html">Voir la fiche</a>
+            <button type="button" class="btn btn-acc btn-sm" onClick="{{ lsel.add }}">{{ lsel.addTxt }}</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:15px;color:var(--mute);margin-bottom:14px">{{ cur.desc }}</p>
+        <div class="mlist">
+          <sc-for list="{{ curMods }}" as="m" hint-placeholder-count="11">
+            <div class="mt" style="{{ m.tileStyle }}">
+              <button type="button" class="mt-p" onClick="{{ m.show }}" aria-pressed="{{ m.shown }}"><img src="{{ m.src }}" alt=""><span><b>{{ m.name }}</b><span>{{ m.temp }}</span></span></button>
+              <button type="button" class="addb" style="{{ m.addStyle }}" onClick="{{ m.add }}" aria-label="{{ m.addLabel }}" aria-pressed="{{ m.inPlan }}"><sc-if value="{{ m.inPlanB }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if><sc-if value="{{ m.notInPlan }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></sc-if></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <a class="btn btn-ink" href="Projet-Lignes.dc.html">Tout le catalogue des lignes</a>
+          <a class="btn btn-line" href="#plan3d">Voir mon comptoir ({{ planCount }})</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOURMANDISE -->
+<section class="sec gm" id="gourmandise">
+  <div class="wrap gm-g">
+    <div class="gstage marks">
+      <span style="position:absolute;left:22px;top:18px;font-size:13px;color:var(--mute)">Vue de face, échelle selon la longueur</span>
+      <div class="gw" style="{{ gwStyle }}">
+        <img src="assets/v2/vitrine-gourmandise.svg" alt="Module Gourmandise, Ligne Stone : piliers et plan en pierre acrylique blanche, vitrages coulissants">
+        <div class="cote gcote"><span>{{ glenTxt }}</span></div>
+      </div>
+    </div>
+    <div>
+      <span class="kick">Produit vedette · Ligne Stone</span>
+      <h2 class="h2" style="margin-top:14px">Module Gourmandise</h2>
+      <p class="lead" style="margin-top:12px">Exposition centrale à hauteur du plan de travail, vitrages coulissants des deux côtés, pour pâtisseries, macarons ou chocolats.</p>
+      <div class="lens" role="group" aria-label="Longueur du module">
+        <sc-for list="{{ glens }}" as="g" hint-placeholder-count="7">
+          <button type="button" class="lb" style="{{ g.style }}" onClick="{{ g.pick }}" aria-pressed="{{ g.on }}">{{ g.label }}</button>
+        </sc-for>
+      </div>
+      <div class="price"><b>{{ gprice }}</b><span>{{ gpriceSub }}</span></div>
+      <div class="specs">
+        <div><span>Profondeur d'exposition</span>60 cm</div>
+        <div><span>Températures</span>+2 / +8 °C ou +14 / +18 °C</div>
+        <div><span>Froid</span>Ventilé, groupe logé</div>
+        <div><span>Entretien</span>Dégivrage automatique</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+        <a class="btn btn-acc" href="Projet-Module.dc.html">Configurer la Gourmandise</a>
+        <button type="button" class="btn btn-line" onClick="{{ addGour }}">{{ addGourTxt }}</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTEURS -->
+<section class="sec" id="secteurs">
+  <div class="wrap">
+    <div class="sec-h">
+      <div>
+        <span class="kick">13 secteurs d'activité</span>
+        <h2 class="h2" style="margin-top:14px">Un comptoir pour chaque métier de bouche</h2>
+      </div>
+    </div>
+    <div class="sc-g">
+      <div class="stiles" role="group" aria-label="Secteurs">
+        <sc-for list="{{ metiers }}" as="m" hint-placeholder-count="13">
+          <button type="button" class="stile" style="{{ m.tileStyle }}" onClick="{{ m.pick }}" aria-pressed="{{ m.on }}"><b>{{ m.name }}</b><span style="{{ m.tempStyle }}">{{ m.tempTxt }}</span></button>
+        </sc-for>
+      </div>
+      <div class="sdet" key="{{ msel.id }}">
+        <p style="font-size:13px;color:var(--mute);font-weight:700">{{ msel.tempTxt }}</p>
+        <h3 style="margin-top:4px">{{ msel.name }}</h3>
+        <div class="thumbs">
+          <sc-for list="{{ msel.mods }}" as="t" hint-placeholder-count="3">
+            <div><img src="{{ t.src }}" alt="">{{ t.name }}</div>
+          </sc-for>
+        </div>
+        <p style="font-size:14px;color:var(--mute);margin-top:14px">{{ msel.ref }}</p>
+        <a class="btn btn-acc" style="margin-top:18px;width:100%" href="#plan3d" onClick="{{ msel.compose }}">Composer mon plan · {{ msel.name }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RÉALISATIONS -->
+<section class="sec" id="realisations" style="background:var(--soft);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-h">
+      <div>
+        <span class="kick">Réalisations</span>
+        <h2 class="h2" style="margin-top:14px">Des comptoirs livrés, module par module</h2>
+        <p class="lead" style="margin-top:10px">6 des 14 réalisations référencées, de Paris à La Réunion.</p>
+      </div>
+    </div>
+    <div class="rg">
+      <sc-for list="{{ reals }}" as="r" hint-placeholder-count="6">
+        <article class="rc">
+          <div class="rc-ph"><img src="{{ r.img }}" alt="{{ r.alt }}"><span>Photo d'illustration</span></div>
+          <div class="rc-b">
+            <div class="rc-meta"><span>{{ r.lieu }}</span><span class="lpill">{{ r.ligne }}</span></div>
+            <h3>{{ r.type }}</h3>
+            <div class="rc-m">
+              <sc-for list="{{ r.mods }}" as="t" hint-placeholder-count="3">
+                <div><img src="{{ t.src }}" alt="">{{ t.name }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTHODE -->
+<section class="sec" id="methode">
+  <div class="wrap">
+    <div class="sec-h">
+      <div>
+        <span class="kick">Méthode</span>
+        <h2 class="h2" style="margin-top:14px">De votre local à votre comptoir</h2>
+      </div>
+      <a class="btn btn-acc" href="#plan3d">Commencer par le plan 3D</a>
+    </div>
+    <div class="meth">
+      <sc-for list="{{ meth }}" as="m" hint-placeholder-count="4">
+        <button type="button" class="mstep" style="{{ m.color }}" onClick="{{ m.pick }}" aria-pressed="{{ m.on }}">
+          <span class="mrule"><span class="mdot" style="{{ m.dot }}"></span></span>
+          <span class="mnum">Étape {{ m.n }}</span>
+          <h3>{{ m.title }}</h3>
+          <p style="{{ m.pStyle }}">{{ m.text }}</p>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- MATIÈRES -->
+<section class="sec" id="matieres" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <div>
+        <span class="kick">Matières</span>
+        <h2 class="h2" style="margin-top:14px">Vos produits méritent d'être mis en valeur</h2>
+        <p class="lead" style="margin-top:10px">Des matières tendance, choisies selon la ligne.</p>
+      </div>
+      
+    </div>
+    <div class="mat-g" role="group" aria-label="Matières">
+      <sc-for list="{{ mats }}" as="m" hint-placeholder-count="4">
+        <button type="button" class="mat" style="{{ m.style }}" onClick="{{ m.pick }}" aria-pressed="{{ m.on }}"><span class="{{ m.sw }}"><sc-if value="{{ m.isVerre }}" hint-placeholder-val="{{ false }}">VOTRE LOGO</sc-if></span><span class="mat-b"><b>{{ m.name }}</b><span>{{ m.sub }}</span></span></button>
+      </sc-for>
+    </div>
+    <div class="matdet" key="{{ matSel.id }}"><b>{{ matSel.name }}</b><span style="color:var(--mute)">{{ matSel.use }}</span></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec ct" id="contact">
+  <div class="wrap ct-g">
+    <div>
+      <span class="kick">Showroom &amp; contact</span>
+      <h2 class="h2" style="margin-top:14px">Venez voir les vitrines au show-room</h2>
+      <p class="lead" style="margin-top:12px">Le bureau d'études et le show-room sont réunis à Puget-sur-Argens, dans le Var.</p>
+      <div class="addr">
+        <div><span>Adresse</span>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</div>
+        <div><span>Appel gratuit</span><a href="tel:0800951313">0 800 95 13 13</a><br><span style="margin-top:8px">Horaires : [HORAIRES]</span></div>
+      </div>
+      <div class="map" role="img" aria-label="Plan stylisé : show-room RGTE à Puget-sur-Argens, Var">
+        <svg width="100%" height="100%" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g stroke="#3B3B3F" stroke-width="1"><path d="M0 40H600M0 100H600M0 160H600M0 220H600M60 0V260M160 0V260M260 0V260M360 0V260M460 0V260M560 0V260"></path></g>
+          <path d="M-10 190 C 120 170, 200 120, 300 130 S 480 90, 620 60" fill="none" stroke="#5A5A5F" stroke-width="10" stroke-linecap="round"></path>
+          <path d="M-10 190 C 120 170, 200 120, 300 130 S 480 90, 620 60" fill="none" stroke="#2A2A2D" stroke-width="6" stroke-linecap="round"></path>
+          <path d="M120 270 C 160 200, 230 160, 300 130 S 360 40, 380 -10" fill="none" stroke="#4A4A4F" stroke-width="4"></path>
+          <circle cx="300" cy="130" r="38" fill="none" stroke="#D42A20" stroke-width="1" stroke-dasharray="3 4"></circle>
+          <circle cx="300" cy="130" r="8" fill="#D42A20"></circle>
+          <circle cx="300" cy="130" r="14" fill="none" stroke="#D42A20" stroke-width="1.5"></circle>
+          <text x="322" y="118" fill="#FFFFFF" font-family="Manrope, sans-serif" font-size="15" font-weight="800">RGTE · show-room</text>
+          <text x="322" y="138" fill="#BDBDC1" font-family="Manrope, sans-serif" font-size="12">Puget-sur-Argens (83)</text>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <sc-if value="{{ cNotSent }}" hint-placeholder-val="{{ true }}">
+        <form class="cform" onSubmit="{{ cSubmit }}" novalidate>
+          <p class="fc-h">Une demande rapide</p>
+          <div>
+            <p style="font-size:13.5px;font-weight:700;margin-bottom:8px">Votre demande concerne</p>
+            <div class="chips" role="group" aria-label="Objet">
+              <sc-for list="{{ objs }}" as="o" hint-placeholder-count="3">
+                <button type="button" class="chip" style="{{ o.style }}" onClick="{{ o.pick }}" aria-pressed="{{ o.on }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div class="f2">
+            <div class="fld"><label for="c-nom">Nom *</label><input id="c-nom" type="text" autocomplete="name" value="{{ c.nom }}" onInput="{{ cNom }}" style="{{ ceNomS }}"><sc-if value="{{ ceNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+            <div class="fld"><label for="c-tel">Téléphone *</label><input id="c-tel" type="tel" autocomplete="tel" value="{{ c.tel }}" onInput="{{ cTel }}" style="{{ ceTelS }}"><sc-if value="{{ ceTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+          </div>
+          <div class="fld"><label for="c-msg">Message</label><textarea id="c-msg" value="{{ c.msg }}" onInput="{{ cMsg }}" placeholder="Votre commerce, votre projet, vos dimensions…"></textarea></div>
+          <div class="fnav" style="margin-top:4px"><span class="note">* obligatoires · prototype, rien n'est envoyé</span><button type="submit" class="btn btn-acc">Envoyer ma demande</button></div>
+        </form>
+      </sc-if>
+      <sc-if value="{{ cSent }}" hint-placeholder-val="{{ false }}">
+        <div class="cform ok" role="status">
+          <span class="okic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+          <p class="fc-h">Demande envoyée, {{ c.nom }}.</p>
+          <p class="note" style="font-size:14px">Objet : {{ objTxt }}. Prototype : rien n'est réellement envoyé.</p>
+          <button type="button" class="btn btn-ink" onClick="{{ cReset }}" style="justify-self:start">Nouvelle demande</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="logo" href="Projet-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE</span><span class="logo-c" aria-hidden="true"></span><span class="logo-s">R.G. Technologies</span></a>
+        <p style="margin-top:14px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div><p class="ftr-h">Bureau d'études et show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ftr-h">Appel gratuit</p><a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a><p style="margin-top:6px">Horaires : [HORAIRES]</p></div>
+      <div class="ftr-l"><p class="ftr-h">Explorer</p><a href="Projet-Lignes.dc.html">Lignes d'agencement</a><a href="#secteurs">Secteurs</a><a href="#realisations">Réalisations</a><a href="#contact">Showroom &amp; contact</a></div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 2) — concept, non officiel · <a href="Main.dc.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6500},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#9E1F17"]},"vueInitiale":{"editor":"enum","default":"face","options":["face","plan"]}}'>
+const LIGNES = [
+  { id:'basique', name:'Basique', hero:'b-cube', tagline:'Façade bois mélaminé ou verre, plan de travail et plinthe en granit', desc:'Association de modules différents. Coloris et matériaux au choix ; panneau frontal en bois mélaminé ou en verre (option) ; plan de travail et plinthe en granit.', spec:'Façade bois mélaminé ou verre, plan granit' },
+  { id:'stone', name:'Stone', hero:'s-plane', tagline:'Structure en pierre acrylique type Corian, verre sérigraphié', desc:'Association de modules en pierre acrylique type Corian ; panneau frontal en verre avec la sérigraphie du client.', spec:'Structure pierre acrylique type Corian' },
+  { id:'legno', name:'Legno', hero:'l-ventplane', tagline:'Panneau frontal en bois mélaminé', desc:'Association de modules avec panneau frontal en bois mélaminé.', spec:'Panneau frontal bois mélaminé' },
+  { id:'encastrable', name:'Encastrable', hero:'e-ventile', tagline:'Module brut prêt à être habillé', desc:'Module brut prêt à être habillé, en version comptoir ou meuble entier sur pied.', spec:'Version comptoir ou meuble entier sur pied' },
+  { id:'industry', name:'Industry', hero:'i-aramis', tagline:'Vitrines standardisées en longueurs et indépendantes', desc:'Vitrines standardisées en longueurs et indépendantes, de la murale à la vitrine de supermarché.', spec:'Longueurs standardisées, vitrine indépendante' }
+];
+const T28 = '+2/+8 °C ou +14/+18 °C';
+const MODS = [
+  ['b-bar','Comptoir bar','basique','caisse','',''],
+  ['b-caisse','Comptoir caisse','basique','caisse','',''],
+  ['b-saladette','Saladette réfrigérée','basique','saladette','',''],
+  ['b-cube','Vitrine réfrigérée Cube','basique','cube','','Vitrage cubique, 2 ou 3 étagères verre'],
+  ['b-pastry','Pastry Show','basique','cube','','Froid ventilé, vitrage droit, plaques 600×400'],
+  ['b-statique','Statique','basique','cube','',''],
+  ['b-basse','Basse','basique','cube','',''],
+  ['b-murale','Murale self-service','basique','panorama','',''],
+  ['b-panoramique','Panoramique','basique','panorama','',''],
+  ['b-chaud','Chaud','basique','bainmarie','','Bain-marie ou plaque chaude'],
+  ['b-retro','Vitrine rétro','basique','cube','',''],
+  ['b-amandine','Amandine','basique','cube','','Montants modernes, cuve plaques 600×400, froid ventilé'],
+  ['s-plane','Réfrigérée Plane','stone','plane',T28,'Hauteur du plan, profondeur 53 ou 60 cm'],
+  ['s-vision','Réfrigérée Vision','stone','plane',T28,'8 cm sous le plan, profondeur 53 ou 60 cm'],
+  ['s-saladette','Saladette','stone','saladette','+2 / +8 °C','Bacs gastronormes (non fournis)'],
+  ['s-bainmarie','Chaud bain-marie','stone','bainmarie','+30 / +90 °C','Bacs gastronormes'],
+  ['s-centrale','Réfrigérée Centrale','stone','gourmandise',T28,'Vitrages coulissants des 2 côtés, profondeur 60 cm'],
+  ['s-gourmandise','Gourmandise','stone','gourmandise',T28,'Vitrages coulissants des 2 côtés, dès 5 800 € HT'],
+  ['s-caisse','Comptoir caisse','stone','caisse','','Avec ou sans tablette PMR'],
+  ['s-bar','Comptoir bar','stone','caisse','','Neutre ou réfrigéré'],
+  ['s-poisson','Réfrigérée Poissonnerie','stone','poissonnerie','−2 / 0 °C','Froid statique, serpentin de cuve, vidange'],
+  ['s-panorama','Réfrigérée Panorama','stone','panorama',T28,'2 ou 3 étagères réfrigérées +4 / +8 °C'],
+  ['s-surface','Surface plane','stone','plane','',''],
+  ['l-plane','Plane','legno','legno','',''],
+  ['l-arriere','Arrière neutre','legno','caisse','',''],
+  ['l-caissevit','Caisse et vitrine neutre','legno','caisse','',''],
+  ['l-bar','Comptoir bar','legno','caisse','',''],
+  ['l-statique','Réfrigérée statique','legno','legno','','Froid statique'],
+  ['l-ventplane','Vitrine réfrigérée ventilée plane','legno','legno','','Froid ventilé'],
+  ['l-neutre','Vitrine neutre','legno','caisse','',''],
+  ['l-ventile','Réfrigéré ventilé','legno','legno','','Froid ventilé'],
+  ['l-chauffante','Vitrine chauffante sèche','legno','bainmarie','',''],
+  ['e-ventile','Cuve froid ventilé','encastrable','encastrable','','Version comptoir ou meuble sur pied'],
+  ['e-statique','Cuve froid statique','encastrable','encastrable','','Version comptoir ou meuble sur pied'],
+  ['i-olympe','Olympe','industry','panorama','','Murale'],
+  ['i-nepal','Nepal','industry','industry','','Snack'],
+  ['i-aramis','Aramis','industry','industry','','Boucherie'],
+  ['i-rubis','Rubis','industry','industry','',''],
+  ['i-argentine','Argentine','industry','industry','',''],
+  ['i-hanoi','Hanoi','industry','poissonnerie','','Poissonnerie'],
+  ['i-loire','Loire','industry','industry','','Boulangerie'],
+  ['i-argent','Argent','industry','panorama','','Murale froid'],
+  ['i-sugar','Sugar','industry','industry','','Hauteur comptoir'],
+  ['i-hawaii','Hawaii','industry','industry','','Supermarché'],
+  ['i-4faces','4 faces vitrées','industry','industry','','']
+];
+const MOD = {};
+MODS.forEach(r => { const l = LIGNES.find(x => x.id === r[2]); MOD[r[0]] = { id:r[0], name:r[1], ligne:r[2], ligneName:l.name, svg:r[3], temp:r[4], spec:r[5] || l.spec, src:'assets/v2/vitrine-' + r[3] + '.svg', alt:r[1] + ', Ligne ' + l.name }; });
+const METIERS = [
+  { id:'boulangerie', name:'Boulangerie', temp:'', compo:['b-amandine','b-pastry','b-caisse'], ref:'Réalisations : boulangerie pâtisserie à La Réunion (Basique : Amandine et caisse) ; boulangerie en Gironde (Legno : réfrigérée statique, neutre et module arrière).' },
+  { id:'patisserie', name:'Pâtisserie', temp:'+2 / +8 °C', compo:['s-gourmandise','s-plane','s-caisse'], ref:'Modules conseillés : Plane, Vision, Panorama, Centrale, Gourmandise, Pastry Show, Cube, Amandine. Réalisation : pâtisserie, Paris 4e (Stone).' },
+  { id:'chocolats', name:'Chocolats', temp:'+14 / +18 °C', compo:['s-centrale','s-plane','s-caisse'], ref:'Réalisations : chocolatier à Gap et Grenoble (Stone : Plane et caisse) ; pâtissier chocolatier dans le Rhône (Stone : Centrale, caisse et Plane).' },
+  { id:'sandwichs', name:'Sandwichs', temp:'', compo:['b-murale','b-panoramique','b-basse'], ref:'Réalisation : sandwicherie à Chamonix (Basique : Panoramique, Basse et Murale self-service).' },
+  { id:'traiteur', name:'Traiteur', temp:'', compo:['s-plane','s-saladette','s-caisse'], ref:'Réalisation : traiteur asiatique, chaîne à Marseille (Stone : Plane, caisse, Saladette et comptoir bar).' },
+  { id:'poissonnerie', name:'Poissonnerie', temp:'−2 / 0 °C', compo:['s-poisson','s-surface','s-caisse'], ref:'Réalisation : traiteur poissonnier dans les Hauts-de-Seine (Stone : Panorama, Surface plane et caisse).' },
+  { id:'salades', name:'Bar à salades', temp:'', compo:['s-panorama','s-saladette','s-caisse'], ref:'Réalisation : bar à salades dans les Bouches-du-Rhône (Stone : Saladette, caisse et Panorama).' },
+  { id:'couscous', name:'Bar à couscous', temp:'', compo:['s-bainmarie','s-saladette','s-caisse'], ref:'Réalisation : bar à couscous en Isère (Stone : bain-marie avec trous arrondis sur mesure). Autres modules à valider.' },
+  { id:'fromagerie', name:'Fromagerie', temp:'', compo:['s-panorama','s-plane','s-caisse'], ref:'Composition à valider avec le bureau d\'études.' },
+  { id:'bar', name:'Bar', temp:'', compo:['s-plane','s-panorama','s-bar'], ref:'Comptoir bar neutre ou réfrigéré. Composition à valider avec le bureau d\'études.' },
+  { id:'topping', name:'Bar à topping', temp:'', compo:['s-saladette','s-surface','s-caisse'], ref:'Réalisation : bar à yogourt glacé, chaîne (Stone : Saladette sur mesure à trous arrondis et Surface plane).' },
+  { id:'coffee', name:'Coffee shop / Café', temp:'', compo:['b-pastry','b-cube','b-bar'], ref:'Composition à valider avec le bureau d\'études.' },
+  { id:'pizza', name:'Pizza al taglio', temp:'', compo:['s-plane','s-saladette','s-caisse'], ref:'Réalisation : pizza sur composition à Paris (Stone : Saladette, caisse et Plane).' }
+];
+const REALS = [
+  { type:'Pâtisserie', lieu:'Paris 4e', ligne:'Stone', mods:['s-plane','s-caisse'], img:'assets/patisserie-interior.webp', alt:'Intérieur de pâtisserie avec suspensions' },
+  { type:'Bar à salades', lieu:'Bouches-du-Rhône (13)', ligne:'Stone', mods:['s-saladette','s-caisse','s-panorama'], img:'assets/saladette-bacs.webp', alt:'Bacs gastronormes inox garnis' },
+  { type:'Chocolatier', lieu:'Gap et Grenoble', ligne:'Stone', mods:['s-plane','s-caisse'], img:'assets/chocolate-display.webp', alt:'Présentoir de chocolats en bacs' },
+  { type:'Bar à yogourt glacé, chaîne', lieu:'Toute la France', ligne:'Stone', mods:['s-saladette','s-surface'], img:'assets/topping-bar.webp', alt:'Bar à toppings' },
+  { type:'Traiteur poissonnier', lieu:'Hauts-de-Seine (92)', ligne:'Stone', mods:['s-panorama','s-surface','s-caisse'], img:'assets/fish-ice.webp', alt:'Poissons présentés sur glace' },
+  { type:'Sandwicherie', lieu:'Chamonix', ligne:'Basique', mods:['b-panoramique','b-basse','b-murale'], img:'assets/bakery-counter-bright.webp', alt:'Boutique claire avec comptoir' }
+];
+const GLENS = [101,117,146,169,191,222];
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menu:false, planOpen:false, view:(props && props.vueInitiale === 'plan') ? 'plan' : 'face', metier:'patisserie', step:1, len:'', noLen:false, lenErr:false, extras:[], ligne:'stone', lmod:null, glen:101, mat:'corian', meth:1,
+      f:{ nom:'', tel:'', mail:'', cp:'' }, err:{}, sent:false, obj:'plan', c:{ nom:'', tel:'', msg:'' }, cerr:{}, csent:false, bump:0 };
+  }
+  addExtra(id){
+    const ex = this.state.extras.slice(); const i = ex.indexOf(id);
+    if (i > -1) ex.splice(i, 1); else { if (this.baseIds().length + ex.length >= 6) ex.shift(); ex.push(id); }
+    this.setState({ extras:ex, bump:this.state.bump + 1 });
+  }
+  baseIds(){ return METIERS.find(m => m.id === this.state.metier).compo; }
+  compose(ids){
+    const ms = ids.map(id => MOD[id]).filter(Boolean);
+    const sorted = ms.filter(m => m.svg !== 'caisse').concat(ms.filter(m => m.svg === 'caisse'));
+    const pad = m => m.svg === 'caisse' ? 80 : 40;
+    let total = 0; sorted.forEach((m, i) => { total += 480; if (i) total -= pad(sorted[i-1]) + pad(m); });
+    const bodyTot = sorted.reduce((a, m) => a + 480 - 2 * pad(m), 0);
+    let acc = 0;
+    const base = this.baseIds();
+    const items = sorted.map((m, i) => {
+      const ov = i ? pad(sorted[i-1]) + pad(m) : 0, bw = 480 - 2 * pad(m);
+      const o = Object.assign({}, m, {
+        n: String(i + 1).padStart(2, '0'),
+        key: this.state.metier + '-' + m.id,
+        pkey: 'p-' + this.state.metier + '-' + m.id,
+        tempSep: m.temp ? ' · ' : '',
+        expo: ['caisse','encastrable'].indexOf(m.svg) < 0,
+        faceStyle: 'width:' + (480 / total * 100).toFixed(3) + '%;margin-left:' + (-ov / total * 100).toFixed(3) + '%;z-index:' + (20 - i) + ';animation-delay:' + (i * 0.08).toFixed(2) + 's',
+        planStyle: 'left:' + (acc / bodyTot * 100).toFixed(3) + '%;width:' + (bw / bodyTot * 100).toFixed(3) + '%',
+        removable: base.indexOf(m.id) < 0,
+        removeLabel: 'Retirer ' + m.name + ' du plan',
+        remove: () => this.addExtra(m.id)
+      });
+      acc += bw; return o;
+    });
+    const f = sorted.length ? pad(sorted[0]) : 0, l = sorted.length ? pad(sorted[sorted.length - 1]) : 0;
+    return { items, coteStyle: 'margin-left:' + (f / total * 100).toFixed(3) + '%;margin-right:' + (l / total * 100).toFixed(3) + '%' };
+  }
+  setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
+  setC(k, e){ const c = Object.assign({}, this.state.c); c[k] = e.target.value; const cerr = Object.assign({}, this.state.cerr); cerr[k] = false; this.setState({ c, cerr }); }
+  submit(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const f = this.state.f;
+    const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()) };
+    if (err.nom || err.tel || err.mail) { this.setState({ err }); return; }
+    this.setState({ sent:true, err:{} });
+  }
+  cSubmit(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const c = this.state.c; const cerr = { nom: !c.nom.trim(), tel: !c.tel.trim() };
+    if (cerr.nom || cerr.tel) { this.setState({ cerr }); return; }
+    this.setState({ csent:true, cerr:{} });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const msel0 = METIERS.find(m => m.id === s.metier);
+    const ids = msel0.compo.concat(s.extras.filter(x => msel0.compo.indexOf(x) < 0));
+    const compo = this.compose(ids);
+    const inPlan = id => ids.indexOf(id) > -1;
+    const lenN = parseInt(s.len, 10);
+    const lenTxt = s.noLen ? 'Cote à relever' : (lenN > 0 ? lenN + ' cm' : 'Longueur : étape 2');
+    const isFace = s.view === 'face';
+    const onBtn = 'background:var(--ink);color:#FFFFFF', offBtn = 'background:transparent;color:var(--ink)';
+    const selChip = 'background:var(--ink);color:#FFFFFF;box-shadow:none', offChip = 'background:var(--soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)';
+    const metiers = METIERS.map(m => ({
+      id:m.id, name:m.name, on: s.metier === m.id ? 'true' : 'false',
+      style: s.metier === m.id ? selChip : offChip,
+      tileStyle: s.metier === m.id ? 'background:var(--ink);color:#FFFFFF' : 'background:#FFFFFF;color:var(--ink);box-shadow:0 0 0 1px var(--line)',
+      tempTxt: m.temp || 'Selon modules',
+      tempStyle: s.metier === m.id ? 'color:#FFB4AD' : (m.temp ? 'color:var(--acc)' : 'color:var(--mute)'),
+      pick: () => this.setState({ metier:m.id, extras:[], bump:s.bump + 1 })
+    }));
+    const msel = {
+      id: msel0.id, name: msel0.name, ref: msel0.ref,
+      tempTxt: msel0.temp ? 'Plage de température : ' + msel0.temp : 'Plage de température selon les modules choisis',
+      mods: msel0.compo.map(id => MOD[id]),
+      compose: () => this.setState({ metier:msel0.id, extras:[], step:2, view:'face' })
+    };
+    const stepsDef = [['1','Métier'],['2','Longueur'],['3','Coordonnées']];
+    const steps = stepsDef.map((d, i) => {
+      const n = i + 1, cur = s.step === n, done = s.step > n;
+      return { label: d[0] + '. ' + d[1], cur: cur ? 'step' : 'false',
+        style: cur ? 'color:var(--ink)' : (done ? 'color:var(--ink)' : 'color:var(--mute)'),
+        bar: 'background:' + (cur ? 'var(--acc)' : (done ? 'var(--ink)' : 'var(--line)')),
+        go: () => { if (n <= s.step) this.setState({ step:n }); } };
+    });
+    const quick = [300, 400, 500, 600].map(q => ({ label: q + ' cm', style: lenN === q && !s.noLen ? selChip : offChip, pick: () => this.setState({ len:String(q), noLen:false, lenErr:false }) }));
+    const cur = LIGNES.find(l => l.id === s.ligne);
+    const curIds = MODS.filter(r => r[2] === s.ligne).map(r => r[0]);
+    const lselId = s.lmod && curIds.indexOf(s.lmod) > -1 ? s.lmod : cur.hero;
+    const lm = MOD[lselId];
+    const lsel = Object.assign({}, lm, { key:'ls-' + lselId, tempSep: lm.temp ? ' · ' : '', addTxt: inPlan(lselId) ? 'Retirer de mon plan' : 'Ajouter à mon plan', add: () => this.addExtra(lselId) });
+    const lignes = LIGNES.map(l => ({ name:l.name, count: MODS.filter(r => r[2] === l.id).length, on: s.ligne === l.id ? 'true' : 'false', bar: 'background:' + (s.ligne === l.id ? 'var(--acc)' : 'transparent'), pick: () => this.setState({ ligne:l.id, lmod:null }) }));
+    const curMods = curIds.map(id => {
+      const m = MOD[id], ip = inPlan(id), shown = id === lselId;
+      return Object.assign({}, m, { temp: m.temp || m.spec, shown: shown ? 'true' : 'false', inPlan: ip ? 'true' : 'false', inPlanB: ip, notInPlan: !ip,
+        tileStyle: shown ? 'box-shadow:0 0 0 1.5px var(--ink)' : '',
+        addStyle: ip ? 'background:var(--acc);color:#FFFFFF' : 'background:var(--soft);color:var(--ink)',
+        addLabel: ip ? 'Retirer ' + m.name + ' de mon plan' : 'Ajouter ' + m.name + ' à mon plan',
+        show: () => this.setState({ lmod:id }), add: () => this.addExtra(id) });
+    });
+    const gIsStd = typeof s.glen === 'number';
+    const glens = GLENS.map(g => ({ label: String(g), on: s.glen === g ? 'true' : 'false', style: s.glen === g ? 'background:var(--ink);color:#FFFFFF' : 'background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)', pick: () => this.setState({ glen:g }) }))
+      .concat([{ label:'Sur mesure', on: s.glen === 'sm' ? 'true' : 'false', style: s.glen === 'sm' ? 'background:var(--ink);color:#FFFFFF' : 'background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)', pick: () => this.setState({ glen:'sm' }) }]);
+    const gw = gIsStd ? Math.max(46, s.glen / 222 * 100) : 100;
+    const methD = [
+      ['Étude','Votre local, vos dimensions, vos produits : le bureau d\'études définit les modules et les plages de température adaptés.'],
+      ['Plan 3D','Élaboration de votre plan 3D d\'agencement, offert : vous visualisez le comptoir avant la fabrication.'],
+      ['Fabrication','Vitrines fabriquées sur mesure dans les matières choisies : pierre acrylique, granit, bois mélaminé, verre sérigraphié.'],
+      ['Installation','Mise en place des vitrines dans votre commerce. Délais et modalités : [DÉLAI].']
+    ];
+    const meth = methD.map((d, i) => ({ n: String(i + 1), title:d[0], text:d[1], on: s.meth === i ? 'true' : 'false',
+      color: s.meth === i ? 'color:var(--acc)' : 'color:var(--ink)', dot: s.meth === i ? 'background:var(--acc)' : '',
+      pStyle: s.meth === i ? 'color:var(--ink)' : '', pick: () => this.setState({ meth:i }) }));
+    const matD = [
+      { id:'corian', name:'Pierre acrylique type Corian', sub:'Structure de la Ligne Stone', sw:'sw sw-corian', use:'Ligne Stone : structure, piliers et plan de travail (Gourmandise en pierre acrylique blanche).' },
+      { id:'granit', name:'Granit', sub:'Plan de travail et plinthe', sw:'sw sw-granit', use:'Ligne Basique : plan de travail et plinthe en granit.' },
+      { id:'bois', name:'Bois mélaminé', sub:'Avec moulures', sw:'sw sw-bois', use:'Ligne Basique (panneau frontal) et Ligne Legno (panneau frontal en bois mélaminé).' },
+      { id:'verre', name:'Verre sérigraphié', sub:'À votre image', sw:'sw sw-verre', use:'Ligne Stone : panneau frontal en verre avec la sérigraphie du client. En option sur la Ligne Basique.' }
+    ];
+    const mats = matD.map(m => Object.assign({}, m, { isVerre: m.id === 'verre', on: s.mat === m.id ? 'true' : 'false', style: s.mat === m.id ? 'box-shadow:0 0 0 2px var(--ink)' : 'box-shadow:0 0 0 1px var(--line)', pick: () => this.setState({ mat:m.id }) }));
+    const objD = [['plan','Plan 3D offert'],['showroom','Visite du show-room'],['devis','Demande de devis']];
+    const objs = objD.map(o => ({ label:o[1], on: s.obj === o[0] ? 'true' : 'false', style: s.obj === o[0] ? selChip : offChip, pick: () => this.setState({ obj:o[0] }) }));
+    const e = s.err || {}, ce = s.cerr || {}, bad = 'border-color:#B3261C;box-shadow:0 0 0 3px rgba(179,38,28,.12)';
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu: !s.menu, planOpen:false }), closeMenu: () => this.setState({ menu:false }),
+      planOpen: s.planOpen, planOpenS: s.planOpen ? 'true' : 'false', togglePlan: () => this.setState({ planOpen: !s.planOpen, menu:false }), closePlan: () => this.setState({ planOpen:false }),
+      planCount: compo.items.length, badgeKey: 'b' + s.bump,
+      compo, compoNames: compo.items.map(m => m.name).join(', '),
+      metierName: msel0.name, lenTxt,
+      viewCap: isFace ? 'Vue de face, échelle indicative' : 'Vue de dessus, plan coté',
+      faceBtn: isFace ? onBtn : offBtn, planBtn: isFace ? offBtn : onBtn, isFaceS: isFace ? 'true' : 'false', isPlanS: isFace ? 'false' : 'true',
+      setFace: () => this.setState({ view:'face' }), setPlanV: () => this.setState({ view:'plan' }),
+      faceLayer: isFace ? 'opacity:1;transform:none' : 'opacity:0;transform:translateY(-14px) scale(.98);pointer-events:none',
+      planLayer: isFace ? 'opacity:0;transform:translateY(14px);pointer-events:none' : 'opacity:1;transform:none',
+      metiers, msel, steps, isS1: s.step === 1, isS2: s.step === 2, isS3: s.step === 3,
+      next1: () => this.setState({ step:2 }),
+      next2: () => { if (s.noLen || lenN > 0) this.setState({ step:3, lenErr:false, view:'plan' }); else this.setState({ lenErr:true }); },
+      back: () => this.setState({ step: Math.max(1, s.step - 1) }),
+      len: s.len, setLen: (ev) => this.setState({ len: ev.target.value.replace(/[^0-9]/g, '').slice(0, 4), noLen:false, lenErr:false }),
+      quick, noLenStyle: s.noLen ? selChip : offChip, noLenS: s.noLen ? 'true' : 'false', toggleNoLen: () => this.setState({ noLen: !s.noLen, lenErr:false }), lenErr: s.lenErr,
+      f: s.f, inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev), inCp: (ev) => this.setF('cp', ev),
+      eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '',
+      submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent, reset: () => this.setState({ sent:false, step:1 }),
+      lignes, cur, curMods, lsel,
+      glens, gwStyle: 'width:' + gw.toFixed(1) + '%',
+      glenTxt: gIsStd ? s.glen + ' cm' : 'Sur mesure',
+      gprice: s.glen === 101 ? '5 800,00 € HT' : 'Sur devis',
+      gpriceSub: s.glen === 101 ? 'Modèle 101 cm en pierre acrylique blanche' : (gIsStd ? 'Longueur ' + s.glen + ' cm : [PRIX] communiqué sur devis' : 'Longueur sur mesure : chiffrage par le bureau d\'études'),
+      addGour: () => this.addExtra('s-gourmandise'), addGourTxt: inPlan('s-gourmandise') ? 'Dans mon plan, retirer' : 'Ajouter à mon plan',
+      reals: REALS.map(r => Object.assign({}, r, { mods: r.mods.map(id => MOD[id]) })),
+      meth, mats, matSel: matD.find(m => m.id === s.mat),
+      objs, objTxt: objD.find(o => o[0] === s.obj)[1],
+      c: s.c, cNom: (ev) => this.setC('nom', ev), cTel: (ev) => this.setC('tel', ev), cMsg: (ev) => this.setC('msg', ev),
+      ceNom: !!ce.nom, ceTel: !!ce.tel, ceNomS: ce.nom ? bad : '', ceTelS: ce.tel ? bad : '',
+      cSubmit: (ev) => this.cSubmit(ev), cSent: s.csent, cNotSent: !s.csent, cReset: () => this.setState({ csent:false })
+    };
+  }
+}
+</script>
+</body>
+</html>

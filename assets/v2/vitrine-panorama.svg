@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Vitrine réfrigérée Panorama à étagères">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="176" width="400" height="108" fill="#F6F4F0"></rect>
+  <rect x="40" y="176" width="12" height="108" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="176" width="12" height="108" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <polygon points="34,176 446,176 434,166 46,166" fill="#ECE9E3"></polygon>
+  <rect x="34" y="174" width="412" height="4" fill="#000" opacity=".06"></rect>
+  <!-- grand volume vitré, verre bombé -->
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166 Z" fill="#F1EEE8"></path>
+  <rect x="56" y="30" width="368" height="2" fill="#FFE7B0"></rect>
+  <!-- étagères réfrigérées -->
+  <rect x="62" y="74" width="356" height="4" fill="#DCE6EA"></rect>
+  <rect x="62" y="118" width="356" height="4" fill="#DCE6EA"></rect>
+  <g>
+    <rect x="76" y="58" width="26" height="16" rx="2" fill="#F3DCD5"></rect><rect x="76" y="56" width="26" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="112" y="60" width="26" height="14" rx="2" fill="#EADBC4"></rect><rect x="112" y="58" width="26" height="4" rx="2" fill="#6B4433"></rect>
+    <rect x="148" y="58" width="30" height="16" rx="7" fill="#B7CB93"></rect>
+    <rect x="190" y="60" width="44" height="14" rx="2" fill="#4A3127"></rect>
+    <rect x="246" y="58" width="26" height="16" rx="2" fill="#F7F1E6"></rect><rect x="246" y="56" width="26" height="4" rx="2" fill="#E9C46A"></rect>
+    <rect x="284" y="59" width="30" height="15" rx="2" fill="#E8D2B8"></rect>
+    <rect x="326" y="58" width="26" height="16" rx="2" fill="#F3DCD5"></rect><rect x="326" y="56" width="26" height="4" rx="2" fill="#C8475B"></rect>
+    <rect x="362" y="60" width="44" height="14" rx="2" fill="#EADBC4"></rect>
+    <g fill="#F1E3C2"><rect x="76" y="104" width="40" height="14" rx="3"></rect><rect x="124" y="104" width="40" height="14" rx="3" fill="#E2B985"></rect><rect x="172" y="104" width="40" height="14" rx="3" fill="#C7D9A6"></rect><rect x="220" y="104" width="40" height="14" rx="3" fill="#EDB3BF"></rect><rect x="268" y="104" width="40" height="14" rx="3"></rect><rect x="316" y="104" width="40" height="14" rx="3" fill="#E2B985"></rect><rect x="364" y="104" width="40" height="14" rx="3" fill="#C7D9A6"></rect></g>
+    <g><ellipse cx="96" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="140" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="184" cy="160" rx="16" ry="5" fill="#C98F4E"></ellipse><rect x="214" y="146" width="56" height="16" rx="2" fill="#F3DCD5"></rect><ellipse cx="300" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse><ellipse cx="344" cy="160" rx="16" ry="5" fill="#C98F4E"></ellipse><ellipse cx="388" cy="160" rx="16" ry="5" fill="#D9A866"></ellipse></g>
+  </g>
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166 Z" fill="#CFE3EA" opacity=".24"></path>
+  <polygon points="100,24 128,24 86,166 58,166" fill="#fff" opacity=".3"></polygon>
+  <polygon points="136,24 144,24 102,166 94,166" fill="#fff" opacity=".22"></polygon>
+  <polygon points="330,24 344,24 302,166 288,166" fill="#fff" opacity=".2"></polygon>
+  <path d="M56 166 L56 40 Q56 24 72 24 L408 24 Q424 24 424 40 L424 166" fill="none" stroke="#A9BAC0"></path>
+  <rect x="396" y="190" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="200" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#7FE3A2">+4°</text>
+  <rect x="62" y="190" width="320" height="64" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="190" width="320" height="64" fill="none" stroke="#DDD9D2"></rect>
+</svg>

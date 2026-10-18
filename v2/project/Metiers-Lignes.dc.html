@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE · Métiers — Lignes d'agencement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap">
+<style>
+body{margin:0;background:#FFFFFF}
+sc-for,sc-if{display:contents}
+.mt{--acc:#D42A20;font-family:'Figtree',system-ui,sans-serif;color:#1C1C1E;background:#FFFFFF;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;font-variant-numeric:tabular-nums}
+.mt *,.mt *::before,.mt *::after{box-sizing:border-box}
+.mt img{display:block;max-width:100%}
+.mt h1,.mt h2,.mt h3,.mt h4,.mt p{margin:0}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.topbar{background:#1C1C1E;color:#C9C9CC;font-size:13px}
+.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:40px}
+.topbar a{color:#FFFFFF;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:40px}
+.topbar a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #E6E5E1}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#1C1C1E;min-height:44px}
+.logo-w{font-weight:900;font-size:29px;letter-spacing:-.04em;line-height:1;display:inline-flex;align-items:flex-end}
+.logo-w i{display:block;width:8px;height:8px;background:var(--acc);margin:0 0 4px 3px}
+.logo-s{display:block;border-left:1px solid #CFCECA;padding-left:11px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#5C5C61;line-height:1.25}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:15px;font-weight:600;color:#3A3A3E;text-decoration:none;border-radius:10px;position:relative;transition:color .2s}
+.nav a::after{content:'';position:absolute;left:14px;right:14px;bottom:8px;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover{color:#1C1C1E}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.nav a.on{color:#1C1C1E}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#1C1C1E;min-height:44px}
+.tel-i{width:40px;height:40px;border-radius:50%;border:1px solid #DAD9D5;display:grid;place-items:center;flex:none;transition:border-color .2s,background .2s}
+.tel:hover .tel-i{border-color:var(--acc);background:#FBEDEC}
+.tel b{display:block;font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+.tel small{display:block;font-size:12px;color:#5C5C61;line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 22px;border-radius:12px;border:0;font:700 15px/1.15 'Figtree',system-ui,sans-serif;text-decoration:none;cursor:pointer;text-align:center;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,color .2s}
+.btn svg{flex:none;transition:transform .25s ease}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#FFFFFF}
+.btn-acc:hover{transform:translateY(-1px);box-shadow:0 14px 28px -14px var(--acc)}
+.btn-ink{background:#1C1C1E;color:#FFFFFF}
+.btn-ink:hover{transform:translateY(-1px);box-shadow:0 14px 28px -16px #1C1C1E}
+.btn-line{background:#FFFFFF;color:#1C1C1E;box-shadow:inset 0 0 0 1px #CFCECA}
+.btn-line:hover{box-shadow:inset 0 0 0 2px #1C1C1E}
+.btn-sm{min-height:44px;padding:0 18px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid #DAD9D5;background:#FFFFFF;align-items:center;justify-content:center;cursor:pointer;color:#1C1C1E}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 16px;border-radius:12px;background:#ECEBE8;text-decoration:none;color:#1C1C1E;font-weight:700}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5C5C61}
+.eyebrow i{width:18px;height:2px;background:var(--acc);display:block}
+.h2{font-size:clamp(30px,3.5vw,48px);line-height:1.04;letter-spacing:-.035em;font-weight:800;overflow-wrap:anywhere}
+.lead{font-size:clamp(16px,1.3vw,18px);color:#5C5C61;line-height:1.55}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.04em;padding:5px 10px;border-radius:8px;background:#ECEBE8;color:#3A3A3E;white-space:nowrap}
+.tag-val{background:#FFF1D6;color:#6B4A00}
+.mt :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:8px}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .45s ease both}
+@keyframes inA{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes inB{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* intro + filtres */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:18px 0 0;font-size:14px;color:#5C5C61}
+.crumbs a{color:#5C5C61;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumbs a:hover{color:#1C1C1E}
+.intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:40px;align-items:end;padding:6px 0 24px}
+.h1{font-size:clamp(36px,4vw,58px);line-height:.98;letter-spacing:-.045em;font-weight:900;overflow-wrap:anywhere;margin-top:14px}
+.filters{background:#ECEBE8;border-radius:28px;padding:22px 24px;display:grid;gap:18px}
+.frow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start}
+.flab{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#3A3A3E;padding-top:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:44px;padding:0 15px;border-radius:999px;border:1px solid #CFCECA;background:#FFFFFF;color:#1C1C1E;font:600 14.5px/1 'Figtree',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .2s,color .2s,border-color .2s,transform .15s}
+.chip:hover{border-color:#1C1C1E}
+.chip:active{transform:scale(.96)}
+.chip .c{font-size:12px;font-weight:800;min-width:22px;height:22px;border-radius:11px;display:inline-grid;place-items:center;padding:0 6px}
+.result{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 0 4px}
+.result p{font-size:16px;color:#5C5C61}
+.result p b{color:#1C1C1E;font-size:22px;font-weight:900;letter-spacing:-.02em}
+.mban{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;background:#1C1C1E;color:#FFFFFF;border-radius:22px;padding:16px 18px 16px 16px;margin-top:16px}
+.mban .ic{width:110px;background:#FFFFFF;border-radius:14px;padding:4px 6px}
+.mban .ic img{width:100%;height:auto}
+.mban b{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.mban p{font-size:14px;color:#C9C9CC;margin-top:4px}
+.mban .t{color:#FF8F86;font-weight:800}
+
+/* groupes */
+.grp{margin-top:36px}
+.grp-h{display:grid;grid-template-columns:132px minmax(0,1fr) auto;gap:20px;align-items:center;padding:10px 16px 10px 10px;border-radius:20px;background:#F6F5F3}
+.grp-h img{width:100%;height:auto}
+.grp-h h2{font-size:clamp(24px,2.2vw,30px);font-weight:900;letter-spacing:-.035em;line-height:1}
+.grp-h p{font-size:14.5px;color:#5C5C61;margin-top:4px;max-width:760px}
+.grp-specs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(186px,100%),1fr));gap:10px;margin-top:10px}
+.mcard{display:flex;flex-direction:column;text-decoration:none;color:#1C1C1E;background:#FFFFFF;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px #E6E5E1;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.mcard:hover{transform:translateY(-4px);box-shadow:0 0 0 1.5px #1C1C1E,0 22px 36px -28px rgba(28,28,30,.5)}
+.mvis{background:#ECEBE8;padding:20px 14px 0;position:relative}
+.mvis img{width:100%;height:auto;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mcard:hover .mvis img{transform:scale(1.05)}
+.mvis .tp{position:absolute;top:8px;left:8px;font-size:11px;font-weight:800;padding:4px 8px;border-radius:7px;background:#1C1C1E;color:#FFFFFF}
+.mbd{padding:12px 14px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.mbd b{font-size:16px;font-weight:800;letter-spacing:-.015em;line-height:1.2}
+.mbd .sp{font-size:13px;color:#5C5C61;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mbd .for{font-size:12px;color:#3A3A3E;font-weight:700;margin-top:auto;padding-top:7px;border-top:1px solid #EFEEEB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbd .for span{color:#5C5C61;font-weight:500}
+.mbd .go{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;font-weight:800;color:#1C1C1E;min-height:28px}
+.mbd .go svg{transition:transform .25s;color:var(--acc)}
+.mcard:hover .go svg{transform:translateX(4px)}
+.mbd .pr{font-size:13px;font-weight:800;color:#B3241B}
+.empty{background:#ECEBE8;border-radius:22px;padding:32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:24px}
+
+/* comparateur */
+.cmp-w{overflow-x:auto;margin-top:28px;border-radius:22px;box-shadow:0 0 0 1px #E6E5E1}
+.cmp{display:grid;grid-template-columns:170px repeat(5,minmax(150px,1fr));min-width:940px}
+.cmp > div{padding:14px 16px;border-bottom:1px solid #EFEEEB;font-size:14.5px;transition:background .25s}
+.cmp .rh{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5C5C61;background:#F6F5F3}
+.cmp .ch{border-bottom:0;padding:12px}
+.cmp .ch button{width:100%;border:0;border-radius:14px;padding:10px 10px 12px;cursor:pointer;font:800 15px/1.2 'Figtree',sans-serif;color:#1C1C1E;text-align:left;transition:background .2s,box-shadow .2s}
+.cmp .ch button:hover{box-shadow:inset 0 0 0 1.5px #1C1C1E}
+.cmp .ch img{width:100%;max-width:130px;height:auto;margin-bottom:4px}
+.cmp b{font-weight:700}
+
+.cta{background:#D42A20;color:#FFFFFF;border-radius:28px;padding:36px 40px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;margin-top:56px}
+.cta h2{font-size:clamp(28px,3vw,42px);font-weight:900;letter-spacing:-.035em;line-height:1.02}
+.cta p{color:#FFE3E0;margin-top:10px;font-size:16px}
+.cta .btn-w{background:#FFFFFF;color:#1C1C1E}
+.cta .btn-w:hover{transform:translateY(-1px)}
+.cta .btn-o{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+
+.ftr{background:#ECEBE8;padding:64px 0 24px;margin-top:72px}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:36px}
+.ftr-h{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5C5C61;margin-bottom:12px}
+.ftr p{font-size:15px}
+.ftr-links a{display:flex;align-items:center;min-height:36px;text-decoration:none;color:#1C1C1E;font-size:15px;font-weight:500}
+.ftr-links a:hover{color:var(--acc)}
+.ftr-tel{font-size:26px;font-weight:900;text-decoration:none;letter-spacing:-.02em;display:inline-block;color:#1C1C1E}
+.ftr-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin-top:56px;padding-top:12px;border-top:1px solid #D6D5D1;font-size:13px;color:#5C5C61}
+.ftr-bot a{color:#5C5C61;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-bot a:hover{color:#1C1C1E}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 16px 16px}}
+@media(max-width:1080px){.intro{grid-template-columns:minmax(0,1fr)}.cta{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.wrap{padding:0 16px}.topbar-note{display:none}.hdr-cta{display:none}.filters{padding:16px;border-radius:22px}.frow{grid-template-columns:minmax(0,1fr);gap:8px}.flab{padding-top:0}.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.chips.scroll .chip{flex:none}.grp-h{grid-template-columns:minmax(0,1fr);gap:10px;padding:14px}.grp-h img{max-width:150px}.grp-h > .tag{justify-self:start}.mgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mvis{padding:10px 8px 2px}.mbd{padding:10px 10px 12px}.mbd b{font-size:15px}.mbd .sp{font-size:12.5px}.mban{grid-template-columns:minmax(0,1fr)}.mban .ic{width:120px}.cta{padding:26px}.ftr{margin-top:64px}}
+@media (prefers-reduced-motion:reduce){.mt *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="mt" style="{{ rootStyle }}">
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <span class="topbar-note">Bureau d'études &amp; show-room · Puget-sur-Argens (Var)</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Metiers-Accueil.dc.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-w">RGTE<i></i></span>
+      <span class="logo-s">R.G.<br>Technologies</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Metiers-Lignes.dc.html" aria-current="page">Lignes d'agencement</a>
+      <a href="Metiers-Accueil.dc.html#secteurs">Secteurs</a>
+      <a href="Metiers-Accueil.dc.html#realisations">Réalisations</a>
+      <a href="Metiers-Accueil.dc.html#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D42A20" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Metiers-Accueil.dc.html#contact">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Metiers-Lignes.dc.html">Lignes d'agencement <span aria-hidden="true">→</span></a>
+      <a href="Metiers-Accueil.dc.html#secteurs">Secteurs <span aria-hidden="true">→</span></a>
+      <a href="Metiers-Accueil.dc.html#realisations">Réalisations <span aria-hidden="true">→</span></a>
+      <a href="Metiers-Accueil.dc.html#contact">Showroom &amp; contact <span aria-hidden="true">→</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span>Appel gratuit</span></a>
+      <a href="Metiers-Accueil.dc.html#contact" style="background:#D42A20;color:#FFFFFF">Plan 3D offert <span aria-hidden="true">→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Fil d'Ariane"><a href="Metiers-Accueil.dc.html">Accueil</a><span aria-hidden="true">/</span><span style="color:#1C1C1E">Lignes d'agencement</span></nav>
+  <div class="intro">
+    <div class="rise">
+      <span class="eyebrow"><i></i>Catalogue · 5 lignes · {{ total }} modules</span>
+      <h1 class="h1">Les vitrines de votre métier, ligne par ligne.</h1>
+    </div>
+    <p class="lead rise d1">Choisissez votre métier pour ne voir que les modules conseillés, puis une ligne pour comparer matières et façades. Chaque module s'assemble à d'autres pour composer votre comptoir sur mesure.</p>
+  </div>
+
+  <div class="filters rise d2">
+    <div class="frow">
+      <span class="flab">Votre métier</span>
+      <div class="chips scroll" role="group" aria-label="Filtrer par métier">
+        <sc-for list="{{ metiers }}" as="m" hint-placeholder-count="14">
+          <button type="button" class="chip" style="{{ m.style }}" aria-pressed="{{ m.on }}" onClick="{{ m.pick }}">{{ m.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div class="frow">
+      <span class="flab">Ligne</span>
+      <div class="chips" role="group" aria-label="Filtrer par ligne">
+        <sc-for list="{{ ligneChips }}" as="l" hint-placeholder-count="6">
+          <button type="button" class="chip" style="{{ l.style }}" aria-pressed="{{ l.on }}" onClick="{{ l.pick }}">{{ l.label }}<span class="c" style="{{ l.cStyle }}">{{ l.count }}</span></button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasMetier }}" hint-placeholder-val="{{ false }}">
+    <div class="mban" style="{{ anim }}">
+      <span class="ic"><img src="{{ cm.svg }}" alt="" width="480" height="320"></span>
+      <div>
+        <b>{{ cm.label }}</b> <span class="t">· {{ cm.tempTxt }}</span>
+        <p>{{ cm.nRec }} modules conseillés · {{ cm.note }}</p>
+      </div>
+      <a class="btn btn-acc" href="Metiers-Accueil.dc.html#contact">Plan 3D offert pour {{ cm.pour }}</a>
+    </div>
+  </sc-if>
+
+  <div class="result" aria-live="polite">
+    <p><b>{{ count }}</b> module{{ plural }} · {{ resultTxt }}</p>
+    <sc-if value="{{ isFiltered }}" hint-placeholder-val="{{ false }}">
+      <button type="button" class="btn btn-line btn-sm" onClick="{{ resetAll }}">Réinitialiser les filtres</button>
+    </sc-if>
+  </div>
+
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
+    <section class="grp" style="{{ anim }}" aria-label="{{ g.name }}">
+      <div class="grp-h">
+        <img src="{{ g.svg }}" alt="{{ g.alt }}" width="480" height="320">
+        <div>
+          <h2>{{ g.name }}</h2>
+          <p>{{ g.desc }}</p>
+          <div class="grp-specs"><span class="tag">Façade : {{ g.front }}</span><span class="tag">Plan : {{ g.plan }}</span></div>
+        </div>
+        <span class="tag" style="background:#1C1C1E;color:#FFFFFF">{{ g.shown }} / {{ g.total }}</span>
+      </div>
+      <div class="mgrid">
+        <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="6">
+          <a class="mcard" href="Metiers-Module.dc.html">
+            <div class="mvis">
+              <img src="{{ m.svg }}" alt="{{ m.alt }}" width="480" height="320">
+              <sc-if value="{{ m.hasTemp }}" hint-placeholder-val="{{ true }}"><span class="tp">{{ m.temp }}</span></sc-if>
+            </div>
+            <div class="mbd">
+              <b>{{ m.name }}</b>
+              <span class="sp">{{ m.spec }}</span>
+              <span class="for">Conseillé : <span>{{ m.forTxt }}</span></span>
+              <span class="go"><span style="{{ m.prStyle }}">{{ m.price }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+  </sc-for>
+
+  <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+    <div class="empty"><div><b style="font-size:20px">Aucun module de cette ligne n'est conseillé pour ce métier.</b><p style="color:#5C5C61;margin-top:6px">Le bureau d'études peut étudier une solution sur mesure, ou choisissez une autre ligne.</p></div><button type="button" class="btn btn-ink" onClick="{{ allLignes }}">Voir toutes les lignes</button></div>
+  </sc-if>
+
+  <!-- COMPARATEUR -->
+  <section id="comparateur" style="margin-top:72px">
+    <span class="eyebrow"><i></i>Comparateur</span>
+    <h2 class="h2" style="margin-top:14px">Matières, façades, plans : les 5 lignes côte à côte.</h2>
+    <p class="lead" style="margin-top:12px;max-width:680px">Cliquez une ligne pour filtrer le catalogue.</p>
+    <div class="cmp-w">
+      <div class="cmp" role="table" aria-label="Comparatif des lignes">
+        <div class="rh ch" role="columnheader"></div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5">
+          <div class="ch" role="columnheader" style="{{ c.colStyle }}"><button type="button" style="{{ c.btnStyle }}" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}"><img src="{{ c.svg }}" alt="" width="480" height="320">{{ c.name }}</button></div>
+        </sc-for>
+        <div class="rh" role="rowheader">Principe</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.colStyle }}">{{ c.principe }}</div></sc-for>
+        <div class="rh" role="rowheader">Structure</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.colStyle }}"><b>{{ c.structure }}</b></div></sc-for>
+        <div class="rh" role="rowheader">Panneau frontal</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.colStyle }}">{{ c.front }}</div></sc-for>
+        <div class="rh" role="rowheader">Plan de travail</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.colStyle }}">{{ c.plan }}</div></sc-for>
+        <div class="rh" role="rowheader">Modules</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.colStyle }}"><b>{{ c.total }}</b> modules</div></sc-for>
+        <div class="rh" role="rowheader" style="border-bottom:0">Pour {{ cmLower }}</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.lastStyle }}">{{ c.forMetier }}</div></sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div>
+      <h2>Vous hésitez entre deux lignes ?</h2>
+      <p>Le bureau d'études compose votre comptoir et vous envoie votre plan 3D d'agencement, offert.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-w" href="Metiers-Accueil.dc.html#contact">Demander mon plan 3D</a>
+      <a class="btn btn-o" href="tel:0800951313">0 800 95 13 13</a>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="logo" href="Metiers-Accueil.dc.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE<i></i></span><span class="logo-s">R.G.<br>Technologies</span></a>
+        <p style="color:#5C5C61;margin-top:16px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ftr-h">Bureau d'études &amp; show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ftr-h">Appel gratuit</p>
+        <a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:#5C5C61;margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ftr-links">
+        <p class="ftr-h">Explorer</p>
+        <a href="Metiers-Lignes.dc.html">Lignes d'agencement</a>
+        <a href="Metiers-Accueil.dc.html#secteurs">Secteurs</a>
+        <a href="Metiers-Accueil.dc.html#realisations">Réalisations</a>
+        <a href="Metiers-Accueil.dc.html#contact">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ftr-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 2) — concept, non officiel · <a href="Main.dc.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5500},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#B3241B"]},"metierInitial":{"editor":"enum","default":"tous","options":["tous","boulangerie","patisserie","chocolats","sandwichs","traiteur","poissonnerie","salades","couscous","fromagerie","bar","topping","cafe","pizza"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.D = this.data();
+    const init = props && props.metierInitial ? props.metierInitial : 'tous';
+    this.state = { menuOpen:false, metier: (init === 'tous' || this.D.metiers.some(m => m.id === init)) ? init : 'tous', ligne:'toutes', k:0 };
+  }
+  data(){
+    const V = 'assets/v2/vitrine-';
+    const lignes = [
+      { id:'basique', name:'Ligne Basique', short:'Basique', svg:'cube', alt:'Vitrine de la Ligne Basique : façade bois mélaminé à moulures, plan granit', desc:'Association de modules différents ; choix du coloris et des matériaux selon le souhait du client.', principe:'Modules différents associés, coloris et matériaux au choix', structure:'Modules associés', front:'Bois mélaminé ou verre (option)', plan:'Granit (plinthe granit)' },
+      { id:'stone', name:'Ligne Stone', short:'Stone', svg:'plane', alt:'Vitrine Plane de la Ligne Stone : façade verre sérigraphié', desc:'Association de modules ; structure en pierre acrylique type Corian ; panneau frontal en verre avec sérigraphie du client.', principe:'Modules associés', structure:'Pierre acrylique type Corian', front:'Verre, sérigraphie du client', plan:'Pierre acrylique (ex. Gourmandise)' },
+      { id:'legno', name:'Ligne Legno', short:'Legno', svg:'legno', alt:'Vitrine Plane de la Ligne Legno : façade bois mélaminé', desc:'Association de modules ; panneau frontal en bois mélaminé.', principe:'Modules associés', structure:'[À PRÉCISER]', front:'Bois mélaminé', plan:'[À PRÉCISER]' },
+      { id:'encastrable', name:'Ligne Encastrable', short:'Encastrable', svg:'encastrable', alt:'Cuve encastrable brute, prête à être habillée', desc:'Module brut prêt à être habillé ; version comptoir ou meuble entier sur pied.', principe:'Module brut à habiller', structure:'Version comptoir ou meuble entier sur pied', front:'À habiller', plan:'À habiller' },
+      { id:'industry', name:'Ligne Industry', short:'Industry', svg:'industry', alt:'Vitrine de la Ligne Industry : vitre bombée, façade laquée graphite', desc:'Vitrines standardisées en longueurs et indépendantes.', principe:'Vitrines indépendantes, longueurs standardisées', structure:'Standardisée', front:'[FINITION]', plan:'[À PRÉCISER]' }
+    ].map(l => Object.assign(l, { svg: V + l.svg + '.svg' }));
+    const LN = {}; lignes.forEach(l => { LN[l.id] = l; });
+    const mods = [];
+    const add = (id, name, ligne, svg, temp, spec) => mods.push({ id, name, ligne, svg: V + svg + '.svg', temp, spec, alt: name + ', ' + LN[ligne].name });
+    add('ba-bar','Comptoir bar','basique','caisse','','Comptoir de service');
+    add('ba-caisse','Comptoir caisse','basique','caisse','','Comptoir de vente');
+    add('ba-saladette','Saladette réfrigérée','basique','saladette','','Bacs gastronormes');
+    add('ba-cube','Vitrine réfrigérée Cube','basique','cube','','Vitrage cubique, 2 ou 3 étagères verre');
+    add('ba-pastry','Pastry Show','basique','cube','','Froid ventilé, vitrage droit, plaques 600×400 à hauteur de comptoir');
+    add('ba-statique','Statique','basique','cube','','Vitrine statique');
+    add('ba-basse','Basse','basique','cube','','Vitrine basse');
+    add('ba-murale','Murale self-service','basique','panorama','','Libre-service mural');
+    add('ba-panoramique','Panoramique','basique','panorama','','Grand volume vitré');
+    add('ba-chaud','Chaud','basique','bainmarie','','Bain-marie ou plaque chaude');
+    add('ba-retro','Vitrine rétro','basique','cube','','Esprit rétro');
+    add('ba-amandine','Amandine','basique','cube','','Montants modernes, cuve plaques 600×400, froid ventilé');
+    add('st-plane','Réfrigérée Plane','stone','plane','+2/+8 ou +14/+18','Exposition à hauteur du plan · prof. 53 ou 60 cm');
+    add('st-vision','Réfrigérée Vision','stone','plane','+2/+8 ou +14/+18','8 cm sous le plan de travail · prof. 53 ou 60 cm');
+    add('st-saladette','Saladette','stone','saladette','+2/+8','Bacs gastronormes (non fournis)');
+    add('st-bainmarie','Chaud bain-marie','stone','bainmarie','+30/+90','Bacs gastronormes');
+    add('st-centrale','Réfrigérée Centrale','stone','gourmandise','+2/+8 ou +14/+18','Vitrages coulissants des 2 côtés · prof. 60 cm');
+    add('st-gourmandise','Gourmandise','stone','gourmandise','+2/+8 ou +14/+18','Exposition centrale, vitrages coulissants · prof. 60 cm');
+    add('st-caisse','Comptoir caisse','stone','caisse','','Tout commerce · avec ou sans tablette PMR');
+    add('st-bar','Comptoir bar','stone','caisse','','Neutre ou réfrigéré');
+    add('st-poissonnerie','Réfrigérée Poissonnerie','stone','poissonnerie','−2/0','Froid statique, serpentin de cuve, vidange');
+    add('st-panorama','Réfrigérée Panorama','stone','panorama','+2/+8 ou +14/+18','Étagères réfrigérées +4/+8 · 2 ou 3 étagères');
+    add('st-surface','Surface plane','stone','plane','','Exposition plane');
+    add('le-plane','Plane','legno','legno','','Façade bois mélaminé');
+    add('le-arriere','Arrière neutre','legno','caisse','','Meuble arrière neutre');
+    add('le-caisse','Caisse et vitrine neutre','legno','caisse','','Caisse + vitrine neutre');
+    add('le-bar','Comptoir bar','legno','caisse','','Façade bois mélaminé');
+    add('le-statique','Réfrigérée statique','legno','legno','','Froid statique');
+    add('le-ventplane','Vitrine réfrigérée ventilée plane','legno','legno','','Froid ventilé, exposition plane');
+    add('le-neutre','Vitrine neutre','legno','caisse','','Non réfrigérée');
+    add('le-vent','Réfrigéré ventilé','legno','legno','','Froid ventilé');
+    add('le-chauffante','Vitrine chauffante sèche','legno','bainmarie','','Chaud sec');
+    add('en-vent','Cuve froid ventilé','encastrable','encastrable','','Brut à habiller · comptoir ou meuble sur pied');
+    add('en-stat','Cuve froid statique','encastrable','encastrable','','Brut à habiller · comptoir ou meuble sur pied');
+    add('in-olympe','Olympe','industry','panorama','','Murale');
+    add('in-nepal','Nepal','industry','industry','','Snack');
+    add('in-aramis','Aramis','industry','industry','','Boucherie');
+    add('in-rubis','Rubis','industry','industry','','Vitrine standardisée');
+    add('in-argentine','Argentine','industry','industry','','Vitrine standardisée');
+    add('in-hanoi','Hanoi','industry','industry','','Poissonnerie');
+    add('in-loire','Loire','industry','industry','','Boulangerie');
+    add('in-argent','Argent','industry','panorama','','Murale froid');
+    add('in-sugar','Sugar','industry','industry','','Hauteur comptoir');
+    add('in-hawaii','Hawaii','industry','industry','','Supermarché');
+    add('in-4faces','4 faces vitrées','industry','industry','','Vitrée sur 4 faces');
+    const metiers = [
+      { id:'boulangerie', label:'Boulangerie', lower:'la boulangerie', pour:'ma boulangerie', temp:'', recs:['ba-amandine','ba-pastry','in-loire','le-statique','le-neutre','le-arriere','st-caisse'] },
+      { id:'patisserie', label:'Pâtisserie', lower:'la pâtisserie', pour:'ma pâtisserie', temp:'+2 / +8 °C', validated:true, recs:['st-gourmandise','st-plane','st-vision','st-panorama','st-centrale','ba-pastry','ba-cube','ba-amandine'] },
+      { id:'chocolats', label:'Chocolats', lower:'le chocolat', pour:'ma chocolaterie', temp:'+14 / +18 °C', recs:['st-plane','st-gourmandise','st-centrale','st-vision','st-caisse'] },
+      { id:'sandwichs', label:'Sandwichs', lower:'les sandwichs', pour:'ma sandwicherie', temp:'', recs:['ba-panoramique','st-plane','ba-basse','ba-murale','in-nepal'] },
+      { id:'traiteur', label:'Traiteur', lower:'le traiteur', pour:'mon commerce traiteur', temp:'', recs:['st-plane','st-saladette','st-panorama','st-surface','st-bar','st-caisse'] },
+      { id:'poissonnerie', label:'Poissonnerie', lower:'la poissonnerie', pour:'ma poissonnerie', temp:'−2 / 0 °C', recs:['st-poissonnerie','in-hanoi','st-panorama','st-surface','st-caisse'] },
+      { id:'salades', label:'Bar à salades', lower:'le bar à salades', pour:'mon bar à salades', temp:'', recs:['st-saladette','st-panorama','ba-saladette','st-caisse'] },
+      { id:'couscous', label:'Bar à couscous', lower:'le bar à couscous', pour:'mon bar à couscous', temp:'', recs:['st-bainmarie','ba-chaud','st-saladette','st-caisse'] },
+      { id:'fromagerie', label:'Fromagerie', lower:'la fromagerie', pour:'ma fromagerie', temp:'', recs:['st-panorama','st-plane','le-statique','st-caisse'] },
+      { id:'bar', label:'Bar', lower:'le bar', pour:'mon bar', temp:'', recs:['st-bar','le-bar','ba-bar','ba-cube','st-caisse'] },
+      { id:'topping', label:'Bar à topping', lower:'le bar à topping', pour:'mon bar à topping', temp:'', recs:['st-saladette','st-surface','st-caisse'] },
+      { id:'cafe', label:'Coffee shop / Café', lower:'le coffee shop', pour:'mon coffee shop', temp:'', recs:['ba-pastry','ba-cube','ba-retro','st-bar','st-caisse'] },
+      { id:'pizza', label:'Pizza al taglio', lower:'la pizza al taglio', pour:'ma pizzeria', temp:'', recs:['st-saladette','st-plane','ba-chaud','le-chauffante','st-caisse'] }
+    ];
+    const forMap = {};
+    metiers.forEach(m => m.recs.forEach(id => { (forMap[id] = forMap[id] || []).push(m.label); }));
+    return { lignes, LN, mods, metiers, forMap };
+  }
+  renderVals(){
+    const s = this.state, D = this.D;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const ink = 'background:#1C1C1E;color:#FFFFFF;border-color:#1C1C1E';
+    const cmRaw = D.metiers.find(m => m.id === s.metier);
+    const recSet = cmRaw ? cmRaw.recs : null;
+    const matchMetier = (m) => !recSet || recSet.indexOf(m.id) > -1;
+    const bump = (o) => this.setState(Object.assign({ k: s.k + 1 }, o));
+    const metiers = [{ id:'tous', label:'Tous les métiers' }].concat(D.metiers).map(m => ({ label:m.label, on: s.metier === m.id ? 'true' : 'false', style: s.metier === m.id ? ink : '', pick: () => bump({ metier:m.id }) }));
+    const countFor = (lid) => D.mods.filter(m => (lid === 'toutes' || m.ligne === lid) && matchMetier(m)).length;
+    const ligneChips = [{ id:'toutes', short:'Toutes' }].concat(D.lignes).map(l => { const on = s.ligne === l.id; const c = countFor(l.id); return { label: l.short, count: c, on: on ? 'true' : 'false', style: on ? ink : (c === 0 ? 'opacity:.55' : ''), cStyle: on ? 'background:#D42A20;color:#FFFFFF' : 'background:#ECEBE8;color:#1C1C1E', pick: () => bump({ ligne:l.id }) }; });
+    const shownLignes = D.lignes.filter(l => s.ligne === 'toutes' || l.id === s.ligne);
+    let count = 0;
+    const groups = shownLignes.map(l => {
+      const all = D.mods.filter(m => m.ligne === l.id);
+      const items = all.filter(matchMetier).map(m => {
+        const fl = D.forMap[m.id] || [];
+        const isG = m.id === 'st-gourmandise';
+        return Object.assign({}, m, { hasTemp: !!m.temp, temp: m.temp ? m.temp + ' °C' : '', forTxt: fl.length ? fl.slice(0, 3).join(', ') + (fl.length > 3 ? ' +' + (fl.length - 3) : '') : 'à valider', price: isG ? 'Dès 5 800 € HT' : 'Sur devis', prStyle: isG ? 'color:#B3241B' : 'color:#5C5C61;font-weight:700' });
+      });
+      count += items.length;
+      return Object.assign({}, l, { items, shown: items.length, total: all.length });
+    }).filter(g => g.items.length > 0);
+    const anim = 'animation:' + (s.k % 2 ? 'inA' : 'inB') + ' .5s cubic-bezier(.2,.7,.2,1) both';
+    const first = cmRaw ? D.mods.find(m => m.id === cmRaw.recs[0]) : null;
+    const lname = s.ligne === 'toutes' ? 'toutes lignes' : D.LN[s.ligne].name;
+    const cmpCols = D.lignes.map(l => {
+      const on = s.ligne === l.id;
+      const total = D.mods.filter(m => m.ligne === l.id).length;
+      const fm = cmRaw ? D.mods.filter(m => m.ligne === l.id && cmRaw.recs.indexOf(m.id) > -1).map(m => m.name) : [];
+      const bg = on ? 'background:#FBEDEC;' : '';
+      return { name:l.name, svg:l.svg, principe:l.principe, structure:l.structure, front:l.front, plan:l.plan, total,
+        forMetier: cmRaw ? (fm.length ? fm.join(', ') : '—') : 'Choisissez un métier ci-dessus',
+        on: on ? 'true' : 'false', colStyle: bg, lastStyle: bg + 'border-bottom:0',
+        btnStyle: on ? 'background:#FFFFFF;box-shadow:inset 0 0 0 2px #D42A20' : 'background:#F6F5F3',
+        pick: () => bump({ ligne: on ? 'toutes' : l.id }) };
+    });
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menuOpen, toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      total: D.mods.length,
+      metiers, ligneChips, groups, count, plural: count > 1 ? 's' : '',
+      resultTxt: (cmRaw ? 'conseillés pour ' + cmRaw.lower : 'tous métiers') + ' · ' + lname,
+      isFiltered: s.metier !== 'tous' || s.ligne !== 'toutes',
+      resetAll: () => bump({ metier:'tous', ligne:'toutes' }),
+      allLignes: () => bump({ ligne:'toutes' }),
+      isEmpty: count === 0,
+      hasMetier: !!cmRaw,
+      cm: cmRaw ? { label:cmRaw.label, pour:cmRaw.pour, nRec:cmRaw.recs.length, svg:first.svg, tempTxt: cmRaw.temp || 'plage selon module', note: cmRaw.validated ? 'sélection RGTE' : 'sélection à valider avec le bureau d\'études' } : { label:'', pour:'', nRec:0, svg:'', tempTxt:'', note:'' },
+      cmLower: cmRaw ? cmRaw.lower : 'votre métier',
+      anim, cmpCols
+    };
+  }
+}
+</script>
+</body>
+</html>

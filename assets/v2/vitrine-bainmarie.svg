@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Module chaud bain-marie à bacs gastronormes">
+  <ellipse cx="240" cy="301" rx="214" ry="9" fill="#000" opacity=".13"></ellipse>
+  <rect x="58" y="284" width="364" height="16" fill="#2E2E30"></rect>
+  <rect x="40" y="160" width="400" height="124" fill="#F6F4F0"></rect>
+  <rect x="40" y="160" width="12" height="124" fill="#000" opacity=".045"></rect>
+  <rect x="428" y="160" width="12" height="124" fill="#000" opacity=".07"></rect>
+  <rect x="40" y="262" width="400" height="22" fill="#000" opacity=".035"></rect>
+  <!-- plan avec bacs vus en perspective -->
+  <polygon points="34,160 446,160 418,118 62,118" fill="#EFECE7"></polygon>
+  <g>
+    <polygon points="78,152 128,152 132,126 88,126" fill="#C9CED1"></polygon><polygon points="82,150 124,150 128,128 91,128" fill="#C98F4E"></polygon>
+    <polygon points="136,152 186,152 186,126 142,126" fill="#C9CED1"></polygon><polygon points="140,150 182,150 182,128 145,128" fill="#E2B985"></polygon>
+    <polygon points="194,152 244,152 240,126 196,126" fill="#C9CED1"></polygon><polygon points="198,150 240,150 237,128 199,128" fill="#B8463D"></polygon>
+    <polygon points="252,152 302,152 294,126 250,126" fill="#C9CED1"></polygon><polygon points="256,150 298,150 291,128 253,128" fill="#E8C7A6"></polygon>
+    <polygon points="310,152 360,152 348,126 304,126" fill="#C9CED1"></polygon><polygon points="314,150 356,150 345,128 307,128" fill="#D9A866"></polygon>
+    <polygon points="368,152 418,152 402,126 358,126" fill="#C9CED1"></polygon><polygon points="372,150 414,150 399,128 361,128" fill="#7A5240"></polygon>
+  </g>
+  <rect x="34" y="158" width="412" height="4" fill="#000" opacity=".06"></rect>
+  <g fill="none" stroke="#fff" stroke-width="2" opacity=".7"><path d="M120 118c-6-8 6-12 0-20M220 116c-6-8 6-12 0-20M320 118c-6-8 6-12 0-20"></path></g>
+  <!-- pare-haleine -->
+  <path d="M70 70 L410 70 L418 112 L62 112 Z" fill="#CFE3EA" opacity=".3"></path>
+  <path d="M70 70 L410 70 L418 112 L62 112 Z" fill="none" stroke="#A9BAC0"></path>
+  <polygon points="110,70 126,70 118,112 102,112" fill="#fff" opacity=".35"></polygon>
+  <g stroke="#B9BEC2" stroke-width="3"><path d="M66 112V160M414 112V160"></path></g>
+  <rect x="396" y="176" width="30" height="13" rx="2" fill="#1C1C1C"></rect>
+  <text x="411" y="186" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#FFB27A">+65°</text>
+  <rect x="62" y="178" width="320" height="74" fill="#fff" opacity=".55"></rect>
+  <rect x="62" y="178" width="320" height="74" fill="none" stroke="#DDD9D2"></rect>
+</svg>

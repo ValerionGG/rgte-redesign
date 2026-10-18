@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE · Gamme — Module Gourmandise</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+body{margin:0;background:#fff}
+sc-for,sc-if{display:contents}
+.g{--acc:#D42A20;--ink:#1C1C1E;--mut:#55555A;--ln:#D6D5D1;--ln2:#E7E6E2;--st:#ECEBE8;--st2:#F5F5F3;font-family:'Barlow',system-ui,sans-serif;font-size:16px;color:var(--ink);background:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.g *,.g *::before,.g *::after{box-sizing:border-box}
+.g img{display:block;max-width:100%}
+.g h1,.g h2,.g h3,.g h4,.g p,.g dl,.g dd,.g dt,.g ul{margin:0}
+.g ul{padding:0;list-style:none}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1360px;margin:0 auto;padding:0 32px}
+.g :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mk{display:inline-block;padding:0 4px;background:#FFF1EF;color:#A3221A;font-weight:600;font-size:.92em;border-radius:2px}
+.top{background:var(--ink);color:#C9C9CC;font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:36px}
+.top a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:36px}
+.top a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);border-bottom:1px solid var(--ln)}
+.hdr-in{display:flex;align-items:center;gap:28px;min-height:72px}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px;flex:none}
+.logo-b{width:8px;height:34px;background:var(--acc);display:block}
+.logo-w{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;letter-spacing:.01em;line-height:.9;display:block}
+.logo-s{display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);line-height:1.15}
+.nav{display:flex;gap:4px;margin-left:12px}
+.nav a{white-space:nowrap;display:inline-flex;align-items:center;min-height:72px;padding:0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);text-decoration:none;box-shadow:inset 0 -3px 0 transparent;transition:box-shadow .2s}
+.nav a:hover{box-shadow:inset 0 -3px 0 var(--acc)}
+.nav a.on{box-shadow:inset 0 -3px 0 var(--ink)}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:18px}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px}
+.tel b{white-space:nowrap;display:block;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1;letter-spacing:.02em}
+.tel small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);line-height:1.3}
+.tel-i{width:36px;height:36px;border:1px solid var(--ln);display:grid;place-items:center;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:0;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap}
+.btn svg{flex:none;transition:transform .2s}
+.btn:hover svg{transform:translateX(3px)}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-acc:hover{background:#B5231A}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:#000}
+.btn-out{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn-out:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:16px}
+.btn-block{width:100%}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--ln);background:#fff;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);border-radius:2px}
+.mnav{display:none}
+.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:52px;padding:0 16px;border-top:1px solid var(--ln2);text-decoration:none;color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase}
+.lab{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.sh{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 18px;border-top:2px solid var(--ink);padding-top:14px;margin-bottom:22px}
+.sh-n{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--acc);letter-spacing:.06em}
+.sh-t{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(28px,3vw,40px);line-height:1;text-transform:uppercase;overflow-wrap:anywhere}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.1s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.fade{animation:fade .35s ease both}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--mut);padding:10px 0 8px}
+.crumbs a{color:var(--mut);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumbs a:hover{color:var(--ink)}
+
+/* produit */
+.pp{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:36px;align-items:start}
+.gal{position:sticky;top:90px;display:flex;flex-direction:column;gap:8px}
+.stage{position:relative;background:var(--st);height:470px;overflow:hidden}
+.crop{position:absolute;width:18px;height:18px;border-color:var(--ink);border-style:solid;border-width:0}
+.crop.tl{left:14px;top:14px;border-left-width:1px;border-top-width:1px}
+.crop.tr{right:14px;top:14px;border-right-width:1px;border-top-width:1px}
+.crop.bl{left:14px;bottom:14px;border-left-width:1px;border-bottom-width:1px}
+.crop.br{right:14px;bottom:14px;border-right-width:1px;border-bottom-width:1px}
+.stag{position:absolute;left:28px;top:24px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);line-height:1.6;z-index:2}
+.face{position:absolute;left:0;right:0;top:60px;bottom:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px}
+.fimg{transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.fimg img{width:100%;height:auto}
+.cote{position:relative;height:16px;margin-top:6px;border-left:1px solid var(--ink);border-right:1px solid var(--ink);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.cote::before{content:'';position:absolute;left:0;right:0;top:8px;border-top:1px solid var(--ink)}
+.cote span{position:absolute;left:50%;top:-1px;transform:translateX(-50%);background:var(--st);padding:0 10px;font-weight:700;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tech{position:absolute;inset:56px 24px 24px;background:#fff;background-image:linear-gradient(#EEEDEA 1px,transparent 1px),linear-gradient(90deg,#EEEDEA 1px,transparent 1px);background-size:20px 20px}
+.tech svg{width:100%;height:100%;display:block}
+.tech rect,.tech path,.tech line{transition:all .6s cubic-bezier(.2,.7,.2,1)}
+.photo{position:absolute;inset:0}
+.photo img{width:100%;height:100%;object-fit:cover;animation:kb 9s ease-out both}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+.phcap{position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.94);padding:4px 10px;font-size:12px;color:var(--mut)}
+.thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.thumbs button{display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 10px;border:0;border-top:2px solid transparent;background:var(--st2);cursor:pointer;font:600 14px/1.2 'Barlow',sans-serif;color:var(--ink);text-align:left;transition:background .2s,border-color .2s}
+.thumbs button:hover{background:var(--st)}
+.thumbs svg{flex:none}
+.hl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--ln)}
+.hl div{padding:10px 12px;border-left:1px solid var(--ln2);font-size:14px;line-height:1.3}
+.hl div:first-child{border-left:0}
+.hl span{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.hl b{font-weight:600}
+
+.panel{display:flex;flex-direction:column;gap:20px}
+.ptitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(48px,5vw,76px);line-height:.9;text-transform:uppercase}
+.meta{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ln)}
+.meta div{padding:8px 16px 8px 0;margin-right:16px;font-size:14px}
+.meta span{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.meta b{font-weight:600}
+.opt-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.opt-h b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase}
+.opt-h span{font-size:14px;color:var(--mut)}
+.lens{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.lens button{min-height:54px;border:1px solid var(--ln);background:#fff;font:700 18px/1 'Barlow Condensed',sans-serif;cursor:pointer;color:var(--ink);border-radius:2px;transition:background .2s,color .2s,border-color .2s;padding:0 2px}
+.lens button small{display:block;font:500 11px/1.2 'Barlow',sans-serif;margin-top:3px;opacity:.85}
+.lens button:hover{border-color:var(--ink)}
+.custom{display:flex;align-items:center;gap:10px;margin-top:6px;padding:0 12px;border:1px solid var(--ink)}
+.custom input{flex:1;min-width:0;border:0;outline:0;font:600 17px 'Barlow',sans-serif;min-height:46px;color:var(--ink);background:transparent}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.tc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 14px;border:1px solid var(--ln);background:#fff;cursor:pointer;text-align:left;font-family:'Barlow',sans-serif;color:var(--ink);border-radius:2px;transition:border-color .2s,box-shadow .2s,background .2s}
+.tc:hover{border-color:var(--ink)}
+.tc b{font-family:'Barlow Condensed',sans-serif;font-size:22px;line-height:1.05}
+.tc span{font-size:13px;color:var(--mut)}
+.tc .sw{width:28px;height:28px;border:1px solid var(--ln);display:block;margin-bottom:4px}
+.recap{border:1px solid var(--ink)}
+.recap-p{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 18px;border-bottom:1px solid var(--ln)}
+.recap-p b{font-family:'Barlow Condensed',sans-serif;font-size:44px;line-height:1;font-weight:700;animation:fade .35s ease both}
+.recap-p small{display:block;font-size:13px;color:var(--mut);max-width:300px;margin-top:4px}
+.code{font-size:13px;font-weight:600;letter-spacing:.06em;background:var(--st2);padding:10px 18px;border-bottom:1px solid var(--ln);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.recap-a{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px 18px 16px}
+.recap-a .full{grid-column:1/-1}
+
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid var(--ink);overflow-x:auto}
+.tabs button{min-height:52px;padding:0 20px;border:0;border-bottom:3px solid transparent;background:none;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:var(--mut);white-space:nowrap;transition:color .2s,border-color .2s}
+.tabs button:hover{color:var(--ink)}
+.tbody{padding-top:24px;animation:fade .35s ease both}
+.spec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+.srow{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--ln);font-size:15px}
+.srow span{color:var(--mut)}
+.srow b{font-weight:600}
+.dt{border-top:1px solid var(--ink)}
+.drow{display:grid;grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 40px;gap:12px;align-items:center;width:100%;min-height:52px;padding:0 12px;border:0;border-bottom:1px solid var(--ln);background:#fff;cursor:pointer;text-align:left;font:500 15px 'Barlow',sans-serif;color:var(--ink);transition:background .2s}
+.drow:hover{background:var(--st2)}
+.drow b{font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.dhead{display:grid;grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 40px;gap:12px;padding:0 12px 8px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:10px}
+.doc{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--ln)}
+.doc i{width:44px;height:52px;border:1px solid var(--ink);display:grid;place-items:center;font-style:normal;font:700 12px 'Barlow Condensed',sans-serif;flex:none;position:relative}
+.doc b{display:block;font-size:15px}
+.doc span{font-size:13px;color:var(--mut)}
+.desc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;font-size:16px;color:var(--mut)}
+.desc h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;line-height:1;text-transform:uppercase;color:var(--ink)}
+
+/* form */
+.fw{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:0;border:1px solid var(--ink)}
+.fw-l{background:var(--ink);color:#fff;padding:32px;display:flex;flex-direction:column;gap:16px}
+.fw-l h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:40px;line-height:.95;text-transform:uppercase}
+.fw-l p{color:#C9C9CC}
+.fw-l .code{background:#2C2C2F;border:0;color:#fff}
+.fw-l a.t{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#fff;text-decoration:none;line-height:1}
+.fw-r{padding:28px 32px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:13px;font-weight:600}
+.fld input,.fld select,.fld textarea{font:500 16px/1.4 'Barlow',sans-serif;color:var(--ink);background:#fff;border:1px solid #9A9A9F;border-radius:2px;min-height:48px;padding:10px 12px;outline:0;transition:border-color .2s,box-shadow .2s;width:100%}
+.fld textarea{min-height:100px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.fld input[readonly]{background:var(--st2);color:var(--mut)}
+.err{font-size:13px;color:#B3241B}
+.done{padding:32px;border-top:4px solid var(--acc);animation:rise .5s ease both}
+
+/* associés */
+.rel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.rcard{display:flex;flex-direction:column;border:1px solid var(--ln);text-decoration:none;color:var(--ink);transition:border-color .2s,transform .25s,box-shadow .25s}
+.rcard:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 16px 26px -22px rgba(28,28,30,.6)}
+.rcard img{height:120px;width:100%;object-fit:contain;background:var(--st);padding:20px 12px 6px}
+.rcard div{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px}
+.rcard b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;line-height:1.05;text-transform:uppercase}
+.rcard span{font-size:13px;color:var(--mut)}
+.rcard em{font-style:normal;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;margin-top:4px}
+
+.ftr{background:var(--st);padding:56px 0 18px;border-top:1px solid var(--ln)}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:32px}
+.ftr-h{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.ftr p{font-size:15px}
+.ftr-l a{display:flex;align-items:center;min-height:36px;color:var(--ink);text-decoration:none;font-size:15px}
+.ftr-l a:hover{color:var(--acc)}
+.ftr-tel{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--ink);text-decoration:none}
+.ftr-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin-top:40px;padding-top:12px;border-top:1px solid var(--ln);font-size:13px;color:var(--mut)}
+.ftr-b a{color:var(--mut);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-b a:hover{color:var(--ink)}
+.legal{display:flex;flex-wrap:wrap;gap:0 18px}
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;border-top:1px solid var(--ln)}.rel{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:980px){.pp,.fw,.desc{grid-template-columns:minmax(0,1fr)}.gal{position:static}.spec{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.wrap{padding:0 16px}.hdr-cta{display:none}.hdr-in{gap:12px}.top-note{display:none}.stage{height:320px}.face{padding:0 16px;top:64px}.stag{left:32px;top:20px;font-size:11px}.tech{inset:64px 10px 10px}.hl{grid-template-columns:repeat(2,minmax(0,1fr))}.hl div:nth-child(3){border-left:0}.hl div:nth-child(n+3){border-top:1px solid var(--ln2)}.lens{grid-template-columns:repeat(4,minmax(0,1fr))}.thumbs button{font-size:12px;gap:6px;padding:6px}.thumbs svg{display:none}.srow{grid-template-columns:minmax(0,1fr);gap:2px}.drow,.dhead{grid-template-columns:76px minmax(0,1fr) minmax(0,1fr);}.drow .hide,.dhead .hide{display:none}.form{grid-template-columns:minmax(0,1fr)}.fw-l,.fw-r{padding:20px}.rel{grid-template-columns:repeat(2,minmax(0,1fr))}.recap-a{grid-template-columns:minmax(0,1fr)}.recap-p b{font-size:36px}.tabs button{padding:0 12px;font-size:16px}}
+@media (prefers-reduced-motion:reduce){.g *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="g" style="{{ rootStyle }}">
+
+<div class="top">
+  <div class="wrap top-in">
+    <span class="top-note">Bureau d'études &amp; show-room · Puget-sur-Argens (Var) · Catalogue professionnel</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Gamme-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil">
+      <span class="logo-b" aria-hidden="true"></span>
+      <span><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Gamme-Lignes.html">Lignes d'agencement</a>
+      <a href="Gamme-Accueil.html#secteurs">Secteurs</a>
+      <a href="Gamme-Accueil.html#realisations">Réalisations</a>
+      <a href="Gamme-Accueil.html#contact">Showroom &amp; contact</a>
+    </nav>
+    <div class="hdr-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-acc btn-sm hdr-cta" href="Gamme-Accueil.html#contact">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav fade" aria-label="Navigation mobile">
+      <a href="Gamme-Lignes.html">Lignes d'agencement <span>→</span></a>
+      <a href="Gamme-Accueil.html#secteurs">Secteurs <span>→</span></a>
+      <a href="Gamme-Accueil.html#realisations">Réalisations <span>→</span></a>
+      <a href="Gamme-Accueil.html#contact">Showroom &amp; contact <span>→</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span style="font-size:14px">Appel gratuit</span></a>
+      <a href="Gamme-Accueil.html#contact" style="background:var(--acc);color:#fff">Plan 3D offert <span>→</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Fil d'Ariane"><a href="Gamme-Accueil.html">Accueil</a><span aria-hidden="true">/</span><a href="Gamme-Lignes.html">Lignes d'agencement</a><span aria-hidden="true">/</span><a href="Gamme-Lignes.html">Ligne Stone</a><span aria-hidden="true">/</span><span style="color:var(--ink)">Gourmandise</span></nav>
+
+  <div class="pp">
+    <!-- GALERIE -->
+    <div class="gal rise">
+      <div class="stage">
+        <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        <span class="stag">{{ stageTag }}</span>
+        <sc-if value="{{ vFace }}" hint-placeholder-val="{{ true }}">
+          <div class="face fade">
+            <div class="fimg" style="{{ wStyle }}"><img src="../assets/v2/vitrine-gourmandise.svg" alt="Vitrine réfrigérée Gourmandise, ligne Stone, vue de face"></div>
+            <div class="cote" style="{{ wStyle }}"><span>{{ lenTxt }}</span></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ vCote }}" hint-placeholder-val="{{ false }}">
+          <div class="tech fade" role="img" aria-label="{{ techAria }}">
+            <svg viewBox="0 0 640 340" preserveAspectRatio="xMidYMid meet">
+              <g fill="none" stroke="#1C1C1E" stroke-width="1.5">
+                <rect x="40" y="150" width="{{ t.fw }}" height="120" fill="#F6F4F0"></rect>
+                <rect x="40" y="138" width="{{ t.fw }}" height="12" fill="#FBFAF8"></rect>
+                <rect x="54" y="70" width="10" height="68" fill="#F6F4F0"></rect>
+                <rect x="{{ t.postR }}" y="70" width="10" height="68" fill="#F6F4F0"></rect>
+                <rect x="54" y="64" width="{{ t.capW }}" height="6" fill="#F6F4F0"></rect>
+                <rect x="64" y="76" width="{{ t.glassW }}" height="62" fill="#CFE3EA" fill-opacity=".45" stroke-width="1"></rect>
+                <line x1="{{ t.mid }}" y1="76" x2="{{ t.mid }}" y2="138" stroke-width="1"></line>
+                <rect x="56" y="270" width="{{ t.footW }}" height="18" fill="#E2DFD9"></rect>
+                <rect x="{{ t.sx }}" y="150" width="130" height="120" fill="#F6F4F0"></rect>
+                <rect x="{{ t.sx }}" y="138" width="130" height="12" fill="#FBFAF8"></rect>
+                <path d="{{ t.sideGlass }}" fill="#CFE3EA" fill-opacity=".45" stroke-width="1"></path>
+                <rect x="{{ t.sxf }}" y="270" width="110" height="18" fill="#E2DFD9"></rect>
+              </g>
+              <g stroke="#D42A20" stroke-width="1" fill="#D42A20" font-family="Barlow Condensed, sans-serif" font-size="17" font-weight="700">
+                <line x1="40" y1="312" x2="{{ t.fx2 }}" y2="312"></line>
+                <line x1="40" y1="304" x2="40" y2="320"></line>
+                <line x1="{{ t.fx2 }}" y1="304" x2="{{ t.fx2 }}" y2="320"></line>
+                <text x="{{ t.mid }}" y="306" text-anchor="middle" stroke="none">{{ t.lTxt }}</text>
+                <line x1="{{ t.sx }}" y1="312" x2="{{ t.sx2 }}" y2="312"></line>
+                <line x1="{{ t.sx }}" y1="304" x2="{{ t.sx }}" y2="320"></line>
+                <line x1="{{ t.sx2 }}" y1="304" x2="{{ t.sx2 }}" y2="320"></line>
+                <text x="{{ t.smid }}" y="306" text-anchor="middle" stroke="none">{{ t.pTxt }}</text>
+                <line x1="{{ t.hx }}" y1="64" x2="{{ t.hx }}" y2="288"></line>
+                <line x1="{{ t.hx1 }}" y1="64" x2="{{ t.hx2 }}" y2="64"></line>
+                <line x1="{{ t.hx1 }}" y1="288" x2="{{ t.hx2 }}" y2="288"></line>
+                <text x="{{ t.htx }}" y="182" stroke="none">{{ t.hTxt }}</text>
+              </g>
+              <g font-family="Barlow, sans-serif" font-size="12" fill="#55555A">
+                <text x="40" y="40">VUE DE FACE</text>
+                <text x="{{ t.sx }}" y="40">VUE DE CÔTÉ</text>
+                <text x="{{ t.sx }}" y="56">{{ t.expo }}</text>
+              </g>
+            </svg>
+          </div>
+        </sc-if>
+        <sc-if value="{{ vPhoto }}" hint-placeholder-val="{{ false }}">
+          <div class="photo"><img src="../assets/vitrine-glass-pastry.webp" alt="Vitrine vitrée garnie de pâtisseries, photo d'ambiance"><span class="phcap">Photo d'ambiance — non contractuelle</span></div>
+        </sc-if>
+      </div>
+      <div class="thumbs" role="tablist" aria-label="Vues du produit">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+          <button type="button" role="tab" style="{{ v.style }}" aria-selected="{{ v.on }}" onClick="{{ v.pick }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ v.ico }}"></path></svg>{{ v.n }}</button>
+        </sc-for>
+      </div>
+      <div class="hl">
+        <div><span>Exposition</span><b>Centrale, hauteur du plan</b></div>
+        <div><span>Vitrages</span><b>Coulissants des 2 côtés</b></div>
+        <div><span>Profondeur</span><b>60 cm d'exposition</b></div>
+        <div><span>Froid</span><b>Ventilé, groupe logé</b></div>
+      </div>
+    </div>
+
+    <!-- PANNEAU -->
+    <div class="panel rise d1">
+      <div>
+        <span class="lab">Ligne Stone · vitrine réfrigérée</span>
+        <h1 class="ptitle" style="margin-top:6px">Gourmandise</h1>
+        <p style="color:var(--mut);margin-top:10px;font-size:17px">Exposition centrale à hauteur du plan de travail, vitrages coulissants des 2 côtés, pour pâtisseries, macarons ou chocolats.</p>
+      </div>
+      <div class="meta">
+        <div><span>N° catalogue</span><b>ST-06</b></div>
+        <div><span>Réf. fabricant</span><b class="mk">[RÉF]</b></div>
+        <div><span>Ligne</span><b>Stone</b></div>
+        <div><span>Fluide</span><b>R134A</b></div>
+      </div>
+
+      <div>
+        <div class="opt-h"><b>1 · Longueur</b><span class="num">{{ lenTxt }}</span></div>
+        <div class="lens" role="group" aria-label="Longueur">
+          <sc-for list="{{ lens }}" as="l" hint-placeholder-count="7">
+            <button type="button" style="{{ l.style }}" aria-pressed="{{ l.on }}" onClick="{{ l.pick }}">{{ l.n }}<small>{{ l.sub }}</small></button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+          <label class="custom fade"><span style="font-size:14px;color:var(--mut);white-space:nowrap">Longueur souhaitée</span><input type="number" inputmode="numeric" min="1" placeholder="ex. 250" value="{{ custom }}" onInput="{{ setCustom }}"><span style="font-weight:600">cm</span></label>
+        </sc-if>
+      </div>
+
+      <div>
+        <div class="opt-h"><b>2 · Température</b><span>{{ tempTxt }}</span></div>
+        <div class="two" role="group" aria-label="Plage de température">
+          <sc-for list="{{ temps }}" as="t" hint-placeholder-count="2">
+            <button type="button" class="tc" style="{{ t.style }}" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}"><b>{{ t.r }}</b><span>{{ t.u }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div>
+        <div class="opt-h"><b>3 · Finition</b><span>{{ finShort }}</span></div>
+        <div class="two" role="group" aria-label="Finition">
+          <sc-for list="{{ fins }}" as="f" hint-placeholder-count="2">
+            <button type="button" class="tc" style="{{ f.style }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}"><span class="sw" style="{{ f.sw }}"></span><b style="font-size:18px">{{ f.n }}</b><span>{{ f.sub }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div class="recap">
+        <div class="recap-p">
+          <div><span class="lab">Prix</span><br><b class="num" style="{{ pStyle }}">{{ priceTxt }}</b><small>{{ priceSub }}</small></div>
+          <span class="lab" style="text-align:right">Panneau frontal verre<br>sérigraphie du client</span>
+        </div>
+        <div class="code">{{ code }}</div>
+        <div class="recap-a">
+          <a class="btn btn-acc full" href="#demande">Demander un devis<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></a>
+          <a class="btn btn-out btn-sm" href="Gamme-Accueil.html#contact">Plan 3D offert</a>
+          <a class="btn btn-out btn-sm" href="tel:0800951313">0 800 95 13 13</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FICHE -->
+  <section style="margin-top:64px" id="fiche">
+    <div class="tabs" role="tablist" aria-label="Fiche produit">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <button type="button" role="tab" style="{{ t.style }}" aria-selected="{{ t.on }}" onClick="{{ t.pick }}">{{ t.n }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ tSpec }}" hint-placeholder-val="{{ true }}">
+      <div class="tbody">
+        <p class="lab" style="margin-bottom:8px">Fiche technique — modèle 101 cm · autres longueurs : <span class="mk">[À CONFIRMER]</span></p>
+        <div class="spec">
+          <div>
+            <div class="srow"><span>Piliers &amp; plan de travail</span><b>Pierre acrylique blanche</b></div>
+            <div class="srow"><span>Support</span><b>Monté sur pied en pierre acrylique blanche</b></div>
+            <div class="srow"><span>Groupe</span><b>Groupe logé</b></div>
+            <div class="srow"><span>Froid</span><b>Froid ventilé</b></div>
+            <div class="srow"><span>Fluide frigorigène</span><b>Fréon R134A</b></div>
+            <div class="srow"><span>Régulation</span><b>Contrôle électronique de la température</b></div>
+            <div class="srow"><span>Dégivrage</span><b>Automatique</b></div>
+          </div>
+          <div>
+            <div class="srow"><span>Condensats</span><b>Ré-évaporation automatique des eaux de condensation</b></div>
+            <div class="srow"><span>Températures</span><b>+2 °C / +8 °C ou +14 °C / +18 °C</b></div>
+            <div class="srow"><span>Dimensions extérieures</span><b class="num">101 × 80 × 80 + 25 h</b></div>
+            <div class="srow"><span>Exposition</span><b class="num">En verre 81 × 60 cm · profondeur 60 cm</b></div>
+            <div class="srow"><span>Réserve</span><b>Sans réserve réfrigérée</b></div>
+            <div class="srow"><span>Longueurs</span><b class="num">101 · 117 · 146 · 169 · 191 · 222 cm · sur mesure</b></div>
+            <div class="srow"><span>Prix</span><b class="num">5 800,00 € HT (101 cm) · autres : sur devis</b></div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tDim }}" hint-placeholder-val="{{ false }}">
+      <div class="tbody">
+        <div class="dhead"><span>Longueur</span><span>Dimensions ext.</span><span class="hide">Exposition</span><span>Prix</span><span class="hide"></span></div>
+        <div class="dt">
+          <sc-for list="{{ dimRows }}" as="d" hint-placeholder-count="7">
+            <button type="button" class="drow" style="{{ d.style }}" aria-pressed="{{ d.on }}" onClick="{{ d.pick }}"><b>{{ d.len }}</b><span class="num">{{ d.dim }}</span><span class="hide">{{ d.expo }}</span><span class="num">{{ d.price }}</span><span class="hide">{{ d.mark }}</span></button>
+          </sc-for>
+        </div>
+        <p style="font-size:13px;color:var(--mut);margin-top:10px">Cliquez une ligne pour mettre à jour la configuration et le dessin coté.</p>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tDesc }}" hint-placeholder-val="{{ false }}">
+      <div class="tbody desc">
+        <h3>Une vitrine qui se regarde des deux côtés.</h3>
+        <div style="display:grid;gap:12px">
+          <p>La Gourmandise appartient à la Ligne Stone : structure en pierre acrylique type Corian et panneau frontal en verre avec sérigraphie du client. Elle offre une exposition centrale à hauteur du plan de travail, avec des vitrages coulissants des deux côtés.</p>
+          <p>Pâtisseries, macarons ou chocolats : choisissez la plage +2 °C / +8 °C ou +14 °C / +18 °C. Six longueurs, ou sur mesure ; le bureau d'études l'intègre à votre plan 3D d'agencement.</p>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tDocs }}" hint-placeholder-val="{{ false }}">
+      <div class="tbody docs">
+        <div class="doc"><i>PDF</i><div><b>Fiche technique Gourmandise</b><span>Document à fournir · <span class="mk">[FICHE PDF]</span></span></div></div>
+        <div class="doc"><i>3D</i><div><b>Plan 3D de votre agencement</b><span>Élaboré par le bureau d'études · <a href="Gamme-Accueil.html#contact" style="color:var(--acc);font-weight:600">demander</a></span></div></div>
+        <div class="doc"><i>CGV</i><div><b>Conditions de vente</b><span>Pages légales du site · <a href="#" style="color:var(--ink)">consulter</a></span></div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- DEMANDE -->
+  <section style="margin-top:64px" id="demande">
+    <div class="sh"><span class="sh-n">→</span><h2 class="sh-t">Demande d'informations</h2><span class="lab">Configuration reprise automatiquement</span></div>
+    <div class="fw">
+      <div class="fw-l">
+        <h2>Fiche, chiffrage et plan 3D.</h2>
+        <p>Le bureau d'études vous recontacte avec le chiffrage de votre configuration et peut l'intégrer à votre plan 3D d'agencement.</p>
+        <div class="code">{{ code }}</div>
+        <div><span class="lab" style="color:#B9B9BE">Appel gratuit</span><br><a class="t" href="tel:0800951313">0 800 95 13 13</a></div>
+      </div>
+      <div class="fw-r">
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form class="form" onSubmit="{{ submit }}" novalidate>
+            <div class="fld"><label for="f-prod">Produit</label><input id="f-prod" type="text" value="Gourmandise — Ligne Stone" readonly></div>
+            <div class="fld"><label for="f-mod">Modèle</label><input id="f-mod" type="text" value="{{ modelTxt }}" readonly></div>
+            <div class="fld"><label for="f-nom">Nom *</label><input id="f-nom" type="text" autocomplete="name" value="{{ f.nom }}" onInput="{{ inNom }}" style="{{ eNomS }}"><sc-if value="{{ eNom }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez votre nom.</span></sc-if></div>
+            <div class="fld"><label for="f-tel">Téléphone *</label><input id="f-tel" type="tel" autocomplete="tel" value="{{ f.tel }}" onInput="{{ inTel }}" style="{{ eTelS }}"><sc-if value="{{ eTel }}" hint-placeholder-val="{{ false }}"><span class="err">Indiquez un numéro.</span></sc-if></div>
+            <div class="fld"><label for="f-mail">Email *</label><input id="f-mail" type="email" autocomplete="email" value="{{ f.mail }}" onInput="{{ inMail }}" style="{{ eMailS }}"><sc-if value="{{ eMail }}" hint-placeholder-val="{{ false }}"><span class="err">Email invalide.</span></sc-if></div>
+            <div class="fld"><label for="f-sec">Secteur d'activité</label>
+              <select id="f-sec" value="{{ f.sec }}" onChange="{{ inSec }}">
+                <option value="">Choisir…</option>
+                <option>Boulangerie</option><option>Pâtisserie</option><option>Chocolats</option><option>Sandwichs</option><option>Traiteur</option><option>Poissonnerie</option><option>Bar à salades</option><option>Bar à couscous</option><option>Fromagerie</option><option>Bar</option><option>Bar à topping</option><option>Coffee shop / Café</option><option>Pizza al taglio</option>
+              </select>
+            </div>
+            <div class="fld"><label for="f-cp">Code postal</label><input id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ inCp }}"></div>
+            <div class="fld"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
+            <div class="fld full"><label for="f-msg">Message *</label><textarea id="f-msg" placeholder="Dimensions du local, quantité, délai souhaité…" value="{{ f.msg }}" onInput="{{ inMsg }}" style="{{ eMsgS }}"></textarea><sc-if value="{{ eMsg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez votre message.</span></sc-if></div>
+            <div class="fld full" style="flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+              <span style="font-size:13px;color:var(--mut)">* Obligatoire · prototype, rien n'est envoyé</span>
+              <button type="submit" class="btn btn-acc">Envoyer la demande<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+            </div>
+          </form>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div class="done" role="status">
+            <span class="lab">Demande prête — prototype</span>
+            <h3 class="sh-t" style="margin-top:10px">Merci {{ f.nom }}.</h3>
+            <p style="margin-top:10px;color:var(--mut)">Prototype — rien n'est envoyé. Configuration retenue : <b style="color:var(--ink)">{{ modelTxt }}</b>.</p>
+            <button type="button" class="btn btn-ink" style="margin-top:20px" onClick="{{ reset }}">Modifier la demande</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSOCIÉS -->
+  <section style="margin:64px 0">
+    <div class="sh"><span class="sh-n">+</span><h2 class="sh-t">À composer avec la Gourmandise</h2><span class="lab">Ligne Stone</span><a href="Gamme-Lignes.html" style="margin-left:auto;color:var(--ink);font-weight:600;text-decoration:none;min-height:44px;display:inline-flex;align-items:center">Toute la ligne →</a></div>
+    <div class="rel">
+      <sc-for list="{{ related }}" as="m" hint-placeholder-count="5">
+        <a class="rcard" href="Gamme-Module.html"><img src="{{ m.img }}" alt="{{ m.alt }}"><div><span>N° {{ m.ix }}</span><b>{{ m.n }}</b><span>{{ m.s }}</span><em>Sur devis</em></div></a>
+      </sc-for>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-g">
+      <div>
+        <a class="logo" href="Gamme-Accueil.html" aria-label="RGTE — accueil"><span class="logo-b" aria-hidden="true"></span><span><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies</span></span></a>
+        <p style="color:var(--mut);margin-top:12px;max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div><p class="ftr-h">Bureau d'études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ftr-h">Appel gratuit</p><a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a><p style="color:var(--mut);font-size:14px;margin-top:4px">Horaires : <span class="mk">[HORAIRES]</span></p></div>
+      <div class="ftr-l"><p class="ftr-h">Catalogue</p><a href="Gamme-Lignes.html">Lignes d'agencement</a><a href="Gamme-Module.html">Module Gourmandise</a><a href="Gamme-Accueil.html#secteurs">Secteurs</a><a href="Gamme-Accueil.html#realisations">Réalisations</a><a href="Gamme-Accueil.html#contact">Showroom &amp; contact</a></div>
+    </div>
+    <div class="ftr-b">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 2) — concept, non officiel · <a href="index.html" style="display:inline;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3900},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1C1C1E","#9E1E17"]},"longueurInitiale":{"editor":"enum","default":"101","options":["101","117","146","169","191","222"]}}'>
+const LENS = [101,117,146,169,191,222];
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const init = props && props.longueurInitiale ? parseInt(props.longueurInitiale, 10) : 101;
+    this.state = { menu:false, len: LENS.indexOf(init) > -1 ? init : 101, custom:'', temp:'p', fin:'blanc', view:'face', tab:'spec',
+      f:{ nom:'', tel:'', mail:'', sec:'', cp:'', ville:'', msg:'' }, err:{}, sent:false };
+  }
+  setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
+  submit(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const f = this.state.f;
+    const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg: !f.msg.trim() };
+    if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; }
+    this.setState({ sent:true, err:{} });
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const isCustom = s.len === 'sm';
+    const cv = parseInt(s.custom, 10);
+    const eff = isCustom ? (cv > 0 ? cv : 0) : s.len;
+    const lenTxt = isCustom ? (cv > 0 ? 'Sur mesure · ' + cv + ' cm' : 'Sur mesure') : s.len + ' cm';
+    const is101 = s.len === 101;
+    const blanc = s.fin === 'blanc';
+    const catalog = is101 && blanc;
+    const choc = s.temp === 'c';
+    const sel = 'background:#1C1C1E;color:#fff;border-color:#1C1C1E';
+    const selCard = 'border-color:#1C1C1E;box-shadow:inset 0 0 0 1px #1C1C1E;background:#F5F5F3';
+    const dl = Math.max(80, Math.min(260, eff || 222));
+    const wPct = Math.round(50 + (Math.min(dl, 222) - 101) / 121 * 44);
+    const lens = LENS.map(l => ({ n:String(l), sub: l === 101 ? '5 800 €' : 'devis', on: s.len === l ? 'true' : 'false', style: s.len === l ? sel : '', pick: () => this.setState({ len:l }) }))
+      .concat([{ n:'Mesure', sub:'devis', on: isCustom ? 'true' : 'false', style: (isCustom ? sel + ';' : '') + 'font-size:15px', pick: () => this.setState({ len:'sm' }) }]);
+    const temps = [['p','+2 / +8 °C','Pâtisseries, macarons'],['c','+14 / +18 °C','Chocolats']].map(t => ({ r:t[1], u:t[2], on: s.temp === t[0] ? 'true' : 'false', style: s.temp === t[0] ? selCard : '', pick: () => this.setState({ temp:t[0] }) }));
+    const fins = [['blanc','Pierre acrylique blanche','Par défaut','background:#F6F4F0'],['col','Autre coloris','[COLORIS] · sur devis','background:repeating-linear-gradient(45deg,#DDDCD8 0 5px,#C9C8C4 5px 10px)']]
+      .map(x => ({ n:x[1], sub:x[2], sw:x[3], on: s.fin === x[0] ? 'true' : 'false', style: s.fin === x[0] ? selCard : '', pick: () => this.setState({ fin:x[0] }) }));
+    const tempTxt = choc ? '+14 / +18 °C' : '+2 / +8 °C';
+    let priceTxt = 'Sur devis', priceSub;
+    if (catalog) priceSub = 'Modèle 101 cm, pierre acrylique blanche.';
+    else if (is101) priceSub = 'Le prix de 5 800,00 € HT s\'entend en pierre acrylique blanche ; autre coloris sur devis.';
+    else if (isCustom) priceSub = 'Longueur sur mesure : chiffrage du bureau d\'études.';
+    else priceSub = 'Longueur ' + s.len + ' cm : [PRIX] communiqué sur devis.';
+    if (catalog) priceTxt = '5 800,00 € HT';
+    const code = 'GOURMANDISE · ST-06 · ' + (isCustom ? 'SM-' + (cv > 0 ? cv : '___') : 'L' + s.len) + ' · ' + (choc ? '+14/+18' : '+2/+8') + ' · ' + (blanc ? 'PIERRE BLANCHE' : '[COLORIS]');
+    // dessin coté
+    const fw = Math.round(170 + (Math.min(dl, 222) - 101) / 121 * 230);
+    const sx = 40 + fw + 70;
+    const t = { fw, postR: 40 + fw - 24, capW: fw - 28, glassW: fw - 48, mid: 40 + fw / 2, footW: fw - 32, fx2: 40 + fw,
+      sx, sxf: sx + 10, sx2: sx + 130, smid: sx + 65, sideGlass: 'M' + (sx + 14) + ' 138 L' + (sx + 14) + ' 76 L' + (sx + 116) + ' 76 L' + (sx + 116) + ' 138 Z',
+      hx: sx + 150, hx1: sx + 142, hx2: sx + 158, htx: sx + 160,
+      lTxt: isCustom ? (cv > 0 ? cv + ' cm' : 'L sur mesure') : s.len + ' cm', pTxt: is101 ? '80' : 'P [DIM.]', hTxt: is101 ? '80 + 25 h' : 'H [DIM.]',
+      expo: is101 ? 'Exposition en verre 81 × 60 cm' : 'Profondeur d\'exposition 60 cm' };
+    const VIEWS = [['face','Vue de face','M3 7h18v10H3zM7 7V4h10v3'],['cote','Dessin coté','M4 20h16M4 16v8M20 16v8M6 4h12v8H6z'],['photo','Ambiance','M4 5h16v14H4zM4 15l5-5 5 5 3-3 3 3']];
+    const views = VIEWS.map(v => ({ n:v[1], ico:v[2], on: s.view === v[0] ? 'true' : 'false', style: s.view === v[0] ? 'border-top-color:' + acc + ';background:#ECEBE8' : '', pick: () => this.setState({ view:v[0] }) }));
+    const TABS = [['spec','Caractéristiques'],['dim','Dimensions'],['desc','Description'],['docs','Documents']];
+    const tabs = TABS.map(x => ({ n:x[1], on: s.tab === x[0] ? 'true' : 'false', style: s.tab === x[0] ? 'color:#1C1C1E;border-bottom-color:' + acc : '', pick: () => this.setState({ tab:x[0] }) }));
+    const dimRows = LENS.map(l => ({ len:l + ' cm', dim: l === 101 ? '101 × 80 × 80 + 25 h' : '[DIMENSIONS]', expo: l === 101 ? 'Verre 81 × 60 cm' : 'Profondeur 60 cm', price: l === 101 ? '5 800,00 € HT' : 'Sur devis', mark: s.len === l ? '●' : '', on: s.len === l ? 'true' : 'false', style: s.len === l ? 'background:#FFF5F4' : '', pick: () => this.setState({ len:l }) }))
+      .concat([{ len:'Sur mesure', dim:'Selon votre local', expo:'Profondeur 60 cm', price:'Sur devis', mark: isCustom ? '●' : '', on: isCustom ? 'true' : 'false', style: isCustom ? 'background:#FFF5F4' : '', pick: () => this.setState({ len:'sm' }) }]);
+    const e = s.err || {};
+    const bad = 'border-color:#B3241B;box-shadow:inset 0 0 0 1px #B3241B';
+    const REL = [['Réfrigérée Centrale','gourmandise','ST-05','Vitrages des 2 côtés · prof. 60 cm'],['Réfrigérée Plane','plane','ST-01','Hauteur du plan · prof. 53 ou 60 cm'],['Réfrigérée Vision','plane','ST-02','8 cm sous le plan de travail'],['Réfrigérée Panorama','panorama','ST-10','2 ou 3 étagères réfrigérées'],['Comptoir caisse','caisse','ST-07','Avec ou sans tablette PMR']];
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu: !s.menu }),
+      stageTag: 'Gourmandise · ' + lenTxt + ' · ' + (choc ? 'chocolats ' : 'pâtisserie ') + tempTxt,
+      vFace: s.view === 'face', vCote: s.view === 'cote', vPhoto: s.view === 'photo', views,
+      wStyle: 'width:' + wPct + '%', lenTxt, t, techAria: 'Dessin coté de la Gourmandise, longueur ' + lenTxt,
+      lens, isCustom, custom: s.custom, setCustom: (ev) => this.setState({ custom: ev.target.value.replace(/[^0-9]/g, '').slice(0, 4) }),
+      temps, tempTxt, fins, finShort: blanc ? 'Pierre acrylique blanche' : '[COLORIS]',
+      priceTxt, priceSub, pStyle: catalog ? 'color:' + acc : '', code,
+      tabs, tSpec: s.tab === 'spec', tDim: s.tab === 'dim', tDesc: s.tab === 'desc', tDocs: s.tab === 'docs', dimRows,
+      modelTxt: 'Gourmandise ' + lenTxt + ' · ' + tempTxt + ' · ' + (blanc ? 'pierre acrylique blanche' : '[COLORIS]'),
+      f: s.f,
+      inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev), inSec: (ev) => this.setF('sec', ev),
+      inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev), inMsg: (ev) => this.setF('msg', ev),
+      eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, eMsg: !!e.msg,
+      eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '', eMsgS: e.msg ? bad : '',
+      submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent, reset: () => this.setState({ sent:false }),
+      related: REL.map(r => ({ n:r[0], img:'../assets/v2/vitrine-' + r[1] + '.svg', alt:'Rendu ' + r[0], ix:r[2], s:r[3] }))
+    };
+  }
+}
+</script>
+</body>
+</html>
