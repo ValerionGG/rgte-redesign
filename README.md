@@ -2,7 +2,7 @@
 
 Concepts de refonte complète de [rgte.eu](https://www.rgte.eu) (RGTE · R.G. Technologies, vitrines réfrigérées sur mesure, Puget-sur-Argens). **Ce n'est pas le site officiel** : chaque page porte la mention « Proposition de refonte — concept, non officiel », et les pages sont en `noindex`.
 
-**Site en ligne :** https://valeriongg.github.io/rgte-redesign/ (tour 1) · **Tour 2 :** https://valeriongg.github.io/rgte-redesign/v2/
+**Site en ligne :** https://valeriongg.github.io/rgte-redesign/ (tour 1) · **Tour 2 :** https://valeriongg.github.io/rgte-redesign/v2/ · **Tour 3 :** https://valeriongg.github.io/rgte-redesign/v3/
 
 | # | Direction | Esprit |
 |---|---|---|
@@ -42,3 +42,17 @@ Retour client : le tour 1 était trop éloigné du sujet (univers des clients pl
 | 5 | Projet 3D | Votre agencement dessiné et offert — demande de plan 3D dans le héros |
 
 3 pages par direction : Accueil (landing), Lignes d'agencement (45 modules), Module Gourmandise. Sources : `v2/project/*.dc.html`, cadrage : `v2/BRIEF-v2.md`, kit : `v2/kit/vitrines.html`.
+
+## Tour 3 — 5 sites complets en vraies photos (`v3/`)
+
+Retour client sur le tour 2 : rendus dessinés « pas beaux », pages pas assez abouties. Le tour 3 utilise uniquement des photos réelles : rendus 3D RGTE détourés (`assets/photos/produits/`), photos des réalisations publiées sur rgte.eu (`assets/photos/realisations/`) et ambiances Unsplash (`assets/photos/ambiance/`). Inspirations : IFI, CIAM, Orion, Dribbble, Behance, Pinterest.
+
+| # | Direction | Esprit |
+|---|---|---|
+| 1 | Éditorial | La vitrine, objet de design |
+| 2 | Fabricant | Conçu, fabriqué, installé |
+| 3 | Catalogue | L'équipement pro des métiers de bouche |
+| 4 | Configurateur | Composez votre comptoir |
+| 5 | Réalisations | 14 boutiques, une signature |
+
+6 pages par direction (Accueil, Lignes, Module Gourmandise, Secteurs, Réalisations, Contact). Cadrage : `v3/BRIEF-v3.md`.

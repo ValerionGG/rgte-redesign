@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE · Configurateur — Lignes</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#FFFFFF}
+sc-for,sc-if{display:contents}
+.cf{--acc:#D42A20;--acc2:#B3221A;--ink:#17181B;--mute:#5C5E64;--line:#E1E0DC;--studio:#EFEEEB;--floor:#E3E2DE;--soft:#F6F6F4;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:#FFFFFF;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1}
+.cf *,.cf *::before,.cf *::after{box-sizing:border-box}
+.cf img{display:block;max-width:100%}
+:where(.cf) :is(h1,h2,h3,h4,p){margin:0}
+:where(.cf) button{font-family:inherit;color:inherit}
+.cf :focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1360px;margin:0 auto;padding:0 40px}
+section[id]{scroll-margin-top:150px}
+/* header */
+.tb{background:var(--ink);color:#C8C9CC;font-size:13px}
+.tb-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.tb a{color:#FFFFFF;text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:38px}
+.tb a:hover{text-decoration:underline;text-underline-offset:3px}
+.hd{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.hd-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:74px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);min-height:44px}
+.logo-w{font-weight:800;font-size:26px;letter-spacing:-.045em;line-height:1;position:relative;padding-bottom:5px}
+.logo-w::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--acc)}
+.logo-s{font-size:12px;font-weight:500;color:var(--mute);line-height:1.2;border-left:1px solid var(--line);padding-left:12px}
+.nav{display:flex;gap:2px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 13px;border-radius:22px;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;transition:background .2s}
+.nav a:hover{background:var(--soft)}
+.nav a.on{background:var(--ink);color:#FFFFFF}
+.hd-r{display:flex;align-items:center;gap:8px}
+.tel{display:inline-flex;flex-direction:column;justify-content:center;text-decoration:none;color:var(--ink);min-height:44px;padding:0 8px;line-height:1.15}
+.tel b{font-size:16px;font-weight:800}
+.tel small{font-size:11.5px;color:var(--mute);font-weight:500}
+.pbtn{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 8px 0 14px;border-radius:22px;border:1px solid var(--line);background:#FFFFFF;font-size:14px;font-weight:700;cursor:pointer;transition:border-color .2s,background .2s}
+.pbtn:hover{border-color:var(--ink)}
+.pbtn[aria-expanded="true"]{background:var(--ink);color:#FFFFFF;border-color:var(--ink)}
+.badge{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 7px;border-radius:14px;background:var(--acc);color:#FFFFFF;font-size:13px;font-weight:800;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{0%{transform:scale(.3)}100%{transform:scale(1)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:12px;border:0;font-size:15px;font-weight:700;text-decoration:none;cursor:pointer;transition:background .2s,box-shadow .2s,transform .15s,color .2s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-acc{background:var(--acc);color:#FFFFFF}
+.btn-acc:hover{background:var(--acc2)}
+.btn-ink{background:var(--ink);color:#FFFFFF}
+.btn-ink:hover{background:#34363B}
+.btn-line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px #BEBDB8}
+.btn-line:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-wl{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.btn-wl:hover{box-shadow:inset 0 0 0 1.5px #FFFFFF}
+.btn-sm{min-height:44px;padding:0 16px;font-size:14px}
+.burger{display:none;width:44px;height:44px;border-radius:22px;border:1px solid var(--line);background:#FFFFFF;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.pp{position:absolute;right:max(16px,calc((100% - 1360px) / 2 + 40px));top:calc(100% + 8px);width:min(440px,calc(100% - 32px));background:#FFFFFF;border-radius:18px;box-shadow:0 0 0 1px var(--line),0 40px 80px -30px rgba(23,24,27,.35);padding:20px;animation:fd .3s cubic-bezier(.2,.7,.2,1) both;z-index:95}
+@keyframes fd{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.pp-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.pp-h b{font-size:17px}
+.pp-h span{font-size:13px;color:var(--mute)}
+.pp-st{container-type:inline-size;margin:14px 0 4px;padding:18px 14px 12px;border-radius:12px;background:linear-gradient(#F3F2EF 0 70%,var(--floor) 70%);display:flex;justify-content:center}
+.pp-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.pp-row img{width:52px;height:38px;object-fit:contain}
+.pp-row span{color:var(--mute);font-size:12.5px;display:block}
+.pp-tot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 4px;border-top:1px solid var(--ink);margin-top:2px}
+.pp-tot b{font-size:30px;font-weight:300;letter-spacing:-.03em}
+.xb{width:44px;height:44px;border:0;border-radius:22px;background:transparent;color:var(--mute);cursor:pointer;display:grid;place-items:center}
+.xb:hover{background:var(--soft);color:var(--ink)}
+.empty{font-size:14px;color:var(--mute);padding:14px 0}
+.lu{display:inline-flex;flex-direction:column;align-items:stretch;max-width:100%}
+.row{display:flex;align-items:flex-end;justify-content:center}
+.pk{position:relative;flex:none;border:0;padding:0;background:transparent;animation:drop .7s cubic-bezier(.2,.8,.2,1) both}
+.pk::before{content:'';position:absolute;left:4%;right:4%;bottom:-6%;height:16%;border-radius:50%;background:radial-gradient(closest-side,rgba(23,24,27,.32),rgba(23,24,27,0));filter:blur(3px);z-index:0}
+.cut{position:absolute;inset:0;overflow:hidden;z-index:1}
+.cut img{position:absolute;max-width:none;height:auto}
+@keyframes drop{from{opacity:0;transform:translateY(-26px)}to{opacity:1;transform:none}}
+/* type */
+.h1{font-size:clamp(44px,6.4vw,100px);line-height:.92;letter-spacing:-.055em;font-weight:800;overflow-wrap:anywhere}
+.h2{font-size:clamp(32px,3.8vw,58px);line-height:.98;letter-spacing:-.045em;font-weight:800;overflow-wrap:anywhere}
+.h3{font-size:clamp(22px,2vw,28px);line-height:1.12;letter-spacing:-.025em;font-weight:700}
+.lead{font-size:clamp(16px,1.25vw,18.5px);color:var(--mute);line-height:1.55;max-width:58ch}
+.lab{font-size:13.5px;font-weight:600;color:var(--mute)}
+.num{font-weight:200;letter-spacing:-.05em;line-height:.9}
+.note{font-size:13px;color:var(--mute)}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:22px;border:0;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s,color .2s;white-space:nowrap}
+.chip:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.chip small{font-size:12px;font-weight:700;opacity:.7}
+
+/* page */
+.intro{background:linear-gradient(180deg,#F7F7F5 0,#EFEEEB 100%);padding:64px 0 0;overflow:hidden}
+.in-g{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:end}
+.shelf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:56px;border-top:1px solid #D9D8D3}
+.sh{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:26px 18px 22px;border:0;border-right:1px solid #D9D8D3;background:transparent;text-align:left;cursor:pointer;transition:background .3s}
+.sh:last-child{border-right:0}
+.sh:hover{background:rgba(255,255,255,.55)}
+.sh-im{height:150px;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.sh-im::after{content:'';position:absolute;left:12%;right:12%;bottom:-6px;height:18px;border-radius:50%;background:radial-gradient(closest-side,rgba(23,24,27,.28),rgba(23,24,27,0))}
+.sh-im img{position:relative;z-index:1;max-height:150px;width:auto;max-width:100%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.sh:hover .sh-im img{transform:translateY(-6px)}
+.sh b{font-size:22px;letter-spacing:-.035em;line-height:1.1}
+.sh span{font-size:13px;color:var(--mute);font-weight:600}
+.sh i{position:absolute;left:0;right:0;bottom:-1px;height:3px;transition:background .3s}
+.fbar{position:sticky;top:75px;z-index:60;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.fbar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
+.fchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 0}
+.fbar p{font-size:13.5px;color:var(--mute);white-space:nowrap}
+.lblock{padding:72px 0 24px}
+.lb-g{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:56px;align-items:center}
+.lb-ph{position:relative;height:480px;border-radius:22px;overflow:hidden;background:var(--studio)}
+.lb-ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.lb-ph:hover img{transform:scale(1.04)}
+.lb-ph p{position:absolute;left:18px;bottom:18px;background:rgba(23,24,27,.78);color:#FFFFFF;border-radius:14px;padding:6px 12px;font-size:12.5px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.specs{display:grid;grid-template-columns:minmax(0,1fr);margin-top:24px;border-top:1px solid var(--line)}
+.specs div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.specs span{color:var(--mute);font-size:13.5px;font-weight:600}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(290px,100%),1fr));gap:14px;margin-top:40px}
+.mc{position:relative;display:flex;flex-direction:column;background:#FFFFFF;border-radius:18px;box-shadow:0 0 0 1px var(--line);overflow:hidden;transition:box-shadow .3s,transform .3s}
+.mc:hover{box-shadow:0 0 0 1px var(--ink),0 24px 50px -32px rgba(23,24,27,.4)}
+.mc-im{position:relative;height:210px;background:linear-gradient(#F5F4F2 0 74%,#E8E7E3 74%);display:flex;align-items:flex-end;justify-content:center;padding:18px 20px 22px;overflow:hidden}
+.mc-im img.pkimg{position:relative;z-index:1;max-height:100%;width:auto;max-width:100%;object-fit:contain;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.mc-im::after{content:'';position:absolute;left:18%;right:18%;bottom:14px;height:20px;border-radius:50%;background:radial-gradient(closest-side,rgba(23,24,27,.24),rgba(23,24,27,0))}
+.mc:hover .mc-im img.pkimg{transform:translateY(-5px) scale(1.03)}
+.mc-im img.phimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.mc:hover .mc-im img.phimg{transform:scale(1.05)}
+.mc-im .tagp{position:absolute;left:12px;top:12px;z-index:3;font-size:11.5px;font-weight:700;background:rgba(255,255,255,.92);border-radius:10px;padding:3px 9px;color:var(--ink)}
+.mc-im .ph0{position:relative;z-index:1;align-self:center;font-size:13px;font-weight:700;color:var(--mute);border:1px dashed #BEBDB8;border-radius:10px;padding:10px 14px}
+.mc-b{padding:16px 18px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.mc-b b{font-size:17px;letter-spacing:-.015em;line-height:1.2}
+.mc-b p{font-size:13.5px;color:var(--mute);line-height:1.45}
+.mc-t{font-size:13px;font-weight:700;color:var(--acc)}
+.mc-f{display:flex;gap:6px;margin-top:auto;padding-top:10px}
+.mc-f .btn{flex:1}
+.addb{min-height:44px;padding:0 14px;white-space:nowrap;border-radius:12px;border:0;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .2s,color .2s}
+/* comparateur */
+.cmp-w{overflow-x:auto;margin-top:40px;border-radius:20px;box-shadow:0 0 0 1px var(--line)}
+.cmp{display:grid;grid-template-columns:200px repeat(5,minmax(170px,1fr));min-width:1060px}
+.cmp > div{padding:16px 18px;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.45;transition:background .25s}
+.cmp .rh{font-size:13px;font-weight:700;color:var(--mute);background:var(--soft)}
+.cmp .ch{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding-top:20px}
+.cmp .ch button{border:0;background:transparent;padding:0;text-align:left;cursor:pointer;font-size:22px;font-weight:700;letter-spacing:-.035em;min-height:44px}
+.cmp .ch img{height:80px;width:auto;max-width:100%;object-fit:contain}
+.cta{padding:96px 0;background:var(--ink);color:#FFFFFF}
+.cta-g{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:center}
+.cta .lead{color:#BFC0C4}
+.cta-lu{container-type:inline-size;display:flex;justify-content:center;padding:34px 18px 22px;border-radius:20px;background:linear-gradient(#F4F3F0 0 70%,var(--floor) 70%)}
+/* footer */
+.ft{background:#FFFFFF;border-top:1px solid var(--line);padding:72px 0 24px}
+.ft-g{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:40px}
+.cf .ft-h{font-size:13px;font-weight:700;color:var(--mute);margin-bottom:12px}
+.ft p{font-size:14.5px;color:var(--mute)}
+.ft-l a{display:flex;align-items:center;min-height:36px;color:var(--ink);text-decoration:none;font-size:14.5px}
+.ft-l a:hover{color:var(--acc)}
+.ft-tel{font-size:26px;font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.02em}
+.ft-bot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 20px;margin-top:56px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.ft-bot a{color:var(--mute);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ft-bot a:hover{color:var(--ink)}
+.legal{display:flex;flex-wrap:wrap;gap:0 18px}
+.fadein{animation:fd .5s ease both}
+@media(max-width:1280px){.tel{display:none}.logo-s{display:none}}
+@media(max-width:1080px){.nav{display:none}.burger{display:inline-flex}.mnav{display:grid;gap:6px;padding:4px 0 16px}.mnav a{display:flex;align-items:center;min-height:48px;padding:0 16px;border-radius:12px;background:var(--soft);text-decoration:none;color:var(--ink);font-weight:700}
+.in-g,.lb-g,.cta-g{grid-template-columns:minmax(0,1fr)}.shelf{grid-template-columns:repeat(3,minmax(0,1fr))}.sh:nth-child(3){border-right:0}.ft-g{grid-template-columns:repeat(2,minmax(0,1fr))}.fbar p{display:none}}
+@media(max-width:720px){.wrap{padding:0 16px}.hd-cta{display:none}.tb-note{display:none}.pbtn .pl-t{display:none}.pp{right:16px}
+.intro{padding-top:36px}.shelf{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px}.sh{padding:18px 10px 16px;border-right:0}.sh-im{height:96px}.sh-im img{max-height:96px}.sh b{font-size:18px}
+.fbar{top:75px}.shelf{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:150px;overflow-x:auto;scrollbar-width:none}
+.cmp{grid-template-columns:110px repeat(5,150px);min-width:0}.cmp > div{padding:12px}.mgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mc-im{height:130px;padding:12px}.mc-b{padding:12px}.mc-b b{font-size:15px}.mc-b p{font-size:12.5px}.mc-f{flex-direction:column}.mc-f .btn,.mc-f .addb{width:100%;font-size:13px;padding:0 8px;white-space:normal;text-align:center}.lblock{padding:48px 0 16px}.lb-ph{height:280px}.specs div{grid-template-columns:minmax(0,1fr);gap:2px}.ft-g{grid-template-columns:minmax(0,1fr)}.cta{padding:72px 0}}
+@media (prefers-reduced-motion:reduce){.cf *{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+</helmet>
+<div class="cf" style="{{ rootStyle }}">
+
+<div class="tb">
+  <div class="wrap tb-in">
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+    <span class="tb-note">Bureau d'études et show-room à Puget-sur-Argens, dans le Var</span>
+  </div>
+</div>
+
+<header class="hd">
+  <div class="wrap hd-in">
+    <a class="logo" href="Config-Accueil.html" aria-label="RGTE, R.G. Technologies — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies<br>Vitrines réfrigérées</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Config-Lignes.html" aria-current="page">Lignes d'agencement</a>
+      <a href="Config-Secteurs.html">Secteurs</a>
+      <a href="Config-Realisations.html">Réalisations</a>
+      <a href="Config-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hd-r">
+      <a class="tel" href="tel:0800951313"><b>0 800 95 13 13</b><small>Appel gratuit</small></a>
+      <button type="button" class="pbtn" onClick="{{ togglePP }}" aria-expanded="{{ ppOpenS }}" aria-label="Mon projet : voir les modules choisis"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18v9H3z"></path><path d="M5 10V6h14v4M9 10v9M15 10v9"></path></svg><span class="pl-t">Mon projet</span><span class="badge" key="{{ badgeKey }}">{{ pj.count }}</span></button>
+      <a class="btn btn-acc btn-sm hd-cta" href="Config-Contact.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuS }}" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="wrap mnav" aria-label="Navigation mobile">
+      <a href="Config-Lignes.html">Lignes d'agencement</a>
+      <a href="Config-Secteurs.html">Secteurs</a>
+      <a href="Config-Realisations.html">Réalisations</a>
+      <a href="Config-Contact.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313">0 800 95 13 13 · appel gratuit</a>
+      <a href="Config-Contact.html" style="background:var(--acc);color:#FFFFFF">Plan 3D offert</a>
+    </nav>
+  </sc-if>
+  <sc-if value="{{ ppOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="pp" role="dialog" aria-label="Mon projet">
+      <div class="pp-h"><b>Mon projet</b><span>{{ pj.ligneTxt }}</span></div>
+      <sc-if value="{{ pj.has }}" hint-placeholder-val="{{ true }}">
+        <div class="pp-st"><div class="lu"><div class="row" style="{{ pjMini.rowStyle }}">
+          <sc-for list="{{ pjMini.mods }}" as="m" hint-placeholder-count="3"><span class="pk" style="{{ m.shape }}"><span class="cut"><img src="{{ m.src }}" alt="{{ m.alt }}" style="{{ m.imgStyle }}"></span></span></sc-for>
+        </div></div></div>
+        <sc-for list="{{ pj.rows }}" as="r" hint-placeholder-count="3">
+          <div class="pp-row"><img src="{{ r.thumb }}" alt=""><div><b>{{ r.name }}</b><span>{{ r.sub }}</span></div><button type="button" class="xb" onClick="{{ r.remove }}" aria-label="{{ r.removeLabel }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+        </sc-for>
+        <div class="pp-tot"><span class="lab">Longueur totale</span><b>{{ pj.total }} cm</b></div>
+      </sc-if>
+      <sc-if value="{{ pj.none }}" hint-placeholder-val="{{ false }}"><p class="empty">Votre projet est vide : ajoutez des modules depuis cette page.</p></sc-if>
+      <div style="display:grid;gap:8px;margin-top:12px">
+        <a class="btn btn-acc" href="Config-Contact.html">Recevoir mon plan 3D offert</a>
+        <a class="btn btn-line" href="Config-Accueil.html">Modifier dans le composeur</a>
+      </div>
+    </div>
+  </sc-if>
+</header>
+
+<main>
+<section class="intro">
+  <div class="wrap">
+    <div class="in-g">
+      <h1 class="h1">Lignes d'agencement.</h1>
+      <p class="lead">Cinq familles de vitrines, du module en pierre acrylique sérigraphié à la vitrine standardisée. Choisissez une ligne, ajoutez ses modules à votre projet, ouvrez la fiche technique.</p>
+    </div>
+    <div class="shelf" role="tablist" aria-label="Choisir une ligne">
+      <sc-for list="{{ shelf }}" as="l" hint-placeholder-count="5">
+        <button type="button" class="sh" role="tab" aria-selected="{{ l.on }}" onClick="{{ l.pick }}" style="{{ l.bg }}"><span class="sh-im"><img src="{{ l.pack }}" alt="{{ l.packAlt }}"></span><b>{{ l.name }}</b><span>{{ l.count }} modules · {{ l.short }}</span><i style="{{ l.bar }}"></i></button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<div class="fbar">
+  <div class="wrap fbar-in">
+    <div class="fchips" role="group" aria-label="Filtrer par ligne">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+        <button type="button" class="chip" style="{{ f.style }}" onClick="{{ f.pick }}" aria-pressed="{{ f.on }}">{{ f.label }}<small>{{ f.count }}</small></button>
+      </sc-for>
+    </div>
+    <p>{{ shownTxt }}</p>
+  </div>
+</div>
+
+<sc-for list="{{ blocks }}" as="b" hint-placeholder-count="1">
+  <section class="lblock" id="{{ b.id }}">
+    <div class="wrap">
+      <div class="lb-g fadein" key="{{ b.key }}">
+        <div class="lb-ph"><img src="{{ b.photo }}" alt="{{ b.photoAlt }}"><p>{{ b.photoCap }}</p></div>
+        <div>
+          <p class="lab">{{ b.count }} modules</p>
+          <h2 class="h2" style="margin-top:10px">Ligne {{ b.name }}</h2>
+          <p class="lead" style="margin-top:14px">{{ b.desc }}</p>
+          <div class="specs">
+            <div><span>Structure</span>{{ b.structure }}</div>
+            <div><span>Panneau frontal</span>{{ b.front }}</div>
+            <div><span>Plan de travail</span>{{ b.plan }}</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+            <a class="btn btn-ink" href="Config-Contact.html">Plan 3D en Ligne {{ b.name }}</a>
+            <sc-if value="{{ b.composable }}" hint-placeholder-val="{{ true }}"><a class="btn btn-line" href="Config-Accueil.html" onClick="{{ b.compose }}">Composer en Ligne {{ b.name }}</a></sc-if>
+          </div>
+        </div>
+      </div>
+      <div class="mgrid">
+        <sc-for list="{{ b.mods }}" as="m" hint-placeholder-count="8">
+          <article class="mc">
+            <div class="mc-im">
+              <sc-if value="{{ m.isPk }}" hint-placeholder-val="{{ true }}"><img class="pkimg" src="{{ m.src }}" alt="{{ m.alt }}" loading="lazy"></sc-if>
+              <sc-if value="{{ m.isPh }}" hint-placeholder-val="{{ false }}"><img class="phimg" src="{{ m.src }}" alt="{{ m.alt }}" loading="lazy"><span class="tagp">{{ m.phCap }}</span></sc-if>
+              <sc-if value="{{ m.isNone }}" hint-placeholder-val="{{ false }}"><span class="ph0">[VISUEL] packshot à fournir</span></sc-if>
+            </div>
+            <div class="mc-b">
+              <b>{{ m.name }}</b>
+              <sc-if value="{{ m.hasTemp }}" hint-placeholder-val="{{ true }}"><span class="mc-t">{{ m.temp }}</span></sc-if>
+              <p>{{ m.spec }}</p>
+              <div class="mc-f">
+                <a class="btn btn-line btn-sm" href="{{ m.href }}">{{ m.hrefTxt }}</a>
+                <sc-if value="{{ m.canAdd }}" hint-placeholder-val="{{ true }}"><button type="button" class="addb" style="{{ m.addStyle }}" onClick="{{ m.add }}" aria-pressed="{{ m.inS }}" aria-label="{{ m.addLabel }}">{{ m.addTxt }}</button></sc-if>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</sc-for>
+
+<section style="padding:104px 0" id="comparer">
+  <div class="wrap">
+    <div class="in-g">
+      <h2 class="h2">Comparer les cinq lignes.</h2>
+      <p class="lead">Matériaux, panneau frontal, plan de travail : cliquez sur une ligne pour la mettre en avant et filtrer ses modules plus haut.</p>
+    </div>
+    <div class="cmp-w">
+      <div class="cmp">
+        <div class="rh" style="border-bottom-color:var(--line)"></div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5">
+          <div class="ch" style="{{ c.bg }}"><img src="{{ c.pack }}" alt="" loading="lazy"><button type="button" onClick="{{ c.pick }}" aria-pressed="{{ c.on }}">{{ c.name }}</button></div>
+        </sc-for>
+        <div class="rh">Principe</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bg }}">{{ c.principe }}</div></sc-for>
+        <div class="rh">Structure</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bg }}">{{ c.structure }}</div></sc-for>
+        <div class="rh">Panneau frontal</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bg }}">{{ c.front }}</div></sc-for>
+        <div class="rh">Plan de travail</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bg }}">{{ c.plan }}</div></sc-for>
+        <div class="rh">Modules</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bg }}"><b>{{ c.count }}</b></div></sc-for>
+        <div class="rh" style="border-bottom:0">Configurateur</div>
+        <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="5"><div style="{{ c.bgLast }}">{{ c.cfg }}</div></sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap cta-g">
+    <div>
+      <h2 class="h2">{{ pj.count }} modules, {{ pj.total }} cm : votre plan 3D est à portée.</h2>
+      <p class="lead" style="margin-top:16px">Le bureau d'études adapte la composition à votre local et vous remet le plan 3D d'agencement, offert.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:28px"><a class="btn btn-acc" href="Config-Contact.html">Recevoir mon plan 3D offert</a><a class="btn btn-wl" href="tel:0800951313">0 800 95 13 13</a></div>
+    </div>
+    <sc-if value="{{ pj.has }}" hint-placeholder-val="{{ true }}">
+      <div class="cta-lu"><div class="lu"><div class="row" style="{{ ctaLu.rowStyle }}">
+        <sc-for list="{{ ctaLu.mods }}" as="m" hint-placeholder-count="3"><span class="pk" style="{{ m.shape }}" key="{{ m.key }}"><span class="cut"><img src="{{ m.src }}" alt="{{ m.alt }}" style="{{ m.imgStyle }}"></span></span></sc-for>
+      </div></div></div>
+    </sc-if>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-g">
+      <div>
+        <a class="logo" href="Config-Accueil.html" aria-label="RGTE — accueil"><span class="logo-w">RGTE</span><span class="logo-s">R.G. Technologies<br>Vitrines réfrigérées</span></a>
+        <p style="margin-top:16px;max-width:36ch">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche. Élaboration de votre plan 3D d'agencement.</p>
+      </div>
+      <div><p class="ft-h">Bureau d'études et show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p><p style="margin-top:10px">Horaires : [HORAIRES]</p></div>
+      <div class="ft-l"><p class="ft-h">Le site</p><a href="Config-Lignes.html">Lignes d'agencement</a><a href="Config-Module.html">Module Gourmandise</a><a href="Config-Secteurs.html">Secteurs</a><a href="Config-Realisations.html">Réalisations</a><a href="Config-Contact.html">Showroom &amp; contact</a></div>
+      <div><p class="ft-h">Appel gratuit</p><a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a><a class="btn btn-acc" style="margin-top:16px" href="Config-Contact.html">Plan 3D offert</a></div>
+    </div>
+    <div class="ft-bot">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Photos : RGTE (rgte.eu) · ambiances Unsplash</span>
+      <span>Proposition de refonte (tour 3) — concept, non officiel</span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#17181B","#1F5F8B"]},"ligneInitiale":{"editor":"enum","default":"stone","options":["stone","basique","legno","encastrable","industry","toutes"]}}'>
+const P = '../assets/photos/';
+const CROP = {
+  'stone-caisse':[761,357,53,384,11,355], 'stone-gourmandise':[649,385,218,647,3,382], 'stone-plane':[1200,598,58,547,61,595],
+  'stone-vision':[800,430,4,377,20,427], 'stone-saladette':[800,450,4,386,9,442], 'stone-centrale':[354,427,2,352,5,424],
+  'stone-bainmarie':[742,419,7,315,32,417], 'stone-poissonnerie':[1050,545,540,1048,13,542], 'basique-pastry-show':[1200,675,63,554,87,565],
+  'basique-cube':[1152,647,2,457,42,628], 'basique-saladette':[1200,615,15,580,87,605], 'legno-bar':[1164,587,74,567,76,475],
+  'legno-statique':[1200,675,141,597,55,616], 'legno-ventilee':[1136,603,164,561,68,541], 'legno-caisse':[1122,594,120,536,97,591]
+};
+const KIT = {
+  's-caisse':{ name:'Comptoir caisse', ligne:'stone', f:'stone-caisse', hf:.8 }, 's-gourmandise':{ name:'Gourmandise', ligne:'stone', f:'stone-gourmandise', hf:.9 },
+  's-plane':{ name:'Réfrigérée Plane', ligne:'stone', f:'stone-plane', hf:1 }, 's-vision':{ name:'Réfrigérée Vision', ligne:'stone', f:'stone-vision', hf:1 },
+  's-centrale':{ name:'Réfrigérée Centrale', ligne:'stone', f:'stone-centrale', hf:1 }, 's-saladette':{ name:'Saladette', ligne:'stone', f:'stone-saladette', hf:1 },
+  's-bainmarie':{ name:'Chaud bain-marie', ligne:'stone', f:'stone-bainmarie', hf:.96 }, 's-poisson':{ name:'Réfrigérée Poissonnerie', ligne:'stone', f:'stone-poissonnerie', hf:.94 },
+  'b-pastry':{ name:'Pastry Show', ligne:'basique', f:'basique-pastry-show', hf:1 }, 'b-cube':{ name:'Vitrine Cube', ligne:'basique', f:'basique-cube', hf:1.2 },
+  'b-saladette':{ name:'Saladette réfrigérée', ligne:'basique', f:'basique-saladette', hf:.92 }, 'l-bar':{ name:'Comptoir bar', ligne:'legno', f:'legno-bar', hf:.86 },
+  'l-statique':{ name:'Réfrigérée statique', ligne:'legno', f:'legno-statique', hf:1.02 }, 'l-ventilee':{ name:'Ventilée plane', ligne:'legno', f:'legno-ventilee', hf:1 },
+  'l-neutre':{ name:'Vitrine neutre', ligne:'legno', f:'legno-caisse', hf:.84 }
+};
+const LNAME = { stone:'Stone', basique:'Basique', legno:'Legno' };
+const DEFS = { stone:[['s-caisse',101],['s-gourmandise',101],['s-plane',146]], basique:[['b-pastry',146],['b-cube',101],['b-saladette',117]], legno:[['l-neutre',101],['l-statique',146],['l-ventilee',146]] };
+const KEY = 'rgte-v3-config-projet';
+function defProj(){ const d = DEFS.stone; return { n:d.length, items:d.map((x, i) => ({ id:x[0], len:x[1], k:i + 1 })) }; }
+function loadProj(){ try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.items)) { s.items = s.items.filter(it => KIT[it.id]); return s; } } catch (e) {} return defProj(); }
+function saveProj(p){ try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} }
+function cropOf(f){ const c = CROP[f], sw = c[3] - c[2], sh = c[5] - c[4];
+  return { asp: sw / sh, box: 'aspect-ratio:' + sw + ' / ' + sh, src: P + 'produits/' + f + '.webp', img: 'width:' + (c[0] / sw * 100).toFixed(2) + '%;left:' + (-c[2] / sw * 100).toFixed(2) + '%;top:' + (-c[4] / sh * 100).toFixed(2) + '%' }; }
+function lineup(items, maxU, gap){
+  const ms = items.map(it => ({ it, k: KIT[it.id], c: cropOf(KIT[it.id].f) }));
+  const S = ms.reduce((a, m) => a + m.c.asp * m.k.hf, 0) || 1, G = gap * Math.max(0, ms.length - 1);
+  return { rowStyle: '--u:min(' + maxU + 'px, calc((100cqw - ' + G + 'px) / ' + S.toFixed(3) + '));gap:' + gap + 'px',
+    mods: ms.map((m, i) => ({ key:'k' + m.it.k, name:m.k.name, src:m.c.src, imgStyle:m.c.img, alt:m.k.name + ', Ligne ' + LNAME[m.k.ligne] + ', packshot', shape:'height:calc(var(--u) * ' + m.k.hf + ');' + m.c.box + ';animation-delay:' + (i * .08).toFixed(2) + 's' })) };
+}
+const T28 = '+2/+8 °C ou +14/+18 °C';
+// [id, nom, type visuel (pk|ph|no), fichier, légende photo, température, spécification, id configurateur]
+const LIGNES = [
+  { id:'stone', name:'Stone', short:'pierre acrylique', pack:'produits/stone-gourmandise-222.webp', photo:'realisations/stone-patissier-chocolatier.webp', photoCap:'Pâtissier chocolatier, Rhône (69)', photoAlt:'Comptoir Ligne Stone blanc rétroéclairé, façade sérigraphiée',
+    desc:'Association de modules. Structure en pierre acrylique type Corian, panneau frontal en verre avec la sérigraphie du client.', structure:'Pierre acrylique type Corian', front:'Verre, sérigraphie du client', plan:'Pierre acrylique', principe:'Modules associés', cfg:'Composable',
+    mods:[
+      ['s-plane','Réfrigérée Plane','pk','produits/stone-plane.webp','',T28,'Exposition à hauteur du plan de travail, pâtisseries, sandwichs ou chocolats. Profondeur 53 ou 60 cm.','s-plane'],
+      ['s-vision','Réfrigérée Vision','pk','produits/stone-vision.webp','',T28,'Exposition 8 cm sous la hauteur du plan de travail. Profondeur 53 ou 60 cm.','s-vision'],
+      ['s-gourmandise','Gourmandise','pk','produits/stone-gourmandise.webp','',T28,'Exposition centrale, vitrages coulissants des 2 côtés. Dès 5 800 € HT (101 cm).','s-gourmandise'],
+      ['s-centrale','Réfrigérée Centrale','pk','produits/stone-centrale.webp','',T28,'Exposition centrale, vitrages coulissants des 2 côtés. Profondeur 60 cm.','s-centrale'],
+      ['s-saladette','Saladette','pk','produits/stone-saladette.webp','','+2/+8 °C','Ingrédients en bacs gastronormes (bacs non fournis).','s-saladette'],
+      ['s-bainmarie','Chaud bain-marie','pk','produits/stone-bainmarie.webp','','+30/+90 °C','Bacs gastronormes.','s-bainmarie'],
+      ['s-poisson','Réfrigérée Poissonnerie','pk','produits/stone-poissonnerie.webp','','−2/0 °C','Froid statique avec serpentin de cuve, vidange de cuve.','s-poisson'],
+      ['s-panorama','Réfrigérée Panorama','ph','realisations/stone-pointier-2.webp','En situation, Hauts-de-Seine',T28,'2 ou 3 étagères réfrigérées +4/+8 °C.',''],
+      ['s-caisse','Comptoir caisse','pk','produits/stone-caisse.webp','','','Tout commerce, avec ou sans tablette PMR.','s-caisse'],
+      ['s-bar','Comptoir bar','ph','realisations/stone-bar-photo.webp','En situation','','Neutre ou réfrigéré.',''],
+      ['s-surface','Surface plane','ph','realisations/stone-yogurt-ladefense.webp','Plan 3D, bar à yogourt glacé','','Plan d\'exposition plat, sur mesure.','']
+    ] },
+  { id:'basique', name:'Basique', short:'granit et bois', pack:'produits/basique-pastry-show.webp', photo:'realisations/basique-nouveau-magasin.webp', photoCap:'Boutique équipée en Ligne Basique', photoAlt:'Grande boutique équipée de vitrines Ligne Basique',
+    desc:'Association de modules différents. Coloris et matériaux selon le souhait du client ; panneau frontal en bois mélaminé ou en verre en option ; plan de travail et plinthe en granit.', structure:'Coloris et matériaux au choix', front:'Bois mélaminé, verre en option', plan:'Granit, plinthe en granit', principe:'Modules associés', cfg:'Composable',
+    mods:[
+      ['b-pastry','Pastry Show','pk','produits/basique-pastry-show.webp','','','Froid ventilé, vitrage droit, plaques 600×400 mm à hauteur de comptoir.','b-pastry'],
+      ['b-cube','Vitrine réfrigérée Cube','pk','produits/basique-cube.webp','','','Vitrage cubique, 2 ou 3 étagères en verre.','b-cube'],
+      ['b-saladette','Saladette réfrigérée','pk','produits/basique-saladette.webp','','','Bacs gastronormes.','b-saladette'],
+      ['b-amandine','Amandine','ph','realisations/stone-reunion-3.webp','En situation, La Réunion','','Montants modernes, cuve pour plaques pâtissières 600×400, froid ventilé.',''],
+      ['b-panoramique','Panoramique','ph','realisations/basique-chamonix.webp','En situation, Chamonix','','Exposition panoramique.',''],
+      ['b-murale','Murale self-service','ph','realisations/basique-chamonix-2.webp','En situation, Chamonix','','Libre-service mural.',''],
+      ['b-basse','Basse','ph','realisations/basique-chamonix-4.webp','En situation, Chamonix','','Vitrine basse.',''],
+      ['b-chaud','Chaud','ph','realisations/basique-bainmarie.webp','En situation','','Bain-marie ou plaque chaude.',''],
+      ['b-retro','Vitrine rétro','ph','realisations/basique-retro.webp','En situation','','Lignes rétro, coloris au choix.',''],
+      ['b-statique','Statique','no','','','','Froid statique.',''],
+      ['b-caisse','Comptoir caisse','ph','realisations/basique-caisse.webp','En situation','','Tout commerce.',''],
+      ['b-bar','Comptoir bar','ph','realisations/basique-bar.webp','En situation','','Neutre ou réfrigéré.','']
+    ] },
+  { id:'legno', name:'Legno', short:'bois mélaminé', pack:'produits/legno-statique.webp', photo:'realisations/legno-cafe-bar.webp', photoCap:'Café-bar équipé en Ligne Legno', photoAlt:'Café-bar avec comptoir Ligne Legno et vitrines',
+    desc:'Association de modules à panneau frontal en bois mélaminé, pour les boulangeries, cafés et coffee shops.', structure:'Modules associés', front:'Bois mélaminé', plan:'Selon composition', principe:'Modules associés', cfg:'Composable',
+    mods:[
+      ['l-statique','Réfrigérée statique','pk','produits/legno-statique.webp','','','Froid statique.','l-statique'],
+      ['l-ventilee','Vitrine réfrigérée ventilée plane','pk','produits/legno-ventilee.webp','','','Froid ventilé, exposition plane.','l-ventilee'],
+      ['l-ventile','Réfrigéré ventilé','pk','produits/legno-ventilee-172.webp','','','Froid ventilé.',''],
+      ['l-plane','Plane','ph','realisations/legno-cafe-vitrine.webp','En situation','','Exposition plane.',''],
+      ['l-neutre','Vitrine neutre','pk','produits/legno-caisse.webp','','','Module neutre, sans froid.','l-neutre'],
+      ['l-caissevit','Caisse et vitrine neutre','pk','produits/legno-caisse-angle.webp','','','Caisse associée à une vitrine neutre.',''],
+      ['l-bar','Comptoir bar','pk','produits/legno-bar.webp','','','Comptoir bar en bois mélaminé.','l-bar'],
+      ['l-arriere','Arrière neutre','pk','produits/legno-arriere.webp','','','Module arrière, côté laboratoire.',''],
+      ['l-chauffante','Vitrine chauffante sèche','no','','','','Chaleur sèche.','']
+    ] },
+  { id:'encastrable', name:'Encastrable', short:'module brut', pack:'produits/encastrable-ventile.webp', photo:'realisations/basique-saladette.webp', photoCap:'Cuves en situation', photoAlt:'Comptoir avec cuves réfrigérées en bacs gastronormes',
+    desc:'Module brut prêt à être habillé, en version comptoir ou en meuble entier sur pied.', structure:'Brut, à habiller', front:'Selon votre agencement', plan:'Selon votre agencement', principe:'Module à intégrer', cfg:'Sur devis',
+    mods:[
+      ['e-ventile','Cuve froid ventilé','pk','produits/encastrable-ventile.webp','','','Version comptoir ou meuble entier sur pied.',''],
+      ['e-statique','Cuve froid statique','pk','produits/encastrable-statique.webp','','','Version comptoir ou meuble entier sur pied.','']
+    ] },
+  { id:'industry', name:'Industry', short:'standardisée', pack:'produits/industry-loire.webp', photo:'ambiance/boutique-vitrines-longues.webp', photoCap:'Ambiance (Unsplash)', photoAlt:'Longues vitrines réfrigérées dans une boutique (ambiance)',
+    desc:'Vitrines standardisées en longueurs et indépendantes, du mural au supermarché.', structure:'Vitrines standardisées', front:'Selon modèle', plan:'Selon modèle', principe:'Vitrines indépendantes', cfg:'Sur devis',
+    mods:[
+      ['i-olympe','Olympe','pk','produits/industry-olympe-2.webp','','','Vitrine murale.',''],
+      ['i-nepal','Nepal','pk','produits/industry-nepal.webp','','','Vitrine snack.',''],
+      ['i-aramis','Aramis','pk','produits/industry-aramis.webp','','','Vitrine boucherie.',''],
+      ['i-rubis','Rubis','pk','produits/industry-rubis.webp','','','Vitrine indépendante.',''],
+      ['i-argentine','Argentine','pk','produits/industry-argentine-2.webp','','','Vitrine indépendante.',''],
+      ['i-hanoi','Hanoi','pk','produits/industry-hanoi.webp','','','Vitrine poissonnerie.',''],
+      ['i-loire','Loire','pk','produits/industry-loire.webp','','','Vitrine boulangerie.',''],
+      ['i-argent','Argent','pk','produits/industry-argent.webp','','','Vitrine murale froid.',''],
+      ['i-sugar','Sugar','pk','produits/industry-sugar.webp','','','Vitrine hauteur comptoir.',''],
+      ['i-hawaii','Hawaii','pk','produits/industry-hawaii.webp','','','Vitrine supermarché.',''],
+      ['i-4faces','4 faces vitrées','pk','produits/industry-4faces.webp','','','Vitrage sur les 4 faces.','']
+    ] }
+];
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const l = (props && props.ligneInitiale) || 'stone';
+    this.state = { proj: loadProj(), menu:false, pp:false, bump:0, lig: l };
+  }
+  setProj(p){ saveProj(p); this.setState({ proj:p, bump:this.state.bump + 1 }); }
+  toggleMod(id){ const p = this.state.proj, has = p.items.find(it => it.id === id);
+    if (has) { this.setProj({ n:p.n, items:p.items.filter(it => it !== has) }); return; }
+    if (p.items.length >= 6) return; const n = (p.n || p.items.length) + 1; this.setProj({ n, items:p.items.concat([{ id, len:101, k:n }]) }); }
+  removeK(k){ const p = this.state.proj; this.setProj({ n:p.n, items:p.items.filter(it => it.k !== k) }); }
+  setCompo(l){ const d = DEFS[l]; if (!d) return; const n0 = this.state.proj.n || 0; this.setProj({ n:n0 + d.length, items:d.map((x, i) => ({ id:x[0], len:x[1], k:n0 + i + 1 })) }); }
+  projVals(){
+    const items = this.state.proj.items;
+    const ligs = items.map(it => KIT[it.id].ligne).filter((v, i, a) => a.indexOf(v) === i);
+    return { count: items.length, total: items.reduce((a, it) => a + it.len, 0), has: items.length > 0, none: !items.length,
+      ligneTxt: !items.length ? 'Aucun module' : (ligs.length === 1 ? 'Ligne ' + LNAME[ligs[0]] : 'Lignes mixtes'),
+      rows: items.map(it => { const k = KIT[it.id]; return { name:k.name, sub:'Ligne ' + LNAME[k.ligne] + ' · ' + it.len + ' cm', thumb:P + 'produits/' + k.f + '.webp', removeLabel:'Retirer ' + k.name + ' du projet', remove: () => this.removeK(it.k) }; }) };
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const pj = this.projVals(), items = s.proj.items;
+    const inP = id => !!items.find(it => it.id === id);
+    const full = items.length >= 6;
+    const selChip = 'background:var(--ink);color:#FFFFFF', offChip = 'background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)';
+    const total = LIGNES.reduce((a, l) => a + l.mods.length, 0);
+    const filters = [{ id:'toutes', label:'Toutes', count: total }].concat(LIGNES.map(l => ({ id:l.id, label:l.name, count:l.mods.length })))
+      .map(f => ({ label:f.label, count:f.count, on: s.lig === f.id ? 'true' : 'false', style: s.lig === f.id ? selChip : offChip, pick: () => this.setState({ lig:f.id }) }));
+    const shown = s.lig === 'toutes' ? LIGNES : LIGNES.filter(l => l.id === s.lig);
+    const blocks = shown.map(l => ({
+      id: 'ligne-' + l.id, key: 'b' + l.id, name:l.name, count:l.mods.length, desc:l.desc, structure:l.structure, front:l.front, plan:l.plan,
+      photo: P + l.photo, photoAlt: l.photoAlt, photoCap: l.photoCap, composable: !!DEFS[l.id], compose: () => this.setCompo(l.id),
+      mods: l.mods.map(r => { const cid = r[7], ip = cid && inP(cid);
+        return { name:r[1], isPk: r[2] === 'pk', isPh: r[2] === 'ph', isNone: r[2] === 'no', src: r[3] ? P + r[3] : '', phCap:r[4],
+          alt: r[2] === 'ph' ? r[1] + ', Ligne ' + l.name + ' : photo en situation' : r[1] + ', Ligne ' + l.name + ', packshot',
+          temp:r[5], hasTemp: !!r[5], spec:r[6],
+          href: r[0] === 's-gourmandise' ? 'Config-Module.html' : 'Config-Contact.html', hrefTxt: r[0] === 's-gourmandise' ? 'Fiche et prix' : 'Demander un devis',
+          canAdd: !!cid, inS: ip ? 'true' : 'false', addTxt: ip ? 'Ajouté' : (full ? 'Complet' : 'Ajouter'),
+          addStyle: ip ? 'background:var(--acc);color:#FFFFFF' : 'background:var(--soft);color:var(--ink)',
+          addLabel: ip ? 'Retirer ' + r[1] + ' du projet' : 'Ajouter ' + r[1] + ' au projet', add: () => { if (cid) this.toggleMod(cid); } }; })
+    }));
+    const shelf = LIGNES.map(l => ({ name:l.name, count:l.mods.length, short:l.short, pack: P + l.pack, packAlt: 'Ligne ' + l.name + ', packshot',
+      on: s.lig === l.id ? 'true' : 'false', bar: 'background:' + (s.lig === l.id ? 'var(--acc)' : 'transparent'), bg: s.lig === l.id ? 'background:rgba(255,255,255,.7)' : '',
+      pick: () => this.setState({ lig:l.id }) }));
+    const cmpCols = LIGNES.map(l => { const on = s.lig === l.id;
+      return { name:l.name, pack: P + l.pack, principe:l.principe, structure:l.structure, front:l.front, plan:l.plan, count: l.mods.length + ' modules', cfg:l.cfg,
+        on: on ? 'true' : 'false', bg: on ? 'background:#FBEDEC' : '', bgLast: on ? 'background:#FBEDEC;border-bottom:0' : 'border-bottom:0', pick: () => this.setState({ lig:l.id }) }; });
+    const nShown = shown.reduce((a, l) => a + l.mods.length, 0);
+    return {
+      rootStyle: '--acc:' + acc,
+      menuOpen: s.menu, menuS: s.menu ? 'true' : 'false', toggleMenu: () => this.setState({ menu: !s.menu, pp:false }),
+      ppOpen: s.pp, ppOpenS: s.pp ? 'true' : 'false', togglePP: () => this.setState({ pp: !s.pp, menu:false }),
+      badgeKey: 'b' + s.bump, pj, pjMini: lineup(items, 110, 4), ctaLu: lineup(items, 170, 8),
+      filters, blocks, shelf, cmpCols, shownTxt: nShown + ' modules affichés'
+    };
+  }
+}
+</script>
+</body>
+</html>

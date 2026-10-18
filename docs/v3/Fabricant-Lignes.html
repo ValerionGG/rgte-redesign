@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE Fabricant — Lignes d'agencement</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#141416}
+sc-for,sc-if{display:contents}
+.fx{--acc:#D42A20;--g0:#141416;--g1:#1C1D20;--g2:#26272B;--ld:#323338;--md:#A6A7AD;--st:#E9E8E5;--st2:#DCDBD7;--ink:#141416;--mu:#55565C;font-family:'ArchivoVF','Archivo',system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.55;font-size:16px;overflow-x:clip}
+.fx *,.fx *::before,.fx *::after{box-sizing:border-box}
+.fx img{display:block;max-width:100%}
+:where(.fx) :where(h1,h2,h3,h4,p,dl,dd,dt,figure){margin:0}
+.fx :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:-.01em}
+.xt{font-stretch:125%;font-variation-settings:'wdth' 125;font-weight:800;text-transform:uppercase;line-height:.92;letter-spacing:-.012em}
+.wrap{max-width:1360px;margin:0 auto;padding:0 40px}
+
+.tb{background:var(--g0);color:var(--md);border-bottom:1px solid var(--ld);font-size:13px}
+.tb-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:40px}
+.tb a{display:inline-flex;align-items:center;gap:8px;min-height:40px;color:#E4E4E7;text-decoration:none}
+.tb a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.hd{position:sticky;top:0;z-index:90;background:rgba(20,20,22,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid var(--ld)}
+.hd-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#fff;min-height:44px}
+.logo b{display:flex;align-items:flex-start;gap:5px;font-stretch:125%;font-variation-settings:'wdth' 125;font-weight:900;font-size:28px;letter-spacing:-.02em;line-height:1}
+.logo b i{display:block;width:7px;height:7px;background:var(--acc);margin-top:2px}
+.logo span{font-size:12px;color:var(--md);line-height:1.2;border-left:1px solid var(--ld);padding-left:12px}
+.nav{display:flex;gap:2px}
+.nav a{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:15px;font-weight:500;color:#D4D4D8;text-decoration:none;transition:color .2s}
+.nav a::after{content:'';position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover,.nav a.on{color:#fff}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.hd-r{display:flex;align-items:center;gap:16px}
+.tel{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;min-height:44px}
+.tel b{display:block;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;line-height:1.15}
+.tel small{display:block;font-size:12px;color:var(--md);line-height:1.2}
+.burger{display:none;width:44px;height:44px;border:1px solid #4A4B50;background:transparent;color:#fff;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:54px;border-top:1px solid var(--ld);text-decoration:none;color:#fff;font-weight:600;font-size:17px}
+.mnav a span{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--md)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 24px;border:0;border-radius:0;font-family:inherit;font-size:15px;font-weight:600;line-height:1;text-decoration:none;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.btn svg{flex:none;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.btn:hover svg{transform:translateX(4px)}
+.b-acc{background:var(--acc);color:#fff}
+.b-acc:hover{background:#B5231A}
+.b-line{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px #5A5B61}
+.b-line:hover{box-shadow:inset 0 0 0 1px #fff}
+.b-ink{background:var(--ink);color:#fff}
+.b-ink:hover{background:#000}
+.b-sm{min-height:44px;padding:0 18px;font-size:14px}
+.h2{font-size:clamp(30px,3.8vw,56px);overflow-wrap:anywhere}
+.lead{font-size:17px;line-height:1.55;color:var(--mu);max-width:54ch}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* hero : alignement des 5 lignes */
+.ph{position:relative;background:var(--g0);color:#fff;overflow:hidden;isolation:isolate;padding:56px 0 0}
+.ph::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 46% at 50% 78%,rgba(255,255,255,.1),rgba(255,255,255,0) 72%)}
+.ph-t{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:20px 64px;align-items:end}
+.ph h1{font-size:clamp(40px,6.2vw,96px);line-height:.86;animation:up .8s cubic-bezier(.2,.7,.2,1) both}
+.ph .lead{color:#B9BAC0}
+.line-up{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:44px;position:relative}
+.line-up::after{content:'';position:absolute;left:-200px;right:-200px;bottom:76px;height:1px;background:rgba(255,255,255,.1);z-index:-1}
+.lu{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:16px;min-height:290px;padding:20px 10px 0;border:0;background:transparent;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .3s}
+.lu img{max-height:170px;max-width:100%;width:auto;object-fit:contain;filter:drop-shadow(0 18px 18px rgba(0,0,0,.6));transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .4s}
+.lu:hover img{transform:translateY(-8px)}
+.lu-n{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;padding:14px 0 18px;border-top:2px solid transparent;transition:border-color .3s}
+.lu-n b{font-size:22px}
+.lu-n small{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--md)}
+
+/* barre de sélection collante */
+.sel{position:sticky;top:76px;z-index:60;background:#fff;border-bottom:1px solid #DEDDD9}
+.sel-in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tab{min-height:44px;padding:0 16px;border:0;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.tab small{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;margin-left:6px;opacity:.7}
+.sel-r{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mu);white-space:nowrap}
+
+/* ligne détaillée */
+.ld{padding:64px 0 32px}
+.ld-g{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0;align-items:stretch;animation:fade .5s both}
+.ld-ph{position:relative;min-height:520px;overflow:hidden;background:#000}
+.ld-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ld-ph span{position:absolute;left:0;bottom:0;padding:8px 12px;background:var(--ink);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px}
+.ld-tx{background:var(--st);padding:44px 44px 36px;display:flex;flex-direction:column;justify-content:space-between;gap:28px}
+.ld-tx h2{font-size:clamp(44px,6vw,92px);line-height:.84}
+.ld-tx p{font-size:17px;color:#2E2F33;max-width:46ch;margin-top:18px}
+.ld-kv{display:grid;grid-template-columns:minmax(0,1fr);border-top:1px solid var(--ink)}
+.ld-kv div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid #CFCEC9}
+.ld-kv dt{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mu);padding-top:2px}
+.ld-kv dd{font-size:14px;font-weight:600}
+
+/* modules */
+.mods{padding:40px 0 88px}
+.mods-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.mods-h h3{font-size:clamp(24px,2.6vw,36px)}
+.flt{display:flex;flex-wrap:wrap;gap:4px}
+.fb{min-height:44px;padding:0 14px;border:0;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.fb:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:6px;margin-top:6px}
+.mc{position:relative;display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--st);transition:background .3s;animation:fade .45s both}
+.mc:hover{background:#DFDEDA}
+.mc-im{position:relative;height:210px;display:flex;align-items:flex-end;justify-content:center;padding:26px 18px 18px;overflow:hidden;background:linear-gradient(180deg,#F3F2EF,#E2E1DD)}
+.mc-im img.pk{max-height:168px;width:auto;object-fit:contain;filter:drop-shadow(0 14px 14px rgba(20,20,22,.2));transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mc:hover .mc-im img.pk{transform:translateY(-6px) scale(1.04)}
+.mc-im img.isph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .5s,transform 1s}
+.mc:hover .mc-im img.isph{filter:none;transform:scale(1.04)}
+.mc-tag{position:absolute;left:10px;top:10px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 7px;background:#fff;color:var(--ink)}
+.mc-tag.hot{background:var(--acc);color:#fff}
+.mc-bd{padding:14px 16px 16px;border-top:1px solid #D3D2CD;display:flex;flex-direction:column;gap:5px;flex:1}
+.mc-bd b{font-size:16px;line-height:1.25}
+.mc-bd span{font-size:13px;color:var(--mu);line-height:1.4}
+.mc-ft{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.mc-ft i{font-style:normal;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.mc:hover .mc-ft i{color:var(--acc)}
+.note{font-size:13px;color:var(--mu);margin-top:16px;max-width:80ch}
+
+/* comparateur */
+.cmp{background:var(--g0);color:#fff;padding:88px 0}
+.cmp-t{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px 64px;align-items:end}
+.cmp .lead{color:#B9BAC0}
+.ctab{margin-top:44px;overflow-x:auto}
+.cg{display:grid;grid-template-columns:170px repeat(5,minmax(160px,1fr));min-width:980px}
+.cg > div{padding:14px 16px;border-bottom:1px solid var(--ld);font-size:14px;line-height:1.4;transition:background .25s}
+.cg .rl{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--md);padding-left:0}
+.ch{border:0;background:transparent;color:#fff;text-align:left;padding:0 16px 14px;cursor:pointer;font-family:inherit;border-bottom:2px solid var(--ld);transition:border-color .25s}
+.ch b{display:block;font-size:20px}
+.ch small{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--md);margin-top:4px}
+.ch:hover b{color:#fff;text-decoration:underline;text-underline-offset:4px}
+
+/* bandeau CTA */
+.cta{background:var(--acc);color:#fff;padding:64px 0}
+.cta-in{display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap}
+.cta h2{font-size:clamp(28px,3.2vw,48px);line-height:.92;max-width:22ch}
+.cta p{font-size:17px;max-width:44ch;margin-top:14px}
+
+.ft{background:var(--g0);color:#D4D4D8;padding:80px 0 0;overflow:hidden}
+.ft-g{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:40px}
+.ft-h{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--md);margin-bottom:14px}
+.ft p{font-size:15px}
+.ft-tel{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;color:#fff;text-decoration:none;display:inline-block}
+.ft-tel:hover{text-decoration:underline;text-underline-offset:4px}
+.ft-l a{display:flex;align-items:center;min-height:38px;color:#D4D4D8;text-decoration:none;font-size:15px}
+.ft-l a:hover{color:#fff}
+.ft-b{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 24px;margin-top:56px;padding:12px 0;border-top:1px solid var(--ld);font-size:13px;color:var(--md)}
+.ft-b a{color:#B9BAC0;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ft-b a:hover{color:#fff}
+.legal{display:flex;flex-wrap:wrap;gap:0 22px}
+.ft .ft-mark{font-size:min(29vw,410px);line-height:.72;color:#1E1F23;letter-spacing:-.04em;white-space:nowrap;margin-top:28px;transform:translateY(.08em);user-select:none}
+
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;padding:0 40px 14px}}
+@media(max-width:1080px){
+.ld-g{grid-template-columns:minmax(0,1fr)}.ld-ph{min-height:380px}
+.ft-g{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sel-r{display:none}
+}
+@media(max-width:820px){
+.ph-t,.cmp-t{grid-template-columns:minmax(0,1fr)}
+.line-up{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;margin-left:-40px;margin-right:-40px;padding:0 40px}
+.line-up::after{display:none}
+}
+@media(max-width:720px){
+.wrap{padding:0 16px}.mnav{padding:0 16px 12px}.tb-n{display:none}.logo span{display:none}.hd-cta{padding:0 14px}
+.ph{padding-top:40px}
+.line-up{margin-left:-16px;margin-right:-16px;padding:0 16px;grid-template-columns:repeat(5,148px)}.lu{min-height:230px}.lu img{max-height:120px}.lu-n b{font-size:17px}
+.sel{top:76px}
+.ld{padding:40px 0 20px}.ld-ph{min-height:260px}.ld-tx{padding:26px 18px}
+.ld-kv div{grid-template-columns:minmax(0,1fr);gap:2px}
+.mods{padding:28px 0 64px}
+.mc-im{height:180px}
+.cmp{padding:64px 0}
+.cta{padding:48px 0}
+.ft-g{grid-template-columns:minmax(0,1fr)}.ft{padding-top:56px}
+}
+@media (prefers-reduced-motion:reduce){.fx *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="fx" style="{{ rootStyle }}">
+
+<div class="tb">
+  <div class="wrap tb-in">
+    <span class="tb-n">Fabricant de vitrines réfrigérées sur mesure, bureau d'études et show-room à Puget-sur-Argens (Var)</span>
+    <a href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hd">
+  <div class="wrap hd-in">
+    <a class="logo" href="Fabricant-Accueil.html" aria-label="RGTE, R.G. Technologies, accueil"><b>RGTE<i></i></b><span>R.G.<br>Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Fabricant-Lignes.html" aria-current="page">Lignes d'agencement</a>
+      <a href="Fabricant-Secteurs.html">Secteurs</a>
+      <a href="Fabricant-Realisations.html">Réalisations</a>
+      <a href="Fabricant-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hd-r">
+      <a class="tel" href="tel:0800951313"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F0584C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn b-acc b-sm hd-cta" href="Fabricant-Contact.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav" aria-label="Navigation mobile" style="animation:fade .3s both">
+      <a href="Fabricant-Lignes.html">Lignes d'agencement <span>5 lignes</span></a>
+      <a href="Fabricant-Secteurs.html">Secteurs <span>13 métiers</span></a>
+      <a href="Fabricant-Realisations.html">Réalisations <span>14 boutiques</span></a>
+      <a href="Fabricant-Contact.html">Showroom &amp; contact <span>Var</span></a>
+      <a href="tel:0800951313">0 800 95 13 13 <span>Appel gratuit</span></a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="ph" aria-label="Les 5 lignes">
+  <div class="wrap">
+    <div class="ph-t">
+      <h1 class="xt">Lignes d'agencement</h1>
+      <p class="lead">Cinq familles de vitrines et de comptoirs, du module brut à habiller jusqu'à la vitrine standardisée. Choisissez une ligne pour voir tous ses modules.</p>
+    </div>
+    <div class="line-up" role="group" aria-label="Choisir une ligne">
+      <sc-for list="{{ lineup }}" as="l" hint-placeholder-count="5">
+        <button type="button" class="lu" style="{{ l.style }}" aria-pressed="{{ l.on }}" onClick="{{ l.pick }}">
+          <img src="{{ l.img }}" alt="{{ l.alt }}" width="{{ l.w }}" height="{{ l.h }}">
+          <span class="lu-n" style="{{ l.bar }}"><b class="xt">{{ l.name }}</b><small>{{ l.count }}</small></span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<div class="sel">
+  <div class="wrap sel-in">
+    <div class="tabs" role="tablist" aria-label="Lignes d'agencement">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+        <button type="button" class="tab" role="tab" style="{{ t.style }}" aria-selected="{{ t.on }}" onClick="{{ t.pick }}">{{ t.name }}<small>{{ t.n }}</small></button>
+      </sc-for>
+    </div>
+    <span class="sel-r">{{ L.countTxt }} affichés · <a href="Fabricant-Contact.html" style="color:var(--ink)">Plan 3D offert</a></span>
+  </div>
+</div>
+
+<section class="ld" aria-label="{{ L.full }}">
+  <div class="wrap">
+    <div class="ld-g" key="{{ L.id }}">
+      <figure class="ld-ph"><img src="{{ L.photo }}" alt="{{ L.photoAlt }}" width="1800" height="1200" style="{{ L.photoPos }}"><span>{{ L.photoCap }}</span></figure>
+      <div class="ld-tx">
+        <div>
+          <p class="mono" style="font-size:12px;color:var(--mu);margin:0">Ligne {{ L.idx }} sur 5</p>
+          <h2 class="xt" style="margin-top:14px">{{ L.name }}</h2>
+          <p>{{ L.desc }}</p>
+        </div>
+        <dl class="ld-kv">
+          <div><dt>Structure</dt><dd>{{ L.s1 }}</dd></div>
+          <div><dt>Panneau frontal</dt><dd>{{ L.s2 }}</dd></div>
+          <div><dt>Plan de travail</dt><dd>{{ L.s3 }}</dd></div>
+          <div><dt>Modules</dt><dd>{{ L.countTxt }}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mods" aria-label="Modules de la ligne">
+  <div class="wrap">
+    <div class="mods-h">
+      <h3 class="xt">Modules {{ L.name }}</h3>
+      <div class="flt" role="group" aria-label="Filtrer par type">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <button type="button" class="fb" style="{{ f.style }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.name }} <span class="mono" style="font-size:11px;opacity:.7">{{ f.n }}</span></button>
+        </sc-for>
+      </div>
+    </div>
+    <div class="mg">
+      <sc-for list="{{ mods }}" as="m" hint-placeholder-count="8">
+        <a class="mc" href="Fabricant-Module.html" key="{{ m.key }}">
+          <span class="mc-im">
+            <sc-if value="{{ m.hasTag }}" hint-placeholder-val="{{ false }}"><span class="{{ m.tagCls }}">{{ m.tag }}</span></sc-if>
+            <img class="{{ m.cls }}" src="{{ m.img }}" alt="{{ m.alt }}" width="400" height="260" loading="lazy">
+          </span>
+          <span class="mc-bd"><b>{{ m.name }}</b><span>{{ m.spec }}</span><span class="mc-ft"><span>{{ m.type }}</span><i>{{ m.cta }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></i></span></span>
+        </a>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <p class="note" style="padding:28px 0">Aucun module de ce type dans la Ligne {{ L.name }}. Choisissez « Tous » ou une autre ligne.</p>
+    </sc-if>
+    <p class="note">Packshots : rendus RGTE. Quand un module n'a pas encore de packshot détouré, la carte montre une photo d'installation réelle ou un visuel de la même ligne, signalé sur l'image.</p>
+  </div>
+</section>
+
+<section class="cmp" aria-label="Comparateur des lignes">
+  <div class="wrap">
+    <div class="cmp-t">
+      <h2 class="h2 xt">Comparer les 5 lignes</h2>
+      <p class="lead">Matières, panneau frontal, plan de travail, format : cliquez sur une ligne pour la mettre en avant et afficher ses modules plus haut.</p>
+    </div>
+    <div class="ctab">
+      <div class="cg" role="table" aria-label="Comparatif des lignes d'agencement">
+        <div class="rl" role="columnheader" style="border-bottom:2px solid var(--ld)"></div>
+        <sc-for list="{{ cols }}" as="c" hint-placeholder-count="5">
+          <button type="button" class="ch" role="columnheader" style="{{ c.head }}" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}"><b class="xt">{{ c.name }}</b><small>{{ c.count }}</small></button>
+        </sc-for>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+          <div class="rl" role="rowheader">{{ r.label }}</div>
+          <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5"><div role="cell" style="{{ c.style }}">{{ c.v }}</div></sc-for>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap cta-in">
+    <div>
+      <h2 class="xt">Une ligne, plusieurs modules, un seul plan.</h2>
+      <p>Le bureau d'études compose votre comptoir avec les modules adaptés à vos produits et dessine le plan 3D, offert.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn b-ink" href="Fabricant-Contact.html">Demander mon plan 3D<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a class="btn b-line" href="tel:0800951313" style="box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)"><span class="mono">0 800 95 13 13</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-g">
+      <div>
+        <a class="logo" href="Fabricant-Accueil.html" aria-label="RGTE, accueil"><b>RGTE<i></i></b><span>R.G.<br>Technologies</span></a>
+        <p style="color:var(--md);margin-top:18px;max-width:30ch">Fabricant et agenceur de vitrines réfrigérées sur mesure pour les métiers de bouche.</p>
+      </div>
+      <div>
+        <p class="ft-h">Bureau d'études et show-room</p>
+        <p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div>
+        <p class="ft-h">Appel gratuit</p>
+        <a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <p style="color:var(--md);margin-top:8px;font-size:14px">Horaires : [HORAIRES]</p>
+      </div>
+      <div class="ft-l">
+        <p class="ft-h">Explorer</p>
+        <a href="Fabricant-Lignes.html">Lignes d'agencement</a>
+        <a href="Fabricant-Secteurs.html">Secteurs d'activité</a>
+        <a href="Fabricant-Realisations.html">Réalisations</a>
+        <a href="Fabricant-Contact.html">Showroom &amp; contact</a>
+      </div>
+    </div>
+    <div class="ft-b">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 3) — concept, non officiel · Photos : RGTE (rgte.eu) · ambiances Unsplash · <a href="index.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+    <p class="ft-mark xt" aria-hidden="true">RGTE</p>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4300},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#141416","#B5231A"]},"ligneInitiale":{"editor":"enum","default":"stone","options":["basique","stone","legno","encastrable","industry"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const l = props && props.ligneInitiale ? props.ligneInitiale : 'stone';
+    this.state = { menuOpen:false, ligne:l, type:'all' };
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const PK = '../assets/photos/produits/';
+    const RE = '../assets/photos/realisations/';
+    const AM = '../assets/photos/ambiance/';
+    // [nom, image, spécification, type, mode] — mode : 'pk' packshot exact, 'ph:<légende>' photo d'installation, 'ix' visuel de la ligne
+    const LINES = [
+      { id:'basique', name:'Basique', up:PK+'basique-pastry-show-220.webp', uw:1139, uh:518,
+        desc:'Association de modules différents. Le coloris et les matériaux sont choisis selon votre souhait ; panneau frontal en bois mélaminé, ou en verre en option ; plan de travail et plinthe en granit.',
+        s1:'Modules associés, coloris et matériaux au choix', s2:'Bois mélaminé, verre en option', s3:'Granit, plinthe en granit',
+        photo:RE+'basique-nouveau-magasin.webp', photoPos:'object-position:50% 55%', photoAlt:'Boutique claire équipée de vitrines Ligne Basique', photoCap:'Ligne Basique en boutique',
+        mods:[
+          ['Comptoir bar', RE+'basique-bar.webp', 'Comptoir de service, neutre', 'neutre', 'ph:Photo en boutique'],
+          ['Comptoir caisse', RE+'basique-caisse.webp', 'Pour tout commerce', 'neutre', 'ph:Photo en boutique'],
+          ['Saladette réfrigérée', PK+'basique-saladette.webp', 'Ingrédients en bacs gastronormes', 'froid', 'pk'],
+          ['Vitrine réfrigérée Cube', PK+'basique-cube.webp', 'Vitrage cubique, 2 ou 3 étagères en verre', 'froid', 'pk'],
+          ['Pastry Show', PK+'basique-pastry-show.webp', 'Froid ventilé, vitrage droit, plaques 600 × 400 mm à hauteur de comptoir', 'froid', 'pk'],
+          ['Statique', PK+'basique-pastry-show-220.webp', 'Vitrine réfrigérée en froid statique', 'froid', 'ix'],
+          ['Basse', RE+'basique-chamonix-2.webp', 'Vitrine basse', 'froid', 'ph:Chamonix'],
+          ['Murale self-service', RE+'basique-chamonix-4.webp', 'Libre-service mural', 'froid', 'ph:Chamonix'],
+          ['Panoramique', RE+'basique-chamonix.webp', 'Vitrine panoramique', 'froid', 'ph:Chamonix'],
+          ['Chaud', RE+'basique-bainmarie.webp', 'Bain-marie ou plaque chaude', 'chaud', 'ph:Photo en boutique'],
+          ['Vitrine rétro', RE+'basique-retro.webp', 'Façade de style rétro', 'froid', 'ph:Photo en boutique'],
+          ['Amandine', RE+'stone-reunion-2.webp', 'Montants modernes, cuve pour plaques 600 × 400, froid ventilé', 'froid', 'ph:La Réunion']
+        ] },
+      { id:'stone', name:'Stone', up:PK+'stone-centrale-224.webp', uw:571, uh:399,
+        desc:'Association de modules à structure en pierre acrylique type Corian, avec un panneau frontal en verre portant la sérigraphie de votre enseigne.',
+        s1:'Pierre acrylique type Corian', s2:'Verre avec sérigraphie du client', s3:'Pierre acrylique',
+        photo:RE+'stone-patissier-chocolatier.webp', photoPos:'object-position:50% 55%', photoAlt:'Comptoir Stone blanc éclairé d\'un pâtissier chocolatier', photoCap:'Ligne Stone, pâtissier chocolatier (69)',
+        mods:[
+          ['Gourmandise', PK+'stone-gourmandise.webp', 'Exposition centrale, vitrages coulissants 2 côtés, dès 5 800 € HT', 'froid', 'pk', true],
+          ['Réfrigérée Plane', PK+'stone-plane.webp', 'Hauteur du plan, prof. 53 ou 60 cm, +2/+8 ou +14/+18 °C', 'froid', 'pk'],
+          ['Réfrigérée Vision', PK+'stone-vision.webp', '8 cm sous le plan, prof. 53 ou 60 cm, +2/+8 ou +14/+18 °C', 'froid', 'pk'],
+          ['Réfrigérée Centrale', PK+'stone-centrale.webp', 'Vitrages coulissants 2 côtés, prof. 60 cm', 'froid', 'pk'],
+          ['Réfrigérée Panorama', RE+'stone-pointier-2.webp', '2 ou 3 étagères réfrigérées +4/+8 °C', 'froid', 'ph:Traiteur poissonnier'],
+          ['Réfrigérée Poissonnerie', PK+'stone-poissonnerie.webp', 'Froid statique, serpentin de cuve, −2/0 °C, vidange', 'froid', 'pk'],
+          ['Saladette', PK+'stone-saladette.webp', 'Bacs gastronormes (non fournis), +2/+8 °C', 'froid', 'pk'],
+          ['Chaud bain-marie', PK+'stone-bainmarie.webp', 'Bacs gastronormes, +30/+90 °C', 'chaud', 'pk'],
+          ['Comptoir caisse', PK+'stone-caisse.webp', 'Tout commerce, avec ou sans tablette PMR', 'neutre', 'pk'],
+          ['Comptoir bar', RE+'stone-bar-photo.webp', 'Neutre ou réfrigéré', 'neutre', 'ph:Photo en boutique'],
+          ['Surface plane', RE+'stone-yogurt-1.webp', 'Plan d\'exposition sur mesure', 'neutre', 'ph:Yogourt glacé']
+        ] },
+      { id:'legno', name:'Legno', up:PK+'legno-statique-175.webp', uw:1200, uh:555,
+        desc:'Association de modules à panneau frontal en bois mélaminé : réfrigérés ventilés ou statiques, neutres, chauffants, caisse et comptoir bar.',
+        s1:'Modules associés', s2:'Bois mélaminé', s3:'[À PRÉCISER]',
+        photo:RE+'legno-cafe-bar.webp', photoPos:'object-position:50% 50%', photoAlt:'Café-bar équipé de comptoirs Ligne Legno', photoCap:'Ligne Legno, café-bar',
+        mods:[
+          ['Plane', PK+'legno-statique-175.webp', 'Exposition plane', 'froid', 'ix'],
+          ['Arrière neutre', PK+'legno-arriere.webp', 'Meuble arrière, étagères', 'neutre', 'pk'],
+          ['Caisse et vitrine neutre', PK+'legno-caisse.webp', 'Comptoir caisse avec vitrine neutre', 'neutre', 'pk'],
+          ['Comptoir bar', PK+'legno-bar.webp', 'Comptoir de service', 'neutre', 'pk'],
+          ['Réfrigérée statique', PK+'legno-statique.webp', 'Froid statique', 'froid', 'pk'],
+          ['Vitrine réfrigérée ventilée plane', PK+'legno-ventilee-172.webp', 'Froid ventilé, exposition plane', 'froid', 'pk'],
+          ['Vitrine neutre', PK+'legno-caisse-angle.webp', 'Exposition sans froid', 'neutre', 'ix'],
+          ['Réfrigéré ventilé', PK+'legno-ventilee.webp', 'Froid ventilé', 'froid', 'pk'],
+          ['Vitrine chauffante sèche', PK+'legno-structure.webp', 'Chaleur sèche', 'chaud', 'ix']
+        ] },
+      { id:'encastrable', name:'Encastrable', up:PK+'encastrable-ventile.webp', uw:425, uh:326,
+        desc:'Module brut prêt à être habillé par votre agenceur : en version comptoir ou en meuble entier sur pied.',
+        s1:'Cuve brute à habiller', s2:'Selon votre agenceur', s3:'Comptoir ou meuble entier sur pied',
+        photo:AM+'saladette-bacs-2.webp', photoPos:'object-position:50% 50%', photoAlt:'Bacs gastronormes encastrés dans un comptoir (photo d\'ambiance)', photoCap:'Photo d\'ambiance, Unsplash',
+        mods:[
+          ['Cuve froid ventilé', PK+'encastrable-ventile.webp', 'Cuve brute, froid ventilé', 'froid', 'pk'],
+          ['Cuve froid statique', PK+'encastrable-statique.webp', 'Cuve brute, froid statique', 'froid', 'pk']
+        ] },
+      { id:'industry', name:'Industry', up:PK+'industry-rubis.webp', uw:883, uh:983,
+        desc:'Vitrines standardisées en longueurs et indépendantes, pour la boulangerie, la boucherie, la poissonnerie, le snacking ou la grande surface.',
+        s1:'Vitrines indépendantes', s2:'Standard', s3:'Longueurs standardisées',
+        photo:AM+'boutique-vitrines-longues.webp', photoPos:'object-position:50% 60%', photoAlt:'Longues vitrines réfrigérées alignées en boutique (photo d\'ambiance)', photoCap:'Photo d\'ambiance, Unsplash',
+        mods:[
+          ['Olympe', PK+'industry-olympe-2.webp', 'Vitrine murale', 'froid', 'pk'],
+          ['Nepal', PK+'industry-nepal.webp', 'Snack', 'froid', 'pk'],
+          ['Aramis', PK+'industry-aramis.webp', 'Boucherie', 'froid', 'pk'],
+          ['Rubis', PK+'industry-rubis.webp', 'Vitrine indépendante', 'froid', 'pk'],
+          ['Argentine', PK+'industry-argentine-2.webp', 'Vitrine indépendante', 'froid', 'pk'],
+          ['Hanoi', PK+'industry-hanoi.webp', 'Poissonnerie', 'froid', 'pk'],
+          ['Loire', PK+'industry-loire.webp', 'Boulangerie', 'froid', 'pk'],
+          ['Argent', PK+'industry-argent.webp', 'Murale froid', 'froid', 'pk'],
+          ['Sugar', PK+'industry-sugar.webp', 'Hauteur comptoir', 'froid', 'pk'],
+          ['Hawaii', PK+'industry-hawaii.webp', 'Supermarché', 'froid', 'pk'],
+          ['4 faces vitrées', PK+'industry-4faces.webp', 'Vitrée sur les 4 faces', 'froid', 'pk']
+        ] }
+    ];
+    const idx = Math.max(0, LINES.findIndex(x => x.id === s.ligne));
+    const Lc = LINES[idx];
+    const unit = Lc.id === 'encastrable' ? ' cuves' : Lc.id === 'industry' ? ' vitrines' : ' modules';
+    const L = Object.assign({}, Lc, { idx: idx + 1, full:'Ligne ' + Lc.name, countTxt: Lc.mods.length + unit });
+
+    const pickLine = (id) => this.setState({ ligne:id, type:'all' });
+    const lineup = LINES.map(x => ({ name:x.name, img:x.up, w:x.uw, h:x.uh, alt:'Ligne ' + x.name + ', packshot', count: x.mods.length + (x.id === 'encastrable' ? ' cuves' : x.id === 'industry' ? ' vitrines' : ' modules'),
+      on: x.id === s.ligne ? 'true' : 'false', style: x.id === s.ligne ? '' : 'opacity:.55',
+      bar: x.id === s.ligne ? 'border-top-color:' + acc : 'border-top-color:rgba(255,255,255,.12)',
+      pick: () => pickLine(x.id) }));
+    const tabs = LINES.map(x => ({ name:x.name, n: String(x.mods.length), on: x.id === s.ligne ? 'true' : 'false',
+      style: x.id === s.ligne ? 'background:#141416;color:#fff' : 'background:#F1F0ED;color:#141416', pick: () => pickLine(x.id) }));
+
+    const TYPES = [['all','Tous'],['froid','Réfrigérés'],['neutre','Neutres et comptoirs'],['chaud','Chauds']];
+    const filters = TYPES.map(([id, name]) => {
+      const n = id === 'all' ? Lc.mods.length : Lc.mods.filter(m => m[3] === id).length;
+      return { name, n: String(n), on: s.type === id ? 'true' : 'false',
+        style: s.type === id ? 'background:#141416;color:#fff' : 'background:#F1F0ED;color:#141416' + (n === 0 ? ';opacity:.45' : ''),
+        pick: () => this.setState({ type:id }) };
+    });
+    const TL = { froid:'Réfrigéré', neutre:'Neutre', chaud:'Chaud' };
+    const mods = Lc.mods.filter(m => s.type === 'all' || m[3] === s.type).map((m, i) => {
+      const mode = m[4];
+      const isPh = mode.indexOf('ph:') === 0;
+      const star = !!m[5];
+      const tag = star ? 'Fiche et configurateur' : isPh ? mode.slice(3) : mode === 'ix' ? 'Visuel de la ligne' : '';
+      return { key: Lc.id + i + s.type, name:m[0], img:m[1], spec:m[2], type: TL[m[3]], cls: isPh ? 'isph' : 'pk',
+        alt: m[0] + ', Ligne ' + Lc.name + (isPh ? ', photo en boutique' : ', packshot'),
+        hasTag: !!tag, tag, tagCls: star ? 'mc-tag hot' : 'mc-tag', cta: star ? 'Configurer' : 'Fiche' };
+    });
+
+    const ROWS = [
+      ['Principe', ['Association de modules différents','Association de modules','Association de modules','Module brut prêt à être habillé','Vitrines standardisées et indépendantes']],
+      ['Structure', ['Coloris et matériaux au choix','Pierre acrylique type Corian','[À PRÉCISER]','Cuve froid ventilé ou statique','Standard']],
+      ['Panneau frontal', ['Bois mélaminé, verre en option','Verre, sérigraphie du client','Bois mélaminé','À habiller','Standard']],
+      ['Plan de travail', ['Granit, plinthe en granit','Pierre acrylique','[À PRÉCISER]','Selon l\'habillage','Intégré']],
+      ['Format', ['Composé sur mesure','Composé sur mesure','Composé sur mesure','Comptoir ou meuble sur pied','Longueurs standardisées']],
+      ['Modules', ['12 modules','11 modules','9 modules','2 cuves','11 vitrines']]
+    ];
+    const cols = LINES.map((x, i) => ({ name:x.name, count: ROWS[5][1][i], on: x.id === s.ligne ? 'true' : 'false',
+      head: x.id === s.ligne ? 'border-bottom-color:' + acc + ';background:rgba(255,255,255,.06)' : '',
+      pick: () => pickLine(x.id) }));
+    const rows = ROWS.slice(0, 5).map(r => ({ label:r[0], cells: r[1].map((v, i) => ({ v,
+      style: LINES[i].id === s.ligne ? 'background:rgba(255,255,255,.06);color:#fff;font-weight:600' : 'color:#C9CACE' })) }));
+
+    return {
+      rootStyle:'--acc:' + acc,
+      menuOpen: s.menuOpen, menuAria: s.menuOpen ? 'true' : 'false', toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      L, lineup, tabs, filters, mods, empty: mods.length === 0, cols, rows
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE Catalogue — Réalisations</title>
+<script src="../vendor/preact.min.js"></script>
+<script src="../dc.js"></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<script type="text/x-dc-template" id="dc-template">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+body{margin:0;background:#EFEDE8}
+sc-for,sc-if{display:contents}
+.k{--acc:#D42A20;--acc-d:#B2221A;--ink:#1B1B1A;--ink2:#262624;--sand:#EFEDE8;--plate:#E4E1DA;--plate2:#DAD6CD;--paper:#FFFFFF;--mut:#5F5D58;--ln:#CFCBC2;--lnd:#3B3B38;font-family:'Barlow',system-ui,sans-serif;font-size:16px;line-height:1.55;color:var(--ink);background:var(--sand);overflow-x:clip;-webkit-font-smoothing:antialiased}
+.k *,.k *::before,.k *::after{box-sizing:border-box}
+.k img{display:block;max-width:100%}
+.k h1,.k h2,.k h3,.k h4,.k p,.k ul,.k ol,.k dl,.k dd,.k dt,.k figure{margin:0;padding:0}
+.k ul{list-style:none}
+:where(.k) button{font:inherit;color:inherit}
+.k :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.w{max-width:1400px;margin:0 auto;padding:0 40px}
+.cd{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:700;line-height:.9;letter-spacing:-.005em}
+.tn{font-variant-numeric:tabular-nums}
+.mk{background:#F7DCD8;color:#981C15;padding:0 4px;font-weight:600;font-size:.9em;white-space:nowrap}
+.tb{background:var(--ink);color:#BDBBB5;font-size:13px}
+.tb .w{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:40px}
+.tb a{color:#fff;text-decoration:none;min-height:40px;display:inline-flex;align-items:center;gap:8px}
+.tb a:hover{text-decoration:underline;text-underline-offset:3px}
+.tb-l,.tb-r{display:flex;gap:22px;align-items:center}
+.hd{position:sticky;top:0;z-index:80;background:rgba(239,237,232,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.hd-in{display:flex;align-items:center;gap:28px;min-height:76px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);min-height:44px;flex:none}
+.logo-w{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:42px;line-height:.78;letter-spacing:-.02em;display:flex;align-items:flex-end;gap:3px}
+.logo-w i{width:9px;height:9px;background:var(--acc);display:block;margin-bottom:1px}
+.logo-s{font-size:11px;line-height:1.25;font-weight:600;letter-spacing:.04em;color:var(--mut);border-left:1px solid var(--ln);padding-left:12px}
+.nav{display:flex;align-items:stretch}
+.nav a,.nav button{display:inline-flex;align-items:center;gap:6px;min-height:76px;padding:0 13px;background:none;border:0;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.02em;text-transform:uppercase;text-decoration:none;color:var(--ink);position:relative;white-space:nowrap}
+.nav a::after,.nav button::after{content:"";position:absolute;left:13px;right:13px;bottom:-1px;height:3px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.nav a:hover::after,.nav button:hover::after,.nav .on::after{transform:scaleX(1)}
+.nav .on::after{background:var(--ink)}
+.nav button svg{transition:transform .25s}
+.nav button[aria-expanded="true"] svg{transform:rotate(180deg)}
+.hd-r{margin-left:auto;display:flex;align-items:center;gap:20px}
+.tel{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px}
+.tel-i{width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none}
+.tel b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;line-height:1;white-space:nowrap}
+.tel small{display:block;font-size:12px;color:var(--mut);line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 24px;border:0;border-radius:0;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;letter-spacing:.03em;text-transform:uppercase;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
+.btn-r{background:var(--acc);color:#fff}.btn-r:hover{background:var(--acc-d)}
+.btn-k{background:var(--ink);color:#fff}.btn-k:hover{background:#000}
+.btn-o{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}.btn-o:hover{background:var(--ink);color:#fff}
+.btn-w{background:#fff;color:var(--ink)}.btn-w:hover{background:var(--sand)}
+.btn-ow{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.65)}.btn-ow:hover{background:#fff;color:var(--ink)}
+.burger{display:none;width:48px;height:48px;border:1.5px solid var(--ink);background:transparent;align-items:center;justify-content:center;cursor:pointer}
+.mega{position:absolute;left:0;right:0;top:100%;background:var(--paper);border-bottom:1px solid var(--ln);box-shadow:0 40px 60px -40px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .22s,transform .22s,visibility .22s}
+.mega.on{opacity:1;visibility:visible;transform:none}
+.mega-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,1.25fr);gap:14px;padding-top:26px;padding-bottom:30px}
+.mg{display:flex;flex-direction:column;text-decoration:none;color:var(--ink)}
+.mg-pl{position:relative;background:var(--sand);height:150px;overflow:hidden}
+.mg-pl img{position:absolute;left:8%;bottom:12%;width:84%;height:74%;object-fit:contain;object-position:50% 100%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.mg:hover .mg-pl img{transform:scale(1.06)}
+.mg-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;text-transform:uppercase;line-height:1;margin-top:12px;display:flex;justify-content:space-between;align-items:baseline}
+.mg-n small{font-family:'Barlow',sans-serif;font-size:13px;font-weight:500;color:var(--mut);text-transform:none}
+.mg-m{font-size:14px;color:var(--mut);margin-top:6px;line-height:1.45}
+.mg-x{position:relative;background:var(--ink);color:#fff;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;text-decoration:none;min-height:200px}
+.mg-x img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;transition:transform .6s}
+.mg-x:hover img{transform:scale(1.05)}
+.mg-x b,.mg-x span{position:relative}
+.mg-x b{font-family:'Barlow Condensed',sans-serif;font-size:28px;line-height:.95;text-transform:uppercase}
+.mg-x span{font-size:14px;margin-top:6px}
+.mnav{display:none;border-top:1px solid var(--ln);background:var(--paper);padding:8px 0 20px}
+.mnav.on{display:block}
+.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:54px;border-bottom:1px solid var(--plate);text-decoration:none;color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:22px;text-transform:uppercase}
+.mnav .btn{margin-top:16px;width:100%}
+.ft{background:var(--ink);color:#C9C7C1;padding:56px 0 28px;font-size:15px}
+.ft a{color:#fff;text-decoration:none}
+.ft a:hover{text-decoration:underline;text-underline-offset:3px}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;padding-bottom:48px;border-bottom:1px solid var(--lnd)}
+.ft-big{font-size:clamp(44px,6vw,92px);color:#fff;max-width:11ch}
+.ft-cta{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.ft-tel{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:700;line-height:1;color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:48px}
+.ft-g{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;padding:44px 0}
+.ft-g h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;text-transform:uppercase;letter-spacing:.04em;color:#fff;margin-bottom:12px}
+.ft-g li a{display:inline-flex;min-height:34px;align-items:center;color:#C9C7C1}
+.ft-g li a:hover{color:#fff}
+.ft-b{border-top:1px solid var(--lnd);padding-top:20px;display:flex;justify-content:space-between;gap:12px 28px;flex-wrap:wrap;font-size:13px;color:#A3A19B}
+.ft-b strong{color:#fff;font-weight:600}
+.ft .logo{color:#fff}
+.ft .logo-s{color:#A3A19B;border-color:var(--lnd)}
+.pl{display:block;position:relative;background:var(--plate);overflow:hidden}
+.pl::before{content:"";position:absolute;left:14%;right:14%;bottom:9%;height:22px;background:radial-gradient(closest-side,rgba(40,30,20,.32),rgba(40,30,20,0));filter:blur(3px)}
+.pl img{position:absolute;left:7%;bottom:12%;width:86%;height:72%;object-fit:contain;object-position:50% 100%;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.pl.ph::before{display:none}
+.pl.ph img{left:0;bottom:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.h-xl{font-size:clamp(54px,7.3vw,112px)}
+.lead{font-size:clamp(17px,1.35vw,19px);line-height:1.55;color:var(--mut);max-width:56ch}
+@keyframes up{from{transform:translateY(105%)}to{transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes zoomin{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:none}}
+.crumb{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--mut);padding-top:16px}
+.crumb a{color:var(--mut);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.crumb a:hover{color:var(--ink)}
+.ph{padding-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap}
+.ph h1 span{display:block;overflow:hidden}
+.ph h1 span span{animation:up .9s cubic-bezier(.2,.8,.2,1) both}
+.chip{border:1.5px solid var(--ln);background:transparent;cursor:pointer;min-height:44px;padding:0 16px;font-size:15px;font-weight:500;border-radius:999px;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.chip sup{font-size:11px;font-weight:600}
+.chip:hover{border-color:var(--ink)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* FILTERS */
+.flt{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:center;padding:18px 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--ln)}
+.fg{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fg>span{font-size:14px;color:var(--mut);margin-right:4px}
+.cnt{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600}
+
+/* GRID */
+.rg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:270px;gap:12px;margin-top:24px;grid-auto-flow:dense}
+.rc{position:relative;overflow:hidden;color:#fff;background:var(--ink);border:0;padding:0;cursor:pointer;text-align:left;animation:rise .5s both}
+.rc.big{grid-column:span 2;grid-row:span 2}
+.k .rc{color:#fff}
+.rc img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.8,.2,1),filter .4s}
+.rc:hover img{transform:scale(1.06)}
+.rc::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(15,15,14,.9),rgba(15,15,14,0) 58%);transition:opacity .3s}
+.rc-n{position:absolute;top:14px;left:16px;z-index:2;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.45)}
+.rc-g{position:absolute;top:14px;right:14px;z-index:2;font-size:12.5px;font-weight:600;background:rgba(255,255,255,.92);color:var(--ink);padding:4px 9px;display:flex;align-items:center;gap:6px;transform:translateY(-6px);opacity:0;transition:all .3s}
+.rc:hover .rc-g,.rc:focus-visible .rc-g{transform:none;opacity:1}
+.rc-b{position:absolute;left:18px;right:18px;bottom:16px;z-index:2}
+.rc-b small{font-size:13px;color:#E4E2DC;display:block}
+.rc-b b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:28px;text-transform:uppercase;line-height:.95;margin:4px 0 8px}
+.rc.big .rc-b b{font-size:clamp(36px,3.6vw,54px)}
+.rc-t{display:flex;gap:6px;flex-wrap:wrap}
+.rc-t span{font-size:12px;font-weight:600;padding:3px 8px;background:var(--acc)}
+.rc-t span+span{background:rgba(255,255,255,.18)}
+.empty{background:var(--paper);padding:40px;margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+
+/* INDEX */
+.idx{background:var(--paper);padding:64px 0;margin-top:72px}
+.ix-h{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.ix-h h2{font-size:clamp(40px,4.4vw,64px)}
+.ix-h p{color:var(--mut);max-width:44ch}
+.ix{border-top:2px solid var(--ink)}
+.ir{display:grid;grid-template-columns:56px minmax(0,1.3fr) minmax(0,1fr) 110px minmax(0,1.6fr) 120px;gap:16px;align-items:center;border:0;border-bottom:1px solid var(--ln);background:none;width:100%;text-align:left;cursor:pointer;min-height:58px;padding:8px 6px;transition:background .2s,padding .25s}
+.ir:hover{background:var(--sand);padding-left:14px}
+.ir b{font-family:'Barlow Condensed',sans-serif;font-size:24px;text-transform:uppercase;line-height:1}
+.ir .n{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--acc);font-weight:700}
+.ir span{font-size:14px;color:var(--mut)}
+.ir em{font-style:normal;font-size:14px;font-weight:600;text-align:right;text-decoration:underline;text-underline-offset:4px}
+
+.cta{background:var(--acc);color:#fff;padding:64px 0}
+.cta .w{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+.cta h2{font-size:clamp(40px,4.6vw,72px);max-width:16ch}
+.cta p{color:#FFE4E0;margin-top:12px;max-width:52ch}
+.cta-a{display:flex;gap:10px;flex-wrap:wrap}
+
+/* LIGHTBOX */
+.lb{position:fixed;inset:0;z-index:200;background:rgba(14,14,13,.96);color:#fff;display:grid;grid-template-columns:minmax(0,1fr) 400px;animation:fade .3s both}
+.lb-st{position:relative;display:flex;flex-direction:column;min-height:0;padding:20px 20px 16px}
+.lb-top{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px}
+.lb-top span{font-size:14px;color:#C9C7C1}
+.lb-ph{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:10px 0}
+.lb-ph img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;animation:zoomin .45s cubic-bezier(.2,.8,.2,1) both}
+.lb-ar{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s;z-index:2}
+.lb-ar:hover{background:var(--acc)}
+.lb-ar.l{left:0}.lb-ar.r{right:0}
+.lb-th{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.lb-th button{flex:0 0 96px;height:64px;border:0;padding:0;cursor:pointer;opacity:.5;transition:opacity .2s;background:#333;box-shadow:inset 0 0 0 0 var(--acc)}
+.lb-th button img{width:100%;height:100%;object-fit:cover}
+.lb-th button:hover{opacity:.85}
+.lb-th button.on{opacity:1;outline:3px solid var(--acc);outline-offset:-3px}
+.lb-in{background:var(--paper);color:var(--ink);padding:28px 26px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.lb-in .x{align-self:flex-end;width:48px;height:48px;border:1.5px solid var(--ink);background:transparent;cursor:pointer;display:grid;place-items:center}
+.lb-in .x:hover{background:var(--ink);color:#fff}
+.lb-in h2{font-size:48px}
+.lb-in .pl-l{font-size:14px;font-weight:600;color:var(--acc)}
+.spec{border-top:2px solid var(--ink)}
+.spec div{display:grid;grid-template-columns:100px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--ln);font-size:14px}
+.spec dt{color:var(--mut)}
+.spec dd{font-weight:500}
+.lb-m{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lb-m a{text-decoration:none;color:var(--ink)}
+.lb-m .pl{display:block;height:100px}
+.lb-m a:hover .pl img{transform:scale(1.06)}
+.lb-m small{display:block;font-size:13px;font-weight:600;margin-top:6px;line-height:1.25}
+.lb-m h3{grid-column:1/-1;font-family:'Barlow Condensed',sans-serif;font-size:20px;text-transform:uppercase}
+.lb-pn{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.lb-pn button{min-height:48px;border:1.5px solid var(--ink);background:transparent;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;padding:0 10px}
+.lb-pn button:hover{background:var(--ink);color:#fff}
+
+@media (max-width:1240px){
+  .nav,.tel{display:none}
+  .burger{display:inline-flex}
+  .mega{display:none}
+  .rg{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ft-g{grid-template-columns:1fr 1fr}
+  .lb{grid-template-columns:1fr;overflow-y:auto;display:block}
+  .lb-st{height:600px}
+  .ir{grid-template-columns:44px minmax(0,1fr) minmax(0,1fr) 90px}
+  .ir span.m,.ir em{display:none}
+}
+@media (max-width:640px){
+  .w{padding:0 18px}
+  .tb-l .hide-s,.tb-r .hide-s{display:none}
+  .hd-r .btn{display:none}
+  .logo-w{font-size:36px}
+  .rg{grid-template-columns:1fr 1fr;grid-auto-rows:200px;gap:8px}
+  .rc::after{background:linear-gradient(to top,rgba(15,15,14,.92),rgba(15,15,14,.15) 80%)}
+  .rc-b{left:12px;right:12px;bottom:10px}
+  .rc-b b{font-size:19px}
+  .rc.big .rc-b b{font-size:30px}
+  .rc-t span+span{display:none}
+  .rc-b small{font-size:12px}
+  .cnt{margin-left:0;width:100%}
+  .idx{padding:48px 0;margin-top:48px}
+  .ir{grid-template-columns:36px minmax(0,1fr) 80px}
+  .ir span.p{display:none}
+  .lb-st{height:440px;padding:12px}
+  .lb-ar{width:46px;height:46px}
+  .lb-in{padding:22px 18px}
+  .lb-in h2{font-size:38px}
+  .ft-g{grid-template-columns:1fr}
+  .ft-tel{font-size:36px}
+}
+@media (prefers-reduced-motion:reduce){.k *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="k" style="{{ rootStyle }}">
+
+<div class="tb">
+  <div class="w">
+    <div class="tb-l">
+      <span>Bureau d'études et show-room — Puget-sur-Argens (Var)</span>
+      <a class="hide-s" href="index.html">Toutes les propositions</a>
+    </div>
+    <div class="tb-r">
+      <a class="hide-s" href="Catalogue-Contact.html">Prendre rendez-vous au show-room</a>
+      <a href="tel:0800951313"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>0 800 95 13 13 — appel gratuit</a>
+    </div>
+  </div>
+</div>
+
+<header class="hd" onMouseLeave="{{ closeMega }}">
+  <div class="w hd-in">
+    <a class="logo" href="Catalogue-Accueil.html" aria-label="RGTE, retour à l'accueil">
+      <span class="logo-w">RGTE<i></i></span>
+      <span class="logo-s">R.G.<br>Technologies</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <button type="button" aria-expanded="{{ megaExp }}" aria-controls="mega" onClick="{{ toggleMega }}">Lignes d'agencement <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+      <a href="Catalogue-Secteurs.html">Secteurs</a>
+      <a class="on" href="Catalogue-Realisations.html" aria-current="page">Réalisations</a>
+      <a href="Catalogue-Contact.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hd-r">
+      <a class="tel" href="tel:0800951313"><span class="tel-i"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg></span><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+      <a class="btn btn-r" href="Catalogue-Contact.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir le menu" aria-expanded="{{ menuExp }}" onClick="{{ toggleMenu }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"></path></svg></button>
+    </div>
+  </div>
+  <div id="mega" class="{{ megaCls }}">
+    <div class="w mega-g">
+      <sc-for list="{{ megaLines }}" as="l" hint-placeholder-count="5">
+        <a class="mg" href="Catalogue-Lignes.html">
+          <span class="mg-pl"><img src="{{ l.pack }}" alt="{{ l.packAlt }}"></span>
+          <span class="mg-n">{{ l.name }} <small>{{ l.count }} modules</small></span>
+          <span class="mg-m">{{ l.short }}</span>
+        </a>
+      </sc-for>
+      <a class="mg-x" href="Catalogue-Lignes.html">
+        <img src="../assets/photos/realisations/stone-canet.webp" alt="">
+        <b>Comparer les 5 lignes</b>
+        <span>Matériaux, panneau frontal, plan de travail : le comparateur complet.</span>
+      </a>
+    </div>
+  </div>
+  <div class="{{ menuCls }}">
+    <div class="w">
+      <a href="Catalogue-Lignes.html">Lignes d'agencement</a>
+      <a href="Catalogue-Secteurs.html">Secteurs</a>
+      <a href="Catalogue-Realisations.html">Réalisations</a>
+      <a href="Catalogue-Contact.html">Showroom &amp; contact</a>
+      <a href="index.html">Toutes les propositions</a>
+      <a class="btn btn-r" href="Catalogue-Contact.html">Plan 3D offert</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="w">
+  <nav class="crumb" aria-label="Fil d'Ariane"><a href="Catalogue-Accueil.html">Accueil</a><span aria-hidden="true">/</span><span>Réalisations</span></nav>
+  <div class="ph">
+    <h1 class="cd h-xl"><span><span>14 boutiques</span></span><span><span>équipées</span></span></h1>
+    <p class="lead">De Paris à La Réunion, des boutiques réelles équipées par RGTE. Filtrez par ligne ou par métier, ouvrez une réalisation pour parcourir ses photos et les modules utilisés.</p>
+  </div>
+
+  <div class="flt">
+    <div class="fg" aria-label="Filtrer par ligne"><span>Ligne</span>
+      <sc-for list="{{ lineChips }}" as="c" hint-placeholder-count="4"><button type="button" class="{{ c.cls }}" aria-pressed="{{ c.sel }}" onClick="{{ c.pick }}">{{ c.name }}<sup class="tn">{{ c.n }}</sup></button></sc-for>
+    </div>
+    <div class="fg" aria-label="Filtrer par métier"><span>Métier</span>
+      <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="5"><button type="button" class="{{ c.cls }}" aria-pressed="{{ c.sel }}" onClick="{{ c.pick }}">{{ c.name }}<sup class="tn">{{ c.n }}</sup></button></sc-for>
+    </div>
+    <p class="cnt tn" aria-live="polite">{{ countTxt }}</p>
+  </div>
+
+  <div class="rg">
+    <sc-for list="{{ cards }}" as="r" hint-placeholder-count="14">
+      <button type="button" class="{{ r.cls }}" onClick="{{ r.open }}" aria-label="Ouvrir la réalisation {{ r.title }}, {{ r.place }}">
+        <img src="{{ r.cover }}" alt="{{ r.alt }}" loading="lazy">
+        <span class="rc-n tn">{{ r.num }}</span>
+        <span class="rc-g"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14"></rect><path d="m3 15 5-5 4 4 3-3 6 6"></path></svg>{{ r.nPh }} photos</span>
+        <span class="rc-b"><small>{{ r.place }}</small><b>{{ r.title }}</b><span class="rc-t"><span>Ligne {{ r.line }}</span><span>{{ r.nMods }} module(s)</span></span></span>
+      </button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ noCards }}" hint-placeholder-val="{{ false }}">
+    <div class="empty"><p>Aucune réalisation publiée pour cette combinaison ligne et métier.</p><button type="button" class="btn btn-k" onClick="{{ reset }}">Afficher les 14 réalisations</button></div>
+  </sc-if>
+</div>
+
+<section class="idx">
+  <div class="w">
+    <div class="ix-h">
+      <h2 class="cd">Index des réalisations</h2>
+      <p>Les 14 projets en une liste : métier, lieu, ligne et modules. Cliquez pour ouvrir la galerie.</p>
+    </div>
+    <div class="ix">
+      <sc-for list="{{ index }}" as="r" hint-placeholder-count="14">
+        <button type="button" class="ir" onClick="{{ r.open }}"><span class="n tn">{{ r.num }}</span><b>{{ r.title }}</b><span class="p">{{ r.place }}</span><span>{{ r.line }}</span><span class="m">{{ r.modsTxt }}</span><em>Galerie</em></button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="w">
+    <div>
+      <h2 class="cd">Votre boutique, la prochaine réalisation ?</h2>
+      <p>Envoyez les dimensions de votre local et vos produits : le bureau d'études vous propose un agencement et son plan 3D, offert.</p>
+    </div>
+    <div class="cta-a"><a class="btn btn-w" href="Catalogue-Contact.html">Demander mon plan 3D</a><a class="btn btn-ow" href="tel:0800951313">0 800 95 13 13</a></div>
+  </div>
+</section>
+</main>
+
+<sc-if value="{{ lbOn }}" hint-placeholder-val="{{ false }}">
+  <div class="lb" role="dialog" aria-modal="true" aria-label="Galerie : {{ lb.title }}">
+    <div class="lb-st">
+      <div class="lb-top"><span class="tn">Réalisation {{ lb.num }} — photo {{ lb.pos }}</span><span>Photos RGTE (rgte.eu)</span></div>
+      <div class="lb-ph">
+        <img key="{{ lb.key }}" src="{{ lb.src }}" alt="{{ lb.alt }}">
+        <button type="button" class="lb-ar l" aria-label="Photo précédente" onClick="{{ prevPh }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+        <button type="button" class="lb-ar r" aria-label="Photo suivante" onClick="{{ nextPh }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+      </div>
+      <div class="lb-th" role="tablist" aria-label="Photos de la réalisation">
+        <sc-for list="{{ lb.thumbs }}" as="t" hint-placeholder-count="4">
+          <button type="button" role="tab" class="{{ t.cls }}" aria-selected="{{ t.sel }}" aria-label="Photo {{ t.n }}" onClick="{{ t.pick }}"><img src="{{ t.src }}" alt=""></button>
+        </sc-for>
+      </div>
+    </div>
+    <aside class="lb-in">
+      <button type="button" class="x" aria-label="Fermer la galerie" onClick="{{ closeLb }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      <div>
+        <p class="pl-l">Ligne {{ lb.line }}</p>
+        <h2 class="cd" style="margin-top:6px">{{ lb.title }}</h2>
+      </div>
+      <dl class="spec">
+        <div><dt>Lieu</dt><dd>{{ lb.place }}</dd></div>
+        <div><dt>Métier</dt><dd>{{ lb.typeName }}</dd></div>
+        <div><dt>Ligne</dt><dd>{{ lb.line }}</dd></div>
+        <div><dt>Modules</dt><dd>{{ lb.modsTxt }}</dd></div>
+      </dl>
+      <div class="lb-m">
+        <h3>Modules utilisés</h3>
+        <sc-for list="{{ lb.mods }}" as="m" hint-placeholder-count="3">
+          <a href="Catalogue-Module.html"><span class="pl {{ m.plCls }}"><img src="{{ m.src }}" alt="{{ m.alt }}"></span><small>{{ m.name }}</small></a>
+        </sc-for>
+      </div>
+      <a class="btn btn-r" href="Catalogue-Contact.html">Un projet similaire ? Plan 3D offert</a>
+      <div class="lb-pn">
+        <button type="button" onClick="{{ prevPr }}">Projet précédent</button>
+        <button type="button" onClick="{{ nextPr }}">Projet suivant</button>
+      </div>
+    </aside>
+  </div>
+</sc-if>
+
+<footer class="ft">
+  <div class="w">
+    <div class="ft-top">
+      <p class="cd ft-big">Votre plan 3D, offert.</p>
+      <div class="ft-cta">
+        <a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a>
+        <span>Appel gratuit — bureau d'études et show-room</span>
+        <a class="btn btn-r" href="Catalogue-Contact.html">Demander un devis</a>
+      </div>
+    </div>
+    <div class="ft-g">
+      <div>
+        <a class="logo" href="Catalogue-Accueil.html" aria-label="RGTE, accueil"><span class="logo-w">RGTE<i></i></span><span class="logo-s">R.G.<br>Technologies</span></a>
+        <p style="margin-top:18px">Agencement de vitrines réfrigérées sur mesure.<br>423, Chemin des Vernèdes — Espace Vernèdes 3<br>83480 Puget-sur-Argens</p>
+      </div>
+      <div><h3>Catalogue</h3><ul><li><a href="Catalogue-Lignes.html">Ligne Basique</a></li><li><a href="Catalogue-Lignes.html">Ligne Stone</a></li><li><a href="Catalogue-Lignes.html">Ligne Legno</a></li><li><a href="Catalogue-Lignes.html">Ligne Encastrable</a></li><li><a href="Catalogue-Lignes.html">Ligne Industry</a></li></ul></div>
+      <div><h3>RGTE</h3><ul><li><a href="Catalogue-Secteurs.html">Secteurs d'activité</a></li><li><a href="Catalogue-Realisations.html">Réalisations</a></li><li><a href="Catalogue-Module.html">Fiche Gourmandise</a></li><li><a href="Catalogue-Contact.html">Showroom &amp; contact</a></li><li><a href="index.html">Toutes les propositions</a></li></ul></div>
+      <div><h3>Informations</h3><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Conditions de vente</a></li><li><a href="#">Plan du site</a></li><li><a href="#">Gestion des cookies</a></li></ul></div>
+    </div>
+    <div class="ft-b">
+      <span>© RGTE — R.G. Technologies</span>
+      <strong>Proposition de refonte (tour 3) — concept, non officiel</strong>
+      <span>Photos : RGTE (rgte.eu) · ambiances Unsplash</span>
+    </div>
+  </div>
+</footer>
+</div>
+</script>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4050},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1B1B1A","#B2221A"]},"galerieOuverte":{"editor":"boolean","default":false}}'>
+const P = '../assets/photos/';
+const LINES = [
+  ['Basique', 12, 'basique-pastry-show', 'Coloris et matériaux au choix, plan de travail granit.'],
+  ['Stone', 11, 'stone-gourmandise', 'Pierre acrylique type Corian, verre sérigraphié.'],
+  ['Legno', 9, 'legno-ventilee', 'Panneau frontal en bois mélaminé.'],
+  ['Encastrable', 2, 'encastrable-ventile', 'Module brut prêt à être habillé.'],
+  ['Industry', 11, 'industry-loire', 'Vitrines standardisées en longueurs.']
+];
+const MOD = {
+  plane: ['Réfrigérée Plane', 'p', 'stone-plane'], caisse: ['Comptoir caisse', 'p', 'stone-caisse'], saladette: ['Saladette', 'p', 'stone-saladette'],
+  panorama: ['Réfrigérée Panorama', 'r', 'stone-pointier-2'], centrale: ['Réfrigérée Centrale', 'p', 'stone-centrale'], bainmarie: ['Chaud bain-marie', 'p', 'stone-bainmarie'],
+  surface: ['Surface plane', 'r', 'stone-yogurt-1'], sbar: ['Comptoir bar', 'r', 'stone-bar-photo'],
+  bpano: ['Panoramique', 'r', 'basique-chamonix'], bbasse: ['Basse', 'r', 'basique-0'], bmurale: ['Murale self-service', 'r', 'basique-chamonix-3'],
+  amandine: ['Amandine', 'r', 'stone-reunion-2'], bcaisse: ['Comptoir caisse', 'r', 'basique-caisse'],
+  lstat: ['Réfrigérée statique', 'p', 'legno-statique'], lneutre: ['Vitrine neutre', 'p', 'legno-caisse-angle'], larr: ['Module arrière', 'p', 'legno-arriere']
+};
+const TYPES = [['pat', 'Pâtisserie et chocolat'], ['boul', 'Boulangerie'], ['trait', 'Traiteur et snacking'], ['comp', 'Bars à composer']];
+const TBY = {}; TYPES.forEach(t => { TBY[t[0]] = t[1]; });
+// n, titre, lieu, ligne, type, modules, texte modules, photos
+const R = [
+  [1, 'Pâtisserie', 'Paris 4e', 'Stone', 'pat', ['plane', 'caisse'], 'Vitrine réfrigérée Plane et Caisse', ['stone-patisserie-paris']],
+  [2, 'Bar à salades', 'Département 13', 'Stone', 'comp', ['saladette', 'caisse', 'panorama'], 'Saladette, Caisse et Panorama', ['stone-saladbar-sud', 'stone-saladbar-sud-2', 'stone-saladbar-plan']],
+  [3, 'Chocolatier', 'Gap et Grenoble', 'Stone', 'pat', ['plane', 'caisse'], 'Plane et Caisse', ['stone-chocolatier-boutique', 'stone-chocolatier-gap-2', 'stone-chocolatier-gap-3', 'stone-chocolatier-gap']],
+  [4, 'Sandwicherie', 'Chamonix', 'Basique', 'trait', ['bpano', 'bbasse', 'bmurale'], 'Panoramique, Basse et Murale self-service', ['basique-chamonix-3', 'basique-chamonix', 'basique-chamonix-2', 'basique-chamonix-4']],
+  [5, 'Bar à olives', 'Nice', 'Stone', 'comp', ['saladette'], 'Saladette sur mesure avec trous arrondis', ['stone-olives-trous', 'stone-olives-trous-2', 'stone-olives-service', 'stone-olives-alziari', 'stone-olives-alziari-2']],
+  [6, 'Bar à yogourt glacé (chaîne)', 'Toute la France', 'Stone', 'comp', ['saladette', 'surface'], 'Saladette sur mesure à trous arrondis et Surface plane', ['stone-yogurt-toppings', 'stone-yogurt-ladefense', 'stone-yogurt-annecy', 'stone-yogurt-1', 'stone-yogurt-2']],
+  [7, 'Boulangerie pâtisserie', 'La Réunion', 'Basique', 'boul', ['amandine', 'bcaisse'], 'Amandine et Caisse', ['stone-reunion', 'stone-reunion-2', 'stone-reunion-3']],
+  [8, 'Boulangerie', 'Département 33', 'Legno', 'boul', ['lstat', 'lneutre', 'larr'], 'Réfrigérée statique, Neutre et Module arrière', ['legno-boulangerie-large', 'stone-boulangerie-2']],
+  [9, 'Pizza sur composition', 'Paris', 'Stone', 'comp', ['saladette', 'caisse', 'plane'], 'Saladette, Caisse et Plane', ['stone-pizza']],
+  [10, 'Pâtissier chocolatier', 'Département 69', 'Stone', 'pat', ['centrale', 'caisse', 'plane'], 'Centrale, Caisse et Plane', ['stone-patissier-chocolatier', 'stone-patissier-chocolatier-2', 'stone-patissier-chocolatier-3']],
+  [11, 'Traiteur asiatique (chaîne)', 'Marseille', 'Stone', 'trait', ['plane', 'caisse', 'saladette', 'sbar'], 'Plane, Caisse, Saladette et Comptoir bar', ['stone-dakao-2', 'stone-dakao', 'stone-dakao-3', 'stone-dakao-4', 'stone-dakao-5']],
+  [12, 'Bar à couscous', 'Isère', 'Stone', 'comp', ['bainmarie'], 'Bain-marie avec trous arrondis sur mesure', ['stone-couscous']],
+  [13, 'Traiteur poissonnier', 'Département 92', 'Stone', 'trait', ['panorama', 'surface', 'caisse'], 'Panorama, Surface plane et Caisse', ['stone-pointier', 'stone-pointier-2', 'stone-poissonnier-plan']],
+  [14, 'Pâtissier chocolatier Canet', 'Nice 06', 'Stone', 'pat', ['plane'], 'Plane pâtissière +2/+8 et chocolats +14/+18', ['stone-canet', 'stone-canet-2', 'stone-canet-3', 'stone-canet-facade']]
+];
+const ORDER = [14, 11, 5, 3, 10, 6, 4, 1, 13, 7, 2, 8, 12, 9];
+const pad = (n) => String(n).padStart(2, '0');
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mega: false, menu: false, line: 'all', type: 'all', lb: props.galerieOuverte ? 14 : null, ph: 0 }; }
+  renderVals() {
+    const s = this.state;
+    const ok = (r) => (s.line === 'all' || r[3] === s.line) && (s.type === 'all' || r[4] === s.type);
+    const byN = {}; R.forEach(r => { byN[r[0]] = r; });
+    const list = ORDER.map(n => byN[n]).filter(ok);
+    const open = (n) => () => this.setState({ lb: n, ph: 0 });
+    const cards = list.map((r, i) => ({ num: pad(r[0]), title: r[1], place: r[2], line: r[3], nPh: r[7].length, nMods: r[5].length,
+      cover: P + 'realisations/' + r[7][0] + '.webp', alt: r[1] + ', ' + r[2] + ', ligne ' + r[3],
+      cls: (i === 0 || i === 7) && list.length > 4 ? 'rc big' : 'rc', open: open(r[0]) }));
+    const lineChips = [['all', 'Toutes'], ['Stone', 'Stone'], ['Basique', 'Basique'], ['Legno', 'Legno']].map(c => ({ name: c[1], n: R.filter(r => (c[0] === 'all' || r[3] === c[0]) && (s.type === 'all' || r[4] === s.type)).length, cls: s.line === c[0] ? 'chip on' : 'chip', sel: s.line === c[0], pick: () => this.setState({ line: c[0] }) }));
+    const typeChips = [['all', 'Tous']].concat(TYPES).map(c => ({ name: c[1], n: R.filter(r => (c[0] === 'all' || r[4] === c[0]) && (s.line === 'all' || r[3] === s.line)).length, cls: s.type === c[0] ? 'chip on' : 'chip', sel: s.type === c[0], pick: () => this.setState({ type: c[0] }) }));
+    let lb = {};
+    if (s.lb) {
+      const r = byN[s.lb]; const n = r[7].length; const ph = Math.min(s.ph, n - 1);
+      lb = { num: pad(r[0]), title: r[1], place: r[2], line: r[3], typeName: TBY[r[4]], modsTxt: r[6], key: r[0] + '-' + ph,
+        src: P + 'realisations/' + r[7][ph] + '.webp', alt: r[1] + ', ' + r[2] + ' — photo ' + (ph + 1), pos: (ph + 1) + ' / ' + n,
+        thumbs: r[7].map((p, i) => ({ n: i + 1, src: P + 'realisations/' + p + '.webp', cls: i === ph ? 'on' : '', sel: i === ph, pick: () => this.setState({ ph: i }) })),
+        mods: r[5].map(id => { const m = MOD[id]; return { name: m[0], plCls: m[1] === 'r' ? 'ph' : '', src: P + (m[1] === 'r' ? 'realisations/' : 'produits/') + m[2] + '.webp', alt: 'Module ' + m[0] }; }) };
+    }
+    const step = (d) => { const cur = this.state.lb; const i = ORDER.indexOf(cur); this.setState({ lb: ORDER[(i + d + ORDER.length) % ORDER.length], ph: 0 }); };
+    const nPh = s.lb ? byN[s.lb][7].length : 1;
+    return {
+      rootStyle: '--acc:' + (this.props.accent || '#D42A20'),
+      megaCls: s.mega ? 'mega on' : 'mega', megaExp: s.mega, menuCls: s.menu ? 'mnav on' : 'mnav', menuExp: s.menu,
+      toggleMega: () => this.setState({ mega: !this.state.mega }), closeMega: () => { if (this.state.mega) this.setState({ mega: false }); },
+      toggleMenu: () => this.setState({ menu: !this.state.menu }),
+      megaLines: LINES.map(l => ({ name: l[0], count: l[1], short: l[3], pack: P + 'produits/' + l[2] + '.webp', packAlt: 'Ligne ' + l[0] })),
+      lineChips, typeChips, cards, noCards: cards.length === 0, reset: () => this.setState({ line: 'all', type: 'all' }),
+      countTxt: cards.length + ' / 14 réalisations',
+      index: R.map(r => ({ num: pad(r[0]), title: r[1], place: r[2], line: r[3], modsTxt: r[6], open: open(r[0]) })),
+      lbOn: !!s.lb, lb, closeLb: () => this.setState({ lb: null }),
+      prevPh: () => this.setState({ ph: (this.state.ph + nPh - 1) % nPh }), nextPh: () => this.setState({ ph: (this.state.ph + 1) % nPh }),
+      prevPr: () => step(-1), nextPr: () => step(1)
+    };
+  }
+}
+</script>
+</body>
+</html>

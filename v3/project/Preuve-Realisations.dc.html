@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE · Preuve — Réalisations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&display=swap">
+<style>
+body{margin:0;background:#FFFFFF}
+.pv{--red:#D42A20;--mute:#666666;--studio:#ECEBE8;--stone:#F4F3F1;--line:#DCDBD7;font-family:'Schibsted Grotesk',system-ui,sans-serif;color:#000000;background:#FFFFFF;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-variant-numeric:tabular-nums}
+.pv *,.pv *::before,.pv *::after{box-sizing:border-box}
+.pv img{display:block;max-width:100%}
+:where(.pv) :where(h1,h2,h3,h4,p,figure,dl,dd,dt,ol,ul){margin:0}
+.w{max-width:1360px;margin:0 auto;padding:0 40px}
+.pv :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.top{background:#000000;color:#A3A3A3;font-size:13px;border-bottom:1px solid #2A2A2A}
+.top .w{display:flex;justify-content:space-between;align-items:center;min-height:36px;gap:16px}
+.top a{color:#FFFFFF;text-decoration:none;display:inline-flex;align-items:center;gap:8px;min-height:36px}
+.top a:hover{color:#FF8A82}
+.hd{position:sticky;top:0;z-index:50;background:#000000;color:#FFFFFF}
+.hd-in{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:72px}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#FFFFFF;min-height:44px}
+.logo b{font-size:30px;font-weight:900;letter-spacing:-.06em;line-height:1}
+.logo span{font-size:12px;color:#A3A3A3;line-height:1.2;font-weight:500;border-left:1px solid #3A3A3A;padding-left:12px}
+.nav{display:flex;gap:2px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:15px;font-weight:500;color:#CFCFCF;text-decoration:none;position:relative;transition:color .2s}
+.nav a::after{content:'';position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover,.nav a.on{color:#FFFFFF}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.hd-r{display:flex;align-items:center;gap:20px}
+.tel{display:flex;flex-direction:column;justify-content:center;text-decoration:none;color:#FFFFFF;line-height:1.15;min-height:44px}
+.tel b{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.tel small{font-size:12px;color:#A3A3A3}
+.tel:hover b{color:#FF8A82}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;border:0;font:600 15px/1.1 'Schibsted Grotesk',system-ui,sans-serif;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s;white-space:nowrap}
+.btn svg{flex:none;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.btn:hover svg{transform:translateX(4px)}
+.b-red{background:var(--red);color:#FFFFFF}
+.b-red:hover{background:#B5221A}
+.b-k{background:#000000;color:#FFFFFF}
+.b-k:hover{background:#333333}
+.b-w{background:#FFFFFF;color:#000000}
+.b-w:hover{background:#ECEBE8}
+.b-o{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+.b-o:hover{box-shadow:inset 0 0 0 3px currentColor}
+.burger{display:none;width:48px;height:48px;border-radius:999px;border:1px solid #3A3A3A;background:transparent;color:#FFFFFF;align-items:center;justify-content:center;cursor:pointer}
+.mnav{display:none}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:56px;border-top:1px solid #2A2A2A;color:#FFFFFF;text-decoration:none;font-size:20px;font-weight:600}
+.ft{background:#000000;color:#FFFFFF;padding:72px 0 24px}
+.ft .ft-big{font-size:clamp(64px,12vw,170px);font-weight:900;letter-spacing:-.07em;line-height:.8;color:#FFFFFF}
+.ft-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:36px;margin-top:40px;padding-top:28px;border-top:1px solid #2A2A2A}
+.ft-h{font-size:13px;color:#A3A3A3;margin-bottom:12px;font-weight:500}
+.ft p{font-size:15px;color:#E5E5E5}
+.ft-l a{display:flex;align-items:center;min-height:36px;color:#FFFFFF;text-decoration:none;font-size:15px}
+.ft-l a:hover{color:#FF8A82}
+.ft-tel{font-size:28px;font-weight:800;letter-spacing:-.03em;color:#FFFFFF;text-decoration:none;display:inline-block}
+.ft-tel:hover{color:#FF8A82}
+.ft-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin-top:40px;padding-top:16px;border-top:1px solid #2A2A2A;font-size:13px;color:#A3A3A3}
+.ft-b a{color:#A3A3A3;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ft-b a:hover{color:#FFFFFF}
+.h2{font-size:clamp(40px,5.6vw,84px);font-weight:800;letter-spacing:-.05em;line-height:.94;overflow-wrap:anywhere}
+.lead{font-size:clamp(17px,1.4vw,20px);line-height:1.5;color:#3D3D3D;max-width:560px}
+.kick{display:block;font-size:15px;font-weight:600;color:var(--red);margin-bottom:18px}
+.lnk{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-weight:600;color:#000000;text-decoration:none;border-bottom:1.5px solid #000000;transition:color .2s,border-color .2s}
+.lnk:hover{color:var(--red);border-color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid #CFCECA;background:#FFFFFF;color:#000000;font:500 15px/1 'Schibsted Grotesk',sans-serif;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.chip:hover{border-color:#000000}
+.chip sup{font-size:11px;margin-left:4px;opacity:.7}
+@keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes inA{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes inB{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* page hero */
+.ph{background:#000000;color:#FFFFFF;padding:72px 0 0;overflow:hidden}
+.ph-t{font-size:clamp(54px,10.4vw,160px);font-weight:900;letter-spacing:-.065em;line-height:.86;overflow-wrap:anywhere;animation:up 1s cubic-bezier(.2,.7,.2,1) both}
+.ph-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 64px;align-items:end;margin-top:40px}
+.ph-g p{font-size:clamp(17px,1.4vw,20px);color:#CFCFCF;max-width:560px}
+.ph-n{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #333333}
+.ph-n div{padding:16px 16px 0 0}
+.ph-n b{display:block;font-size:44px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.ph-n span{font-size:14px;color:#A3A3A3}
+.strip{display:flex;gap:6px;margin-top:56px;height:120px}
+.strip a{flex:1 1 0;min-width:0;position:relative;overflow:hidden;transition:flex-grow .5s cubic-bezier(.2,.7,.2,1)}
+.strip a:hover{flex-grow:3}
+.strip img{width:100%;height:120px;object-fit:cover;filter:grayscale(1);transition:filter .4s}
+.strip a:hover img{filter:none}
+
+/* filtres */
+.fb{position:sticky;top:72px;z-index:20;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.fb-in{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center;padding-top:14px;padding-bottom:14px}
+.fb-l{font-size:14px;color:var(--mute);margin-right:4px}
+.fb-g{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fb .chip{min-height:40px;padding:0 14px;font-size:14px}
+
+/* étude de cas */
+.cs{padding:64px 0 88px;scroll-margin-top:150px}
+.cs-g{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:48px;align-items:start}
+.gal-m{position:relative;height:600px;background:#ECEBE8;overflow:hidden;cursor:zoom-in;border:0;padding:0;width:100%;display:block}
+.gal-m img{width:100%;height:600px;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.gal-m:hover img{transform:scale(1.03)}
+.gal-zoom{position:absolute;right:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:rgba(0,0,0,.72);color:#FFFFFF;font-size:14px;font-weight:600}
+.gal-tag{position:absolute;left:16px;top:16px;padding:8px 14px;border-radius:999px;background:#FFFFFF;color:#000000;font-size:13px;font-weight:600}
+.gal-t{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px}
+.gal-t button{position:relative;height:84px;padding:0;border:0;cursor:pointer;background:#ECEBE8;overflow:hidden}
+.gal-t img{width:100%;height:84px;object-fit:cover;transition:opacity .3s,transform .5s}
+.gal-t button:hover img{transform:scale(1.06)}
+.cs-n{display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600}
+.cs-n i{display:block;width:40px;height:2px;background:var(--red)}
+.cs-h{font-size:clamp(38px,4.2vw,64px);font-weight:900;letter-spacing:-.055em;line-height:.92;margin-top:16px;overflow-wrap:anywhere}
+.cs-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:28px;border-top:2px solid #000000}
+.cs-dl div{padding:14px 12px 14px 0;border-bottom:1px solid var(--line)}
+.cs-dl dt{font-size:13px;color:var(--mute)}
+.cs-dl dd{font-size:17px;font-weight:600;margin-top:2px}
+.mods-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:28px}
+.mods-h b{font-size:18px;font-weight:700}
+.mods-h span{font-size:13px;color:var(--mute)}
+.mods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.mod{position:relative;display:flex;flex-direction:column;background:#ECEBE8;padding:14px 14px 12px;text-decoration:none;color:#000000;min-height:176px;transition:background .25s}
+.mod:hover{background:#E2E1DD}
+.mod-v{position:relative;height:96px;display:flex;align-items:flex-end;justify-content:center}
+.mod-v::after{content:'';position:absolute;left:16%;right:16%;bottom:-4px;height:12px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.25),rgba(0,0,0,0))}
+.mod-v img{position:relative;z-index:1;max-height:96px;width:auto;max-width:100%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.mod:hover .mod-v img{transform:translateY(-4px) scale(1.04)}
+.mod-ph{display:flex;align-items:center;justify-content:center;height:96px;border:1px dashed #BDBCB8;font-size:12px;color:var(--mute);text-align:center;padding:8px}
+.mod b{display:block;font-size:15px;font-weight:700;margin-top:12px;line-height:1.2}
+.mod small{display:block;font-size:12.5px;color:var(--mute);margin-top:2px}
+.mod .go{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:999px;background:#000000;color:#FFFFFF;display:grid;place-items:center;opacity:0;transform:scale(.6);transition:opacity .25s,transform .35s}
+.mod:hover .go{opacity:1;transform:none}
+.cs-cta{margin-top:24px;background:#000000;color:#FFFFFF;padding:22px;display:flex;flex-direction:column;gap:14px}
+.cs-cta p{font-size:16px;color:#E5E5E5}
+.cs-nav{display:flex;justify-content:space-between;gap:12px;margin-top:20px}
+.cs-nav button{display:inline-flex;align-items:center;gap:10px;min-height:44px;background:transparent;border:0;font:600 15px/1 'Schibsted Grotesk',sans-serif;cursor:pointer;color:#000000;padding:0}
+.cs-nav button:hover{color:var(--red)}
+
+/* grille */
+.gr{padding:0 0 104px}
+.gr-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-top:40px;border-top:2px solid #000000;margin-bottom:28px}
+.gr-h h2{font-size:clamp(30px,3vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:36px 12px}
+.card{display:block;text-decoration:none;color:#000000;animation:up .6s cubic-bezier(.2,.7,.2,1) both}
+.card-v{position:relative;height:260px;overflow:hidden;background:#ECEBE8}
+.card-v img{width:100%;height:260px;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.card:hover .card-v img{transform:scale(1.06)}
+.card-n{position:absolute;left:14px;top:14px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#FFFFFF;color:#000000}
+.card-on{position:absolute;right:14px;top:14px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--red);color:#FFFFFF}
+.card-c{position:absolute;right:14px;bottom:14px;font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.65);color:#FFFFFF}
+.card h3{font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-top:14px;transition:color .2s}
+.card:hover h3{color:var(--red)}
+.card p{font-size:15px;color:#3D3D3D;margin-top:4px}
+.empty{grid-column:1/-1;background:#F4F3F1;padding:40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.94);color:#FFFFFF;display:flex;flex-direction:column;animation:fade .3s ease both}
+.lb-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 24px}
+.lb-top p{font-size:15px}
+.lb-top p span{color:#A3A3A3}
+.lb-x{width:52px;height:52px;border-radius:999px;border:1px solid #555555;background:transparent;color:#FFFFFF;display:grid;place-items:center;cursor:pointer}
+.lb-x:hover{background:#FFFFFF;color:#000000}
+.lb-m{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:16px;padding:0 24px;min-height:0}
+.lb-m img{max-width:100%;max-height:720px;width:auto;height:auto;object-fit:contain;animation:fade .4s ease both}
+.lb-a{flex:none;width:56px;height:56px;border-radius:999px;border:1px solid #555555;background:transparent;color:#FFFFFF;display:grid;place-items:center;cursor:pointer}
+.lb-a:hover{background:#FFFFFF;color:#000000}
+.lb-b{display:flex;justify-content:center;gap:6px;padding:16px 24px 24px;flex-wrap:wrap}
+.lb-b button{width:72px;height:52px;padding:0;border:0;cursor:pointer;background:#222222;overflow:hidden}
+.lb-b img{width:72px;height:52px;object-fit:cover}
+
+/* cta */
+.cta{background:var(--red);color:#FFFFFF;padding:88px 0}
+.cta-g{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:end}
+.cta .cta-t{font-size:clamp(44px,6.4vw,100px);font-weight:900;letter-spacing:-.06em;line-height:.9}
+.cta p{font-size:18px}
+
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;padding:0 0 12px;animation:drop .3s ease both}}
+@media(max-width:980px){.cs-g,.ph-g,.cta-g{grid-template-columns:minmax(0,1fr)}.gal-m,.gal-m img{height:460px}.fb{position:static}}
+@media(max-width:720px){.w{padding:0 16px}.top .tn{display:none}.hd-cta{display:none}.ph{padding-top:48px}.ph-n b{font-size:34px}.strip{height:72px;margin-top:36px}.strip img{height:72px}.strip a:nth-child(n+8){display:none}.fb-in{gap:10px}.fb-g{flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:4px;scrollbar-width:none}.fb .chip{flex:none}.cs{padding:40px 0 64px}.gal-m,.gal-m img{height:300px}.gal-t{grid-template-columns:repeat(4,minmax(0,1fr))}.gal-t button,.gal-t img{height:64px}.gal-zoom{font-size:13px;padding:8px 12px}.mods{grid-template-columns:repeat(2,minmax(0,1fr))}.mod{min-height:150px;padding:10px}.mod-v,.mod-ph{height:72px}.mod-v img{max-height:72px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 8px}.card-v,.card-v img{height:150px}.card h3{font-size:17px;margin-top:10px}.card p{font-size:13px}.card-c{display:none}.card-n{left:8px;top:8px;font-size:12px;padding:4px 8px}.card-on{right:8px;top:8px;font-size:12px;padding:4px 8px}.cs-nav button{font-size:14px;text-align:left}.lb-m{padding:0 8px;gap:6px}.lb-a{width:44px;height:44px}.lb-b button,.lb-b img{width:52px;height:40px}.cta{padding:64px 0}.ft{padding:56px 0 24px}}
+@media (prefers-reduced-motion:reduce){.pv *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="pv" style="{{ rootStyle }}">
+
+<div class="top">
+  <div class="w">
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+    <span class="tn">Bureau d’études et show-room à Puget-sur-Argens (Var)</span>
+  </div>
+</div>
+<header class="hd">
+  <div class="w hd-in">
+    <a class="logo" href="Preuve-Accueil.dc.html" aria-label="RGTE, R.G. Technologies, accueil"><b>RGTE</b><span>R.G.<br>Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="Preuve-Lignes.dc.html">Lignes d’agencement</a>
+      <a href="Preuve-Secteurs.dc.html">Secteurs</a>
+      <a class="on" href="Preuve-Realisations.dc.html" aria-current="page">Réalisations</a>
+      <a href="Preuve-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <div class="hd-r">
+      <a class="tel" href="tel:0800951313"><b>0 800 95 13 13</b><small>Appel gratuit</small></a>
+      <a class="btn b-red hd-cta" href="Preuve-Contact.dc.html">Plan 3D offert</a>
+      <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuOpenS }}" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"></path></svg></button>
+    </div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav w" aria-label="Navigation mobile">
+      <a href="Preuve-Lignes.dc.html">Lignes d’agencement</a>
+      <a href="Preuve-Secteurs.dc.html">Secteurs</a>
+      <a href="Preuve-Realisations.dc.html">Réalisations</a>
+      <a href="Preuve-Contact.dc.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313">0 800 95 13 13 <small style="font-size:13px;color:#A3A3A3">appel gratuit</small></a>
+      <a href="Preuve-Contact.dc.html" style="color:#FF8A82">Demander mon plan 3D offert</a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="ph">
+  <div class="w">
+    <h1 class="ph-t">14 boutiques, une signature.</h1>
+    <div class="ph-g">
+      <p>Pâtisseries, bars à salades, traiteurs, chocolatiers : chaque réalisation est une étude de cas, avec ses photos, sa ligne et les modules posés. Cliquez un module pour ouvrir sa fiche.</p>
+      <div class="ph-n">
+        <div><b>11</b><span>en ligne Stone</span></div>
+        <div><b>2</b><span>en ligne Basique</span></div>
+        <div><b>1</b><span>en ligne Legno</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="strip" aria-hidden="true">
+    <sc-for list="{{ strip }}" as="t" hint-placeholder-count="14">
+      <a href="#cas" onClick="{{ t.pick }}" tabindex="-1"><img src="{{ t.img }}" alt=""></a>
+    </sc-for>
+  </div>
+</section>
+
+<div class="fb">
+  <div class="w fb-in">
+    <div class="fb-g" role="group" aria-label="Filtrer par ligne">
+      <span class="fb-l">Ligne</span>
+      <sc-for list="{{ fLigne }}" as="f" hint-placeholder-count="4">
+        <button type="button" class="chip" style="{{ f.st }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.label }}<sup>{{ f.n }}</sup></button>
+      </sc-for>
+    </div>
+    <div class="fb-g" role="group" aria-label="Filtrer par type de commerce">
+      <span class="fb-l">Commerce</span>
+      <sc-for list="{{ fType }}" as="f" hint-placeholder-count="6">
+        <button type="button" class="chip" style="{{ f.st }}" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}">{{ f.label }}<sup>{{ f.n }}</sup></button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+<!-- ÉTUDE DE CAS -->
+<section class="cs" id="cas" aria-live="polite">
+  <div class="w cs-g" style="{{ csAnim }}">
+    <div>
+      <button type="button" class="gal-m" onClick="{{ openLb }}" aria-label="Agrandir la photo">
+        <img src="{{ ph.src }}" alt="{{ ph.alt }}">
+        <span class="gal-tag">{{ ph.tag }}</span>
+        <span class="gal-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"></path></svg>Photo {{ ph.i }} sur {{ ph.n }}</span>
+      </button>
+      <div class="gal-t" role="group" aria-label="Photos du projet">
+        <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4">
+          <button type="button" style="{{ t.st }}" aria-label="{{ t.aria }}" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}"><img src="{{ t.src }}" alt=""></button>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <p class="cs-n"><i></i>Réalisation n° {{ c.num }} sur 14</p>
+      <h2 class="cs-h">{{ c.title }}</h2>
+      <dl class="cs-dl">
+        <div><dt>Lieu</dt><dd>{{ c.lieu }}</dd></div>
+        <div><dt>Ligne</dt><dd>Ligne {{ c.ligne }}</dd></div>
+        <div><dt>Commerce</dt><dd>{{ c.type }}</dd></div>
+        <div><dt>Température</dt><dd>{{ c.temp }}</dd></div>
+      </dl>
+      <div class="mods-h"><b>Modules posés</b><span>{{ c.modsTxt }}</span></div>
+      <div class="mods">
+        <sc-for list="{{ mods }}" as="m" hint-placeholder-count="3">
+          <a class="mod" href="Preuve-Module.dc.html">
+            <sc-if value="{{ m.hasImg }}" hint-placeholder-val="{{ true }}"><span class="mod-v"><img src="{{ m.img }}" alt="{{ m.alt }}"></span></sc-if>
+            <sc-if value="{{ m.noImg }}" hint-placeholder-val="{{ false }}"><span class="mod-ph">Packshot [À FOURNIR]</span></sc-if>
+            <b>{{ m.nom }}</b>
+            <small>{{ m.uses }}</small>
+            <span class="go" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+          </a>
+        </sc-for>
+      </div>
+      <div class="cs-cta">
+        <p>Un projet comparable ? Le bureau d’études part de votre local pour dessiner votre plan 3D, offert.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn b-red" href="Preuve-Contact.dc.html">Demander mon plan 3D</a>
+          <a class="btn b-o" href="tel:0800951313">0 800 95 13 13</a>
+        </div>
+      </div>
+      <div class="cs-nav">
+        <button type="button" onClick="{{ prevCase }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>{{ prevLbl }}</button>
+        <button type="button" onClick="{{ nextCase }}">{{ nextLbl }}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRILLE -->
+<section class="gr">
+  <div class="w">
+    <div class="gr-h">
+      <h2>{{ listTitle }}</h2>
+      <sc-if value="{{ filtered }}" hint-placeholder-val="{{ false }}"><button type="button" class="chip" onClick="{{ resetF }}">Effacer les filtres</button></sc-if>
+    </div>
+    <div class="grid">
+      <sc-for list="{{ cards }}" as="k" hint-placeholder-count="9">
+        <a class="card" href="#cas" onClick="{{ k.pick }}" style="{{ k.delay }}">
+          <div class="card-v">
+            <img src="{{ k.cover }}" alt="{{ k.alt }}" loading="lazy">
+            <span class="card-n">n° {{ k.num }}</span>
+            <sc-if value="{{ k.on }}" hint-placeholder-val="{{ false }}"><span class="card-on">Affiché</span></sc-if>
+            <span class="card-c">{{ k.nPh }} photo(s)</span>
+          </div>
+          <h3>{{ k.type }}</h3>
+          <p>{{ k.lieu }}, ligne {{ k.ligne }}</p>
+        </a>
+      </sc-for>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div class="empty"><div><b style="font-size:20px">Aucune réalisation publiée avec ces deux filtres.</b><p style="color:#3D3D3D;margin-top:6px">Changez de ligne ou de commerce, ou demandez des exemples comparables au bureau d’études.</p></div><button type="button" class="btn b-k" onClick="{{ resetF }}">Effacer les filtres</button></div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="w cta-g">
+    <p class="cta-t">Réalisation n° 15 : votre boutique.</p>
+    <div>
+      <p>Envoyez les dimensions de votre local et votre métier. Le plan 3D d’agencement est offert ; le devis suit.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+        <a class="btn b-w" href="Preuve-Contact.dc.html">Demander mon plan 3D<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a class="btn b-o" href="tel:0800951313">0 800 95 13 13</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="lb" role="dialog" aria-modal="true" aria-label="{{ lbLabel }}">
+    <div class="lb-top">
+      <p>{{ c.title }}<span>, photo {{ ph.i }} sur {{ ph.n }} ({{ ph.tag }})</span></p>
+      <button type="button" class="lb-x" aria-label="Fermer la galerie" onClick="{{ closeLb }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="lb-m">
+      <button type="button" class="lb-a" aria-label="Photo précédente" onClick="{{ prevPh }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+      <img src="{{ ph.src }}" alt="{{ ph.alt }}" style="{{ lbAnim }}">
+      <button type="button" class="lb-a" aria-label="Photo suivante" onClick="{{ nextPh }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+    </div>
+    <div class="lb-b">
+      <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4">
+        <button type="button" style="{{ t.lbSt }}" aria-label="{{ t.aria }}" onClick="{{ t.pick }}"><img src="{{ t.src }}" alt=""></button>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+<footer class="ft">
+  <div class="w">
+    <p class="ft-big" aria-hidden="true">RGTE</p>
+    <div class="ft-g">
+      <div><p class="ft-h">Bureau d’études &amp; show-room</p><p>423, chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ft-h">Numéro vert</p><a class="ft-tel" href="tel:0800951313">0 800 95 13 13</a><p style="color:#A3A3A3;margin-top:4px">Appel gratuit</p></div>
+      <div class="ft-l"><p class="ft-h">Site</p><a href="Preuve-Lignes.dc.html">Lignes d’agencement</a><a href="Preuve-Secteurs.dc.html">Secteurs</a><a href="Preuve-Realisations.dc.html">Réalisations</a><a href="Preuve-Contact.dc.html">Showroom &amp; contact</a></div>
+      <div class="ft-l"><p class="ft-h">Informations</p><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+    </div>
+    <div class="ft-b">
+      <span>Proposition de refonte (tour 3) — concept, non officiel</span>
+      <span>Photos : RGTE (rgte.eu) · ambiances Unsplash</span>
+      <a href="Main.dc.html">Toutes les propositions</a>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4400},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#000000","#B5221A"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menuOpen:false, sel:14, ph:0, fl:'toutes', ft:'tous', lb:false, k:0, pk:0 };
+    const P = 'assets/photos/realisations/', K = 'assets/photos/produits/';
+    this.P = P;
+    this.MODS = {
+      'st-plane':{ nom:'Vitrine réfrigérée Plane', img:K+'stone-plane.webp' },
+      'st-caisse':{ nom:'Comptoir caisse', img:K+'stone-caisse.webp' },
+      'st-saladette':{ nom:'Saladette', img:K+'stone-saladette.webp' },
+      'st-saladette-sm':{ nom:'Saladette sur mesure, trous arrondis', img:K+'stone-saladette.webp', base:'st-saladette' },
+      'st-panorama':{ nom:'Réfrigérée Panorama', img:'' },
+      'st-surface':{ nom:'Surface plane', img:'' },
+      'st-centrale':{ nom:'Réfrigérée Centrale', img:K+'stone-centrale.webp' },
+      'st-bar':{ nom:'Comptoir bar', img:'' },
+      'st-bainmarie':{ nom:'Bain-marie, trous arrondis sur mesure', img:K+'stone-bainmarie.webp' },
+      'ba-panoramique':{ nom:'Panoramique', img:'' },
+      'ba-basse':{ nom:'Vitrine basse', img:'' },
+      'ba-murale':{ nom:'Murale self-service', img:'' },
+      'ba-amandine':{ nom:'Amandine', img:'' },
+      'ba-caisse':{ nom:'Comptoir caisse', img:'' },
+      'le-statique':{ nom:'Réfrigérée statique', img:K+'legno-statique.webp' },
+      'le-neutre':{ nom:'Caisse et vitrine neutre', img:K+'legno-caisse.webp' },
+      'le-arriere':{ nom:'Module arrière', img:K+'legno-arriere.webp' }
+    };
+    const ph = (list) => list.map(x => { const plan = x.charAt(0) === '*'; return { f: plan ? x.slice(1) : x, plan }; });
+    this.CASES = [
+      { n:1, type:'Pâtisserie', title:'Pâtisserie, Paris 4e', lieu:'Paris 4e', ligne:'Stone', grp:'patiss', temp:'+2 / +8 °C', mods:['st-plane','st-caisse'], ph:ph(['stone-patisserie-paris']), alt:'Pâtisserie parisienne, niches éclairées et comptoir blanc' },
+      { n:2, type:'Bar à salades', title:'Bar à salades, Bouches-du-Rhône', lieu:'Bouches-du-Rhône (13)', ligne:'Stone', grp:'bars', temp:'+2 / +8 °C', mods:['st-saladette','st-caisse','st-panorama'], ph:ph(['stone-saladbar-sud','stone-saladbar-sud-2','*stone-saladbar-plan']), alt:'Bar à salades, saladette et caisse en pierre acrylique' },
+      { n:3, type:'Chocolatier', title:'Chocolatier, Gap et Grenoble', lieu:'Gap et Grenoble', ligne:'Stone', grp:'patiss', temp:'+14 / +18 °C', mods:['st-plane','st-caisse'], ph:ph(['stone-chocolatier-boutique','stone-chocolatier-gap-2','stone-chocolatier-gap-3','stone-chocolatier-gap']), alt:'Boutique de chocolatier, comptoir blanc sérigraphié' },
+      { n:4, type:'Sandwicherie', title:'Sandwicherie, Chamonix', lieu:'Chamonix', ligne:'Basique', grp:'snack', temp:'[À PRÉCISER]', mods:['ba-panoramique','ba-basse','ba-murale'], ph:ph(['basique-chamonix-3','basique-chamonix-4','basique-chamonix','basique-chamonix-2']), alt:'Sandwicherie à Chamonix, vitrines et salle en bois' },
+      { n:5, type:'Bar à olives', title:'Alziari, Nice', lieu:'Nice', ligne:'Stone', grp:'bars', temp:'[À PRÉCISER]', mods:['st-saladette-sm'], ph:ph(['stone-olives-service','stone-olives-trous-2','stone-olives-trous','stone-olives-alziari','*stone-olives-alziari-2']), alt:'Bar à olives Nicolas Alziari, service en bols de bois' },
+      { n:6, type:'Bar à yogourt glacé', title:'Yogurt Factory, chaîne', lieu:'Toute la France', ligne:'Stone', grp:'bars', temp:'+2 / +8 °C', mods:['st-saladette-sm','st-surface'], ph:ph(['stone-yogurt-toppings','stone-yogurt-1','stone-yogurt-2','*stone-yogurt-annecy','*stone-yogurt-ladefense']), alt:'Bar à toppings, coupelles de fruits sous vitrine' },
+      { n:7, type:'Boulangerie pâtisserie', title:'Boulangerie pâtisserie, La Réunion', lieu:'La Réunion', ligne:'Basique', grp:'boul', temp:'[À PRÉCISER]', mods:['ba-amandine','ba-caisse'], ph:ph(['stone-reunion','stone-reunion-2','stone-reunion-3']), alt:'Boulangerie pâtisserie à La Réunion, vitrines blanches' },
+      { n:8, type:'Boulangerie', title:'Boulangerie, Gironde', lieu:'Gironde (33)', ligne:'Legno', grp:'boul', temp:'[À PRÉCISER]', mods:['le-statique','le-neutre','le-arriere'], ph:ph(['legno-boulangerie-large','stone-boulangerie-2']), alt:'Boulangerie, comptoir bois et vitrine réfrigérée' },
+      { n:9, type:'Pizza sur composition', title:'Pizza sur composition, Paris', lieu:'Paris', ligne:'Stone', grp:'snack', temp:'+2 / +8 °C', mods:['st-saladette','st-caisse','st-plane'], ph:ph(['stone-pizza']), alt:'Restaurant de pizzas, comptoirs orange et blanc' },
+      { n:10, type:'Pâtissier chocolatier', title:'Pâtissier chocolatier, Rhône', lieu:'Rhône (69)', ligne:'Stone', grp:'patiss', temp:'+2 / +8 °C', mods:['st-centrale','st-caisse','st-plane'], ph:ph(['stone-patissier-chocolatier','stone-patissier-chocolatier-2','stone-patissier-chocolatier-3']), alt:'Vitrine pâtissière blanche, façade sérigraphiée' },
+      { n:11, type:'Traiteur asiatique', title:'Dakao, Marseille', lieu:'Marseille (chaîne)', ligne:'Stone', grp:'traiteur', temp:'[À PRÉCISER]', mods:['st-plane','st-caisse','st-saladette','st-bar'], ph:ph(['stone-dakao-2','stone-dakao','stone-dakao-3','stone-dakao-4','stone-dakao-5']), alt:'Restaurant traiteur Dakao, salle et comptoirs' },
+      { n:12, type:'Bar à couscous', title:'Bar à couscous, Isère', lieu:'Isère', ligne:'Stone', grp:'bars', temp:'+30 / +90 °C', mods:['st-bainmarie'], ph:ph(['stone-couscous']), alt:'Bain-marie sur mesure, façade rétroéclairée' },
+      { n:13, type:'Traiteur poissonnier', title:'Pointier, Hauts-de-Seine', lieu:'Hauts-de-Seine (92)', ligne:'Stone', grp:'traiteur', temp:'[À PRÉCISER]', mods:['st-panorama','st-surface','st-caisse'], ph:ph(['stone-pointier','stone-pointier-2','*stone-poissonnier-plan']), alt:'Poissonnerie Pointier, vitrine Panorama' },
+      { n:14, type:'Pâtissier chocolatier', title:'Canet, Nice', lieu:'Nice (06)', ligne:'Stone', grp:'patiss', temp:'+2 / +8 et +14 / +18 °C', mods:['st-plane'], modNote:'Plane pâtissière +2/+8 et Plane chocolats +14/+18', ph:ph(['stone-canet','stone-canet-2','stone-canet-3','stone-canet-facade']), alt:'Pâtisserie Canet, vitrine Plane devant un mur rouge' }
+    ];
+    this.GRP = [['tous','Tous'],['patiss','Pâtisserie et chocolat'],['boul','Boulangerie'],['traiteur','Traiteur'],['bars','Bars à composer'],['snack','Snacking']];
+  }
+  pickCase(n){ this.setState({ sel:n, ph:0, k:this.state.k + 1 }); }
+  renderVals(){
+    const s = this.state, P = this.P;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const c0 = this.CASES.find(x => x.n === s.sel);
+    const pad = (n) => (n < 10 ? '0' : '') + n;
+    const baseId = (id) => (this.MODS[id].base || id);
+    const usesOf = (id) => this.CASES.filter(x => x.mods.some(m => baseId(m) === baseId(id))).length;
+    // filtres
+    const inL = (x) => s.fl === 'toutes' || x.ligne === s.fl;
+    const inT = (x) => s.ft === 'tous' || x.grp === s.ft;
+    const on = 'background:#000000;color:#FFFFFF;border-color:#000000';
+    const fLigne = [['toutes','Toutes'],['Stone','Stone'],['Basique','Basique'],['Legno','Legno']].map(f => ({ label:f[1], n:this.CASES.filter(x => (f[0] === 'toutes' || x.ligne === f[0]) && inT(x)).length, on: s.fl === f[0] ? 'true' : 'false', st: s.fl === f[0] ? on : '', pick: () => this.setState({ fl:f[0] }) }));
+    const fType = this.GRP.map(f => ({ label:f[1], n:this.CASES.filter(x => (f[0] === 'tous' || x.grp === f[0]) && inL(x)).length, on: s.ft === f[0] ? 'true' : 'false', st: s.ft === f[0] ? on : '', pick: () => this.setState({ ft:f[0] }) }));
+    const list = this.CASES.filter(x => inL(x) && inT(x));
+    const cards = list.map((x, i) => ({ num:pad(x.n), type:x.type, lieu:x.lieu, ligne:x.ligne, alt:x.alt, cover:P + x.ph[0].f + '.webp', nPh:x.ph.length, on: x.n === s.sel, delay:'animation-delay:' + (i * 0.04).toFixed(2) + 's', pick: () => this.pickCase(x.n) }));
+    // galerie
+    const phs = c0.ph, pi = Math.min(s.ph, phs.length - 1), cur = phs[pi];
+    const phv = { src:P + cur.f + '.webp', alt: cur.plan ? 'Plan 3D du projet : ' + c0.title : c0.alt + ' (photo ' + (pi + 1) + ')', tag: cur.plan ? 'Plan 3D du bureau d’études' : 'Photo de la réalisation', i:pi + 1, n:phs.length };
+    const thumbs = phs.map((p, i) => ({ src:P + p.f + '.webp', on: i === pi ? 'true' : 'false', aria:'Afficher la photo ' + (i + 1) + (p.plan ? ' (plan 3D)' : ''),
+      st: i === pi ? 'box-shadow:inset 0 0 0 3px #D42A20;opacity:1' : 'opacity:.7',
+      lbSt: i === pi ? 'outline:2px solid #FFFFFF;outline-offset:2px' : 'opacity:.55',
+      pick: () => this.setState({ ph:i, pk:this.state.pk + 1 }) }));
+    const mods = c0.mods.map(id => { const m = this.MODS[id]; const u = usesOf(id); return { nom:m.nom, img:m.img, hasImg: !!m.img, noImg: !m.img, alt:'Packshot ' + m.nom + ', ligne ' + c0.ligne, uses:'Utilisé dans ' + u + ' projet' + (u > 1 ? 's' : '') + ' sur 14' }; });
+    const idx = this.CASES.findIndex(x => x.n === s.sel);
+    const pc = this.CASES[(idx + 13) % 14], nc = this.CASES[(idx + 1) % 14];
+    const odd = s.k % 2 === 1;
+    return {
+      rootStyle:'--red:' + acc,
+      menuOpen:s.menuOpen, menuOpenS: s.menuOpen ? 'true' : 'false', toggleMenu: () => this.setState({ menuOpen:!s.menuOpen }),
+      strip: this.CASES.map(x => ({ img:P + x.ph[0].f + '.webp', pick: () => this.pickCase(x.n) })),
+      fLigne, fType, cards, empty: list.length === 0, filtered: s.fl !== 'toutes' || s.ft !== 'tous',
+      listTitle: list.length === 14 ? 'Les 14 réalisations' : list.length + ' réalisation' + (list.length > 1 ? 's' : '') + ' sur 14',
+      resetF: () => this.setState({ fl:'toutes', ft:'tous' }),
+      c: { num:pad(c0.n), title:c0.title, lieu:c0.lieu, ligne:c0.ligne, type:c0.type, temp:c0.temp, modsTxt: c0.modNote || (c0.mods.length + ' module' + (c0.mods.length > 1 ? 's' : '') + ', ligne ' + c0.ligne) },
+      ph:phv, thumbs, mods,
+      csAnim:'animation:' + (odd ? 'inA' : 'inB') + ' .6s cubic-bezier(.2,.7,.2,1) both',
+      lbAnim:'animation:' + (s.pk % 2 ? 'inA' : 'inB') + ' .4s ease both',
+      prevLbl:'n° ' + pad(pc.n) + ' ' + pc.type, nextLbl:'n° ' + pad(nc.n) + ' ' + nc.type,
+      prevCase: () => this.pickCase(pc.n), nextCase: () => this.pickCase(nc.n),
+      lbOpen:s.lb, lbLabel:'Galerie photo : ' + c0.title,
+      openLb: () => this.setState({ lb:true }), closeLb: () => this.setState({ lb:false }),
+      prevPh: () => this.setState({ ph:(pi + phs.length - 1) % phs.length, pk:s.pk + 1 }),
+      nextPh: () => this.setState({ ph:(pi + 1) % phs.length, pk:s.pk + 1 })
+    };
+  }
+}
+</script>
+</body>
+</html>

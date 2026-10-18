@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE — Lignes d’agencement</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<style>
+body{margin:0;background:#F4F4F2}
+sc-for,sc-if{display:contents}
+.ed{--red:#D42A20;--red-d:#B3221A;--ink:#1E1E1E;--paper:#F4F4F2;--stone:#E2E0DB;--studio:#ECEBE8;--graph:#262523;--mute:#5C5A56;--line:#D3D0CA;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:17px;line-height:1.6;color:var(--ink);background:var(--paper);overflow-x:clip;-webkit-font-smoothing:antialiased}
+.ed *,.ed *::before,.ed *::after{box-sizing:border-box}
+.ed img{display:block;max-width:100%}
+.ed h1,.ed h2,.ed h3,.ed h4,.ed p,.ed ul,.ed figure{margin:0}
+.ed ul{padding:0;list-style:none}
+.ed button{font-family:inherit}
+.ed :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.wrap{max-width:1360px;margin:0 auto;padding:0 40px}
+.h2{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(40px,5.2vw,80px);line-height:.98;letter-spacing:-.035em;overflow-wrap:anywhere}
+.h3{font-family:'Urbanist',sans-serif;font-weight:300;font-size:clamp(26px,2.4vw,34px);line-height:1.08;letter-spacing:-.02em}
+.lead{font-size:clamp(17px,1.3vw,19px);color:var(--mute);max-width:56ch}
+.idx{display:flex;align-items:center;gap:14px;font-size:15px;color:var(--red);font-weight:500}
+.idx::before{content:'';width:32px;height:1px;background:var(--red)}
+.top{background:var(--graph);color:#D9D7D2;font-size:13px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:38px}
+.top a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;min-height:38px}
+.top a:hover{text-decoration:underline;text-underline-offset:3px}
+.hdr{position:sticky;top:0;z-index:60;background:rgba(244,244,242,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;gap:28px;min-height:78px}
+.logo{display:inline-flex;gap:12px;text-decoration:none;color:var(--ink);min-height:44px;align-items:center}
+.logo b{font-family:'Urbanist',sans-serif;font-weight:700;font-size:30px;letter-spacing:.04em;color:var(--red);line-height:1}
+.logo span{font-size:12.5px;line-height:1.15;color:var(--mute);border-left:1px solid var(--line);padding-left:12px}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 13px;text-decoration:none;font-size:15.5px;font-weight:500;color:var(--ink)}
+.nav a::after{content:'';position:absolute;left:13px;right:13px;bottom:8px;height:1px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover::after,.nav a.on::after{transform:scaleX(1)}
+.tel{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-height:44px}
+.tel svg{color:var(--red);flex:none}
+.tel b{display:block;font-size:16px;font-weight:600;letter-spacing:.02em;line-height:1.1}
+.tel small{display:block;font-size:12px;color:var(--mute);line-height:1.2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 26px;border:0;border-radius:0;font:500 16px/1.1 'Hanken Grotesk',sans-serif;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s;white-space:nowrap}
+.btn svg{flex:none;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.btn:hover svg{transform:translateX(4px)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#000}
+.btn-line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}.btn-line:hover{background:var(--ink);color:#fff}
+.btn-wline{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}.btn-wline:hover{background:#fff;color:var(--ink)}
+.btn-white{background:#fff;color:var(--ink)}.btn-white:hover{background:var(--ink);color:#fff}
+.btn-sm{min-height:46px;padding:0 20px;font-size:15px}
+.burger{display:none;width:46px;height:46px;border:1px solid var(--line);background:transparent;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);margin-left:auto}
+.mnav{display:none}
+.mnav a{display:flex;align-items:center;justify-content:space-between;min-height:54px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-family:'Urbanist',sans-serif;font-size:24px;font-weight:300}
+.tlink{display:inline-flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;color:var(--ink);font-weight:500;background:linear-gradient(currentColor,currentColor) 0 calc(100% - 8px)/100% 1px no-repeat;transition:background-size .35s}
+.tlink:hover{background-size:0 1px;background-position:100% calc(100% - 8px)}
+.shadow{position:absolute;left:12%;right:12%;bottom:4px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(30,28,26,.38),rgba(30,28,26,0));filter:blur(4px)}
+.ftr{background:var(--graph);color:#CFCDC8;padding:60px 0 20px}
+.ftr .ftr-big{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(64px,10vw,150px);line-height:.8;letter-spacing:-.05em;color:#fff;margin-bottom:44px}
+.ftr-big span{color:var(--red)}
+.ftr-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:40px}
+.ftr-h{font-size:14px;color:#A9A7A1;margin-bottom:12px}
+.ftr p{font-size:15px;line-height:1.65}
+.ftr-l a{display:flex;align-items:center;min-height:38px;color:#fff;text-decoration:none;font-size:15px}
+.ftr-l a:hover{color:#F27C73}
+.ftr-tel{font-family:'Urbanist',sans-serif;font-size:34px;font-weight:300;color:#fff;text-decoration:none;letter-spacing:.01em}
+.ftr-b{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 24px;margin-top:56px;padding-top:14px;border-top:1px solid #3E3D3A;font-size:13px}
+.ftr-b a{color:#CFCDC8;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr-b a:hover{color:#fff}
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+@keyframes rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes kb{from{transform:scale(1.1)}to{transform:scale(1.02)}}
+.fade{animation:fade .5s ease both}
+
+/* ===== Lignes ===== */
+.phead{padding:72px 0 48px}
+.phead-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:64px;align-items:end}
+.phead h1{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(52px,8vw,124px);line-height:.88;letter-spacing:-.045em;overflow-wrap:anywhere;animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.crumbs{display:flex;gap:8px;font-size:14px;color:var(--mute);margin-bottom:28px}
+.crumbs a{color:var(--mute);text-decoration:none}.crumbs a:hover{color:var(--ink)}
+.tabbar{position:sticky;top:79px;z-index:40;background:rgba(244,244,242,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tab{position:relative;display:inline-flex;align-items:baseline;gap:8px;min-height:64px;padding:0 20px 0 0;margin-right:16px;border:0;background:transparent;cursor:pointer;color:var(--mute);font-family:'Urbanist',sans-serif;font-weight:300;font-size:28px;letter-spacing:-.02em;white-space:nowrap;transition:color .25s;align-items:center}
+.tab small{font-family:'Hanken Grotesk',sans-serif;font-size:13px;letter-spacing:0;color:var(--mute)}
+.tab::after{content:'';position:absolute;left:0;right:20px;bottom:-1px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink)}.tab.on::after{transform:scaleX(1)}
+.banner{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);margin-top:40px;min-height:540px}
+.banner-ph{position:relative;overflow:hidden;background:#bbb}
+.banner-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 1.6s cubic-bezier(.2,.7,.2,1) both}
+.banner-ph small{position:absolute;left:16px;bottom:14px;font-size:13px;color:#fff;background:rgba(30,30,30,.6);padding:4px 10px}
+.banner-b{position:relative;background:var(--stone);padding:48px 44px 40px;display:flex;flex-direction:column;gap:20px;animation:fade .5s ease both}
+.banner-b h2{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(56px,6vw,96px);line-height:.86;letter-spacing:-.045em}
+.banner-pk{position:relative;margin:-110px -20px 0 40px;align-self:flex-end;width:78%}
+.banner-pk img{position:relative;z-index:2;width:100%;max-height:200px;object-fit:contain;animation:rise .9s .2s cubic-bezier(.2,.7,.2,1) both}
+.specs{border-top:1px solid #C9C6BF}
+.specs div{display:grid;grid-template-columns:140px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid #C9C6BF;font-size:15px}
+.specs span{color:var(--mute)}
+.ghead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:72px 0 28px}
+.ghead h3{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(36px,4vw,56px);line-height:1;letter-spacing:-.035em}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(290px,100%),1fr));gap:28px 16px}
+.mc{display:flex;flex-direction:column;text-decoration:none;color:var(--ink)}
+.mc-v{position:relative;aspect-ratio:4/3;overflow:hidden;background:radial-gradient(ellipse 80% 70% at 50% 38%,#FAFAF8,#ECEBE8 72%)}
+.mc-v::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18px;background:#DCD9D3}
+.mc-v .pk{position:absolute;left:8%;right:8%;top:10%;bottom:16%;z-index:2;width:84%;height:74%;object-fit:contain;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.mc-v .shadow{bottom:12px;z-index:1}
+.mc-v .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.mc:hover .pk{transform:translateY(-10px) scale(1.04)}
+.mc:hover .ph{transform:scale(1.06)}
+.mc-v em{position:absolute;right:10px;top:10px;z-index:4;font-style:normal;font-size:12px;background:rgba(255,255,255,.92);padding:3px 9px}
+.mc-b{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-top:14px;border-top:1px solid transparent;transition:border-color .3s}
+.mc:hover .mc-b{border-color:var(--ink)}
+.mc-b b{display:block;font-family:'Urbanist',sans-serif;font-weight:400;font-size:23px;line-height:1.1;letter-spacing:-.015em}
+.mc-b span{display:block;font-size:14.5px;color:var(--mute);margin-top:4px;line-height:1.4}
+.mc-b svg{flex:none;margin-top:4px;transition:transform .3s}
+.mc:hover .mc-b svg{transform:translateX(4px)}
+.ltag{font-size:13px;color:var(--red)}
+.cmp{padding:110px 0 100px}
+.cgrid{display:grid;grid-template-columns:180px repeat(5,minmax(0,1fr));margin-top:44px;border-top:1px solid var(--ink)}
+.cgrid > div,.cgrid > button{padding:16px 14px;border-bottom:1px solid var(--line);font-size:15px;line-height:1.45}
+.ch{border:0;background:transparent;text-align:left;cursor:pointer;font-family:'Urbanist',sans-serif !important;font-weight:300;font-size:28px !important;letter-spacing:-.02em;color:var(--ink);transition:background .25s,color .25s;min-height:64px}
+.ch:hover{background:var(--stone)}
+.rl{color:var(--mute)}
+.ccell{transition:background .3s}
+.cta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:420px}
+.cta-ph{position:relative;overflow:hidden}
+.cta-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cta-b{background:var(--red);color:#fff;padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.cta-b h2{font-family:'Urbanist',sans-serif;font-weight:200;font-size:clamp(44px,5vw,80px);line-height:.92;letter-spacing:-.04em}
+.cscroll{overflow-x:auto}
+@media(max-width:1180px){.nav,.tel{display:none}.burger{display:inline-flex}.mnav{display:block;padding:4px 0 16px}}
+@media(max-width:1080px){.phead-g,.banner,.cta{grid-template-columns:minmax(0,1fr)}.banner-ph{min-height:360px}.cta-ph{min-height:320px}.cgrid{min-width:900px}}
+@media(max-width:720px){
+.wrap{padding:0 16px}.top-note{display:none}.hdr-cta{display:none}.hdr-in{min-height:66px;gap:12px}.logo span{display:none}
+.tabbar{top:67px}.tab{font-size:22px;min-height:56px;margin-right:6px;padding-right:14px}
+.phead{padding:44px 0 32px}.phead-g{gap:24px}
+.banner-ph{min-height:260px}.banner-ph small{bottom:auto;top:12px}.banner-b{padding:32px 20px}.banner-pk{margin:-90px 0 0 0;width:92%}.specs div{grid-template-columns:110px minmax(0,1fr)}
+.mgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 10px}.mc-b b{font-size:18px}.mc-b span{font-size:13px}.mc-b svg{display:none}
+.ghead{margin:52px 0 20px}.cmp{padding:72px 0}.cta-b{padding:44px 20px}
+}
+@media (prefers-reduced-motion:reduce){.ed *{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="ed" style="{{ rootStyle }}">
+
+<div class="top">
+  <div class="wrap top-in">
+    <span class="top-note">Fabricant de vitrines réfrigérées sur mesure. Bureau d’études et show-room à Puget-sur-Argens, Var.</span>
+    <a href="Main.dc.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Toutes les propositions</a>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="Editorial-Accueil.dc.html" aria-label="RGTE, R.G. Technologies, accueil"><b>RGTE</b><span>R.G.<br>Technologies</span></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="on" href="Editorial-Lignes.dc.html" aria-current="page">Lignes d’agencement</a>
+      <a href="Editorial-Secteurs.dc.html">Secteurs</a>
+      <a href="Editorial-Realisations.dc.html">Réalisations</a>
+      <a href="Editorial-Contact.dc.html">Showroom &amp; contact</a>
+    </nav>
+    <a class="tel" href="tel:0800951313"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg><span><b>0 800 95 13 13</b><small>Appel gratuit</small></span></a>
+    <a class="btn btn-red btn-sm hdr-cta" href="Editorial-Contact.dc.html">Plan 3D offert</a>
+    <button type="button" class="burger" aria-label="Ouvrir ou fermer le menu" aria-expanded="{{ menuAria }}" onClick="{{ toggleMenu }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"></path></svg></button>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav class="mnav wrap fade" aria-label="Navigation mobile">
+      <a href="Editorial-Lignes.dc.html">Lignes d’agencement</a>
+      <a href="Editorial-Secteurs.dc.html">Secteurs</a>
+      <a href="Editorial-Realisations.dc.html">Réalisations</a>
+      <a href="Editorial-Contact.dc.html">Showroom &amp; contact</a>
+      <a href="tel:0800951313">0 800 95 13 13</a>
+      <a href="Editorial-Contact.dc.html" style="color:#D42A20">Plan 3D offert</a>
+    </nav>
+  </sc-if>
+</header>
+
+<main>
+<section class="phead">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Fil d’Ariane"><a href="Editorial-Accueil.dc.html">Accueil</a><span aria-hidden="true">/</span><span style="color:#1E1E1E">Lignes d’agencement</span></nav>
+    <div class="phead-g">
+      <h1>Lignes d’agencement</h1>
+      <p class="lead">Cinq familles de vitrines et de comptoirs, de la ligne modulable aux vitrines standardisées. Choisissez une ligne pour voir ses matières et tous ses modules ; chaque module ouvre sa fiche.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tabbar">
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="Filtrer par ligne">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+        <button type="button" role="tab" class="{{ t.cls }}" aria-selected="{{ t.on }}" onClick="{{ t.pick }}">{{ t.n }}<small>{{ t.c }}</small></button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <sc-if value="{{ single }}" hint-placeholder-val="{{ true }}">
+      <div class="banner">
+        <div class="banner-ph"><img src="{{ cur.photo }}" alt="{{ cur.photoAlt }}"><small>{{ cur.photoCap }}</small></div>
+        <div class="banner-b">
+          <div class="banner-pk"><span class="shadow"></span><img src="{{ cur.pack }}" alt="{{ cur.packAlt }}"></div>
+          <h2>{{ cur.n }}</h2>
+          <p>{{ cur.d }}</p>
+          <div class="specs">
+            <div><span>Structure</span><b style="font-weight:500">{{ cur.structure }}</b></div>
+            <div><span>Panneau frontal</span><b style="font-weight:500">{{ cur.front }}</b></div>
+            <div><span>Plan de travail</span><b style="font-weight:500">{{ cur.plan }}</b></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto">
+            <a class="btn btn-ink" href="Editorial-Contact.dc.html">Mon plan 3D en Ligne {{ cur.n }}</a>
+            <a class="btn btn-line" href="Editorial-Realisations.dc.html">Réalisations</a>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="1">
+      <div class="ghead">
+        <h3>{{ g.title }}</h3>
+        <p style="color:#5C5A56;font-size:15px;max-width:52ch">{{ g.note }}</p>
+      </div>
+      <div class="mgrid">
+        <sc-for list="{{ g.mods }}" as="m" hint-placeholder-count="8">
+          <a class="mc fade" href="Editorial-Module.dc.html" aria-label="{{ m.aria }}">
+            <span class="mc-v">
+              <sc-if value="{{ m.isPk }}" hint-placeholder-val="{{ true }}"><span class="shadow"></span><img class="pk" src="{{ m.img }}" alt="{{ m.alt }}"></sc-if>
+              <sc-if value="{{ m.isPh }}" hint-placeholder-val="{{ false }}"><img class="ph" src="{{ m.img }}" alt="{{ m.alt }}"><em>Photo en boutique</em></sc-if>
+            </span>
+            <span class="mc-b"><span><b>{{ m.n }}</b><span>{{ m.s }}</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </a>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section class="cmp" id="comparer">
+  <div class="wrap">
+    <p class="idx">Comparateur</p>
+    <h2 class="h2" style="margin-top:18px;max-width:14em">Matières et principes, ligne par ligne.</h2>
+    <p class="lead" style="margin-top:16px">Touchez le nom d’une ligne pour la mettre en évidence et afficher ses modules plus haut.</p>
+    <div class="cscroll">
+      <div class="cgrid" role="table" aria-label="Comparatif des 5 lignes">
+        <div class="rl" role="columnheader"></div>
+        <sc-for list="{{ cmpHead }}" as="h" hint-placeholder-count="5">
+          <button type="button" class="ch" style="{{ h.style }}" aria-pressed="{{ h.on }}" onClick="{{ h.pick }}">{{ h.n }}</button>
+        </sc-for>
+        <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="5">
+          <div class="rl" role="rowheader">{{ r.label }}</div>
+          <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5">
+            <div class="ccell" role="cell" style="{{ c.style }}">{{ c.v }}</div>
+          </sc-for>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-ph"><img src="assets/photos/realisations/stone-saladbar-plan.webp" alt="Plan 3D d’un bar à salades réalisé par le bureau d’études RGTE"></div>
+  <div class="cta-b">
+    <h2>Composez votre ligne, nous la dessinons en 3D.</h2>
+    <p style="max-width:44ch">Indiquez la ligne, les modules et les dimensions de votre local : le plan 3D d’agencement est offert.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn btn-white" href="Editorial-Contact.dc.html">Demander mon plan 3D</a><a class="btn btn-wline" href="tel:0800951313">0 800 95 13 13</a></div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <p class="ftr-big" aria-hidden="true">RGTE<span>.</span></p>
+    <div class="ftr-g">
+      <div><p class="ftr-h">R.G. Technologies</p><p style="max-width:260px">Agencement de vitrines réfrigérées sur mesure pour les métiers de bouche.</p></div>
+      <div><p class="ftr-h">Bureau d’études &amp; show-room</p><p>423, Chemin des Vernèdes<br>Espace Vernèdes 3<br>83480 Puget-sur-Argens</p></div>
+      <div><p class="ftr-h">Appel gratuit</p><a class="ftr-tel" href="tel:0800951313">0 800 95 13 13</a><p style="margin-top:6px">Horaires : [HORAIRES]</p></div>
+      <div class="ftr-l"><p class="ftr-h">Explorer</p><a href="Editorial-Lignes.dc.html">Lignes d’agencement</a><a href="Editorial-Secteurs.dc.html">Secteurs</a><a href="Editorial-Realisations.dc.html">Réalisations</a><a href="Editorial-Contact.dc.html">Showroom &amp; contact</a></div>
+    </div>
+    <div class="ftr-b">
+      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <span>Proposition de refonte (tour 3) — concept, non officiel. Photos : RGTE (rgte.eu) · ambiances Unsplash. <a href="Main.dc.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4500},"accent":{"editor":"color","default":"#D42A20","options":["#D42A20","#1E1E1E","#9E1F17"]},"ligneInitiale":{"editor":"enum","default":"stone","options":["all","basique","stone","legno","encastrable","industry"]}}'>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { menu:false, ligne:(props && props.ligneInitiale) || 'stone' };
+  }
+  renderVals(){
+    const s = this.state;
+    const acc = (this.props && this.props.accent) || '#D42A20';
+    const PR = 'assets/photos/produits/', RE = 'assets/photos/realisations/', AM = 'assets/photos/ambiance/';
+    const pk = (f) => ({ img:PR + f + '.webp', pk:true });
+    const ph = (f) => ({ img:RE + f + '.webp', pk:false });
+    const LIG = [
+      { id:'basique', n:'Basique', photo:RE+'basique-nouveau-magasin.webp', photoCap:'Réalisation RGTE, Ligne Basique', pack:PR+'basique-pastry-show-220.webp',
+        d:'Association de modules différents, coloris et matériaux selon votre souhait.',
+        structure:'Modules associés, coloris et matériaux au choix', front:'Bois mélaminé, ou verre en option', plan:'Granit, plinthe en granit', usage:'Boulangeries, sandwicheries, snacking', real:'2 réalisations publiées',
+        mods:[
+          Object.assign({ n:'Comptoir bar', s:'Comptoir de service' }, ph('basique-bar')),
+          Object.assign({ n:'Comptoir caisse', s:'Poste d’encaissement' }, ph('basique-caisse')),
+          Object.assign({ n:'Saladette réfrigérée', s:'Ingrédients en bacs gastronormes' }, pk('basique-saladette')),
+          Object.assign({ n:'Vitrine réfrigérée Cube', s:'Vitrage cubique, 2 ou 3 étagères verre' }, pk('basique-cube')),
+          Object.assign({ n:'Pastry Show', s:'Froid ventilé, vitrage droit, plaques 600×400 mm' }, pk('basique-pastry-show')),
+          Object.assign({ n:'Statique', s:'Froid statique' }, ph('basique-trad')),
+          Object.assign({ n:'Basse', s:'Vitrine basse' }, ph('basique-chamonix-2')),
+          Object.assign({ n:'Murale self-service', s:'Libre-service mural' }, ph('basique-chamonix-4')),
+          Object.assign({ n:'Panoramique', s:'Exposition panoramique' }, ph('basique-chamonix')),
+          Object.assign({ n:'Chaud', s:'Bain-marie ou plaque chaude' }, ph('basique-bainmarie')),
+          Object.assign({ n:'Vitrine rétro', s:'Esprit rétro' }, ph('basique-retro')),
+          Object.assign({ n:'Amandine', s:'Montants modernes, plaques 600×400, froid ventilé' }, ph('stone-reunion'))
+        ] },
+      { id:'stone', n:'Stone', photo:RE+'stone-patissier-chocolatier.webp', photoCap:'Réalisation RGTE, pâtissier chocolatier (69)', pack:PR+'stone-gourmandise-222.webp',
+        d:'Pierre acrylique type Corian et façade en verre sérigraphiée à votre enseigne : la ligne la plus présente dans nos réalisations.',
+        structure:'Pierre acrylique type Corian', front:'Verre avec sérigraphie du client', plan:'Pierre acrylique', usage:'Pâtisserie, chocolat, traiteur, bars à salades', real:'11 réalisations publiées',
+        mods:[
+          Object.assign({ n:'Réfrigérée Plane', s:'À hauteur du plan, prof. 53 ou 60 cm, +2/+8 ou +14/+18 °C' }, pk('stone-plane')),
+          Object.assign({ n:'Vision', s:'8 cm sous le plan de travail, prof. 53 ou 60 cm' }, pk('stone-vision')),
+          Object.assign({ n:'Saladette', s:'Bacs gastronormes non fournis, +2/+8 °C' }, pk('stone-saladette')),
+          Object.assign({ n:'Chaud bain-marie', s:'Bacs gastronormes, +30/+90 °C' }, pk('stone-bainmarie')),
+          Object.assign({ n:'Centrale', s:'Vitrages coulissants des 2 côtés, prof. 60 cm' }, pk('stone-centrale')),
+          Object.assign({ n:'Gourmandise', s:'101 à 222 cm, 5 800 € HT en 101 cm' }, pk('stone-gourmandise')),
+          Object.assign({ n:'Comptoir caisse', s:'Avec ou sans tablette PMR' }, pk('stone-caisse')),
+          Object.assign({ n:'Comptoir bar', s:'Neutre ou réfrigéré' }, ph('stone-bar-photo')),
+          Object.assign({ n:'Poissonnerie', s:'Froid statique, serpentin de cuve, −2/0 °C' }, pk('stone-poissonnerie')),
+          Object.assign({ n:'Panorama', s:'2 ou 3 étagères réfrigérées +4/+8 °C' }, ph('stone-pointier-2')),
+          Object.assign({ n:'Surface plane', s:'Plan d’exposition, ici avec saladettes' }, ph('stone-yogurt-2'))
+        ] },
+      { id:'legno', n:'Legno', photo:RE+'legno-cafe-bar.webp', photoCap:'Réalisation RGTE, café-bar', pack:PR+'legno-ventilee-172.webp',
+        d:'Association de modules au panneau frontal en bois mélaminé, pour une boutique chaleureuse.',
+        structure:'Modules associés', front:'Bois mélaminé', plan:'[À PRÉCISER]', usage:'Boulangeries, cafés, coffee shops', real:'1 réalisation publiée',
+        mods:[
+          Object.assign({ n:'Plane', s:'Exposition à hauteur du plan' }, ph('legno-cafe-vitrine')),
+          Object.assign({ n:'Arrière neutre', s:'Meuble arrière, rangement' }, pk('legno-arriere')),
+          Object.assign({ n:'Caisse et vitrine neutre', s:'Comptoir caisse' }, pk('legno-caisse')),
+          Object.assign({ n:'Comptoir bar', s:'Comptoir de service' }, pk('legno-bar')),
+          Object.assign({ n:'Réfrigérée statique', s:'Froid statique' }, pk('legno-statique')),
+          Object.assign({ n:'Vitrine réfrigérée ventilée plane', s:'Froid ventilé, exposition plane' }, pk('legno-ventilee')),
+          Object.assign({ n:'Vitrine neutre', s:'Sans froid' }, ph('legno-boulangerie-vitrine')),
+          Object.assign({ n:'Réfrigéré ventilé', s:'Froid ventilé, jusqu’à 172 cm' }, pk('legno-ventilee-172')),
+          Object.assign({ n:'Vitrine chauffante sèche', s:'Chaleur sèche' }, ph('legno-coffee-shop-2'))
+        ] },
+      { id:'encastrable', n:'Encastrable', photo:AM+'saladette-bacs-2.webp', photoCap:'Ambiance Unsplash, bacs gastronormes', pack:PR+'encastrable-ventile.webp',
+        d:'Module brut prêt à être habillé, en version comptoir ou meuble entier sur pied.',
+        structure:'Module brut à habiller', front:'Habillage par votre agenceur', plan:'Version comptoir ou meuble sur pied', usage:'Agenceurs, projets sur mesure', real:'[RÉALISATION]',
+        mods:[
+          Object.assign({ n:'Cuve froid ventilé', s:'Cuve encastrable, froid ventilé' }, pk('encastrable-ventile')),
+          Object.assign({ n:'Cuve froid statique', s:'Cuve encastrable, froid statique' }, pk('encastrable-statique'))
+        ] },
+      { id:'industry', n:'Industry', photo:AM+'boutique-vitrines-longues.webp', photoCap:'Ambiance Unsplash, linéaire de vitrines', pack:PR+'industry-rubis-2.webp',
+        d:'Vitrines standardisées en longueurs et indépendantes, prêtes à poser.',
+        structure:'Vitrines indépendantes standardisées', front:'Selon le modèle', plan:'Selon le modèle', usage:'Boucherie, poissonnerie, boulangerie, supermarché', real:'[RÉALISATION]',
+        mods:[
+          Object.assign({ n:'Olympe', s:'Murale' }, pk('industry-olympe-2')),
+          Object.assign({ n:'Nepal', s:'Snack' }, pk('industry-nepal')),
+          Object.assign({ n:'Aramis', s:'Boucherie' }, pk('industry-aramis')),
+          Object.assign({ n:'Rubis', s:'Vitrine pâtissière' }, pk('industry-rubis')),
+          Object.assign({ n:'Argentine', s:'Vitrine de service' }, pk('industry-argentine-2')),
+          Object.assign({ n:'Hanoi', s:'Poissonnerie' }, pk('industry-hanoi')),
+          Object.assign({ n:'Loire', s:'Boulangerie' }, pk('industry-loire')),
+          Object.assign({ n:'Argent', s:'Murale froid' }, pk('industry-argent')),
+          Object.assign({ n:'Sugar', s:'Hauteur comptoir' }, pk('industry-sugar')),
+          Object.assign({ n:'Hawaii', s:'Supermarché' }, pk('industry-hawaii')),
+          Object.assign({ n:'4 faces vitrées', s:'Vitrée sur 4 faces' }, pk('industry-4faces'))
+        ] }
+    ];
+    const total = LIG.reduce((a, l) => a + l.mods.length, 0);
+    const tabs = [{ id:'all', n:'Toutes', c: total + ' modules' }].concat(LIG.map(l => ({ id:l.id, n:l.n, c:String(l.mods.length) })))
+      .map(t => ({ n:t.n, c:t.c, on: s.ligne === t.id ? 'true' : 'false', cls: s.ligne === t.id ? 'tab on' : 'tab', pick: () => this.setState({ ligne:t.id }) }));
+    const sel = LIG.find(l => l.id === s.ligne);
+    const shown = sel ? [sel] : LIG;
+    const groups = shown.map(l => ({
+      title: sel ? 'Les ' + l.mods.length + ' modules ' + l.n : 'Ligne ' + l.n,
+      note: sel ? 'Packshots des modules sur fond studio ; quand le rendu n’existe pas, la photo montre le module en boutique.' : l.d,
+      mods: l.mods.map(m => ({ n:m.n, s:m.s, img:m.img, isPk:m.pk, isPh:!m.pk,
+        alt: (m.pk ? 'Packshot ' : 'Photo en boutique, ') + m.n + ', Ligne ' + l.n,
+        aria: m.n + ', Ligne ' + l.n + ', voir la fiche' }))
+    }));
+    const c = sel || LIG[1];
+    const cur = { n:c.n, d:c.d, photo:c.photo, photoCap:c.photoCap, pack:c.pack, structure:c.structure, front:c.front, plan:c.plan,
+      photoAlt:'Boutique équipée, Ligne ' + c.n, packAlt:'Packshot module de la Ligne ' + c.n };
+    const hi = 'background:#E2E0DB';
+    const cmpHead = LIG.map(l => ({ n:l.n, on: s.ligne === l.id ? 'true' : 'false', style: s.ligne === l.id ? 'background:#1E1E1E;color:#fff' : '', pick: () => this.setState({ ligne:l.id }) }));
+    const ROWS = [['Principe','d'],['Structure','structure'],['Panneau frontal','front'],['Plan de travail','plan'],['Usages fréquents','usage'],['Modules', 'count'],['Réalisations','real']];
+    const cmpRows = ROWS.map(r => ({ label:r[0], cells: LIG.map(l => ({ v: r[1] === 'count' ? l.mods.length + ' modules' : l[r[1]], style: s.ligne === l.id ? hi : '' })) }));
+    return {
+      rootStyle:'--red:' + acc,
+      menuOpen:s.menu, menuAria: s.menu ? 'true' : 'false', toggleMenu: () => this.setState({ menu:!s.menu }),
+      tabs, single: !!sel, cur, groups, cmpHead, cmpRows
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>RGTE — Tour 3 : 5 propositions</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&amp;family=Urbanist:wght@200;500&amp;family=Archivo:wdth,wght@125,800&amp;family=Barlow+Condensed:wght@700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;family=Schibsted+Grotesk:wght@800&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.rise{animation:rise .9s cubic-bezier(.2,.7,.1,1) both}
+.slide{animation:slide .7s cubic-bezier(.2,.7,.1,1) both}
+.dir{transition:background .3s ease}
+.dir:hover{background:#F3F2EF}
+.dir:focus-visible,.card:focus-visible,.pg:focus-visible,.cta:focus-visible,.back:focus-visible{outline:2px solid #D42A20;outline-offset:3px}
+.card .stage img{transition:transform .8s cubic-bezier(.2,.7,.1,1)}
+.card:hover .stage img{transform:translateY(-6px) scale(1.03)}
+.card .arr{transition:transform .4s}
+.card:hover .arr{transform:translate(4px,-4px)}
+.pg{transition:background .25s,color .25s}
+.pg:hover{background:#1C1C1E;color:#FFFFFF}
+.cta{transition:background .25s}
+.cta:hover{background:#B8231A}
+@media (max-width:900px){.split{flex-direction:column}.big{font-size:44px !important}.lst{flex:1 1 auto !important}}
+</style>
+</helmet>
+<div style="font-family:'Jost',system-ui,sans-serif;color:#1C1C1E;background:#FFFFFF;min-height:2000px">
+  <div style="background:#1C1C1E;color:#D9D7D2;font-size:12px;letter-spacing:.06em">
+    <div style="max-width:1320px;margin:0 auto;padding:10px 40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <span>Proposition de refonte de rgte.eu — tour 3 · concept non officiel</span>
+      <span style="display:flex;gap:18px"><a class="back" href="../v2/index.html" style="color:#FFFFFF;text-decoration:none">Tour 2</a><a class="back" href="../index.html" style="color:#FFFFFF;text-decoration:none">Tour 1</a></span>
+    </div>
+  </div>
+  <div style="max-width:1320px;margin:0 auto;padding:40px 40px 96px;display:flex;flex-direction:column;gap:56px">
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="display:flex;align-items:baseline;gap:12px"><span style="font-weight:700;font-size:26px;letter-spacing:.04em;color:#D42A20">RGTE</span><span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#5A5A5E">R.G. Technologies</span></span>
+      <span style="font-size:13px;color:#5A5A5E">Vitrines réfrigérées sur mesure · Octobre 2026</span>
+    </header>
+
+    <section style="display:flex;flex-direction:column;gap:22px;max-width:980px">
+      <span class="rise" style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#D42A20;font-weight:600">Tour 3 · vraies photos, sites complets</span>
+      <h1 class="big rise" style="margin:0;font-weight:600;font-size:76px;line-height:1;letter-spacing:-.02em;animation-delay:.1s">Cinq sites complets, avec les vraies vitrines RGTE.</h1>
+      <p class="rise" style="margin:0;font-size:18px;line-height:1.6;color:#45454A;max-width:820px;animation-delay:.2s">Toutes les vitrines sont maintenant de vraies photos : les rendus 3D de RGTE détourés en packshots studio, les photos des 14 réalisations publiées sur rgte.eu, et quelques ambiances Unsplash libres de droits. Chaque direction s'inspire de références relevées sur Dribbble, Behance, Pinterest et chez les fabricants (IFI, CIAM, Orion), et compte 6 pages : accueil, lignes, fiche Gourmandise configurable, secteurs, réalisations et show-room.</p>
+      <div class="rise" style="display:flex;flex-wrap:wrap;gap:10px;animation-delay:.3s">
+        <span style="padding:8px 14px;border:1px solid #DAD8D3;border-radius:999px;font-size:14px">Packshots RGTE détourés</span>
+        <span style="padding:8px 14px;border:1px solid #DAD8D3;border-radius:999px;font-size:14px">Inspiré Dribbble · Behance · Pinterest</span>
+        <span style="padding:8px 14px;border:1px solid #DAD8D3;border-radius:999px;font-size:14px">14 réalisations en photos</span>
+        <span style="padding:8px 14px;border:1px solid #DAD8D3;border-radius:999px;font-size:14px">6 pages par direction</span>
+      </div>
+    </section>
+
+    <section class="split" style="display:flex;gap:40px;align-items:stretch">
+      <nav class="lst" aria-label="Directions" style="flex:0 0 380px;display:flex;flex-direction:column;border-top:1px solid #DAD8D3">
+        <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="5">
+          <button type="button" class="dir" onClick="{{ d.pick }}" style="{{ d.rowStyle }}">
+            <span style="{{ d.numStyle }}">{{ d.num }}</span>
+            <span style="display:flex;flex-direction:column;gap:3px;text-align:left">
+              <span style="{{ d.nameStyle }}">{{ d.name }}</span>
+              <span style="font-size:14px;line-height:1.4;color:#5A5A5E">{{ d.tag }}</span>
+            </span>
+          </button>
+        </sc-for>
+      </nav>
+
+      <article style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;border:1px solid #DAD8D3">
+        <div style="{{ cur.stageStyle }}">
+          <img class="slide" src="{{ cur.img }}" alt="{{ cur.name }}" style="{{ cur.imgStyle }}">
+          <span style="{{ cur.chipStyle }}">Proposition {{ cur.num }} / 05</span>
+        </div>
+        <div style="padding:30px 36px 36px;display:flex;flex-direction:column;gap:24px">
+          <h2 style="{{ cur.titleStyle }}">{{ cur.name }} <span style="font-weight:400;color:#5A5A5E;font-size:20px">— {{ cur.claim }}</span></h2>
+          <p style="margin:0;font-size:17px;line-height:1.6;max-width:680px">{{ cur.desc }}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:22px">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5A5A5E">Palette</span>
+              <div style="display:flex;gap:8px">
+                <sc-for list="{{ cur.swatches }}" as="s" hint-placeholder-count="4">
+                  <span style="{{ s.style }}" title="{{ s.hex }}"></span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5A5A5E">Typographie</span>
+              <span style="font-size:15px">{{ cur.fonts }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5A5A5E">Moment-signature</span>
+              <span style="font-size:15px;line-height:1.5">{{ cur.moment }}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ cur.pages }}" as="p" hint-placeholder-count="3">
+              <a class="pg" href="{{ p.href }}" style="display:inline-flex;align-items:center;min-height:44px;padding:0 18px;font-size:15px;text-decoration:none;color:#1C1C1E;border:1px solid #CFCDC8;border-radius:999px">{{ p.label }}</a>
+            </sc-for>
+          </div>
+          <a class="cta" href="{{ cur.home }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:0 26px;font-size:16px;font-weight:600;text-decoration:none;border-radius:4px;background:#D42A20;color:#FFFFFF">Ouvrir la proposition {{ cur.name }}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:24px">
+      <h2 style="margin:0;font-weight:600;font-size:38px;letter-spacing:-.01em">Les cinq, côte à côte</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:16px">
+        <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="5">
+          <a class="card" href="{{ d.home }}" style="display:flex;flex-direction:column;gap:12px;text-decoration:none;color:#1C1C1E">
+            <span class="stage" style="{{ d.cardStage }}">
+              <img src="{{ d.img }}" alt="{{ d.name }}" style="{{ d.cardImg }}">
+            </span>
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span style="{{ d.nameStyle }}">{{ d.num }} · {{ d.name }}</span>
+              <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+            </span>
+            <span style="font-size:14px;line-height:1.45;color:#5A5A5E">{{ d.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:24px;border-top:1px solid #DAD8D3;padding-top:32px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#D42A20;font-weight:600">Ce qui a changé</span>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#45454A">Fini les dessins : packshots détourés des rendus RGTE, vraies boutiques équipées, galeries et lightbox sur les réalisations.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#D42A20;font-weight:600">Une landing qui convertit</span>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#45454A">Header collant avec « Plan 3D offert » et numéro vert, devis en 3 étapes, preuves par les réalisations à chaque page.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#D42A20;font-weight:600">À compléter par RGTE</span>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#45454A">Packshots manquants pour une quinzaine de modules, photos du show-room, prix hors 101 cm, horaires et coloris : en marqueurs [..].</p>
+      </div>
+    </section>
+
+    <footer style="border-top:1px solid #DAD8D3;padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#5A5A5E">
+      <span>Concepts de refonte — non officiels. RGTE · R.G. Technologies · Puget-sur-Argens.</span>
+      <span>Photos : RGTE (rgte.eu) · ambiances Unsplash</span>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 0 }; }
+  renderVals() {
+    const PAGES = [['Accueil', 'Accueil'], ["Lignes d'agencement", 'Lignes'], ['Module Gourmandise', 'Module'], ['Secteurs', 'Secteurs'], ['Réalisations', 'Realisations'], ['Showroom & contact', 'Contact']];
+    const D = [
+      { k: 'Editorial', name: 'Éditorial', claim: 'la vitrine, objet de design', font: "'Urbanist',sans-serif", weight: 200, tag: 'Inspirée d’IFI et CIAM : grandes photos de boutiques, packshots sur socle, typographie fine.', desc: 'Une mise en page de magazine d’architecture : héros plein cadre sur un vrai café équipé en Ligne Legno, titre géant très fin, et la Gourmandise détourée qui sort de la photo avec son prix. Collections de packshots sur socles gris studio, mosaïque de réalisations, splits photo / aplat.', img: 'assets/photos/realisations/legno-cafe-bar.webp', cut: false, stage: '#F2F0EC', sw: ['#F4F2EE', '#D9D4CB', '#D42A20', '#1C1C1E'], fonts: 'Urbanist · Hanken Grotesk', moment: 'La Gourmandise détourée déborde du héros photo, sur son socle, avec « 5 800 € HT ».' },
+      { k: 'Fabricant', name: 'Fabricant', claim: 'conçu, fabriqué, installé', font: "'Archivo',sans-serif", weight: 800, upper: true, tag: 'Inspirée des industriels sur Dribbble et du NEXT d’Orion : packshot éclairé sur graphite.', desc: 'Le ton d’un fabricant français : héros graphite où la Gourmandise est éclairée comme en studio, nom du modèle en capitales géantes, données en mono. Réalisations en bandes noir et blanc qui passent en couleur, process réel du plan 3D à la boutique ouverte.', img: 'assets/photos/produits/stone-gourmandise.webp', cut: true, stage: '#141416', sw: ['#141416', '#F4F2EE', '#D42A20', '#8A8D91'], fonts: 'Archivo étendu · JetBrains Mono', moment: 'Sélecteur Gourmandise / Centrale / Loire / Hanoi : le packshot et les specs changent sous un halo de studio.' },
+      { k: 'Catalogue', name: 'Catalogue', claim: 'l’équipement pro des métiers de bouche', font: "'Barlow Condensed',sans-serif", weight: 700, upper: true, tag: 'Inspirée de Chef’s Essentials et Orix : catalogue dense, packshots, aperçu rapide.', desc: 'Un catalogue B2B moderne : méga-menu à vignettes, titres condensés géants, 45 modules en packshots sur plaques studio avec références, filtres, aperçu rapide en panneau latéral, comparateur. Chaque produit renvoie à la boutique où il est installé.', img: 'assets/photos/produits/stone-centrale-224.webp', cut: true, stage: '#EFEDE8', sw: ['#EFEDE8', '#FFFFFF', '#D42A20', '#141414'], fonts: 'Barlow Condensed · Barlow', moment: 'Survoler un packshot du héros bascule la grande photo sur la vraie boutique où il est installé.' },
+      { k: 'Config', name: 'Configurateur', claim: 'composez votre comptoir', font: "'Plus Jakarta Sans',sans-serif", weight: 800, tag: 'Inspirée des configurateurs de mobilier premium : le comptoir se compose en packshots réels.', desc: 'Le héros est un comptoir assemblé à partir des vrais packshots RGTE, sur un sol studio : on change de ligne, on ajoute, déplace ou retire des modules, on règle les longueurs, et la cote totale s’affiche en rouge. Le projet suit le visiteur de page en page jusqu’au plan 3D offert.', img: 'assets/photos/produits/stone-plane.webp', cut: true, stage: '#F3F2EF', sw: ['#FFFFFF', '#F3F2EF', '#D42A20', '#1C1C1E'], fonts: 'Plus Jakarta Sans', moment: 'Le comptoir Stone / Basique / Legno se recompose en direct, avec sa longueur totale en grand.' },
+      { k: 'Preuve', name: 'Réalisations', claim: '14 boutiques, une signature', font: "'Schibsted Grotesk',sans-serif", weight: 800, tag: 'Inspirée des portfolios d’agences sur Behance : le site entre par la preuve.', desc: 'Un diaporama plein écran des plus belles boutiques équipées (Canet, Alziari, Yogurt Factory, Dakao, Gap…), chaque projet en étude de cas avec les modules utilisés en packshots, et un curseur qui compare le plan 3D à la pièce finie.', img: 'assets/photos/realisations/stone-canet.webp', cut: false, stage: '#0E0E0F', sw: ['#0E0E0F', '#FFFFFF', '#D42A20', '#ECEBE8'], fonts: 'Schibsted Grotesk', moment: 'Diaporama des réalisations en plein écran, puis curseur « plan 3D → boutique finie ».' },
+    ];
+
+    const sel = this.state.sel;
+    const nameCss = (d, size) => 'font-family:' + d.font + ';font-size:' + size + 'px;line-height:1.1;font-weight:' + d.weight + (d.upper ? ';text-transform:uppercase;letter-spacing:.02em' : '');
+    const dirs = D.map((d, i) => ({
+      ...d, num: String(i + 1).padStart(2, '0'), home: d.k + '-Accueil.dc.html',
+      pick: () => this.setState({ sel: i }),
+      rowStyle: 'display:flex;gap:16px;align-items:flex-start;width:100%;min-height:44px;padding:18px ' + (i === sel ? '18px' : '8px') + ';border:0;border-bottom:1px solid #DAD8D3;border-left:3px solid ' + (i === sel ? '#D42A20' : 'transparent') + ';cursor:pointer;font:inherit;color:#1C1C1E;background:' + (i === sel ? '#F3F2EF' : 'transparent') + ';transition:padding .3s',
+      numStyle: 'font-size:13px;font-weight:600;padding-top:5px;min-width:22px;color:' + (i === sel ? '#D42A20' : '#77777C'),
+      nameStyle: nameCss(d, 22),
+      cardStage: 'position:relative;display:flex;align-items:center;justify-content:center;height:220px;overflow:hidden;background:' + d.stage,
+      cardImg: d.cut ? 'width:86%;height:86%;object-fit:contain;display:block' : 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block',
+    }));
+    const c = D[sel];
+    const cur = {
+      ...c, num: String(sel + 1).padStart(2, '0'), home: c.k + '-Accueil.dc.html',
+      pages: PAGES.map(([label, f]) => ({ label, href: c.k + '-' + f + '.dc.html' })),
+      swatches: c.sw.map((h) => ({ hex: h, style: 'width:40px;height:40px;border-radius:50%;background:' + h + ';border:1px solid rgba(0,0,0,.15)' })),
+      stageStyle: 'position:relative;height:420px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:' + c.stage + ';transition:background .5s',
+      imgStyle: c.cut ? 'width:78%;height:82%;object-fit:contain;display:block' : 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block',
+      chipStyle: 'position:absolute;z-index:1;top:16px;left:16px;font-size:12px;letter-spacing:.08em;padding:6px 10px;background:#FFFFFF;color:#1C1C1E',
+      titleStyle: 'margin:0;' + nameCss(c, 36),
+    };
+    return { dirs, cur };
+  }
+}
+</script>
+</body>
+</html>
