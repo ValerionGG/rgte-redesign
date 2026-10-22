@@ -373,7 +373,7 @@ sc-for,sc-if{display:contents}
               <div class="fd"><label for="c-ville">Ville</label><input id="c-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ set.ville }}"></div>
               <div class="fd full"><label for="c-msg">Message</label><textarea id="c-msg" value="{{ f.msg }}" onInput="{{ set.msg }}"></textarea></div>
             </div>
-            <div class="nav2"><button type="button" class="btn btn-o" onClick="{{ go2b }}">Retour</button><small>Prototype : rien n'est envoyé.</small><button type="submit" class="btn btn-r">Envoyer ma demande</button></div>
+            <div class="nav2"><button type="button" class="btn btn-o" onClick="{{ go2b }}">Retour</button><small>{{ formNote }}</small><button type="submit" class="btn btn-r">Envoyer ma demande</button></div>
           </form>
         </sc-if>
       </sc-if>
@@ -381,8 +381,8 @@ sc-for,sc-if{display:contents}
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div class="ok" role="status">
           <h2 class="cd">Merci {{ f.nom }}, c'est noté.</h2>
-          <span class="tag">Prototype — rien n'est envoyé</span>
-          <p>Voici le récapitulatif qui serait transmis au bureau d'études de Puget-sur-Argens. Sur le site réel, il vous rappellerait au {{ f.tel }}.</p>
+          <span class="tag">{{ sendNote }}</span>
+          <p>{{ okText }}</p>
           <dl class="spec">
             <div><dt>Secteur</dt><dd>{{ secTxt }}</dd></div>
             <div><dt>Ligne</dt><dd>{{ lineTxt }}</dd></div>
@@ -537,6 +537,8 @@ class Component extends DCLogic {
     const names = ['Activité', 'Local', 'Coordonnées'];
     const maxStep = v1 ? (v2 ? 3 : 2) : 1;
     const lineName = f.line === 'none' ? 'À définir avec le bureau d’études' : f.line ? LINES.filter(l => l[0] === f.line)[0][1] : 'Non précisée';
+    const localTxt = 'Longueur ' + (f.len || '—') + ' cm' + (f.prof ? ', profondeur ' + f.prof + ' cm' : '') + (f.haut ? ', hauteur ' + f.haut + ' cm' : '');
+    const live = this.live;
     return {
       rootStyle: '--acc:' + (this.props.accent || '#D42A20'),
       megaCls: s.mega ? 'mega on' : 'mega', megaExp: s.mega, menuCls: s.menu ? 'mnav on' : 'mnav', menuExp: s.menu,
@@ -557,10 +559,19 @@ class Component extends DCLogic {
       f, set: { len: inp('len'), prof: inp('prof'), haut: inp('haut'), besoin: inp('besoin'), nom: inp('nom'), soc: inp('soc'), tel: inp('tel'), email: inp('email'), cp: inp('cp'), ville: inp('ville'), msg: inp('msg') },
       togglePlan: () => setF('plan3d', !this.state.f.plan3d), toggleVisite: () => setF('visite', !this.state.f.visite),
       e: { len: sh('len', s.t2), lenCls: cls('len', s.t2), nom: sh('nom', s.t3), nomCls: cls('nom', s.t3), tel: sh('tel', s.t3), telCls: cls('tel', s.t3), email: sh('email', s.t3), emailCls: cls('email', s.t3) },
-      submit: (ev) => { ev.preventDefault(); this.setState({ t3: true, sent: v1 && v2 && v3 }); },
+      submit: (ev) => {
+        ev.preventDefault(); const ok = v1 && v2 && v3; this.setState({ t3: true, sent: ok });
+        if (ok) this.send(f.plan3d ? 'plan3d' : 'devis', {
+          nom: f.nom.trim(), telephone: f.tel.trim(), email: f.email.trim(), societe: f.soc.trim(), secteur: f.sec, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+          details: { 'Ligne envisagée': lineName, 'Longueur disponible (cm)': f.len.trim(), 'Profondeur (cm)': f.prof.trim(), 'Hauteur sous plafond (cm)': f.haut.trim(), 'Local': localTxt, 'Produits et besoins': f.besoin.trim(), 'Plan 3D souhaité': f.plan3d ? 'Oui' : 'Non', 'Visite du show-room souhaitée': f.visite ? 'Oui' : 'Non' }
+        });
+      },
+      formNote: live ? 'Votre demande sera transmise au bureau d’études.' : "Prototype : rien n'est envoyé.",
+      sendNote: live ? 'Demande transmise au bureau d’études' : "Prototype — rien n'est envoyé",
+      okText: live ? "Voici le récapitulatif transmis au bureau d'études de Puget-sur-Argens. Il vous rappellera au " + f.tel + '.' : "Voici le récapitulatif qui serait transmis au bureau d'études de Puget-sur-Argens. Sur le site réel, il vous rappellerait au " + f.tel + '.',
       edit: () => this.setState({ sent: false, step: 1 }),
       lineTxt: lineName,
-      localTxt: 'Longueur ' + (f.len || '—') + ' cm' + (f.prof ? ', profondeur ' + f.prof + ' cm' : '') + (f.haut ? ', hauteur ' + f.haut + ' cm' : ''),
+      localTxt,
       planTxt: f.plan3d ? 'Oui, plan 3D offert demandé' : 'Non demandé',
       visiteTxt: f.visite ? 'Visite souhaitée' : 'Pas de visite pour l’instant',
       faq: FAQ.map((q, i) => ({ q: q[0], a: q[1], open: s.faq === i, cls: s.faq === i ? 'fi on' : 'fi', pick: () => this.setState({ faq: this.state.faq === i ? -1 : i }) })),

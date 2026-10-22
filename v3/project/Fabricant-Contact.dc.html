@@ -333,7 +333,7 @@ sc-for,sc-if{display:contents}
           </sc-if>
           <div class="nav-f">
             <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn b-ghost" onClick="{{ prev }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>Retour</button></sc-if>
-            <sc-if value="{{ noPrev }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:var(--mu)">* Obligatoire. Prototype : rien n'est envoyé.</span></sc-if>
+            <sc-if value="{{ noPrev }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;color:var(--mu)">* Obligatoire. {{ sendNote }}</span></sc-if>
             <sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}"><button type="button" class="btn b-ink" onClick="{{ next }}">Continuer<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></sc-if>
             <sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}"><button type="submit" class="btn b-acc">Envoyer ma demande<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></sc-if>
           </div>
@@ -341,9 +341,9 @@ sc-for,sc-if{display:contents}
       </sc-if>
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div class="done" role="status">
-          <p class="mono" style="font-size:12px;color:var(--md)">Demande prête, prototype : rien n'est envoyé</p>
+          <p class="mono" style="font-size:12px;color:var(--md)">{{ doneTag }}</p>
           <h3 class="xt" style="margin-top:14px">Merci {{ f.nom }}.</h3>
-          <p>{{ kindTxt }} pour votre activité « {{ secTxt }} », comptoir d'environ {{ f.len }} cm. Dans la version en ligne, le bureau d'études vous rappellerait au {{ f.tel }} pour préparer votre plan 3D.</p>
+          <p>{{ kindTxt }} pour votre activité « {{ secTxt }} », comptoir d'environ {{ f.len }} cm. {{ callNote }}</p>
           <button type="button" class="btn b-line b-sm" style="margin-top:22px" onClick="{{ reset }}">Modifier ma demande</button>
         </div>
       </sc-if>
@@ -465,6 +465,14 @@ class Component extends DCLogic {
     if (!this.check(2)) { this.setState({ step:2 }); return; }
     if (!this.check(3)) return;
     this.setState({ sent:true, err:{} });
+    const s = this.state, f = s.f, v = this.renderVals();
+    const d = { 'Type de demande': v.kindTxt, 'Plan 3D souhaité': s.kind === 'plan' ? 'Oui' : 'Non', 'Ligne pressentie': s.line || 'Non précisée', 'Longueur de comptoir': f.len + ' cm' };
+    if (f.dep) d['Profondeur disponible'] = f.dep + ' cm';
+    if (f.surf) d['Surface du local'] = f.surf + ' m²';
+    this.send(s.kind === 'plan' ? 'plan3d' : s.kind === 'devis' ? 'devis' : 'contact', {
+      nom: f.nom.trim(), telephone: f.tel.trim(), email: f.mail.trim(), societe: f.soc.trim(), secteur: s.sec, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+      details: d
+    });
   }
   renderVals(){
     const s = this.state;
@@ -509,6 +517,9 @@ class Component extends DCLogic {
       inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev),
       eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '',
       submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent,
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d\'études.' : 'Prototype : rien n\'est envoyé.',
+      doneTag: this.live ? 'Demande transmise au bureau d\'études' : 'Demande prête, prototype : rien n\'est envoyé',
+      callNote: this.live ? 'Le bureau d\'études vous rappelle au ' + f.tel + (s.kind === 'plan' ? ' pour préparer votre plan 3D.' : '.') : 'Dans la version en ligne, le bureau d\'études vous rappellerait au ' + f.tel + ' pour préparer votre plan 3D.',
       reset: () => this.setState({ sent:false, step:3 })
     };
   }

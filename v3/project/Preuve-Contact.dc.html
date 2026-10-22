@@ -324,7 +324,7 @@ body{margin:0;background:#FFFFFF}
         <div class="done" role="status">
           <span class="done-i"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
           <p style="font-size:clamp(26px,2.6vw,36px);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-top:20px">Demande prête, {{ f.nom }}.</p>
-          <p style="margin-top:12px;color:#CFCFCF">Prototype — rien n’est envoyé. Sur le site réel, le bureau d’études vous rappellerait au {{ f.tel }}.</p>
+          <p style="margin-top:12px;color:#CFCFCF">{{ sendNote }}</p>
           <dl>
             <div><dt>Métier</dt><dd>{{ secLabel }}</dd></div>
             <div><dt>Ligne</dt><dd>{{ ligLabel }}</dd></div>
@@ -420,6 +420,11 @@ class Component extends DCLogic {
     const err = { nom:!f.nom.trim(), tel:f.tel.replace(/\D/g, '').length < 10, mail:!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()) };
     if (err.nom || err.tel || err.mail) { this.setState({ err }); return; }
     this.setState({ sent:true, err:{} });
+    const s = this.state;
+    this.send(f.plan3d ? 'plan3d' : 'devis', {
+      nom:f.nom.trim(), telephone:f.tel.trim(), email:f.mail.trim(), societe:f.soc.trim(), secteur:s.sec, codePostal:f.cp.trim(), ville:f.ville.trim(), message:f.msg.trim(),
+      details:{ 'Ligne envisagée':s.lig || 'Non précisée', 'Longueur de comptoir (m)':f.lon.trim(), 'Surface du local (m²)':f.surf.trim(), 'Plan 3D souhaité':f.plan3d ? 'Oui' : 'Non' }
+    });
   }
   renderVals(){
     const s = this.state, f = s.f, e = s.err || {};
@@ -447,6 +452,7 @@ class Component extends DCLogic {
       msgPh:'Ex. : ' + (s.sec ? s.sec.toLowerCase() : 'pâtisserie') + ', local en angle, vitrine à hauteur de comptoir…',
       eNom:!!e.nom, eTel:!!e.tel, eMail:!!e.mail, eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '',
       submit: (ev) => this.submit(ev), sent:s.sent, notSent:!s.sent,
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d’études. Il vous rappelle au ' + f.tel + '.' : 'Prototype — rien n’est envoyé. Sur le site réel, le bureau d’études vous rappellerait au ' + f.tel + '.',
       reset: () => this.setState({ sent:false, step:1, k:s.k + 1 }),
       secLabel: s.sec || 'Non précisé', ligLabel: s.lig || 'Non précisée', dimLabel: dims || (f.msg ? 'Décrites dans le message' : 'Non précisées'), planLabel: f.plan3d ? 'Oui' : 'Non',
       faqs

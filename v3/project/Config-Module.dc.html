@@ -507,7 +507,7 @@ section[id]{scroll-margin-top:90px}
         <div class="form ok" role="status">
           <span class="okic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
           <p class="h3">Demande prête, {{ f.nom }}.</p>
-          <p class="note" style="font-size:14px">Prototype : rien n'est envoyé. Modèle : Gourmandise {{ modelTxt }}.</p>
+          <p class="note" style="font-size:14px">{{ sendNote }}</p>
           <button type="button" class="btn btn-line" onClick="{{ reset }}" style="justify-self:start">Modifier ma demande</button>
         </div>
       </sc-if>
@@ -618,7 +618,28 @@ class Component extends DCLogic {
   setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
   submit(e){ if (e && e.preventDefault) e.preventDefault(); const f = this.state.f;
     const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg: !f.msg.trim() };
-    if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; } this.setState({ sent:true, err:{} }); }
+    if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; } this.setState({ sent:true, err:{} }); this.sendLead(); }
+  cfgVals(){
+    const s = this.state, std = typeof s.len === 'number', base = std && s.len === 101 && s.fin === 'blanc';
+    return { std, base, lenTxt: std ? s.len + ' cm' : 'Sur mesure',
+      tempTxt: s.temp === 'p' ? '+2/+8 °C, pâtisserie' : '+14/+18 °C, chocolat',
+      finName: s.fin === 'blanc' ? 'Pierre acrylique blanche' : '[COLORIS] à définir',
+      price: base ? '5 800,00 € HT' : 'Sur devis',
+      priceSub: base ? 'Modèle 101 cm en pierre acrylique blanche' : (std && s.fin === 'blanc' ? 'Longueur ' + s.len + ' cm : [PRIX] communiqué sur devis' : 'Chiffrage par le bureau d\'études') };
+  }
+  sendLead(){
+    const s = this.state, f = s.f, c = this.cfgVals(), items = s.proj.items;
+    const details = { 'Produit': 'Module Gourmandise', 'Ligne': 'Stone',
+      'Modèle demandé': 'Gourmandise ' + (s.model === 'sm' ? 'sur mesure' : s.model + ' cm'),
+      'Longueur configurée': c.lenTxt, 'Référence': 'STONE-GOUR-' + (c.std ? s.len : 'SM'),
+      'Température': c.tempTxt, 'Finition': c.finName, 'Prix affiché': c.price + ' (' + c.priceSub + ')' };
+    if (items.length) {
+      details['Mon projet'] = items.map(it => KIT[it.id].name + ' ' + it.len + ' cm (' + LNAME[KIT[it.id].ligne] + ')');
+      details['Mon projet, longueur totale'] = items.reduce((a, it) => a + it.len, 0) + ' cm';
+    }
+    this.send('info', { nom: f.nom.trim(), telephone: f.tel.trim(), email: f.mail.trim(), secteur: f.sect,
+      codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(), details });
+  }
   projVals(){
     const items = this.state.proj.items;
     const ligs = items.map(it => KIT[it.id].ligne).filter((v, i, a) => a.indexOf(v) === i);
@@ -641,9 +662,7 @@ class Component extends DCLogic {
       { id:'c2', label:'[COLORIS]', sw:'background:repeating-linear-gradient(-45deg,#CFCECA 0 6px,#E2E1DD 6px 12px)' },
       { id:'c3', label:'[COLORIS]', sw:'background:repeating-linear-gradient(90deg,#BDBCB8 0 5px,#D6D5D1 5px 10px)' }];
     const fins = FINS.map(f => ({ label:f.label, on: s.fin === f.id ? 'true' : 'false', style: f.sw + (s.fin === f.id ? ';box-shadow:0 0 0 2px #FFFFFF,0 0 0 4px var(--ink)' : ''), pick: () => this.setState({ fin:f.id }) }));
-    const finName = s.fin === 'blanc' ? 'Pierre acrylique blanche' : '[COLORIS] à définir';
-    const base = std && s.len === 101 && s.fin === 'blanc';
-    const lenTxt = std ? s.len + ' cm' : 'Sur mesure';
+    const cv = this.cfgVals(), finName = cv.finName, lenTxt = cv.lenTxt;
     const v = VIEWS[s.view];
     const thumbs = VIEWS.map((x, i) => ({ src: P + x.src, short:x.short, cap:x.cap, cls: x.pk ? 'c' : '', on: s.view === i ? 'true' : 'false',
       style: s.view === i ? 'box-shadow:0 0 0 2px var(--ink)' : 'box-shadow:0 0 0 1px var(--line)', pick: () => this.setState({ view:i }) }));
@@ -661,9 +680,7 @@ class Component extends DCLogic {
       prevV: () => this.setState({ view: (s.view + VIEWS.length - 1) % VIEWS.length }), nextV: () => this.setState({ view: (s.view + 1) % VIEWS.length }),
       thumbs, lens, temps, fins, finName, lenTxt, refLen: std ? String(s.len) : 'SM',
       lenSub: std ? 'Standard' : 'Chiffrage par le bureau d\'études',
-      tempTxt: s.temp === 'p' ? '+2/+8 °C, pâtisserie' : '+14/+18 °C, chocolat',
-      price: base ? '5 800,00 € HT' : 'Sur devis',
-      priceSub: base ? 'Modèle 101 cm en pierre acrylique blanche' : (std && s.fin === 'blanc' ? 'Longueur ' + s.len + ' cm : [PRIX] communiqué sur devis' : 'Chiffrage par le bureau d\'études'),
+      tempTxt: cv.tempTxt, price: cv.price, priceSub: cv.priceSub,
       addTxt: std ? (inG ? 'Mettre à jour le projet' : 'Ajouter au projet') : 'Ajouter (101 cm)',
       addToProj: () => { const p = s.proj, L = std ? s.len : 101; let its;
         if (inG) its = p.items.map(it => it.id === 's-gourmandise' ? Object.assign({}, it, { len:L }) : it);
@@ -682,6 +699,7 @@ class Component extends DCLogic {
         return { name:k.name, spec:a[1], src:c.src, imgStyle:c.img, alt:k.name + ', Ligne Stone, packshot', rowStyle:'--u:min(150px, calc(100cqw / ' + (c.asp * k.hf).toFixed(3) + '))', shape:'height:calc(var(--u) * ' + k.hf + ');' + c.box,
           inS: ip ? 'true' : 'false', btnTxt: ip ? 'Dans le projet, retirer' : 'Ajouter au projet', btnStyle: ip ? 'background:var(--acc);color:#FFFFFF' : 'background:var(--soft);color:var(--ink)', toggle: () => this.toggleMod(a[0]) }; }),
       f: s.f, modelVal: s.model, modelTxt: s.model === 'sm' ? 'sur mesure' : s.model + ' cm',
+      sendNote: (this.live ? 'Votre demande est transmise au bureau d\'études.' : 'Prototype : rien n\'est envoyé.') + ' Modèle : Gourmandise ' + (s.model === 'sm' ? 'sur mesure' : s.model + ' cm') + '.',
       inModel: (ev) => this.setState({ model: ev.target.value }),
       inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev), inSect: (ev) => this.setF('sect', ev),
       inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev), inMsg: (ev) => this.setF('msg', ev),

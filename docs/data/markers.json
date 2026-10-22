@@ -1,0 +1,749 @@
+[
+ {
+  "marker": "[À PRÉCISER]",
+  "count": 150,
+  "pages": [
+   "Atelier-Lignes.html",
+   "Cacao-Lignes.html",
+   "Cryo-Accueil.html",
+   "Cryo-Lignes.html",
+   "Halles-Accueil.html",
+   "Halles-Lignes.html",
+   "Maison-Accueil.html",
+   "Maison-Lignes.html",
+   "Mineral-Lignes.html",
+   "Plan-Accueil.html",
+   "Plan-Lignes.html",
+   "Plan-Module.html",
+   "Rouge-Accueil.html",
+   "Rouge-Lignes.html",
+   "Studio-Accueil.html",
+   "Studio-Lignes.html",
+   "Vitrine-Accueil.html",
+   "Vitrine-Lignes.html",
+   "v2/Fabricant-Accueil.html",
+   "v2/Fabricant-Lignes.html",
+   "v2/Gamme-Accueil.html",
+   "v2/Gamme-Lignes.html",
+   "v2/Metiers-Accueil.html",
+   "v2/Metiers-Lignes.html",
+   "v2/Projet-Lignes.html",
+   "v2/Showroom-Accueil.html",
+   "v2/Showroom-Lignes.html",
+   "v3/Catalogue-Accueil.html",
+   "v3/Catalogue-Lignes.html",
+   "v3/Editorial-Lignes.html",
+   "v3/Fabricant-Accueil.html",
+   "v3/Fabricant-Lignes.html",
+   "v3/Preuve-Accueil.html",
+   "v3/Preuve-Lignes.html",
+   "v3/Preuve-Realisations.html"
+  ],
+  "contexts": [
+   "te à côte. Cliquez sur une ligne pour la mettre en lumière. Les cases [À PRÉCISER] seront complétées avec le bureau d’études. Critère Ligne … … … … Vous",
+   "Pierre acrylique type Corian', fr:'Verre, sérigraphie du client', pl:'[À PRÉCISER]', mods:['Plane','Vision','Saladette','Chaud bain-marie','Centrale','G",
+   "tion de modules habillés d’un panneau frontal en bois mélaminé.', st:'[À PRÉCISER]', fr:'Bois mélaminé', pl:'[À PRÉCISER]', mods:['Plane','Arrière neutr",
+   "rontal en bois mélaminé.', st:'[À PRÉCISER]', fr:'Bois mélaminé', pl:'[À PRÉCISER]', mods:['Plane','Arrière neutre','Caisse et vitrine neutre','Comptoir"
+  ]
+ },
+ {
+  "marker": "[HORAIRES]",
+  "count": 133,
+  "pages": [
+   "Atelier-Accueil.html",
+   "Atelier-Contact.html",
+   "Atelier-Lignes.html",
+   "Atelier-Module.html",
+   "Atelier-Realisations.html",
+   "Atelier-Secteurs.html",
+   "Cacao-Accueil.html",
+   "Cacao-Contact.html",
+   "Cacao-Lignes.html",
+   "Cacao-Module.html",
+   "Cacao-Realisations.html",
+   "Cacao-Secteurs.html",
+   "Cryo-Accueil.html",
+   "Cryo-Contact.html",
+   "Cryo-Lignes.html",
+   "Cryo-Module.html",
+   "Cryo-Realisations.html",
+   "Cryo-Secteurs.html",
+   "Halles-Accueil.html",
+   "Halles-Contact.html",
+   "Halles-Lignes.html",
+   "Halles-Module.html",
+   "Halles-Realisations.html",
+   "Halles-Secteurs.html",
+   "Maison-Accueil.html",
+   "Maison-Contact.html",
+   "Maison-Lignes.html",
+   "Maison-Module.html",
+   "Maison-Realisations.html",
+   "Maison-Secteurs.html",
+   "Mineral-Accueil.html",
+   "Mineral-Contact.html",
+   "Plan-Accueil.html",
+   "Plan-Contact.html",
+   "Plan-Lignes.html",
+   "Plan-Module.html",
+   "Plan-Realisations.html",
+   "Plan-Secteurs.html",
+   "Rouge-Accueil.html",
+   "Rouge-Contact.html",
+   "Rouge-Lignes.html",
+   "Rouge-Module.html",
+   "Rouge-Realisations.html",
+   "Rouge-Secteurs.html",
+   "Studio-Accueil.html",
+   "Studio-Contact.html",
+   "Studio-Lignes.html",
+   "Studio-Module.html",
+   "Studio-Realisations.html",
+   "Studio-Secteurs.html",
+   "Vitrine-Accueil.html",
+   "Vitrine-Contact.html",
+   "v2/Fabricant-Accueil.html",
+   "v2/Fabricant-Lignes.html",
+   "v2/Fabricant-Module.html",
+   "v2/Gamme-Accueil.html",
+   "v2/Gamme-Lignes.html",
+   "v2/Gamme-Module.html",
+   "v2/Metiers-Accueil.html",
+   "v2/Metiers-Lignes.html",
+   "v2/Metiers-Module.html",
+   "v2/Projet-Accueil.html",
+   "v2/Projet-Lignes.html",
+   "v2/Projet-Module.html",
+   "v2/Showroom-Accueil.html",
+   "v2/Showroom-Lignes.html",
+   "v2/Showroom-Module.html",
+   "v3/Catalogue-Accueil.html",
+   "v3/Catalogue-Contact.html",
+   "v3/Config-Accueil.html",
+   "v3/Config-Contact.html",
+   "v3/Config-Lignes.html",
+   "v3/Config-Module.html",
+   "v3/Config-Realisations.html",
+   "v3/Config-Secteurs.html",
+   "v3/Editorial-Accueil.html",
+   "v3/Editorial-Contact.html",
+   "v3/Editorial-Lignes.html",
+   "v3/Editorial-Module.html",
+   "v3/Editorial-Realisations.html",
+   "v3/Editorial-Secteurs.html",
+   "v3/Fabricant-Accueil.html",
+   "v3/Fabricant-Contact.html",
+   "v3/Fabricant-Lignes.html",
+   "v3/Fabricant-Module.html",
+   "v3/Fabricant-Realisations.html",
+   "v3/Fabricant-Secteurs.html",
+   "v3/Preuve-Accueil.html",
+   "v3/Preuve-Contact.html"
+  ],
+  "contexts": [
+   "in des Vernèdes — Espace Vernèdes 3 — 83480 Puget-sur-Argens Horaires [HORAIRES] Numéro vert 0 800 95 13 13 · appel gratuit Préparer ma visite Appeler",
+   "emin des Vernèdes Espace Vernèdes 3 83480 Puget-sur-Argens Horaires : [HORAIRES] Numéro vert 0 800 95 13 13 Appel gratuit L’atelier Lignes d’agencemen",
+   "80 Puget-sur-Argens Numéro vert 0 800 95 13 13 Appel gratuit Horaires [HORAIRES] MÉDITERRANÉE L’Argens A8 RDN7 Puget-sur-Argens Fréjus Roquebrune-s/-A",
+   "in des Vernèdes — Espace Vernèdes 3 83480 Puget-sur-Argens HORAIRES · [HORAIRES] Préparer ma visite 0 800 95 13 13 ÉTUDE · PLAN 3D · FABRICATION · INS"
+  ]
+ },
+ {
+  "marker": "[COLORIS]",
+  "count": 68,
+  "pages": [
+   "Atelier-Module.html",
+   "Cacao-Module.html",
+   "Cryo-Module.html",
+   "Halles-Module.html",
+   "Maison-Module.html",
+   "Mineral-Module.html",
+   "Plan-Module.html",
+   "Rouge-Module.html",
+   "Studio-Module.html",
+   "Vitrine-Module.html",
+   "v2/Fabricant-Accueil.html",
+   "v2/Fabricant-Lignes.html",
+   "v2/Fabricant-Module.html",
+   "v2/Gamme-Module.html",
+   "v2/Metiers-Module.html",
+   "v2/Projet-Module.html",
+   "v2/Showroom-Module.html",
+   "v3/Config-Module.html",
+   "v3/Editorial-Module.html",
+   "v3/Fabricant-Module.html",
+   "v3/Preuve-Module.html"
+  ],
+  "contexts": [
+   "; const finLabel = st.fin === \"blanc\" ? \"Pierre acrylique blanche\" : \"[COLORIS]\"; const FIN = st.fin === \"blanc\" ? \"background:linear-gradient(180deg",
+   ": priced, notPriced: !priced, devisNote: st.len === \"101\" ? \"Finition [COLORIS] : prix sur devis.\" : \"Longueur \" + lenLabel + \" : [PRIX] — sur devis.",
+   "ONFIRMER]', finTxt: s.fin===0 ? 'PIERRE ACRYLIQUE BLANCHE' : 'COLORIS [COLORIS]', ext: L ? 'M0 0' : 'M' + r(x0-24) + ' 96 L' + r(x0-24) + ' 384 M' +",
+   ", rangeTxt, finLabel: s.fin===0 ? 'Pierre acrylique blanche' : 'Autre [COLORIS]', refTxt: 'GRM-' + (L || 'SM') + '-' + (choco ? 'C' : 'P'), priceLab:"
+  ]
+ },
+ {
+  "marker": "[TEMPÉRATURE]",
+  "count": 63,
+  "pages": [
+   "Atelier-Accueil.html",
+   "Atelier-Secteurs.html",
+   "Maison-Accueil.html",
+   "Maison-Secteurs.html",
+   "Mineral-Accueil.html",
+   "Mineral-Secteurs.html",
+   "Rouge-Accueil.html",
+   "Rouge-Secteurs.html",
+   "Studio-Accueil.html",
+   "Studio-Secteurs.html",
+   "Vitrine-Accueil.html",
+   "Vitrine-Secteurs.html",
+   "v3/Fabricant-Accueil.html",
+   "v3/Fabricant-Secteurs.html"
+  ],
+  "contexts": [
+   "ds.map(n => ({ n })) }; const SECTS = [ ['boulangerie','Boulangerie','[TEMPÉRATURE]','à valider',['Amandine','Pastry Show','Réfrigérée statique','Loire']",
+   "s, de +30 à +90 °C.', nv:'Plage à confirmer avec le bureau d’études : [TEMPÉRATURE].' }; const reals = X[6].map(id => ({ n:String(id).padStart(2, '0'), t",
+   "s'] } ]; this.SECTS = [ { id:'boulangerie', name:'Boulangerie', temp:'[TEMPÉRATURE]', tshort:'[T°]', mods:['Amandine','Pastry Show','Réfrigérée statique'",
+   ".SECTS = [ { id:'boulangerie', fam:'sucre', name:'Boulangerie', temp:'[TEMPÉRATURE]', tshort:'[T°]', lo:null, hi:null, desc:'Viennoiseries, pâtisseries b"
+  ]
+ },
+ {
+  "marker": "[DIMENSIONS]",
+  "count": 32,
+  "pages": [
+   "Atelier-Module.html",
+   "Cacao-Module.html",
+   "Cryo-Module.html",
+   "Halles-Module.html",
+   "Maison-Module.html",
+   "Mineral-Module.html",
+   "Rouge-Module.html",
+   "Studio-Module.html",
+   "Vitrine-Module.html",
+   "v2/Fabricant-Module.html",
+   "v2/Gamme-Module.html",
+   "v2/Metiers-Module.html",
+   "v2/Projet-Module.html",
+   "v2/Showroom-Module.html",
+   "v3/Config-Module.html",
+   "v3/Editorial-Module.html",
+   "v3/Fabricant-Module.html"
+  ],
+  "contexts": [
+   "Longueurs disponibles … Dimensions extérieures des autres longueurs : [DIMENSIONS]. Dimensions extérieures (101 cm) 101 × 80 × 80 + 25 h Exposition en v",
+   "+ ' cm' : 'Sur mesure', on, ext: v===101 ? '101 × 80 × 80 + 25 h' : '[DIMENSIONS]', expo: v===101 ? 'Verre 81 × 60 cm' : 'Profondeur 60 cm', prix: v===",
+   "? \"Sur mesure\" : L + \" cm\", ext: is101 ? \"101 × 80 × 80 + 25 h cm\" : \"[DIMENSIONS]\", expo: is101 ? \"Verre 81 × 60 cm\" : (L === \"sm\" ? \"Selon votre local",
+   "po: is101 ? \"Verre 81 × 60 cm\" : (L === \"sm\" ? \"Selon votre local\" : \"[DIMENSIONS] · prof. 60 cm\"), price: is101 ? \"5 800,00 € HT\" : \"Sur devis\", style:"
+  ]
+ },
+ {
+  "marker": "[PRIX]",
+  "count": 30,
+  "pages": [
+   "Atelier-Module.html",
+   "Cacao-Module.html",
+   "Maison-Lignes.html",
+   "Mineral-Module.html",
+   "Rouge-Module.html",
+   "Studio-Module.html",
+   "Vitrine-Module.html",
+   "v2/Fabricant-Accueil.html",
+   "v2/Fabricant-Module.html",
+   "v2/Gamme-Accueil.html",
+   "v2/Gamme-Module.html",
+   "v2/Metiers-Accueil.html",
+   "v2/Metiers-Module.html",
+   "v2/Projet-Accueil.html",
+   "v2/Projet-Module.html",
+   "v2/Showroom-Accueil.html",
+   "v2/Showroom-Module.html",
+   "v3/Catalogue-Module.html",
+   "v3/Config-Module.html",
+   "v3/Editorial-Module.html",
+   "v3/Fabricant-Module.html",
+   "v3/Preuve-Module.html"
+  ],
+  "contexts": [
+   "B + 'cm', price: l === 101 ? price101 : (l === 'sur' ? 'Sur devis' : '[PRIX] / sur devis'), sel: s.len === l ? 'true' : 'false', st: sel(s.len ===",
+   "taxes.' : 'Prix publié pour le 101 cm uniquement — autres longueurs : [PRIX].', drawLabel: 'Élévation du module Gourmandise, ' + lenLabel + ', ' +",
+   "… … Cliquez une ligne pour configurer cette longueur. [DIMENSIONS] / [PRIX] : à communiquer par RGTE. Demande d’informations Parlons de votre Gou",
+   "ice ? 'Prix — modèle 101 cm' : (s.len === 101 ? 'Coloris spécifique — [PRIX]' : 'Prix de cette longueur — [PRIX]'), askThis: () => this.setState({"
+  ]
+ },
+ {
+  "marker": "[DÉLAI]",
+  "count": 21,
+  "pages": [
+   "Atelier-Accueil.html",
+   "Cacao-Accueil.html",
+   "Halles-Accueil.html",
+   "Mineral-Accueil.html",
+   "Plan-Accueil.html",
+   "Rouge-Accueil.html",
+   "Studio-Accueil.html",
+   "Vitrine-Accueil.html",
+   "v2/Fabricant-Accueil.html",
+   "v2/Projet-Accueil.html",
+   "v2/Showroom-Accueil.html",
+   "v3/Catalogue-Accueil.html",
+   "v3/Config-Accueil.html",
+   "v3/Editorial-Accueil.html",
+   "v3/Fabricant-Accueil.html",
+   "v3/Preuve-Accueil.html"
+  ],
+  "contexts": [
+   "des délais : chaque projet a son propre calendrier, défini avec vous [DÉLAI]. 13 métiers de bouche À chaque métier sa température, à chaque produi",
+   "lation','Mise en place dans votre commerce. Délai selon projet&nbsp;: [DÉLAI].'.replace('&nbsp;', ' ')] ]; const steps = STEPS.map((x, i) => { cons",
+   ": pierre acrylique, granit, bois mélaminé, verre sérigraphié. Délai : [DÉLAI]. 04 Installation Mise en place des vitrines dans votre boutique. Moda",
+   "es vitrines dans votre boutique. Modalités et délais d’intervention : [DÉLAI]. 04 — Réalisations Quatorze projets, de Paris à La Réunion. Les 14 pr"
+  ]
+ },
+ {
+  "marker": "[TEMP]",
+  "count": 21,
+  "pages": [
+   "Halles-Accueil.html",
+   "Halles-Lignes.html",
+   "Halles-Secteurs.html",
+   "v3/Catalogue-Accueil.html",
+   "v3/Catalogue-Secteurs.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[À CONFIRMER]",
+  "count": 13,
+  "pages": [
+   "Cacao-Lignes.html",
+   "Cryo-Accueil.html",
+   "Cryo-Module.html",
+   "Maison-Contact.html",
+   "Studio-Module.html",
+   "v2/Fabricant-Module.html",
+   "v2/Gamme-Module.html",
+   "v2/Metiers-Module.html",
+   "v2/Projet-Module.html",
+   "v2/Showroom-Module.html",
+   "v3/Editorial-Module.html"
+  ],
+  "contexts": [
+   "Mise en place des vitrines dans votre boutique. Modalités et délais : [À CONFIRMER].' } ]; const steps = STEPS.map((x,i) => { const on=i===s.step, done=i",
+   "sur mesure. … … CARACTÉRISTIQUES DU MODÈLE 101 CM. AUTRES LONGUEURS : [À CONFIRMER]. LONGUEUR DIMENSIONS EXT. EXPOSITION PRIX … … … … INFO Demande d'info",
+   "x0+54) + ' 196', hTxt: L===101 ? '101 × 80 × 80 + 25 H' : 'DIMENSIONS [À CONFIRMER]', finTxt: s.fin===0 ? 'PIERRE ACRYLIQUE BLANCHE' : 'COLORIS [COLORIS]",
+   "ucune plage renseignée pour cette ligne. Températures des modules … : [À CONFIRMER] — affichez « Tous » ou contactez le bureau d’études. Comparateur Mati"
+  ]
+ },
+ {
+  "marker": "[À VALIDER]",
+  "count": 11,
+  "pages": [
+   "Plan-Accueil.html",
+   "Plan-Secteurs.html",
+   "Rouge-Contact.html",
+   "v3/Fabricant-Secteurs.html",
+   "v3/Preuve-Accueil.html",
+   "v3/Preuve-Secteurs.html"
+  ],
+  "contexts": [
+   "OM ESPACE VERNÈDES 3 Schéma non contractuel — implantation indicative [À VALIDER] Questions fréquentes Avant d’appeler. … … Agencement de vitrines réfr",
+   "'fromagerie', nom:'Fromagerie', band:null, temp:'[À VALIDER]', short:'[À VALIDER]', valider:true, mods:['Panorama','Vitrine réfrigérée ventilée plane',",
+   "fee', nom:'Coffee shop / Café', band:null, temp:'[À VALIDER]', short:'[À VALIDER]', valider:true, mods:['Comptoir bar','Comptoir caisse','Vitrine réfri"
+  ]
+ },
+ {
+  "marker": "[RÉALISATION]",
+  "count": 8,
+  "pages": [
+   "Atelier-Secteurs.html",
+   "Maison-Secteurs.html",
+   "v3/Editorial-Accueil.html",
+   "v3/Editorial-Lignes.html",
+   "v3/Editorial-Secteurs.html"
+  ],
+  "contexts": [
+   "… · Ligne … … — … Pas encore de réalisation publiée pour ce métier — [RÉALISATION]. Un projet en … ? Toutes les réalisations Votre métier n’entre dans a",
+   "ons liées … … · … Pas encore de réalisation publiée pour ce secteur — [RÉALISATION]. … Mon plan 3D — … Températures Quatre plages, d’après nos modules Le",
+   ":'Fromagerie', t:'[TEMP.]', mods:'Plane, Panorama (à valider)', real:'[RÉALISATION]', photo:P+'ambiance/vitrine-fromages.webp', src:'Ambiance Unsplash' }",
+   ":'[TEMP.]', mods:'Comptoir bar neutre ou réfrigéré, Saladette', real:'[RÉALISATION]', photo:P+'realisations/legno-cafe-bar.webp', src:'Réalisation RGTE'"
+  ]
+ },
+ {
+  "marker": "[USAGE]",
+  "count": 6,
+  "pages": [
+   "Atelier-Lignes.html",
+   "Cacao-Lignes.html",
+   "v2/Fabricant-Lignes.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[PHOTOS]",
+  "count": 5,
+  "pages": [
+   "Cryo-Accueil.html",
+   "Cryo-Realisations.html",
+   "Mineral-Accueil.html",
+   "Mineral-Module.html",
+   "Mineral-Realisations.html"
+  ],
+  "contexts": [
+   "ions … … … … … PHOTOS D'ILLUSTRATION — VISUELS DE CHANTIER À INTÉGRER [PHOTOS] 07 Matières Pierre, granit, bois, verre. … · MATIÈRE … … … … … 08 Sho",
+   "… … … PHOTOS D'ILLUSTRATION — LES VISUELS DE CHANTIER SONT À INTÉGRER [PHOTOS]. R-15 · VOTRE PROJET La quinzième vitrine est la vôtre. Demande de de",
+   "Ligne … … … — … Visuels d’ambiance — photographies des projets&nbsp;: [PHOTOS]. Voir les 14 réalisations N° 06 — Matières Quatre matières, à toucher",
+   "xposition 60 cm … Visuels d’ambiance — photographies du module&nbsp;: [PHOTOS]. Ligne Stone · Réfrigérée centrale Module Gourmandise Exposition cent"
+  ]
+ },
+ {
+  "marker": "[À FOURNIR]",
+  "count": 4,
+  "pages": [
+   "Rouge-Module.html",
+   "v3/Fabricant-Contact.html",
+   "v3/Preuve-Lignes.html",
+   "v3/Preuve-Realisations.html"
+  ],
+  "contexts": [
+   "olats. 02 Photo Élévation Coupe Visuel d’illustration — photo produit [À FOURNIR] Élévation face client … VERRE SÉRIGRAPHIÉ … COUPE TRANSVERSALE — SCHÉ",
+   "es et températures sur place ; le plan 3D suit. Photos du show-room : [À FOURNIR] Questions fréquentes Une autre question ? Le numéro vert est gratuit",
+   "odules … Structure … Panneau frontal … Plan de travail … … … Packshot [À FOURNIR] Photo en boutique … … … Comparateur Les cinq lignes, côte à côte. Cli",
+   "ieu … Ligne Ligne … Commerce … Température … Modules posés … Packshot [À FOURNIR] … … Un projet comparable ? Le bureau d’études part de votre local pou"
+  ]
+ },
+ {
+  "marker": "[À COMPLÉTER]",
+  "count": 3,
+  "pages": [
+   "Studio-Secteurs.html",
+   "v3/Preuve-Accueil.html",
+   "v3/Preuve-Lignes.html"
+  ],
+  "contexts": [
+   "… · … … Aucune réalisation présentée pour ce secteur pour l'instant — [À COMPLÉTER]. Composer ce linéaire Demande de devis Vue d'ensemble Les secteurs ra",
+   "0 ? 'publiées avec la ligne ' + l0.name + '.' : 'Photos de chantier : [À COMPLÉTER].' }); const lgAnim = 'animation:' + (s.lk % 2 ? 'sw' : 'sw2') + ' .6s",
+   "') + ' sur 14' : 'Pas encore dans nos réalisations publiées. Photos : [À COMPLÉTER]', hasCases: l.cases.length > 0, thumbs:th, hasMore: l.cases.length >"
+  ]
+ },
+ {
+  "marker": "[À DOCUMENTER]",
+  "count": 3,
+  "pages": [
+   "v3/Catalogue-Lignes.html",
+   "v3/Catalogue-Secteurs.html"
+  ],
+  "contexts": [
+   "so: 'Habillage libre', format: 'Comptoir ou meuble sur pied', reals: '[À DOCUMENTER]', photo: 'ambiance/comptoir-pierre-sombre', cap: 'Photo d’ambiance (U",
+   "'Longueurs standardisées', format: 'Vitrines indépendantes', reals: '[À DOCUMENTER]', photo: 'ambiance/boutique-vitrines-longues', cap: 'Photo d’ambiance",
+   "Ligne … — … Aucune réalisation publiée pour ce secteur pour l'instant [À DOCUMENTER] . Le bureau d'études vous présente des projets comparables au show-ro"
+  ]
+ },
+ {
+  "marker": "[À VENIR]",
+  "count": 3,
+  "pages": [
+   "v3/Fabricant-Accueil.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[ACCÈS]",
+  "count": 2,
+  "pages": [
+   "Rouge-Contact.html",
+   "v3/Config-Contact.html"
+  ],
+  "contexts": [
+   "au 423, Chemin des Vernèdes, Espace Vernèdes 3. Itinéraire détaillé : [ACCÈS]. Région Espace Vernèdes MÉDITERRANÉE L’Argens A8 Roquebrune-sur-Argen",
+   "800 95 13 13 Horaires du show-room [HORAIRES] Accès et stationnement [ACCÈS] Demander mon plan 3D Préparer une visite L'Argens A8 Vers Le Muy Vers"
+  ]
+ },
+ {
+  "marker": "[COTE]",
+  "count": 2,
+  "pages": [
+   "Plan-Accueil.html",
+   "Plan-Realisations.html"
+  ],
+  "contexts": [
+   "panneau frontal en verre à votre sérigraphie.', temp:'Neutre', cote:'[COTE] · PMR en option', href:'Plan-Lignes.dc.html', cta:'Voir la ligne Ston",
+   "matique à la photo. PLAN SCHÉMATIQUE — … LIGNE … ZONE PERSONNEL … L = [COTE] LINÉAIRE SUR MESURE ESPACE CLIENT PLAN PHOTO … / 14 … … LIEU … LIGNE"
+  ]
+ },
+ {
+  "marker": "[FINITION]",
+  "count": 2,
+  "pages": [
+   "v2/Metiers-Accueil.html",
+   "v2/Metiers-Lignes.html"
+  ],
+  "contexts": [
+   "ructure:'Vitrines indépendantes, longueurs standard', front:'Standard [FINITION]', plan:'Standard [À PRÉCISER]', mods:['Olympe','Nepal','Aramis','Rubi",
+   "pendantes, longueurs standardisées', structure:'Standardisée', front:'[FINITION]', plan:'[À PRÉCISER]' } ].map(l => Object.assign(l, { svg: V + l.svg"
+  ]
+ },
+ {
+  "marker": "[ITINÉRAIRE]",
+  "count": 2,
+  "pages": [
+   "Maison-Contact.html",
+   "v3/Preuve-Contact.html"
+  ],
+  "contexts": [
+   "s · 83480 N Accès : … Plan stylisé, sans échelle — itinéraire exact : [ITINÉRAIRE]. Adresse 423, Chemin des Vernèdes Espace Vernèdes 3 83480 Puget-sur-A",
+   "23 chemin des Vernèdes Plan schématique, sans échelle. Accès précis : [ITINÉRAIRE]. Devis et plan 3D Trois étapes, un plan 3D offert. … … … Votre projet"
+  ]
+ },
+ {
+  "marker": "[PHOTO CHANTIER]",
+  "count": 2,
+  "pages": [
+   "Cryo-Realisations.html",
+   "v2/Fabricant-Accueil.html"
+  ],
+  "contexts": [
+   "FFICHÉS … / 14 LIGNE … … TYPE … … Grille Liste PHOTO D'ILLUSTRATION · [PHOTO CHANTIER] … · LIGNE … … … LIGNE … TYPE … TEMPÉRATURES … MODULES INSTALLÉS · … …",
+   "posée, les modules assemblés, le lieu. … … … … Photo d'illustration · [PHOTO CHANTIER] Réalisation … · Ligne … … — … … … 05 — Méthode De l'étude à l'install"
+  ]
+ },
+ {
+  "marker": "[PHOTO]",
+  "count": 2,
+  "pages": [
+   "Atelier-Realisations.html",
+   "Cryo-Module.html"
+  ],
+  "contexts": [
+   "une ligne, des modules, un lieu. Visuel d’ambiance — photo du projet [PHOTO] Bon n° … Bon de commande · Ligne … … Lieu … Ligne Ligne … Modules … M",
+   "RAGES COULISSANTS DES 2 CÔTÉS … PHOTO D'ILLUSTRATION · VISUEL PRODUIT [PHOTO] PROFONDEUR 60 cm LONGUEURS 6 + mesure FLUIDE R134A CONFIGURATEUR · 3"
+  ]
+ },
+ {
+  "marker": "[PHOTOS PROJET]",
+  "count": 2,
+  "pages": [
+   "Rouge-Accueil.html",
+   "Rouge-Realisations.html"
+  ],
+  "contexts": [
+   "face plane &amp; Caisse Visuels d’illustration — photos des projets : [PHOTOS PROJET]. 05 — Matières Corian, granit, bois, verre. Pierre acrylique 01 Grani",
+   "ou par métier, ouvrez un projet. Visuel d’illustration — photo projet [PHOTOS PROJET] … Projet sélectionné … Lieu … Ligne … Modules … Un projet similaire ?"
+  ]
+ },
+ {
+  "marker": "[PHOTOS RGTE]",
+  "count": 2,
+  "pages": [
+   "Vitrine-Accueil.html",
+   "Vitrine-Realisations.html"
+  ],
+  "contexts": [
+   "· +2/+8 et +14/+18 Photographies d’ambiance — visuels des chantiers : [PHOTOS RGTE]. Matières Le choix des matières. Comme une monture se choisit pour sa",
+   "gne et ses modules. Ligne … … Métier … … … Photographies d’ambiance — [PHOTOS RGTE] Lot n° … … … … … … … … … Aucune réalisation ne réunit ces deux critèr"
+  ]
+ },
+ {
+  "marker": "[RÉALISATION À VENIR]",
+  "count": 2,
+  "pages": [
+   "Halles-Secteurs.html",
+   "v3/Fabricant-Secteurs.html"
+  ],
+  "contexts": [
+   "es · … … Ligne … Pas encore de réalisation présentée pour ce métier — [RÉALISATION À VENIR]. … … … · … Votre étal, dessiné en 3D. Le bureau d'études compose votr",
+   "ations liées … … … Pas encore de réalisation publiée pour ce métier : [RÉALISATION À VENIR]. Le bureau d'études peut vous montrer des projets proches au show-roo"
+  ]
+ },
+ {
+  "marker": "[RÉALISATIONS À COMPLÉTER]",
+  "count": 2,
+  "pages": [
+   "v2/Metiers-Accueil.html",
+   "v3/Preuve-Secteurs.html"
+  ],
+  "contexts": [
+   "pal … … … Ligne … … Pas encore de réalisation publiée pour ce métier. [RÉALISATIONS À COMPLÉTER] — le bureau d'études vous présente des projets comparables. Demander",
+   "métier … … n° …, … Pas encore de réalisation publiée dans ce métier : [RÉALISATIONS À COMPLÉTER]. Le bureau d’études vous montre des projets comparables au show-room."
+  ]
+ },
+ {
+  "marker": "[RÉFÉRENCES]",
+  "count": 2,
+  "pages": [
+   "Cacao-Secteurs.html",
+   "Vitrine-Secteurs.html"
+  ],
+  "contexts": [
+   "ns n° … … — … … Pas encore de réalisation présentée pour ce secteur — [RÉFÉRENCES]. Devis pour ce métier Voir les lignes Les climats Du froid de la glac",
+   "ns liées … — … … Pas encore de réalisation présentée pour ce métier — [RÉFÉRENCES]. Un projet en … ? Plan 3D offert Pâtissier &amp; chocolatier Une bout"
+  ]
+ },
+ {
+  "marker": "[VISUEL]",
+  "count": 2,
+  "pages": [
+   "v3/Config-Lignes.html",
+   "v3/Config-Realisations.html"
+  ],
+  "contexts": [
+   "frontal … Plan de travail … Plan 3D en Ligne … Composer en Ligne … … [VISUEL] packshot à fournir … … … … … Comparer les cinq lignes. Matériaux, pan",
+   "sur 14 … Lieu … Ligne Ligne … Commerce … Photos … … Modules utilisés [VISUEL] … … … Un projet comme celui-ci Modules chargés dans votre projet (…)."
+  ]
+ },
+ {
+  "marker": "[ACCÈS / PARKING]",
+  "count": 1,
+  "pages": [
+   "Cryo-Contact.html"
+  ],
+  "contexts": [
+   "0 95 13 13 TARIF Numéro vert, appel gratuit HORAIRES [HORAIRES] ACCÈS [ACCÈS / PARKING] Préparer ma visite Appeler 3D Plan d'agencement Voir le comptoir avan"
+  ]
+ },
+ {
+  "marker": "[COLORIS 2]",
+  "count": 1,
+  "pages": [
+   "v3/Catalogue-Module.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[COLORIS 3]",
+  "count": 1,
+  "pages": [
+   "v3/Catalogue-Module.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[COLORIS 4]",
+  "count": 1,
+  "pages": [
+   "v3/Catalogue-Module.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[COTES]",
+  "count": 1,
+  "pages": [
+   "v3/Preuve-Module.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[EXPOSITION]",
+  "count": 1,
+  "pages": [
+   "Halles-Module.html"
+  ],
+  "contexts": [
+   "d === '101' ? '81 × 60 cm' : (id === 'mesure' ? 'Profondeur 60 cm' : '[EXPOSITION] × 60 cm'), prix: id === '101' ? '5 800,00 €' : 'Sur devis', style: id"
+  ]
+ },
+ {
+  "marker": "[FICHE PDF]",
+  "count": 1,
+  "pages": [
+   "v2/Gamme-Module.html"
+  ],
+  "contexts": [
+   "3D d'agencement. PDF Fiche technique Gourmandise Document à fournir · [FICHE PDF] 3D Plan 3D de votre agencement Élaboré par le bureau d'études · deman"
+  ]
+ },
+ {
+  "marker": "[FICHE]",
+  "count": 1,
+  "pages": [
+   "Mineral-Module.html"
+  ],
+  "contexts": [
+   "Pour les autres longueurs, la fiche est transmise sur demande&nbsp;: [FICHE]. … … Longueurs disponibles — cliquez pour configurer … … Dimensions e"
+  ]
+ },
+ {
+  "marker": "[LONGUEURS]",
+  "count": 1,
+  "pages": [
+   "Cacao-Lignes.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[N]",
+  "count": 1,
+  "pages": [
+   "v2/Metiers-Accueil.html"
+  ],
+  "contexts": [
+   "tF('msg', ev), msgPh: 'Ex. : ' + cm.label.toLowerCase() + ', local de [N] m², modules souhaités…', eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mai"
+  ]
+ },
+ {
+  "marker": "[PHOTO CLIENT]",
+  "count": 1,
+  "pages": [
+   "Cacao-Realisations.html"
+  ],
+  "contexts": [
+   "tion pour ce croisement. Réinitialiser les filtres Image d’ambiance · [PHOTO CLIENT] … Réalisation … / 14 · … … Lieu … Ligne … Modules … Projet similaire"
+  ]
+ },
+ {
+  "marker": "[PHOTOS CLIENT]",
+  "count": 1,
+  "pages": [
+   "Cacao-Accueil.html"
+  ],
+  "contexts": [
+   "ne &amp; Caisse Photographies d’ambiance — visuels des réalisations : [PHOTOS CLIENT]. Matières Le grain, le veinage, le reflet. Pierre acrylique Type Cori"
+  ]
+ },
+ {
+  "marker": "[RÉALISATIONS À VENIR]",
+  "count": 1,
+  "pages": [
+   "Cryo-Secteurs.html"
+  ],
+  "contexts": [
+   "ES · … … · … … … Pas encore de réalisation présentée pour ce secteur. [RÉALISATIONS À VENIR] Devis … Voir les lignes SUR MESURE Votre métier Un produit, un local,"
+  ]
+ },
+ {
+  "marker": "[RÉF]",
+  "count": 1,
+  "pages": [
+   "v2/Gamme-Module.html"
+  ],
+  "contexts": [
+   "pâtisseries, macarons ou chocolats. N° catalogue ST-06 Réf. fabricant [RÉF] Ligne Stone Fluide R134A 1 · Longueur … … … Longueur souhaitée cm 2 ·"
+  ]
+ },
+ {
+  "marker": "[SECTEUR]",
+  "count": 1,
+  "pages": [
+   "Mineral-Realisations.html"
+  ],
+  "contexts": []
+ },
+ {
+  "marker": "[TÉLÉPHONE]",
+  "count": 1,
+  "pages": [
+   "v2/Fabricant-Accueil.html"
+  ],
+  "contexts": [
+   "transmise au bureau d’études, qui vous rappellerait au ' + (f.tel || '[TÉLÉPHONE]') + '.', reset: () => this.setState({ sent:false }) }; } }"
+  ]
+ },
+ {
+  "marker": "[VOTRE SÉRIGRAPHIE]",
+  "count": 1,
+  "pages": [
+   "Studio-Accueil.html"
+  ],
+  "contexts": [
+   ";padding:14px 20px;border-radius:8px' : 'display:none', matPrintTxt: '[VOTRE SÉRIGRAPHIE]' }; } }"
+  ]
+ }
+]

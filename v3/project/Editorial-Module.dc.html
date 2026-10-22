@@ -449,7 +449,7 @@ sc-for,sc-if{display:contents}
           <div class="fld"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
           <div class="fld full"><label for="f-msg">Message *</label><textarea id="f-msg" placeholder="Dimensions de votre local, produits à exposer, questions…" value="{{ f.msg }}" onInput="{{ inMsg }}" style="{{ eMsgS }}"></textarea><sc-if value="{{ eMsg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez votre message.</span></sc-if></div>
           <div class="fld full" style="flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-            <span style="font-size:13px;color:#5C5A56">* Obligatoire. Prototype : rien n’est envoyé.</span>
+            <span style="font-size:13px;color:#5C5A56">* Obligatoire. {{ sendNote }}</span>
             <button type="submit" class="btn btn-red">Envoyer la demande<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
           </div>
         </form>
@@ -459,7 +459,7 @@ sc-for,sc-if{display:contents}
           <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#D42A20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3 3 7-7"></path></svg>
           <h3 style="font-family:'Urbanist',sans-serif;font-weight:300;font-size:36px;line-height:1.05;margin-top:16px">Demande prête, {{ f.nom }}.</h3>
           <p style="margin-top:10px;color:#45443F">Configuration : {{ modelTxt }}.</p>
-          <p style="margin-top:8px;font-size:14px;color:#5C5A56">Prototype : rien n’est envoyé.</p>
+          <p style="margin-top:8px;font-size:14px;color:#5C5A56">{{ doneNote }}</p>
           <button type="button" class="btn btn-line" style="margin-top:22px" onClick="{{ reset }}">Modifier la demande</button>
         </div>
       </sc-if>
@@ -512,6 +512,13 @@ class Component extends DCLogic {
     const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg: !f.msg.trim() };
     if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; }
     this.setState({ sent:true, err:{} });
+    const v = this.renderVals();
+    this.send('info', {
+      nom: f.nom.trim(), telephone: f.tel.trim(), email: f.mail.trim(), secteur: f.sec, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+      details: { 'Produit': 'Module Gourmandise', 'Ligne': 'Stone', 'Modèle': v.modelShort, 'Longueur': v.lenTxt,
+        'Plage de température': v.tempTxt + ' (' + v.tempUse + ')', 'Finition': v.finTxt, 'Dimensions': v.dimTxt,
+        'Prix affiché': v.priceTxt, 'Précision prix': v.priceSub, 'Configuration retenue': v.modelTxt }
+    });
   }
   renderVals(){
     const s = this.state;
@@ -586,6 +593,8 @@ class Component extends DCLogic {
       tabs, tabDesc: s.tab === 'desc', tabCarac: s.tab === 'carac', tabDim: s.tab === 'dim', dimRows, pl,
       planAria: 'Vue de dessus de la Gourmandise, longueur ' + lenTxt,
       modelShort, modelTxt, f:s.f, notSent:!s.sent, sent:s.sent,
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d’études.' : 'Prototype : rien n’est envoyé.',
+      doneNote: this.live ? 'Demande transmise. Notre bureau d’études vous rappelle au ' + s.f.tel.trim() + '.' : 'Prototype : rien n’est envoyé.',
       inNom: (ev) => this.setF('nom', ev), inTel: (ev) => this.setF('tel', ev), inMail: (ev) => this.setF('mail', ev),
       inSec: (ev) => this.setF('sec', ev), inCp: (ev) => this.setF('cp', ev), inVille: (ev) => this.setF('ville', ev), inMsg: (ev) => this.setF('msg', ev),
       eNom:!!e.nom, eTel:!!e.tel, eMail:!!e.mail, eMsg:!!e.msg,
