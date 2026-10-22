@@ -1,0 +1,11 @@
+{
+  "name": "rgte-redesign",
+  "private": true,
+  "description": "RGTE — propositions de refonte + serveur (formulaires, back-office)",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node --disable-warning=ExperimentalWarning server/index.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --test server/server.test.mjs"
+  }
+}

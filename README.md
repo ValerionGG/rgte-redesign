@@ -56,3 +56,33 @@ Retour client sur le tour 2 : rendus dessinés « pas beaux », pages pas assez 
 | 5 | Réalisations | 14 boutiques, une signature |
 
 6 pages par direction (Accueil, Lignes, Module Gourmandise, Secteurs, Réalisations, Contact). Cadrage : `v3/BRIEF-v3.md`.
+
+## Back-office et serveur (`server/`)
+
+Le site peut tourner de deux façons :
+
+- **Statique (GitHub Pages)** : vitrine des propositions, formulaires en mode prototype (rien n'est envoyé).
+- **Serveur RGTE** : le même site, plus l'enregistrement des formulaires et le back-office sur `/admin/`. Node ≥ 22.5, aucune dépendance npm, base SQLite.
+
+```bash
+npm run build                                   # régénère docs/ (pages + relevé des marqueurs)
+ADMIN_EMAIL=vous@rgte.eu ADMIN_PASSWORD='mot-de-passe-long' npm start
+# → site http://localhost:8080/v3/ · back-office http://localhost:8080/admin/
+npm test                                        # tests de l'API
+```
+
+Sans `ADMIN_PASSWORD`, un mot de passe aléatoire est créé au premier démarrage et affiché dans les logs.
+
+**Back-office**
+- **Tableau de bord** : nouvelles demandes, demandes sur 30 jours, répartition par type et par statut.
+- **Demandes** : devis, plans 3D, demandes d'informations et projets composés envoyés par les 10 formulaires du tour 3, avec tout le détail (configuration du module, longueur, température, prix affiché, modules du projet…). Suivi par statut (nouvelle → en cours → devis envoyé → gagnée / perdue / archivée), notes et historique, recherche, export CSV (Excel), suppression (RGPD).
+- **Informations à compléter** : les marqueurs des maquettes ([HORAIRES], [PRIX], [COLORIS]…), relevés par `npm run build` avec des exemples de contexte ; la valeur saisie remplace le marqueur sur toutes les pages.
+- **Textes du site** : remplacement de n'importe quel texte exact sur toutes les pages (prix, formulations…).
+- **Pages légales** : mentions légales, conditions de vente, plan du site, cookies (liens du pied de page).
+- **Utilisateurs** et **Mon compte** (mot de passe).
+
+**Sécurité** : mots de passe scrypt, session en cookie HttpOnly SameSite=Strict, en-tête anti-CSRF obligatoire sur l'API d'administration, limitation des tentatives de connexion et des envois de formulaires, filtre anti-robots, CSP stricte sur `/admin/`.
+
+**Mise en ligne** : `Dockerfile` (image Node 22) et `render.yaml` (Blueprint Render avec disque persistant pour la base). Variables : `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `DATA_DIR` (dossier de la base, `/data` dans Docker), `TRUST_PROXY=1` derrière un proxy HTTPS, `NOTIFY_WEBHOOK_URL` (facultatif : POST JSON à chaque nouvelle demande, pour Slack, Make, Zapier, n8n…). La base `rgte.db` doit être sur un volume persistant et sauvegardée.
+
+**Côté pages** : `docs/dc.js` interroge `api/site` au chargement. Si le serveur répond, les formulaires envoient leurs données (`this.send(type, champs)`) et les textes gérés sont appliqués ; sinon le site reste en mode prototype. Les mentions « Proposition de refonte — concept, non officiel » et le `noindex` sont conservés tant que RGTE n'a pas validé une direction.

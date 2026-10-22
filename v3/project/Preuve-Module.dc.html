@@ -456,7 +456,7 @@ body{margin:0;background:#FFFFFF}
           <span class="done-i"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
           <p style="font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:20px">Demande prête, {{ f.nom }}.</p>
           <p style="margin-top:10px;color:#3D3D3D">Gourmandise {{ lenLabel }}, {{ tempLabel }}, {{ finLabel }}.</p>
-          <p style="margin-top:16px;font-size:15px;padding:12px 14px;background:#F4F3F1">Prototype — rien n’est envoyé.</p>
+          <p style="margin-top:16px;font-size:15px;padding:12px 14px;background:#F4F3F1">{{ sendNote }}</p>
           <button type="button" class="btn b-k" style="margin-top:20px" onClick="{{ reset }}">Modifier la demande</button>
         </div>
       </sc-if>
@@ -514,12 +514,17 @@ class Component extends DCLogic {
     ];
   }
   setF(k, e){ const f = Object.assign({}, this.state.f); f[k] = e.target.value; const err = Object.assign({}, this.state.err); err[k] = false; this.setState({ f, err }); }
-  submit(e){
+  submit(e, cfg){
     if (e && e.preventDefault) e.preventDefault();
     const f = this.state.f;
     const err = { nom:!f.nom.trim(), tel:f.tel.replace(/\D/g, '').length < 10, mail:!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg:!f.msg.trim() };
     if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; }
     this.setState({ sent:true, err:{} });
+    cfg = cfg || {};
+    this.send('info', {
+      nom:f.nom.trim(), telephone:f.tel.trim(), email:f.mail.trim(), secteur:f.sec, codePostal:f.cp.trim(), ville:f.ville.trim(), message:f.msg.trim(),
+      details:{ 'Produit':'Module Gourmandise', 'Ligne':'Stone', 'Longueur':cfg.lenLabel, 'Plage de température':cfg.tempLabel, 'Finition':cfg.finLabel, 'Prix affiché':cfg.price, 'Précision prix':cfg.priceSub }
+    });
   }
   renderVals(){
     const s = this.state;
@@ -567,7 +572,8 @@ class Component extends DCLogic {
       msgPh:'Ex. : Gourmandise ' + lenLabel + ' en ' + tempLabel + ', pour un comptoir de pâtisserie…',
       eNom:!!e.nom, eTel:!!e.tel, eMail:!!e.mail, eMsg:!!e.msg,
       eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '', eMsgS: e.msg ? bad : '',
-      submit: (ev) => this.submit(ev), sent:s.sent, notSent:!s.sent, reset: () => this.setState({ sent:false })
+      submit: (ev) => this.submit(ev, { lenLabel, tempLabel, finLabel, price, priceSub }), sent:s.sent, notSent:!s.sent, reset: () => this.setState({ sent:false }),
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d’études.' : 'Prototype — rien n’est envoyé.'
     };
   }
 }

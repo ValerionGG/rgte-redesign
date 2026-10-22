@@ -1,6 +1,9 @@
 // Mini-runtime autonome pour les artboards .dc.html (format du canvas Design) : gabarit {{trous}}, <sc-for>, <sc-if>, événements, état — rendu par Preact.
 (function () {
   var P = window.preact, h = P.h, Fragment = P.Fragment;
+  // Racine du site (dossier de dc.js) : sert à joindre l'API du serveur RGTE quand il est présent.
+  var ROOT = new URL('.', document.currentScript ? document.currentScript.src : location.href).href;
+  var SITE = { live: false, phone: '0 800 95 13 13', replacements: [] }, T0 = Date.now();
   var VOID = { area: 1, base: 1, br: 1, col: 1, embed: 1, hr: 1, img: 1, input: 1, link: 1, meta: 1, source: 1, track: 1, wbr: 1 };
   var RAW = { style: 1, script: 1, textarea: 1, title: 1 };
   var ta = document.createElement('textarea');
@@ -85,10 +88,49 @@
   var TREE = null;
   class DCLogic extends P.Component {
     render() { return h(Fragment, null, kids(TREE.kids, child(Object.create(null), this.renderVals ? this.renderVals() || {} : {}), [])); }
+    // true quand le site tourne sur le serveur RGTE (les formulaires sont réellement transmis).
+    get live() { return SITE.live; }
+    // Transmet une demande au back-office. type : devis | plan3d | info | projet | contact.
+    // fields : { nom, telephone, email, societe, secteur, codePostal, ville, message, details: { libellé: valeur } }.
+    // Renvoie une promesse : true si la demande est enregistrée, false sinon (site statique ou échec).
+    send(type, fields) {
+      if (!SITE.live) return Promise.resolve(false);
+      var body = JSON.stringify({ type: type, fields: fields || {}, page: location.pathname.split('/').slice(-2).join('/'), elapsed: Date.now() - T0 });
+      return fetch(ROOT + 'api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return true; })
+        .catch(function () { toast('L’envoi a échoué. Appelez-nous au ' + SITE.phone + ' (appel gratuit).'); return false; });
+    }
+  }
+
+  function toast(msg) {
+    var el = document.createElement('div');
+    el.setAttribute('role', 'alert');
+    el.textContent = msg;
+    el.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;max-width:calc(100% - 32px);padding:14px 20px;background:#141416;color:#fff;font:500 15px/1.4 system-ui,sans-serif;border-left:4px solid #D42A20;box-shadow:0 8px 30px rgba(0,0,0,.25)';
+    document.body.appendChild(el);
+    setTimeout(function () { el.remove(); }, 8000);
+  }
+
+  // Textes gérés depuis le back-office (marqueurs [HORAIRES], [PRIX]… et remplacements), appliqués au gabarit et au script avant le rendu.
+  function escHtml(v) { return v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function escJs(v) { return v.replace(/[\\'"`$]/g, '\\$&').replace(/\r?\n/g, '\\n').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029'); }
+  function apply(src, esc) {
+    SITE.replacements.forEach(function (r) { if (r && r.from) src = src.split(r.from).join(esc(String(r.to == null ? '' : r.to))); });
+    return src;
+  }
+  function loadSite() {
+    if (!/^https?:/.test(ROOT)) return Promise.resolve();
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 2500);
+    return fetch(ROOT + 'api/site', { headers: { Accept: 'application/json' }, signal: ctl && ctl.signal })
+      .then(function (r) { return r.ok && /json/.test(r.headers.get('content-type') || '') ? r.json() : null; })
+      .then(function (d) { if (d && d.live) { SITE.live = true; if (d.phone) SITE.phone = d.phone; if (Array.isArray(d.replacements)) SITE.replacements = d.replacements; } })
+      .catch(function () { /* site statique : mode prototype */ })
+      .then(function () { clearTimeout(timer); });
   }
 
   function boot() {
-    TREE = parse(document.getElementById('dc-template').textContent);
+    TREE = parse(apply(document.getElementById('dc-template').textContent, escHtml));
     TREE.kids.forEach(function (n) {
       if (!n.tag || n.tag.toLowerCase() !== 'helmet') return;
       n.kids.forEach(function (c) {
@@ -105,8 +147,9 @@
       if (k === '$preview') return;
       var d = dp[k]; props[k] = d && typeof d === 'object' && 'default' in d ? d.default : d;
     });
-    var Comp = new Function('DCLogic', s.textContent + '\n;return Component;')(DCLogic);
+    var Comp = new Function('DCLogic', apply(s.textContent, escJs) + '\n;return Component;')(DCLogic);
     P.render(h(Comp, props), document.getElementById('dc-root'));
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  var ready = new Promise(function (res) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', res); else res(); });
+  Promise.all([ready, loadSite()]).then(boot);
 })();

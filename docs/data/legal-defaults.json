@@ -1,0 +1,18 @@
+{
+ "mentions-legales": {
+  "title": "Mentions légales",
+  "body": "## Éditeur du site\nRGTE — R.G. Technologies, [FORME JURIDIQUE] au capital de [CAPITAL]\nSiège : 423, Chemin des Vernèdes — Espace Vernèdes 3 — 83480 Puget-sur-Argens\nTéléphone : 0 800 95 13 13 (appel gratuit)\nRCS : [VILLE RCS] [SIREN] · TVA intracommunautaire : [N° TVA]\nDirecteur de la publication : [NOM DU DIRECTEUR DE LA PUBLICATION]\n\n## Hébergement\n[NOM DE L'HÉBERGEUR], [ADRESSE], [TÉLÉPHONE]\n\n## Propriété intellectuelle\nLes textes, visuels et rendus 3D de ce site sont la propriété de RGTE — R.G. Technologies, sauf mention contraire. Photos d'ambiance : Unsplash.\n\n## Données personnelles\nLes informations saisies dans les formulaires (demande de devis, plan 3D, demande d'informations) servent uniquement à répondre à votre demande. Elles sont conservées [DURÉE DE CONSERVATION] et ne sont ni cédées ni vendues.\nVous pouvez demander l'accès, la rectification ou l'effacement de vos données en écrivant à [EMAIL DE CONTACT] ou au siège ci-dessus."
+ },
+ "conditions-de-vente": {
+  "title": "Conditions de vente",
+  "body": "[CONDITIONS GÉNÉRALES DE VENTE À FOURNIR PAR RGTE]\n\n## Devis et commande\n[À COMPLÉTER]\n\n## Prix\nLes prix sont indiqués hors taxes. [À COMPLÉTER]\n\n## Fabrication, livraison et installation\n[À COMPLÉTER]\n\n## Garantie\n[À COMPLÉTER]\n\n## Paiement\n[À COMPLÉTER]"
+ },
+ "plan-du-site": {
+  "title": "Plan du site",
+  "body": "Toutes les pages du site."
+ },
+ "cookies": {
+  "title": "Gestion des cookies",
+  "body": "Ce site n'utilise aucun cookie de mesure d'audience ni de publicité.\n\n## Cookies techniques\nUn seul cookie est déposé, uniquement lors de la connexion à l'espace d'administration : il maintient la session de l'administrateur et expire au bout de 7 jours. Il est strictement nécessaire et ne demande pas de consentement.\n\n## Contenus tiers\nLes polices de caractères sont chargées depuis Google Fonts : votre navigateur transmet à cette occasion votre adresse IP à Google."
+ }
+}

@@ -536,14 +536,14 @@ sc-for,sc-if{display:contents}
           <div class="fd"><label for="f-cp">Code postal</label><input id="f-cp" type="text" inputmode="numeric" autocomplete="postal-code" value="{{ f.cp }}" onInput="{{ set.cp }}"></div>
           <div class="fd"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ set.ville }}"></div>
           <div class="{{ e.msgCls }}"><label for="f-msg">Message *</label><textarea id="f-msg" value="{{ f.msg }}" onInput="{{ set.msg }}"></textarea><em>{{ e.msg }}</em></div>
-          <div class="fm-f"><small>* Champs obligatoires. Prototype : rien n'est envoyé.</small><button type="submit" class="btn btn-r">Envoyer ma demande</button></div>
+          <div class="fm-f"><small>{{ formNote }}</small><button type="submit" class="btn btn-r">Envoyer ma demande</button></div>
         </form>
       </sc-if>
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div class="ok" role="status">
           <h3 class="cd">Demande prête, {{ f.nom }}.</h3>
-          <p>Voici ce qui serait transmis au bureau d'études. Le plan 3D de votre agencement fait partie de la réponse.</p>
-          <span class="tag">Prototype — rien n'est envoyé</span>
+          <p>{{ okText }}</p>
+          <span class="tag">{{ sendNote }}</span>
           <dl class="spec" style="margin-top:20px">
             <div><dt>Produit</dt><dd>Gourmandise — {{ lenTxt }}</dd></div>
             <div><dt>Configuration</dt><dd>{{ tempTxt }} — {{ finTxt }}</dd></div>
@@ -655,6 +655,10 @@ class Component extends DCLogic {
     const show = (k) => s.tried ? errs[k] : '';
     const cls = (k, full) => 'fd' + (full ? ' full' : '') + (show(k) ? ' err' : '');
     const setF = (k) => (e) => this.setState({ f: Object.assign({}, this.state.f, { [k]: e.target.value }) });
+    const tempTxt = s.temp === 'p' ? '+2 / +8 °C pâtisserie' : '+14 / +18 °C chocolat';
+    const price = base ? '5 800,00 € HT' : 'Sur devis';
+    const priceNote = base ? 'Modèle 101 cm, pierre acrylique blanche' : (s.len === '101' ? 'Finition hors standard : prix sur devis' : 'Prix de cette longueur : [PRIX] — sur devis');
+    const live = this.live;
     return {
       rootStyle: '--acc:' + (this.props.accent || '#D42A20'),
       megaCls: s.mega ? 'mega on' : 'mega', megaExp: s.mega, menuCls: s.menu ? 'mnav on' : 'mnav', menuExp: s.menu,
@@ -668,11 +672,11 @@ class Component extends DCLogic {
       lens: LENS.map(l => ({ v: l === 'sm' ? 'Sur mesure' : l, u: l === 'sm' ? '' : 'cm', cls: 'ln' + (l === 'sm' ? ' sm' : '') + (s.len === l ? ' on' : ''), sel: s.len === l, pick: () => this.setState({ len: l }) })),
       len: s.len, lenTxt, setLenSel: (e) => this.setState({ len: e.target.value }),
       temps: [['p', '+2 / +8 °C', 'Pâtisserie, macarons'], ['c', '+14 / +18 °C', 'Chocolats']].map(t => ({ v: t[1], u: t[2], cls: s.temp === t[0] ? 'tp on' : 'tp', sel: s.temp === t[0], pick: () => this.setState({ temp: t[0] }) })),
-      tempTxt: s.temp === 'p' ? '+2 / +8 °C pâtisserie' : '+14 / +18 °C chocolat',
+      tempTxt,
       fins: FINS.map(x => ({ name: x.name, sw: x.sw, cls: s.fin === x.id ? 'fn on' : 'fn', sel: s.fin === x.id, pick: () => this.setState({ fin: x.id }) })),
       finTxt: fin.name,
-      price: base ? '5 800,00 € HT' : 'Sur devis', priceKey: base ? 'p1' : 'p2',
-      priceNote: base ? 'Modèle 101 cm, pierre acrylique blanche' : (s.len === '101' ? 'Finition hors standard : prix sur devis' : 'Prix de cette longueur : [PRIX] — sur devis'),
+      price, priceKey: base ? 'p1' : 'p2',
+      priceNote,
       tabs: [['desc', 'Description'], ['carac', 'Caractéristiques'], ['dims', 'Dimensions']].map(t => ({ name: t[1], cls: s.tab === t[0] ? 'tab on' : 'tab', sel: s.tab === t[0], pick: () => this.setState({ tab: t[0] }) })),
       tabDesc: s.tab === 'desc', tabCarac: s.tab === 'carac', tabDims: s.tab === 'dims',
       dim: { x, w, x2: x + w, px: Math.round(x + (w - pw) / 2), pw, xr: x + w + 26, xr2: x + w + 18, xr3: x + w + 34, xt: x + w + 40, label: s.len === 'sm' ? 'L = sur mesure' : 'L = ' + s.len + ' cm' },
@@ -680,7 +684,16 @@ class Component extends DCLogic {
       seen: SEEN.map(r => ({ src: P + 'realisations/' + r[0] + '.webp', alt: r[1] + ', ' + r[2], title: r[1], place: r[2], mods: 'Stone : ' + r[3] })),
       f, set: { nom: setF('nom'), tel: setF('tel'), email: setF('email'), secteur: setF('secteur'), cp: setF('cp'), ville: setF('ville'), msg: setF('msg') },
       e: { nom: show('nom'), tel: show('tel'), email: show('email'), msg: show('msg'), nomCls: cls('nom'), telCls: cls('tel'), emailCls: cls('email'), msgCls: cls('msg', true) },
-      submit: (ev) => { ev.preventDefault(); const ok = !errs.nom && !errs.tel && !errs.email && !errs.msg; this.setState({ tried: true, sent: ok }); },
+      submit: (ev) => {
+        ev.preventDefault(); const ok = !errs.nom && !errs.tel && !errs.email && !errs.msg; this.setState({ tried: true, sent: ok });
+        if (ok) this.send('info', {
+          nom: f.nom.trim(), telephone: f.tel.trim(), email: f.email.trim(), secteur: f.secteur, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+          details: { 'Produit': 'Module Gourmandise', 'Ligne': 'Stone', 'Référence': 'ST-06', 'Longueur': lenTxt, 'Plage de température': tempTxt, 'Finition': fin.name, 'Prix affiché': price, 'Précision prix': priceNote }
+        });
+      },
+      formNote: '* Champs obligatoires. ' + (live ? 'Votre demande sera transmise au bureau d’études.' : "Prototype : rien n'est envoyé."),
+      sendNote: live ? 'Demande transmise au bureau d’études' : "Prototype — rien n'est envoyé",
+      okText: live ? "Voici le récapitulatif transmis au bureau d'études. Le plan 3D de votre agencement fait partie de la réponse." : "Voici ce qui serait transmis au bureau d'études. Le plan 3D de votre agencement fait partie de la réponse.",
       notSent: !s.sent, sent: s.sent, resetForm: () => this.setState({ sent: false }),
       related: REL.map(r => ({ ref: 'Ligne Stone — ' + r[0], name: r[1], src: P + 'produits/' + r[2] + '.webp', alt: 'Packshot ' + r[1], desc: r[3] }))
     };

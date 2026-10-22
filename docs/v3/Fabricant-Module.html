@@ -462,16 +462,16 @@ sc-for,sc-if{display:contents}
           <div class="fld"><label for="f-ville">Ville</label><input id="f-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
           <div class="fld full"><label for="f-msg">Message *</label><textarea id="f-msg" value="{{ f.msg }}" onInput="{{ inMsg }}" style="{{ eMsgS }}"></textarea><sc-if value="{{ eMsg }}" hint-placeholder-val="{{ false }}"><span class="err">Écrivez votre message : produits exposés, dimensions du local…</span></sc-if></div>
           <div class="fld full" style="flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-            <span style="font-size:12px;color:var(--mu)">* Champs obligatoires. Prototype : rien n'est envoyé.</span>
+            <span style="font-size:12px;color:var(--mu)">* Champs obligatoires. {{ sendNote }}</span>
             <button type="submit" class="btn b-acc">Envoyer la demande<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
           </div>
         </form>
       </sc-if>
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div class="done" role="status">
-          <p class="mono" style="font-size:12px;color:var(--mu)">Demande prête, prototype : rien n'est envoyé</p>
+          <p class="mono" style="font-size:12px;color:var(--mu)">{{ doneTag }}</p>
           <h3 class="xt" style="font-size:40px;margin-top:14px">Merci {{ f.nom }}.</h3>
-          <p style="margin-top:14px;color:#3C3D42">Configuration retenue : <span class="mono">{{ modelTxt }}</span>. Dans la version en ligne, le bureau d'études vous rappellerait au {{ f.tel }}.</p>
+          <p style="margin-top:14px;color:#3C3D42">Configuration retenue : <span class="mono">{{ modelTxt }}</span>. {{ callNote }}</p>
           <button type="button" class="btn b-ink b-sm" style="margin-top:22px" onClick="{{ reset }}">Modifier la demande</button>
         </div>
       </sc-if>
@@ -520,7 +520,7 @@ sc-for,sc-if{display:contents}
       </div>
     </div>
     <div class="ft-b">
-      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <div class="legal"><a href="../legal.html?p=mentions-legales">Mentions légales</a><a href="../legal.html?p=conditions-de-vente">Conditions de vente</a><a href="../legal.html?p=plan-du-site">Plan du site</a><a href="../legal.html?p=cookies">Gestion des cookies</a></div>
       <span>Proposition de refonte (tour 3) — concept, non officiel · Photos : RGTE (rgte.eu) · ambiances Unsplash · <a href="index.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
     </div>
     <p class="ft-mark xt" aria-hidden="true">RGTE</p>
@@ -545,6 +545,13 @@ class Component extends DCLogic {
     const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()), msg: !f.msg.trim() };
     if (err.nom || err.tel || err.mail || err.msg) { this.setState({ err }); return; }
     this.setState({ sent:true, err:{} });
+    const v = this.renderVals();
+    this.send('info', {
+      nom: f.nom.trim(), telephone: f.tel.trim(), email: f.mail.trim(), secteur: f.sec, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+      details: { 'Produit': 'Module Gourmandise', 'Ligne': 'Stone', 'Modèle': v.modelTxt, 'Longueur': v.lenTxt,
+        'Plage de température': v.tempTxt + (this.state.temp === 'choc' ? ' (Chocolats)' : ' (Pâtisseries, macarons)'), 'Finition': v.finTxt, 'Dimensions': v.dimTxt,
+        'Prix affiché': v.priceTxt, 'Précision prix': v.priceSub, 'Référence configuration': v.code }
+    });
   }
   renderVals(){
     const s = this.state;
@@ -646,6 +653,9 @@ class Component extends DCLogic {
       eNom: !!e.nom, eTel: !!e.tel, eMail: !!e.mail, eMsg: !!e.msg,
       eNomS: e.nom ? bad : '', eTelS: e.tel ? bad : '', eMailS: e.mail ? bad : '', eMsgS: e.msg ? bad : '',
       submit: (ev) => this.submit(ev), sent: s.sent, notSent: !s.sent,
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d\'études.' : 'Prototype : rien n\'est envoyé.',
+      doneTag: this.live ? 'Demande transmise au bureau d\'études' : 'Demande prête, prototype : rien n\'est envoyé',
+      callNote: (this.live ? 'Le bureau d\'études vous rappelle au ' : 'Dans la version en ligne, le bureau d\'études vous rappellerait au ') + f.tel + '.',
       reset: () => this.setState({ sent:false })
     };
   }

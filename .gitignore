@@ -2,3 +2,5 @@
 .claude/
 a/project/assets/
 b/project/assets/
+/data/
+node_modules/

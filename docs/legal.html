@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RGTE — Informations légales</title>
+<style>
+:root { --ink: #141416; --ink-2: #4A4946; --line: #E2E0DB; --bg: #F4F3F0; --red: #D42A20; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+a { color: inherit; }
+header { background: #fff; border-bottom: 1px solid var(--line); }
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 16px; }
+header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
+.brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.brand b { font-size: 24px; font-weight: 800; letter-spacing: .04em; color: var(--red); }
+.brand span { font-size: 13px; color: var(--ink-2); }
+.tel { font-weight: 700; text-decoration: none; white-space: nowrap; }
+main { padding: 48px 0 72px; }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; letter-spacing: -.02em; margin: 0 0 28px; }
+h2 { font-size: 20px; margin: 36px 0 8px; }
+p { margin: 0 0 14px; color: var(--ink-2); overflow-wrap: anywhere; }
+ul { margin: 0 0 14px; padding-left: 20px; color: var(--ink-2); }
+li { margin: 4px 0; }
+.back { display: inline-block; margin-bottom: 24px; font-weight: 600; }
+nav.legal { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; }
+nav.legal a[aria-current] { color: var(--red); font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding: 24px 0; font-size: 13px; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="v3/"><b>RGTE</b><span>R.G. Technologies</span></a>
+  <a class="tel" href="tel:0800951313">0 800 95 13 13</a>
+</div></header>
+<main><div class="wrap">
+  <a class="back" id="back" href="v3/">← Retour au site</a>
+  <h1 id="title">Informations légales</h1>
+  <div id="body"></div>
+  <nav class="legal" aria-label="Pages légales">
+    <a href="?p=mentions-legales">Mentions légales</a><a href="?p=conditions-de-vente">Conditions de vente</a><a href="?p=plan-du-site">Plan du site</a><a href="?p=cookies">Gestion des cookies</a>
+  </nav>
+</div></main>
+<footer><div class="wrap">RGTE — R.G. Technologies · 423, Chemin des Vernèdes — Espace Vernèdes 3 — 83480 Puget-sur-Argens · 0 800 95 13 13 (appel gratuit)</div></footer>
+<script>
+(function () {
+  var slug = new URLSearchParams(location.search).get('p') || 'mentions-legales'
+  var DIRS = [['Editorial', 'Éditorial'], ['Fabricant', 'Fabricant'], ['Catalogue', 'Catalogue'], ['Config', 'Configurateur'], ['Preuve', 'Réalisations']]
+  var PAGES = [['Accueil', 'Accueil'], ['Lignes', 'Lignes d’agencement'], ['Module', 'Module Gourmandise'], ['Secteurs', 'Secteurs d’activité'], ['Realisations', 'Réalisations'], ['Contact', 'Showroom & contact']]
+  var titleEl = document.getElementById('title'), bodyEl = document.getElementById('body')
+
+  if (document.referrer && new URL(document.referrer).origin === location.origin && !/legal\.html/.test(document.referrer)) document.getElementById('back').href = document.referrer
+  document.querySelectorAll('nav.legal a').forEach(function (a) { if (a.getAttribute('href') === '?p=' + slug) a.setAttribute('aria-current', 'page') })
+
+  function node(tag, text) { var n = document.createElement(tag); if (text != null) n.textContent = text; return n }
+  // Mise en forme minimale : paragraphes, « ## » intertitres, « - » puces. Aucun HTML interprété.
+  function render(page) {
+    titleEl.textContent = page.title; document.title = 'RGTE — ' + page.title
+    while (bodyEl.firstChild) bodyEl.removeChild(bodyEl.firstChild)
+    var list = null
+    String(page.body || '').split(/\r?\n/).forEach(function (line) {
+      var t = line.trim()
+      if (/^-\s+/.test(t)) { if (!list) list = bodyEl.appendChild(node('ul')); list.appendChild(node('li', t.replace(/^-\s+/, ''))); return }
+      list = null
+      if (!t) return
+      if (/^##\s+/.test(t)) bodyEl.appendChild(node('h2', t.replace(/^##\s+/, '')))
+      else bodyEl.appendChild(node('p', t))
+    })
+    if (slug === 'plan-du-site') DIRS.forEach(function (d) {
+      bodyEl.appendChild(node('h2', 'Proposition ' + d[1]))
+      var ul = bodyEl.appendChild(node('ul'))
+      PAGES.forEach(function (p) { var li = ul.appendChild(node('li')), a = li.appendChild(node('a', p[1])); a.href = 'v3/' + d[0] + '-' + p[0] + '.html' })
+    })
+  }
+  function fallback() {
+    return fetch('data/legal-defaults.json').then(function (r) { return r.json() }).then(function (all) {
+      if (!all[slug]) throw new Error('inconnue'); return all[slug]
+    })
+  }
+  fetch('api/legal/' + encodeURIComponent(slug), { headers: { Accept: 'application/json' } })
+    .then(function (r) { if (!r.ok || !/json/.test(r.headers.get('content-type') || '')) throw new Error('statique'); return r.json() })
+    .catch(fallback)
+    .then(render)
+    .catch(function () { render({ title: 'Page introuvable', body: 'Cette page n’existe pas.' }) })
+})()
+</script>
+</body>
+</html>

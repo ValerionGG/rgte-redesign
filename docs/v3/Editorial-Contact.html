@@ -290,7 +290,7 @@ sc-for,sc-if{display:contents}
                 <div class="fld full"><label for="c-ville">Ville</label><input id="c-ville" type="text" autocomplete="address-level2" value="{{ f.ville }}" onInput="{{ inVille }}"></div>
               </div>
               <div class="pnav"><button type="button" class="btn btn-line" onClick="{{ back2 }}">Retour</button><button type="submit" class="btn btn-red">Envoyer ma demande<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
-              <p style="font-size:13px;color:#5C5A56;margin-top:10px">* Obligatoire. Prototype : rien n’est envoyé.</p>
+              <p style="font-size:13px;color:#5C5A56;margin-top:10px">* Obligatoire. {{ sendNote }}</p>
             </form>
           </sc-if>
         </sc-if>
@@ -299,8 +299,8 @@ sc-for,sc-if{display:contents}
           <div class="ok" role="status">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D42A20" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M7 12.5l3 3 7-7"></path></svg>
             <h3>Demande prête, {{ f.nom }}.</h3>
-            <p style="margin-top:14px;color:#45443F;max-width:52ch">Secteur {{ recap.sec }}, {{ recap.lig }}. {{ recap.plan }}. Le bureau d’études vous rappellerait au {{ f.tel }}.</p>
-            <p style="margin-top:10px;font-size:14px;color:#5C5A56">Prototype : rien n’est envoyé.</p>
+            <p style="margin-top:14px;color:#45443F;max-width:52ch">Secteur {{ recap.sec }}, {{ recap.lig }}. {{ recap.plan }}. {{ callNote }}</p>
+            <p style="margin-top:10px;font-size:14px;color:#5C5A56">{{ doneNote }}</p>
             <button type="button" class="btn btn-line" style="margin-top:24px" onClick="{{ reset }}">Modifier la demande</button>
           </div>
         </sc-if>
@@ -355,7 +355,7 @@ sc-for,sc-if{display:contents}
       <div class="ftr-l"><p class="ftr-h">Explorer</p><a href="Editorial-Lignes.html">Lignes d’agencement</a><a href="Editorial-Secteurs.html">Secteurs</a><a href="Editorial-Realisations.html">Réalisations</a><a href="Editorial-Contact.html">Showroom &amp; contact</a></div>
     </div>
     <div class="ftr-b">
-      <div class="legal"><a href="#">Mentions légales</a><a href="#">Conditions de vente</a><a href="#">Plan du site</a><a href="#">Gestion des cookies</a></div>
+      <div class="legal"><a href="../legal.html?p=mentions-legales">Mentions légales</a><a href="../legal.html?p=conditions-de-vente">Conditions de vente</a><a href="../legal.html?p=plan-du-site">Plan du site</a><a href="../legal.html?p=cookies">Gestion des cookies</a></div>
       <span>Proposition de refonte (tour 3) — concept, non officiel. Photos : RGTE (rgte.eu) · ambiances Unsplash. <a href="index.html" style="display:inline;min-height:0;text-decoration:underline">Toutes les propositions</a></span>
     </div>
   </div>
@@ -387,6 +387,13 @@ class Component extends DCLogic {
     const err = { nom: !f.nom.trim(), tel: !f.tel.trim(), mail: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.mail.trim()) };
     if (err.nom || err.tel || err.mail) { this.setState({ err }); return; }
     this.setState({ sent:true, err:{} });
+    const d = { 'Ligne souhaitée': f.lig || 'Non précisée', 'Plan 3D souhaité': f.plan3d ? 'Oui' : 'Non' };
+    if (f.lon.trim()) d['Longueur disponible'] = f.lon.trim() + ' m';
+    if (f.lar.trim()) d['Profondeur disponible'] = f.lar.trim() + ' m';
+    this.send(f.plan3d ? 'plan3d' : 'devis', {
+      nom: f.nom.trim(), telephone: f.tel.trim(), email: f.mail.trim(), secteur: f.sec, codePostal: f.cp.trim(), ville: f.ville.trim(), message: f.msg.trim(),
+      details: d
+    });
   }
   renderVals(){
     const s = this.state, f = s.f, e = s.err || {};
@@ -413,6 +420,9 @@ class Component extends DCLogic {
     return {
       rootStyle:'--red:' + acc,
       menuOpen:s.menu, menuAria: s.menu ? 'true' : 'false', toggleMenu: () => this.setState({ menu:!s.menu }), closeMenu: () => this.setState({ menu:false }),
+      sendNote: this.live ? 'Votre demande est transmise à notre bureau d’études.' : 'Prototype : rien n’est envoyé.',
+      doneNote: this.live ? 'Votre demande est transmise à notre bureau d’études.' : 'Prototype : rien n’est envoyé.',
+      callNote: (this.live ? 'Le bureau d’études vous rappelle au ' : 'Le bureau d’études vous rappellerait au ') + f.tel + '.',
       notSent:!s.sent, sent:s.sent, s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, stepTabs,
       secChips, ligChips, f, recap, faq,
       togglePlan: () => this.setF('plan3d', !f.plan3d),
