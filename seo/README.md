@@ -95,7 +95,7 @@ seo/
     checklists.js  10 checklists + guide 2026
     report.js      export Markdown
   data/
-    sectors.js     27 secteurs : mots-clés, schema, hashtags FR/EN, réseaux
+    sectors.js     28 secteurs : mots-clés, schema, hashtags FR/EN, réseaux
     research/      études du 03/11/2026 (JSON source + modules JS) ; node seo/data/sync.mjs
   proxy/worker.js  proxy CORS optionnel (Cloudflare)
   test/            node --test seo/test/engine.test.mjs
