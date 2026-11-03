@@ -1,0 +1,116 @@
+#!/usr/bin/env node
+// SEO 360 — audit complet en ligne de commande (Node ≥ 18, aucune dépendance).
+// Exemples :
+//   node seo/cli.mjs https://www.exemple.fr --secteur boulangerie --ville Lyon --mot-cle "pâtisserie lyon" --budget 1500
+//   node seo/cli.mjs https://www.exemple.fr --crawl 30 --concurrents concurrent1.fr,concurrent2.fr --sortie rapports/
+//   node seo/cli.mjs https://apps.apple.com/fr/app/x/id123456789
+//   node seo/cli.mjs owner/repo           (dépôt GitHub)
+import { writeFileSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { analyze, competitorSummary, detectKind } from './engine/index.js'
+import { toMarkdown } from './engine/report.js'
+import { googleSuggest } from './engine/keywords.js'
+import { SECTORS } from './data/sectors.js'
+import { GOALS } from './engine/ads.js'
+
+const UA = 'Mozilla/5.0 (compatible; SEO360-Audit/1.0; +https://github.com/valeriongg/rgte-redesign)'
+
+const args = process.argv.slice(2)
+const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
+const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national'].includes(args[i - 1])))
+
+if (!target || opt(['help', 'aide'])) {
+  console.log(`SEO 360 — audit SEO, GEO, ASO, hashtags et budget pub
+
+Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
+
+  --secteur <id>        ${SECTORS.map((s) => s.id).join(', ')}
+  --mot-cle "<texte>"   mot-clé principal visé
+  --ville <ville>       ville (SEO local + hashtags locaux)
+  --marque <nom>        nom de marque
+  --objectif <id>       ${Object.keys(GOALS).join(', ')}
+  --budget <€/mois>     budget publicitaire mensuel (défaut 1000)
+  --valeur <€>          panier moyen / valeur d'un client (ROAS)
+  --objectif-conv <n>   conversions visées par mois (budget nécessaire)
+  --local / --national  forcer le mode local
+  --langue fr|en|both   langue des hashtags
+  --crawl <n>           explorer n pages du site (défaut 15, 0 = page seule)
+  --concurrents a,b,c   URL concurrentes à comparer
+  --psi-key <clé>       clé API PageSpeed Insights (ou variable PSI_KEY)
+  --no-psi              ne pas lancer PageSpeed Insights
+  --github-token <t>    jeton GitHub (ou GITHUB_TOKEN) pour les dépôts
+  --sortie <dossier>    dossier des rapports (défaut ./rapports-seo)
+  --json                afficher le JSON complet sur la sortie standard
+`)
+  process.exit(target ? 0 : 1)
+}
+
+async function fetcher(url, { noFollow = false } = {}) {
+  const redirects = []
+  let cur = url, res, t0 = performance.now(), ttfb
+  try {
+    for (let i = 0; i < 10; i++) {
+      const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 20000)
+      res = await fetch(cur, { redirect: 'manual', headers: { 'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.6', 'Accept-Encoding': 'br, gzip, deflate' }, signal: ctrl.signal })
+      clearTimeout(timer)
+      ttfb ??= performance.now() - t0
+      const loc = res.headers.get('location')
+      if (res.status >= 300 && res.status < 400 && loc) {
+        if (noFollow) return { status: res.status, location: new URL(loc, cur).href, headers: Object.fromEntries(res.headers) }
+        redirects.push({ url: cur, status: res.status }); cur = new URL(loc, cur).href; continue
+      }
+      break
+    }
+    const body = await res.text()
+    const headers = Object.fromEntries(res.headers)
+    return { status: res.status, headers, body, finalUrl: cur, redirects, timeMs: performance.now() - t0, ttfbMs: ttfb }
+  } catch (e) {
+    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (20 s)' : (e.cause?.code || e.message), finalUrl: cur, redirects }
+  }
+}
+
+const input = {
+  sector: opt('secteur', 'autre'), keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',
+  goal: opt('objectif', 'leads'), monthly: +opt('budget', 1000), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
+}
+if (opt('local')) input.local = true
+if (opt('national')) input.local = false
+if (!SECTORS.some((s) => s.id === input.sector)) { console.error(`Secteur inconnu : ${input.sector}`); process.exit(1) }
+
+const quiet = opt('json')
+const log = (...a) => { if (!quiet) console.error(...a) }
+const common = { fetcher, fetchImpl: fetch, psi: !opt('no-psi'), psiKey: opt('psi-key', process.env.PSI_KEY || ''), githubToken: opt('github-token', process.env.GITHUB_TOKEN || ''), source: 'node' }
+
+log(`\n🔎 SEO 360 — ${target} (${detectKind(target)})`)
+const report = await analyze(target, { ...common, input, crawl: +opt('crawl', 15), onProgress: (m) => log('  · ' + m) })
+if (report.kind === 'site' && (input.keyword || report.keywords?.base)) {
+  log('  · Suggestions Google…')
+  report.suggestions = await googleSuggest(input.keyword || report.keywords.base, { fetchImpl: fetch }).catch(() => [])
+}
+const comps = String(opt('concurrents', '') || '').split(',').map((s) => s.trim()).filter(Boolean)
+if (comps.length) {
+  report.competitors = []
+  for (const c of comps) {
+    log(`  · Concurrent : ${c}`)
+    const rep = await analyze(c, { ...common, input, crawl: 0, kind: 'site' })
+    report.competitors.push(competitorSummary(c, rep))
+  }
+}
+
+const out = opt('sortie', 'rapports-seo')
+mkdirSync(out, { recursive: true })
+const slug = String(target).replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').slice(0, 60)
+const md = toMarkdown(report)
+writeFileSync(join(out, `${slug}.md`), md)
+writeFileSync(join(out, `${slug}.json`), JSON.stringify(report, null, 1))
+
+if (quiet) { console.log(JSON.stringify(report, null, 1)); process.exit(0) }
+const R = report.result
+if (report.error) log(`\n⚠️  ${report.error}`)
+if (R) {
+  log(`\nScore global : ${R.global}/100 (${R.grade})`)
+  for (const s of Object.values(R.scores)) log(`  ${String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
+  log(`\nTop corrections :`)
+  for (const i of R.issues.slice(0, 10)) log(`  [${i.sev}] ${i.title}`)
+}
+log(`\n📄 Rapport : ${join(out, slug + '.md')}\n🧾 Données : ${join(out, slug + '.json')} (importable dans l’interface web)\n`)

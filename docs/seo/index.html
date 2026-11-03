@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO 360 — audit SEO, IA, hashtags et budget pub</title>
+<meta name="description" content="Entrez un site, une application ou un dépôt GitHub : SEO 360 liste tout ce qu’il faut corriger (technique, contenu, vitesse, IA/GEO, local), les hashtags par réseau et le budget publicitaire à prévoir.">
+<link rel="canonical" href="https://valeriongg.github.io/rgte-redesign/seo/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SEO 360 — tout ce qu’il faut corriger, en une analyse">
+<meta property="og:description" content="Audit SEO technique et contenu, visibilité IA, hashtags par réseau, budget Google/Meta/TikTok/LinkedIn, benchmark concurrents.">
+<meta property="og:url" content="https://valeriongg.github.io/rgte-redesign/seo/">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#4338ca">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%234338ca' stroke-width='8'/%3E%3Cpath d='M32 4a28 28 0 0 1 28 28' fill='none' stroke='%2314b8a6' stroke-width='8'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"SEO 360","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"fr","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Audit SEO, GEO (IA), ASO, hashtags par réseau et budget publicitaire."}</script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./" aria-label="SEO 360, accueil">
+    <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--accent)" stroke-width="8"/><path d="M32 6a26 26 0 0 1 26 26" fill="none" stroke="var(--accent-2)" stroke-width="8" stroke-linecap="round"/></svg>
+    <span>SEO 360</span>
+  </a>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  <button class="icon-btn" id="theme" type="button" aria-label="Changer de thème"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</header>
+
+<main id="main">
+  <section class="hero" id="hero">
+    <h1>Entrez un site, une app ou un dépôt GitHub.<br><span>On vous dit tout ce qu’il faut corriger.</span></h1>
+    <p class="lede">SEO technique et contenu, vitesse, visibilité dans les IA (ChatGPT, Perplexity, AI Overviews), SEO local, hashtags par réseau, budget publicitaire chiffré et benchmark concurrents.</p>
+    <form id="form" class="card form" autocomplete="on">
+      <div class="target">
+        <label for="f-url" class="sr">Adresse à analyser</label>
+        <input id="f-url" name="url" type="text" inputmode="url" placeholder="https://www.votre-site.fr · lien App Store / Google Play · owner/repo" required>
+        <span class="kind" id="kind" aria-live="polite">Site web</span>
+        <button class="btn primary" type="submit" id="go">Analyser</button>
+      </div>
+      <div class="grid">
+        <label>Secteur<select name="sector" id="f-sector"></select></label>
+        <label>Mot-clé principal<input name="keyword" placeholder="ex. vitrine réfrigérée"></label>
+        <label>Ville / zone<input name="city" placeholder="ex. Lyon"></label>
+        <label>Marque<input name="brand" placeholder="ex. RGTE"></label>
+        <label>Objectif<select name="goal" id="f-goal"></select></label>
+        <label>Budget pub (€/mois)<input name="monthly" type="number" min="0" step="50" value="1000"></label>
+        <label>Valeur d’un client (€)<input name="avgValue" type="number" min="0" step="10" placeholder="panier / contrat moyen"></label>
+        <label>Zone<select name="local"><option value="">Auto (selon secteur)</option><option value="1">Local</option><option value="0">National / international</option></select></label>
+      </div>
+      <details class="more">
+        <summary>Concurrents, collecte et options avancées</summary>
+        <div class="grid">
+          <label class="span2">Concurrents (une URL par ligne, 5 max)<textarea name="competitors" rows="3" placeholder="concurrent1.fr&#10;concurrent2.com"></textarea></label>
+          <label>Clé API PageSpeed (gratuite)<input name="psiKey" placeholder="AIza…" autocomplete="off"><small>Sans clé, Google limite fortement les tests. <a href="https://developers.google.com/speed/docs/insights/v5/get-started#APIKey" target="_blank" rel="noopener">Obtenir une clé</a></small></label>
+          <label>Lecture du HTML<select name="proxy" id="f-proxy">
+            <option value="allorigins">Proxy public AllOrigins</option>
+            <option value="codetabs">Proxy public CodeTabs</option>
+            <option value="custom">Mon proxy (Cloudflare Worker)</option>
+            <option value="none">Aucun : PageSpeed + HTML collé</option>
+          </select><small>Le navigateur ne peut pas lire un autre site directement (CORS). Pour un audit complet (en-têtes, redirections, crawl), utilisez la CLI.</small></label>
+          <label>URL de mon proxy<input name="proxyUrl" placeholder="https://seo-proxy.vous.workers.dev/?url={url}"></label>
+          <label>Pages à explorer<input name="crawl" type="number" min="0" max="50" value="8"></label>
+          <label>Langue des hashtags<select name="lang"><option value="fr">Français</option><option value="both">Français + anglais</option><option value="en">Anglais</option></select></label>
+          <label>Jeton GitHub (optionnel)<input name="githubToken" autocomplete="off" placeholder="ghp_… (au-delà de 60 requêtes/h)"></label>
+          <label class="span2">Coller le code source HTML (optionnel)<textarea name="html" rows="3" placeholder="Clic droit → Afficher le code source → tout copier"></textarea></label>
+          <label class="span2">Importer un rapport de la CLI (.json)<input type="file" id="f-import" accept=".json,application/json"></label>
+        </div>
+      </details>
+    </form>
+    <p class="progress" id="progress" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="view" class="view" tabindex="-1"></section>
+</main>
+
+<footer class="foot">
+  <p>SEO 360 — open-source. Données de marché et benchmarks : recherche du 3 novembre 2026 (sources dans l’onglet Guide). Les estimations budgétaires sont des ordres de grandeur à recaler sur vos comptes.</p>
+  <p>Aucune donnée n’est envoyée à nos serveurs : l’analyse tourne dans votre navigateur (PageSpeed Insights de Google et, si choisi, un proxy pour lire le HTML).</p>
+</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
