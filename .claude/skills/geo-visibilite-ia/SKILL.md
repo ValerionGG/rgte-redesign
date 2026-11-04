@@ -14,7 +14,8 @@ La CLI (`node seo/cli.mjs <url>`) vérifie : robots IA autorisés/bloqués (OAI-
 3. **Passages citables** : intertitre = question réelle ; réponse directe de 40–60 mots juste dessous ; puis détails, tableau HTML, chiffres datés, sources.
 4. **Entité de marque** : Organization + sameAs cohérents (LinkedIn, Wikidata, réseaux), NAP identique, page À propos riche, auteurs experts identifiés.
 5. **Mentions tierces** : comparatifs, presse, Reddit/forums, annuaires pro, avis — les IA citent beaucoup les sources tierces.
-6. **llms.txt** : coût nul, effet non démontré, Google ne l'utilise pas (modèle : `llmsTemplate` dans `seo/engine/audit.js`).
+6. **llms.txt** : coût nul, effet non démontré, Google ne l'utilise pas : signalé en simple information, jamais en défaut (modèle : `buildFixes(report).llms`).
+7bis. **Rendu JavaScript** : le bouton-favori compare le HTML envoyé par le serveur au texte après JavaScript ; au-delà de 50 % de texte ajouté par JS, les robots IA (qui n'exécutent pas le JS) voient une page vide.
 7. **Fraîcheur** : dates de mise à jour réelles, contenus revus chaque trimestre.
 
 ## Mesurer

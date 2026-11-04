@@ -9,7 +9,7 @@ description: Étude concurrentielle et benchmarking SEO / social / pub — compa
 ```bash
 node seo/cli.mjs monsite.fr --secteur <id> --concurrents c1.fr,c2.fr,c3.fr --crawl 10
 ```
-Lire `competitors[]` : score global et par catégorie, performance mobile, LCP réel, nombre de mots, schema, réseaux reliés, llms.txt, robots IA bloqués.
+Lire `competitors[]` : note et notes par catégorie **calculées sur la page d'accueil, sans l'exploration multi-pages** (`pageGlobal` / `pageScores`, mêmes conditions pour tous), vitesse mobile, nombre de mots, réseaux reliés, termes principaux (`terms`). Un concurrent non lu est « non comparable » (`error`), jamais noté 100. L'onglet Concurrents liste aussi les sujets traités par au moins 2 concurrents et absents chez vous.
 Compléter à la main (sources publiques, sans inventer) : offre et prix affichés, avis Google (note/volume), fréquence de publication sur les réseaux, présence dans les réponses IA (poser 10 questions types à ChatGPT/Perplexity/Gemini et noter qui est cité).
 
 ## Marché des outils

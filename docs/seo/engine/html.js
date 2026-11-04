@@ -29,6 +29,7 @@ function attrs(src) {
   return out
 }
 
+const INLINE_SEP = new Set(['a', 'button', 'label', 'option', 'img', 'input', 'select', 'textarea', 'time', 'abbr'])
 const RAW = new Set(['script', 'style', 'textarea', 'template', 'noscript', 'xmp'])
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'])
 const BLOCK = new Set(['p', 'div', 'li', 'td', 'th', 'tr', 'section', 'article', 'header', 'footer', 'nav', 'main', 'aside', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'table', 'blockquote', 'figcaption', 'dd', 'dt', 'form', 'label', 'button', 'option'])
@@ -45,7 +46,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     og: {}, twitter: {}, headings: [], images: [], links: [], scripts: [], jsonLd: [], jsonLdErrors: [], microdata: false,
     iframes: [], forms: 0, inputs: [], buttons: [], videos: 0, text: '', wordCount: 0, inHeadBlocking: 0, amp: null,
     generator: null, themeColor: null, verification: [], appleApp: null, googlePlayApp: null, inlineStyleBytes: 0,
-    deprecated: [], base: null, labelsFor: [], times: 0, authorMeta: null, iframesSrc: [], hasMainLandmark: false, hasNav: false, rssFeeds: [],
+    deprecated: [], base: null, labelsFor: [], times: 0, authorMeta: null, microdataTypes: [], paragraphs: [], iframesSrc: [], hasMainLandmark: false, hasNav: false, rssFeeds: [],
   }
   const stack = [] // éléments capturant du texte : {tag, text}
   const textParts = []
@@ -57,8 +58,10 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     if (!raw) return
     const t = decode(raw)
     if (!inSvg && (inBody || !inHead)) textParts.push(t)
-    for (const s of stack) s.text += t
+    for (const s of stack) if (s.text.length < 3000) s.text += t
   }
+  // Séparateur de mots entre éléments en ligne (sinon « Accueil » + « Nos gâteaux » = « AccueilNos gâteaux »)
+  const sep = () => { textParts.push(' '); for (const s of stack) s.text += ' ' }
   while ((m = tagRe.exec(html))) {
     pushText(html.slice(last, m.index))
     last = tagRe.lastIndex
@@ -68,10 +71,16 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
       if (tag === 'svg') inSvg = Math.max(0, inSvg - 1)
       if (tag === 'head') inHead = false
       for (let i = stack.length - 1; i >= 0; i--) if (stack[i].tag === tag) { finish(stack.splice(i, 1)[0]); break }
-      if (BLOCK.has(tag)) textParts.push(' ')
+      if (BLOCK.has(tag) || INLINE_SEP.has(tag)) sep()
       continue
     }
-    if (BLOCK.has(tag)) textParts.push(' ')
+    if (BLOCK.has(tag) || INLINE_SEP.has(tag)) sep()
+    // HTML interdit <a> dans <a> et un titre dans un titre : le navigateur ferme le précédent, nous aussi
+    // (évite aussi un coût quadratique sur des balises jamais fermées).
+    if (tag === 'a' || /^h[1-6]$/.test(tag) || tag === 'p') {
+      const same = tag === 'a' ? (x) => x.tag === 'a' : tag === 'p' ? (x) => x.tag === 'p' : (x) => /^h[1-6]$/.test(x.tag)
+      for (let i = stack.length - 1; i >= 0; i--) if (same(stack[i])) { finish(stack.splice(i, 1)[0]); break }
+    }
     if (tag === 'body') { inBody = true; inHead = false }
     else if (inHead && !HEADISH.has(tag)) inHead = false
     if (tag === 'svg') inSvg++
@@ -85,7 +94,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
       continue
     }
     element(tag, a)
-    if (!VOID.has(tag) && !m[4] && ['title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'button', 'label'].includes(tag)) {
+    if (!VOID.has(tag) && !m[4] && (['title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'button', 'label'].includes(tag) || (tag === 'p' && p.paragraphs.length < 12))) {
       stack.push({ tag, attrs: a, text: '' })
     }
   }
@@ -143,6 +152,8 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
           width: a.width || null, height: a.height || null, srcset: !!(a.srcset || a['data-srcset']), fetchpriority: a.fetchpriority || '',
           decorative: a.role === 'presentation' || a['aria-hidden'] === 'true',
         })
+        // Le texte alternatif d'une image dans un lien ou un titre en est le texte accessible (logo cliquable)
+        if (a.alt) for (const s of stack) if (s.tag === 'a' || s.tag === 'button' || /^h[1-6]$/.test(s.tag)) s.text += ` ${a.alt} `
         break
       }
       case 'source': if (a.type === 'image/avif' || a.type === 'image/webp') p.modernSources = (p.modernSources || 0) + 1; break
@@ -159,7 +170,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
       case 'nav': p.hasNav = true; break
       case 'font': case 'center': case 'marquee': case 'blink': case 'frame': case 'frameset': p.deprecated.push(tag); break
     }
-    if (a.itemscope !== undefined && a.itemtype) p.microdata = true
+    if (a.itemscope !== undefined && a.itemtype) { p.microdata = true; p.microdataTypes.push(...a.itemtype.split(/\s+/).filter(Boolean).map((t) => t.replace(/^https?:\/\/schema\.org\//i, ''))) }
     if (a.style) p.inlineStyleBytes += a.style.length
   }
 
@@ -192,6 +203,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
         internal, target: s.attrs.target || '', imgOnly: !text,
       })
     } else if (s.tag === 'button') p.buttons.push(text || s.attrs['aria-label'] || s.attrs.title || '')
+    else if (s.tag === 'p') { if (text.length >= 40) p.paragraphs.push(text) }
   }
 
   p.text = textParts.join('').replace(/\s+/g, ' ').trim()

@@ -7,9 +7,14 @@ description: Calcule et répartit un budget publicitaire (Google Ads Search / Pe
 
 ## Calculer
 ```bash
-node -e "import('./seo/engine/ads.js').then(m=>console.log(JSON.stringify(m.planBudget({sector:'btp',goal:'leads',monthly:1500,avgValue:2500,targetConversions:20}),null,1)))"
+node -e "import('./seo/engine/ads.js').then(m=>{const b=m.planBudget({sector:'btp',goal:'leads',monthly:1500,avgValue:2500,margin:0.4,closeRate:0.2,targetConversions:20,cpcOverride:3.5,searchVolume:4000});console.log(b.verdict, b.channels.map(c=>[c.label,c.budget,c.mid]), b.needed)})"
 ```
 Données : `seo/data/research/benchmarks.json` (Google Ads par secteur : WordStream/LocaliQ 2026, médianes US ; plateformes : fourchettes FR/UE ; minimums officiels ; règles de budget). CPC FR ≈ 40–60 % du CPC US (ratio d'agences, non officiel).
+
+## Ce que renvoie `planBudget`
+- `verdict` : `ok` (rentable), `test` (à tester, plafonné), `non` (pas rentable : priorité au gratuit), `inconnu` (valeur client manquante, notoriété, trafic).
+- `maxCpa` = valeur d'un client × marge × part des contacts qui signent (défauts : marge 30–50 %, signature 10 % en B2B, 25 % en B2C local).
+- Estimation centrale (moyennes géométriques des fourchettes) et bande ±35 % ; budget conseillé si `monthly` est vide ; canaux sous leur minimum viable écartés et budget réparti à nouveau ; `cpcOverride` (CPC réel) et `searchVolume` (plafond de clics Search) remplacent les estimations.
 
 ## Méthode
 1. Objectif → canal : demande existante = Google Search ; e-commerce = PMax/Shopping + Meta ; B2B = Search + LinkedIn ; notoriété = Meta/TikTok/YouTube ; app = campagnes d'installation.

@@ -15,3 +15,4 @@ description: App Store Optimization (ASO) pour applications iOS et Android — a
 8. **Site de l'app** : Smart App Banner, liens universels, schéma SoftwareApplication, page par fonctionnalité (SEO), hashtags du skill `hashtags-reseaux` pour TikTok/Reels.
 
 Données non publiques (sous-titre, mots-clés iOS, conversions) : les demander ou les signaler « à vérifier dans App Store Connect / Play Console ».
+Google Play : sans la note et les avis lisibles, l'audit est marqué incomplet (`result.incomplete`, pas de note) ; le budget d'une app utilise les campagnes App de Google et Apple Ads, sans repère de coût par installation inventé.

@@ -1,11 +1,12 @@
-// Planificateur de budget publicitaire : répartition par canal, clics/conversions/CPA estimés (fourchettes),
-// budget nécessaire pour un objectif, règles d'apprentissage et plan de montée en charge.
-// Sources : data/research/benchmarks.js (WordStream/LocaliQ 2026 US + estimations FR/UE). Ce sont des ordres de grandeur.
+// Budget publicitaire : verdict de rentabilité, budget conseillé, répartition par canal (minimum viable
+// respecté), estimation centrale ±35 %, plafond de demande, apprentissage, montée en charge.
+// Sources : data/research/benchmarks.js (WordStream/LocaliQ 2026 US + fourchettes FR/UE). Ordres de grandeur.
 import research from '../data/research/benchmarks.js'
 import { sectorById } from '../data/sectors.js'
 
 const USD_EUR = 0.86
 const FR_CPC = [0.4, 0.6] // CPC France ≈ 40–60 % du CPC US (ratio d'agences, non officiel)
+const BAND = 0.35 // fourchette affichée autour de l'estimation centrale
 
 const INDUSTRY = {
   restaurants: 'Restaurants & Food', industrial: 'Industrial & Commercial', apparel: 'Apparel / Fashion & Jewelry',
@@ -17,33 +18,36 @@ const INDUSTRY = {
 }
 
 export const CHANNELS = {
-  google_search: { label: 'Google Ads — Search', short: 'Google Search' },
-  google_pmax: { label: 'Google Ads — Performance Max / Shopping', short: 'Google PMax' },
-  meta: { label: 'Meta Ads (Facebook + Instagram)', short: 'Meta' },
-  tiktok: { label: 'TikTok Ads', short: 'TikTok' },
-  linkedin: { label: 'LinkedIn Ads', short: 'LinkedIn' },
-  youtube: { label: 'YouTube (Demand Gen / Vidéo)', short: 'YouTube' },
-  microsoft: { label: 'Microsoft Advertising (Bing)', short: 'Microsoft' },
-  pinterest: { label: 'Pinterest Ads', short: 'Pinterest' },
-  snapchat: { label: 'Snapchat Ads', short: 'Snapchat' },
-  amazon: { label: 'Amazon Ads (Sponsored Products)', short: 'Amazon' },
+  google_search: { label: 'Google Ads — Search', short: 'Google Search', min: (c) => Math.max(150, 10 * c.cpc[1] * 30.4) },
+  google_pmax: { label: 'Google Ads — Performance Max / Shopping', short: 'Google PMax', min: () => 900 },
+  google_app: { label: 'Google Ads — campagnes App', short: 'Google App', min: () => 900, noData: 'Pas de repère de coût par installation sourcé : démarrez à 30 €/jour et mesurez le coût réel dès la 1re semaine.' },
+  apple_ads: { label: 'Apple Ads (App Store)', short: 'Apple Ads', min: () => 300, noData: 'Pas de repère sourcé : démarrez sur votre marque et 5 à 10 mots-clés, 10–20 €/jour.' },
+  meta: { label: 'Meta Ads (Facebook + Instagram)', short: 'Meta', min: (c, goal) => (['notoriete', 'trafic'].includes(goal) ? 300 : 600) },
+  tiktok: { label: 'TikTok Ads', short: 'TikTok', min: () => Math.round(50 * USD_EUR * 30.4) },
+  linkedin: { label: 'LinkedIn Ads', short: 'LinkedIn', min: () => 1500 },
+  youtube: { label: 'YouTube (Demand Gen / Vidéo)', short: 'YouTube', min: () => 450 },
+  microsoft: { label: 'Microsoft Advertising (Bing)', short: 'Microsoft', min: () => 150 },
+  pinterest: { label: 'Pinterest Ads', short: 'Pinterest', min: () => 300 },
+  snapchat: { label: 'Snapchat Ads', short: 'Snapchat', min: () => 450 },
+  amazon: { label: 'Amazon Ads (Sponsored Products)', short: 'Amazon', min: () => 300 },
 }
 
-// Répartition de départ par objectif (puis ajustée au secteur et au budget)
 const MIX = {
   leads_local: { google_search: 0.6, meta: 0.3, microsoft: 0.1 },
   leads_b2b: { google_search: 0.45, linkedin: 0.35, microsoft: 0.1, meta: 0.1 },
   ventes: { google_pmax: 0.35, google_search: 0.2, meta: 0.3, tiktok: 0.1, pinterest: 0.05 },
   notoriete: { meta: 0.35, tiktok: 0.25, youtube: 0.25, snapchat: 0.15 },
   notoriete_b2b: { linkedin: 0.5, youtube: 0.3, meta: 0.2 },
-  telechargements: { google_pmax: 0.35, meta: 0.3, tiktok: 0.25, snapchat: 0.1 },
+  telechargements: { google_app: 0.4, meta: 0.25, tiktok: 0.2, apple_ads: 0.15 },
   trafic: { meta: 0.35, google_search: 0.3, tiktok: 0.2, pinterest: 0.15 },
 }
 export const GOALS = {
-  leads: 'Demandes de devis / appels / prises de RDV', ventes: 'Ventes en ligne', notoriete: 'Notoriété / visibilité',
-  telechargements: 'Téléchargements d’application', trafic: 'Trafic vers le site / contenus',
+  leads: 'Demandes de devis / appels / rendez-vous', ventes: 'Ventes en ligne', notoriete: 'Notoriété / visibilité',
+  telechargements: 'Téléchargements d’application', trafic: 'Visites sur le site / les contenus',
 }
+const UNIT = { leads: 'contact', ventes: 'vente', telechargements: 'installation', trafic: 'visite', notoriete: 'visite' }
 const VISUAL = new Set(['ecommerce-mode', 'maison-deco', 'luxe', 'evenementiel', 'boulangerie', 'restaurant', 'tourisme', 'beaute'])
+const gm = (a, b) => Math.sqrt(a * b)
 
 export function industryBenchmark(sid) {
   const sector = sectorById(sid)
@@ -53,107 +57,154 @@ export function industryBenchmark(sid) {
   const v = (k) => row[k] ?? avg[k]
   return {
     industry: row.industry_fr, ctr: v('ctr'), cvr: v('cvr'), cpcUS: v('cpc_usd'), cplUS: v('cpl_usd'),
-    cpcFR: [v('cpc_usd') * USD_EUR * FR_CPC[0], v('cpc_usd') * USD_EUR * FR_CPC[1]],
-    cplFR: [v('cpl_usd') * USD_EUR * 0.45, v('cpl_usd') * USD_EUR * 0.65],
-    filled: Object.keys(row).filter((k) => row[k] == null), note: row.note || '',
+    cpcFR: [v('cpc_usd') * USD_EUR * FR_CPC[0], v('cpc_usd') * USD_EUR * FR_CPC[1]], filled: Object.keys(row).filter((k) => row[k] == null),
   }
 }
-
 const platform = (id) => (research.platforms || []).find((p) => p.id === id) || {}
 
-export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = 1000, b2b, local, avgValue = 0, targetConversions = 0, closeRate } = {}) {
-  const sector = sectorById(sid)
-  // Un lead n'est pas un client : on applique un taux de transformation commercial (25 % par défaut)
-  const close = goal === 'leads' ? (closeRate ?? 0.25) : 1
-  avgValue = (avgValue || 0) * close
-  b2b ??= sector.b2b; local ??= sector.local
-  let key = goal === 'leads' ? (b2b ? 'leads_b2b' : 'leads_local') : goal === 'notoriete' && b2b ? 'notoriete_b2b' : goal
-  const mix = { ...(MIX[key] || MIX.leads_local) }
-  if (sid === 'ecommerce' || sid === 'ecommerce-mode') mix.amazon = goal === 'ventes' ? 0.05 : 0
-  if (!VISUAL.has(sid)) { if (mix.pinterest) { mix.meta = (mix.meta || 0) + mix.pinterest; delete mix.pinterest } }
-  if (b2b && mix.tiktok && goal !== 'notoriete') { mix.linkedin = (mix.linkedin || 0) + mix.tiktok; delete mix.tiktok }
-  // Plus le budget est petit, moins il faut de canaux : chaque canal doit sortir de sa phase d'apprentissage.
-  const maxCh = monthly < 600 ? 1 : monthly < 1500 ? 2 : monthly < 4000 ? 3 : monthly < 10000 ? 4 : 6
-  const ordered = Object.entries(mix).filter(([, w]) => w > 0).sort((a, b) => b[1] - a[1]).slice(0, maxCh)
-  const tot = ordered.reduce((s, [, w]) => s + w, 0)
-  const bench = industryBenchmark(sid)
-  const channels = ordered.map(([id, w]) => estimate(id, Math.round((monthly * w) / tot), bench, goal, avgValue))
-  const sum = (k, i) => channels.reduce((s, c) => s + (c[k]?.[i] || 0), 0)
-  const conv = [sum('conversions', 0), sum('conversions', 1)]
-  const cpa = conv[1] ? [monthly / conv[1], conv[0] ? monthly / conv[0] : null] : [null, null]
-  const out = {
-    sector: sector.label, goal, goalLabel: GOALS[goal], monthly, daily: Math.round(monthly / 30.4), b2b, local, bench, channels,
-    close, totals: { clicks: [sum('clicks', 0), sum('clicks', 1)], conversions: conv, mid: Math.round(Math.sqrt(conv[0] * conv[1])), cpa, cpaMid: conv[0] * conv[1] ? monthly / Math.sqrt(conv[0] * conv[1]) : null, revenue: avgValue ? [conv[0] * avgValue, conv[1] * avgValue] : null, roas: avgValue ? [conv[0] * avgValue / monthly, conv[1] * avgValue / monthly] : null },
-    dropped: Object.keys(mix).filter((id) => !ordered.some(([x]) => x === id) && mix[id] > 0).map((id) => CHANNELS[id]?.short || id),
-    warnings: [], rampUp: rampUp(monthly, channels), seo: seoBudget(monthly, sector, local),
-  }
-  if (targetConversions && cpa[0]) out.needed = { target: targetConversions, budget: [Math.round(targetConversions * cpa[0]), Math.round(targetConversions * (cpa[1] || cpa[0] * 2))], mid: out.totals.cpaMid ? Math.round(targetConversions * out.totals.cpaMid) : null }
-  for (const c of channels) out.warnings.push(...c.warnings)
-  if (monthly < 300) out.warnings.unshift('Budget < 300 €/mois : concentrez tout sur Google Search (mots-clés transactionnels + locaux exacts) ou sur un seul ensemble Meta, et misez d’abord sur le SEO local et la fiche Google, gratuits.')
-  return out
-}
-
-function estimate(id, budget, bench, goal, avgValue) {
-  const p = platform(id === 'meta' ? 'meta' : id)
-  const warnings = []
+function ranges(id, bench, goal) {
+  const p = platform(id)
   let cpc = p.cpc_eur?.[0] != null ? [...p.cpc_eur] : [0.5, 2]
   let cvr = p.cvr?.[0] != null ? [...p.cvr] : [0.01, 0.04]
   if (id === 'google_search') { cpc = bench.cpcFR; cvr = [bench.cvr * 0.6, bench.cvr * 1.1] }
   if (id === 'microsoft') cpc = [bench.cpcFR[0] * 0.6, bench.cpcFR[1] * 0.75]
-  if (goal === 'notoriete') cvr = [0, 0]
-  // fourchette prudente : CPC haut × CVR bas → pessimiste ; CPC bas × CVR haut → optimiste
-  const clicks = [Math.round(budget / cpc[1]), Math.round(budget / cpc[0])]
-  const conversions = [Math.round(clicks[0] * cvr[0] * 10) / 10, Math.round(clicks[1] * cvr[1] * 10) / 10]
-  const cpm = p.cpm_eur?.[0] != null ? p.cpm_eur : null
-  const impressions = cpm ? [Math.round((budget / cpm[1]) * 1000), Math.round((budget / cpm[0]) * 1000)] : null
-  const daily = budget / 30.4
-  const weeklyConv = conversions.map((c) => c / 4.35)
-  if (['meta', 'tiktok', 'snapchat'].includes(id) && goal !== 'notoriete' && weeklyConv[1] < 50) warnings.push(`${CHANNELS[id].short} : ~${Math.round(weeklyConv[0])}–${Math.round(weeklyConv[1])} conversions/semaine, sous les ~50 nécessaires pour sortir de l’apprentissage. Optimisez sur un événement plus fréquent (vue de page clé, ajout au panier, clic WhatsApp) ou un seul ensemble de publicités.`)
-  if (id === 'tiktok' && daily < 50 * USD_EUR) warnings.push(`TikTok : minimum officiel ≈ 50 $/jour par campagne et 20 $/jour par groupe d’annonces — budget actuel ≈ ${Math.round(daily)} €/jour.`)
-  if (id === 'linkedin' && daily < 50) warnings.push(`LinkedIn : ${Math.round(daily)} €/jour, c’est peu (CPC 4–9 €). Pratique B2B : 50–100 €/jour, ou ciblez des listes de comptes (ABM) très précises.`)
-  if (id === 'google_pmax' && daily < 30) warnings.push(`Performance Max : Google recommande un budget quotidien ≥ 3 × CPA cible (pratique PME : 30–50 €/jour) — actuel ≈ ${Math.round(daily)} €/jour.`)
-  if (id === 'google_search' && daily < cpc[1] * 10) warnings.push(`Google Search : ${Math.round(daily)} €/jour ≈ moins de 10 clics/jour au CPC haut (${cpc[1].toFixed(2)} €). Limitez-vous aux mots-clés exacts à forte intention et à votre zone.`)
-  return {
-    id, label: CHANNELS[id]?.label || id, budget, daily: Math.round(daily), cpc, cvr, cpm, clicks, impressions, conversions,
-    cpa: conversions[1] ? [budget / conversions[1], conversions[0] ? budget / conversions[0] : null] : [null, null],
-    roas: avgValue && conversions[1] ? [conversions[0] * avgValue / budget, conversions[1] * avgValue / budget] : null,
-    learning: p.learning_phase || '', minimum: p.min_daily_budget || '', bestFor: p.best_for || '', notes: p.notes || '', warnings,
+  if (goal === 'trafic') cvr = [1, 1]
+  return { cpc, cvr, cpm: p.cpm_eur?.[0] != null ? p.cpm_eur : null, p }
+}
+
+export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = null, b2b, local, avgValue = 0, margin = null, closeRate = null, targetConversions = 0, searchVolume = 0, cpcOverride = 0 } = {}) {
+  const sector = sectorById(sid)
+  b2b ??= sector.b2b; local ??= sector.local
+  const unit = UNIT[goal] || 'conversion'
+  const assumptions = {
+    margin: margin ?? (goal === 'ventes' ? 0.3 : goal === 'telechargements' ? 1 : b2b ? 0.4 : 0.5),
+    closeRate: goal === 'leads' ? closeRate ?? (b2b ? 0.1 : 0.25) : 1,
   }
+  const maxCpa = avgValue > 0 && ['leads', 'ventes', 'telechargements'].includes(goal) ? avgValue * assumptions.margin * assumptions.closeRate : null
+  const key = goal === 'leads' ? (b2b ? 'leads_b2b' : 'leads_local') : goal === 'notoriete' && b2b ? 'notoriete_b2b' : goal
+  const mix = { ...(MIX[key] || MIX.leads_local) }
+  if ((sid === 'ecommerce' || sid === 'ecommerce-mode') && goal === 'ventes') mix.amazon = 0.05
+  if (!VISUAL.has(sid) && mix.pinterest) { mix.meta = (mix.meta || 0) + mix.pinterest; delete mix.pinterest }
+  if (b2b && mix.tiktok && goal !== 'notoriete') { mix.linkedin = (mix.linkedin || 0) + mix.tiktok; delete mix.tiktok }
+  const bench = industryBenchmark(sid)
+  if (cpcOverride > 0) bench.cpcFR = [cpcOverride * 0.8, cpcOverride * 1.2]
+  const info = Object.fromEntries(Object.keys(mix).map((id) => [id, ranges(id, bench, goal)]))
+  const minOf = (id) => Math.round(CHANNELS[id].min(info[id], goal) / 10) * 10
+
+  // Budget conseillé si non renseigné : minimum viable du canal principal (+ le 2e pour la vente en ligne)
+  const ordered = Object.entries(mix).sort((a, b) => b[1] - a[1]).map(([id]) => id)
+  const recommended = Math.ceil((minOf(ordered[0]) + (goal === 'ventes' && ordered[1] ? minOf(ordered[1]) : 0)) / 50) * 50
+  const recommendedUsed = monthly == null || monthly === '' || !(+monthly > 0)
+  monthly = recommendedUsed ? recommended : +monthly
+
+  // Répartition : on retire les canaux qui n'atteindraient pas leur minimum, puis on répartit à nouveau
+  let active = ordered.slice()
+  for (;;) {
+    const tot = active.reduce((s, id) => s + mix[id], 0)
+    const alloc = Object.fromEntries(active.map((id) => [id, (monthly * mix[id]) / tot]))
+    const under = active.filter((id) => alloc[id] < minOf(id))
+    if (!under.length || active.length === 1) break
+    active = active.filter((id) => id !== under.sort((a, b) => mix[a] - mix[b])[0])
+  }
+  const tot = active.reduce((s, id) => s + mix[id], 0)
+  let rest = monthly
+  const channels = active.map((id, i) => {
+    const budget = i === active.length - 1 ? rest : Math.round((monthly * mix[id]) / tot)
+    rest -= budget
+    return estimate(id, budget, info[id], goal, unit, bench, searchVolume, minOf(id))
+  })
+  const est = channels.filter((c) => c.mid)
+  const clicksMid = est.reduce((s, c) => s + c.mid.clicks, 0)
+  const mid = goal === 'notoriete' ? null : Math.round(est.reduce((s, c) => s + c.mid.conv, 0))
+  const spendEst = est.reduce((s, c) => s + c.budget, 0)
+  const cpaMid = mid ? spendEst / mid : null
+  const totals = { clicksMid: Math.round(clicksMid), mid, band: mid != null ? [Math.round(mid * (1 - BAND)), Math.round(mid * (1 + BAND))] : null, cpaMid, impressions: Math.round(est.reduce((s, c) => s + (c.mid.impressions || 0), 0)) }
+  const out = {
+    sector: sector.label, goal, goalLabel: GOALS[goal], unit, monthly, daily: Math.round(monthly / 30.4), recommended, recommendedUsed, b2b, local, bench, channels,
+    assumptions, maxCpa, totals, cpcSource: cpcOverride > 0 ? `CPC Google : votre valeur (${cpcOverride} €).` : 'CPC Google : estimé d’après des médianes américaines ajustées pour la France ; saisissez votre CPC réel (Keyword Planner) pour un calcul fiable.', dropped: ordered.filter((id) => !active.includes(id)).map((id) => CHANNELS[id].short),
+    warnings: channels.flatMap((c) => c.warnings), rampUp: rampUp(monthly, channels), seo: seoBudget(sector, local),
+  }
+  out.verdict = verdict(out)
+  if (targetConversions > 0 && cpaMid) {
+    const need = targetConversions * cpaMid
+    const cap = channels.find((c) => c.capClicks)
+    out.needed = { target: targetConversions, mid: Math.round(need), band: [Math.round(need * (1 - BAND)), Math.round(need * (1 + BAND))], capped: cap ? `Attention : vos mots-clés ne génèrent qu’environ ${Math.round(cap.capClicks)} clics possibles par mois sur Google Search ; au-delà, il faut d’autres canaux ou d’autres mots-clés.` : '' }
+  }
+  if (monthly < 300) out.warnings.unshift('Moins de 300 €/mois : concentrez tout sur Google Search (mots-clés à forte intention, dans votre zone) et misez d’abord sur la fiche Google et le SEO, gratuits.')
+  return out
+}
+
+function estimate(id, budget, { cpc, cvr, cpm, p }, goal, unit, bench, searchVolume, min) {
+  const ch = CHANNELS[id], warnings = []
+  const daily = budget / 30.4
+  let mid = null
+  if (!ch.noData) {
+    const cpcMid = gm(cpc[0], cpc[1]), cvrMid = gm(cvr[0], cvr[1])
+    let clicks = budget / cpcMid
+    let capClicks = null
+    if (id === 'google_search' && searchVolume > 0) {
+      capClicks = searchVolume * (bench.ctr || 0.06)
+      if (clicks > capClicks) { warnings.push(`Google Search : au-delà de ≈ ${Math.round(capClicks * cpcMid)} €/mois, il n’y a plus assez de recherches sur vos mots-clés (${Math.round(searchVolume)} / mois). Réallouez le surplus ou élargissez les mots-clés.`); clicks = capClicks }
+    }
+    const conv = goal === 'notoriete' ? 0 : clicks * cvrMid
+    mid = { clicks: Math.round(clicks), conv: Math.round(conv * 10) / 10, cpa: conv ? budget / conv : null, impressions: cpm ? (budget / gm(cpm[0], cpm[1])) * 1000 : null }
+    if (capClicks) mid.capped = true
+    const weekly = conv / 4.35
+    if (['meta', 'tiktok', 'snapchat'].includes(id) && !['notoriete', 'trafic'].includes(goal) && weekly < 50) warnings.push(`${ch.short} : ≈ ${Math.round(weekly)} ${unit}s/semaine, sous les ~50 nécessaires pour sortir de l’apprentissage. Optimisez sur un événement plus fréquent (vue de la page devis, clic sur le téléphone, ajout au panier) avec un seul ensemble de publicités.`)
+    if (id === 'google_search' && daily < cpc[1] * 10) warnings.push(`Google Search : ${Math.round(daily)} €/jour, c’est moins de 10 clics par jour au coût haut (${cpc[1].toFixed(2)} €). Limitez-vous aux mots-clés exacts à forte intention et à votre zone.`)
+    return { id, label: ch.label, budget, daily: Math.round(daily), min, cpc, cvr, cpm, mid, capClicks, learning: p.learning_phase || '', minimum: p.min_daily_budget || '', bestFor: p.best_for || '', warnings }
+  }
+  return { id, label: ch.label, budget, daily: Math.round(daily), min, cpc: null, cvr: null, cpm: null, mid: null, noEstimate: ch.noData, learning: '', minimum: `Minimum pratique ≈ ${min} €/mois.`, bestFor: id === 'apple_ads' ? 'Utilisateurs iPhone qui cherchent dans l’App Store : intention forte.' : 'Installations Android et iOS sur Search, Play, YouTube et Display.', warnings }
+}
+
+function verdict(b) {
+  const u = b.unit, euro = (n) => `${Math.round(n).toLocaleString('fr-FR')} €`
+  const base = b.totals.mid ? `≈ ${b.totals.mid} ${u}s par mois à ≈ ${euro(b.totals.cpaMid)} chacun` : ''
+  if (b.goal === 'notoriete') return { level: 'inconnu', text: `Objectif notoriété : ≈ ${b.totals.impressions.toLocaleString('fr-FR')} affichages par mois pour ${euro(b.monthly)}.`, detail: 'Jugez au coût pour 1 000 vues et à la hausse des recherches de votre marque (Search Console), pas aux ventes immédiates.' }
+  if (!b.totals.mid) return { level: 'inconnu', text: 'Pas d’estimation chiffrée possible pour ces canaux : mesurez le coût réel dès la première semaine.', detail: '' }
+  if (b.goal === 'trafic') return { level: 'inconnu', text: `${base.replace(/chacun$/, 'la visite')}.`, detail: 'Pour juger la rentabilité, suivez les contacts ou ventes générés par ces visites (GA4).' }
+  if (!b.maxCpa) return { level: 'inconnu', text: `${b.recommendedUsed ? `Budget de départ conseillé : ${euro(b.monthly)} par mois. ` : ''}${base[0].toUpperCase() + base.slice(1)}.`, detail: `Indiquez la valeur d’un client (et votre marge) pour savoir si c’est rentable.` }
+  const r = b.totals.cpaMid / b.maxCpa
+  const start = b.recommendedUsed ? `Budget de départ conseillé : ${euro(b.monthly)} par mois. ` : ''
+  if (r <= 0.8) return { level: 'ok', text: `${start}Rentable : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.`, detail: `Augmentez par paliers de 15–20 % tant que le coût réel reste sous ${euro(b.maxCpa)} par ${u}.` }
+  if (r <= 1.25) return { level: 'test', text: `${start}À tester prudemment : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.`, detail: `Test de 6 semaines plafonné à ${euro(b.monthly * 1.5)} ; arrêtez un canal si son coût dépasse ${euro(b.maxCpa)} par ${u} après 50 clics.` }
+  const why = { leads: b.local ? 'Priorité au gratuit : fiche Google, avis, SEO local et conversion du site (appel en un clic, devis simple). Ou ciblez des prestations de plus forte valeur.' : 'Priorité au SEO et au contenu ; resserrez les mots-clés sur les demandes les plus qualifiées ou ciblez des contrats de plus forte valeur.', ventes: 'Travaillez d’abord le panier moyen, le taux de conversion du site et le SEO ; testez ensuite de petits budgets sur vos meilleurs produits.', telechargements: 'Priorité à l’ASO (titre, captures, avis) et au bouche-à-oreille ; augmentez la valeur par utilisateur (abonnement, achats intégrés) avant d’acheter des installations.' }
+  return { level: 'non', text: `Pas rentable aujourd’hui : ≈ ${euro(b.totals.cpaMid)} par ${u} pour ≈ ${euro(b.maxCpa)} de marge.`, detail: why[b.goal] || why.leads }
 }
 
 function rampUp(monthly, channels) {
   return [
-    { phase: 'Semaines 1–2 — Lancement & apprentissage', actions: [
-      'Suivi des conversions vérifié (GA4 + balises Google Ads / Meta / TikTok, Consent Mode v2, API Conversions Meta).',
-      `Démarrez à ~70 % du budget (${Math.round(monthly * 0.7)} €/mois) ; gardez 10–20 % pour tester de nouvelles audiences et créations.`,
-      '3–5 créations par ensemble (vidéo verticale, carrousel, image), 2–3 accroches différentes.',
-      'Ne touchez à rien pendant 7 jours (apprentissage) sauf erreur flagrante.',
+    { phase: 'Semaines 1–2 : lancement', actions: [
+      'Mesure des conversions vérifiée (GA4 + balises Google Ads / Meta / TikTok, Consent Mode v2, API Conversions Meta).',
+      `Démarrez à ~70 % du budget (${Math.round(monthly * 0.7)} €/mois) ; gardez 10–20 % pour tester audiences et créations.`,
+      '3 à 5 créations par ensemble (vidéo verticale, carrousel, image), 2 ou 3 accroches différentes.',
+      'Ne touchez à rien pendant 7 jours (apprentissage), sauf erreur flagrante.',
     ] },
-    { phase: 'Semaines 3–6 — Optimisation', actions: [
-      'Coupez les annonces / mots-clés au CPA > 2× la cible après ≥ 50–100 clics.',
-      'Ajoutez les termes de recherche négatifs chaque semaine (Google).',
-      'Augmentez le budget des gagnants de 15–20 % maximum tous les 3–7 jours (au-delà, l’algorithme réapprend).',
-      'Renouvelez les créations dès que la fréquence dépasse ~3 (Meta) ou que le CTR baisse de 30 %.',
+    { phase: 'Semaines 3–6 : optimisation', actions: [
+      'Coupez les annonces et mots-clés dont le coût par client dépasse 2× la cible après 50–100 clics.',
+      'Ajoutez chaque semaine les recherches non pertinentes en mots-clés négatifs (Google).',
+      'Augmentez les gagnants de 15–20 % maximum tous les 3–7 jours (au-delà, l’algorithme réapprend).',
+      'Renouvelez les créations quand la fréquence dépasse ~3 (Meta) ou que le CTR baisse de 30 %.',
     ] },
-    { phase: 'Mois 2–3 — Montée en charge', actions: [
-      'Passez aux enchères automatiques (CPA / ROAS cible) une fois 30+ conversions / mois par campagne.',
-      `Montez vers ${Math.round(monthly * 1.3)}–${Math.round(monthly * 1.6)} €/mois si le CPA reste dans la cible.`,
-      'Lancez le remarketing (visiteurs 30 jours, vidéos vues à 50 %), puis les audiences similaires.',
-      channels.length < 2 ? 'Ajoutez un 2e canal seulement quand le 1er est rentable et stable.' : 'Comparez les canaux au CPA réel (et non au CPC) et réallouez chaque mois.',
+    { phase: 'Mois 2–3 : montée en charge', actions: [
+      'Enchères automatiques (CPA ou ROAS cible) dès 30 conversions par mois et par campagne.',
+      `Montez vers ${Math.round(monthly * 1.3)}–${Math.round(monthly * 1.6)} €/mois si le coût réel reste sous votre seuil de rentabilité.`,
+      'Remarketing (visiteurs 30 jours, vidéos vues à 50 %), puis audiences similaires.',
+      channels.length < 2 ? 'Ajoutez un 2e canal seulement quand le 1er est rentable et stable.' : 'Comparez les canaux au coût par client réel (pas au CPC) et réallouez chaque mois.',
     ] },
   ]
 }
 
-function seoBudget(monthly, sector, local) {
+function seoBudget(sector, local) {
   return {
-    note: 'Le SEO prend 3 à 6 mois avant d’effets nets ; la publicité « fait le pont » et révèle les mots-clés qui convertissent.',
-    split: local ? 'PME locale : 50–60 % Google Search/Maps, 15–25 % SEO local (fiche Google, avis, pages services), 15–25 % Meta.' : sector.b2b ? 'B2B : 40–50 % contenu & SEO, 30–40 % Search + LinkedIn, 10–20 % remarketing.' : 'E-commerce / B2C : 50–60 % Shopping/PMax + Meta, 25–35 % SEO & contenu, 10 % tests (TikTok, Pinterest).',
+    note: 'Le SEO met 3 à 6 mois à produire un effet net ; la publicité fait le pont et révèle les recherches qui rapportent.',
+    split: local ? 'PME locale : 50–60 % Google Search et Maps, 15–25 % SEO local (fiche Google, avis, pages services), 15–25 % Meta.' : sector.b2b ? 'B2B : 40–50 % contenu et SEO, 30–40 % Search + LinkedIn, 10–20 % remarketing.' : 'E-commerce / B2C : 50–60 % Shopping/PMax + Meta, 25–35 % SEO et contenu, 10 % tests (TikTok, Pinterest).',
     items: [
-      { item: 'Corrections techniques (audit ci-dessus)', cost: 'souvent 0 € en interne, sinon 500–3 000 € une fois' },
-      { item: 'Contenu : 2 à 4 pages / articles par mois', cost: '150–500 € par contenu expert (rédacteur spécialisé FR)' },
-      { item: 'Fiche Google + avis clients', cost: '0 € — 1 h/semaine' },
-      { item: 'Netlinking (liens de sites thématiques FR)', cost: '80–400 € par lien de qualité, 2–5 / mois si concurrence forte' },
-      { item: 'Outils', cost: 'Search Console + Bing Webmaster (0 €) ; suite SEO 30–140 €/mois si besoin' },
+      { item: 'Corrections techniques (onglet À faire)', cost: 'souvent 0 € en interne, sinon 500 à 3 000 € une fois' },
+      { item: 'Contenu : 2 à 4 pages ou articles par mois', cost: '150 à 500 € par contenu expert (rédacteur spécialisé)' },
+      { item: 'Fiche Google + avis clients', cost: '0 € — 1 h par semaine' },
+      { item: 'Liens depuis des sites du même domaine', cost: '80 à 400 € par lien de qualité, 2 à 5 par mois si la concurrence est forte' },
+      { item: 'Outils', cost: 'Search Console et Bing Webmaster (0 €) ; suite SEO 30 à 140 €/mois si besoin' },
     ],
     rules: research.budget_rules || [],
   }

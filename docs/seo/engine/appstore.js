@@ -11,11 +11,10 @@ export const ASO_CATS = {
 
 export function parseStoreUrl(u) {
   u = String(u || '')
-  const ios = u.match(/apps\.apple\.com\/(?:([a-z]{2})\/)?app\/(?:[^/]+\/)?id(\d+)/i) || u.match(/^id?(\d{6,})$/)
+  const ios = u.match(/apps\.apple\.com\/(?:([a-z]{2})\/)?app\/(?:[^/]+\/)?id(\d+)/i) || u.match(/^id(\d{6,})$/)
   if (ios) return { store: 'ios', country: ios[2] ? (ios[1] || 'fr') : 'fr', id: ios[2] || ios[1] }
   const gp = u.match(/play\.google\.com\/store\/apps\/details\?(?:.*&)?id=([\w.]+)/i)
   if (gp) return { store: 'android', id: gp[1] }
-  if (/^[a-z][\w]*(\.[\w]+)+$/i.test(u)) return { store: 'android', id: u }
   return null
 }
 
@@ -79,5 +78,8 @@ export function auditPlayHtml(html, { keyword = '' } = {}) {
   else if (rating) add('avis', rating < 4.5 ? 'moyen' : 'ok', 'rating', `Note ${rating.toFixed(1)}/5 (${count} avis)`)
   add('visuels', 'info', 'graphics', 'Graphique de présentation 1024×500, 4–8 captures, vidéo YouTube', '', 'Testez les visuels via les expériences de fiche (Play Console).')
   add('fraicheur', 'info', 'vitals', 'Android Vitals (plantages, ANR) pèsent dans le classement', '', 'Taux de plantage < 1,09 % et ANR < 0,47 % (seuils Google).')
-  return scoreFindings(F, ASO_CATS, { name: title, rating, count })
+  const res = scoreFindings(F, ASO_CATS, { name: title, rating, count })
+  // Sans la note ni les avis, la fiche n'est que partiellement lue : pas de note globale trompeuse
+  if (!rating) { res.global = null; res.grade = null; res.coverage = 0.35; res.incomplete = 'la note et les avis de la fiche Google Play n’ont pas pu être lus' }
+  return res
 }

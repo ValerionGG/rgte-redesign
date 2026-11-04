@@ -1,33 +1,42 @@
 // Idées de mots-clés par intention + suggestions Google (autocomplétion) + liens vers les outils de volume.
 import { sectorById } from '../data/sectors.js'
 
+// Gabarits neutres (pas d'accord en genre à deviner) ; « {b} » = le mot-clé de base.
 const MODS = {
-  transactionnel: ['prix', 'devis', 'tarif', 'acheter', 'pas cher', 'sur mesure', 'livraison', 'promo'],
-  local: ['près de moi', '{city}', 'à {city}', '{city} centre', 'ouvert dimanche'],
-  commercial: ['meilleur', 'avis', 'comparatif', 'top 10', 'alternative', 'vs', 'professionnel', 'haut de gamme'],
-  informationnel: ['comment choisir', 'quel', 'pourquoi', 'combien coûte', 'guide', 'idée', 'entretien', 'définition'],
+  transactionnel: ['{b} prix', '{b} devis', '{b} tarif', 'acheter {b}', '{b} pas cher', '{b} sur mesure', '{b} livraison', '{b} promo'],
+  local: ['{b} près de moi', '{b} {city}', '{b} à {city}', '{b} {city} centre', '{b} ouvert dimanche'],
+  commercial: ['{b} avis', '{b} comparatif', 'top {b}', '{b} classement', '{b} professionnel', '{b} haut de gamme'],
+  informationnel: ['comment choisir {b}', 'combien coûte {b}', 'guide {b}', '{b} : idées', 'entretien {b}', '{b} : questions fréquentes'],
 }
 export const INTENTS = {
   transactionnel: 'Prêt à acheter — pages produits/services, Google Ads',
   local: 'Recherche locale — fiche Google, pages ville',
-  commercial: 'Compare avant d’acheter — comparatifs, avis, pages « meilleur »',
-  informationnel: 'Cherche à comprendre — articles, guides, FAQ (et réponses IA)',
+  commercial: 'Compare avant d’acheter — comparatifs, avis',
+  informationnel: 'Cherche à comprendre — guides, FAQ (et réponses des IA)',
 }
+const fold = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 
-export function keywordIdeas({ seed = '', sector: sid, city = '' } = {}) {
+export function keywordIdeas({ seed = '', sector: sid, city = '', local } = {}) {
   const sector = sectorById(sid)
-  const seeds = [seed, ...sector.keywords].map((s) => s.trim()).filter(Boolean)
+  local ??= sector.local
+  // Les mots-clés « modificateurs » du secteur (prix, devis, sur mesure…) ne sont pas des sujets : on les écarte des bases.
+  const MODIFIER = /^(prix|devis( gratuit)?|avis|sur mesure|fabricant|livraison( gratuite)?|tarifs?|réservation|menu|installation|fiche technique|services?|meilleur|près de chez moi|acheter|pas cher|promo|comparatif|collection|soldes|taille|simulation|essai gratuit|intégration|api|outil|gratuit|télécharger|application|appli|iphone|android|alternative à|commande|atelier|événement|adhésion|bénévolat|faire un don)$/i
+  const seeds = [...new Set([seed, ...sector.keywords.filter((k) => !MODIFIER.test(k.trim()))].map((s) => s.trim()).filter(Boolean))]
   const base = seeds[0] || sector.keywords[0]
+  const hasCity = city && fold(base).includes(fold(city))
   const groups = {}
   for (const [intent, mods] of Object.entries(MODS)) {
+    if (intent === 'local' && !local) continue
     const list = new Set()
     for (const m of mods) {
-      if (m.includes('{city}') && !city) continue
-      const mm = m.replace('{city}', city)
-      list.add(/^(comment|quel|pourquoi|combien|meilleur|top|guide|idée)/.test(mm) ? `${mm} ${base}` : `${base} ${mm}`)
+      if (m.includes('{city}') && (!city || hasCity)) continue
+      if (m.includes('près de moi') && hasCity) continue
+      const extra = fold(m.replace('{b}', '').replace('{city}', '').replace(/[:]/g, '').trim())
+      if (extra && fold(base).includes(extra)) continue // évite « sur mesure sur mesure »
+      list.add(m.replace('{b}', base).replace('{city}', city).replace(/\s+/g, ' ').trim())
     }
-    if (intent === 'transactionnel') for (const s of seeds.slice(1, 5)) list.add(city ? `${s} ${city}` : `${s} prix`)
-    if (intent === 'informationnel') for (const s of seeds.slice(1, 4)) list.add(`comment choisir ${s}`)
+    if (intent === 'transactionnel') for (const s of seeds.slice(1, 5)) list.add(city && local && !fold(s).includes(fold(city)) ? `${s} ${city}` : `${s} prix`)
+    if (intent === 'informationnel') for (const s of seeds.slice(1, 3)) list.add(`comment choisir ${s}`)
     groups[intent] = [...list].map((k) => ({ keyword: k, intent }))
   }
   const q = encodeURIComponent(base)

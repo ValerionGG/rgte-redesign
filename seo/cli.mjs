@@ -10,10 +10,16 @@ import { join } from 'node:path'
 import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
 import { googleSuggest } from './engine/keywords.js'
+import { decodeBody } from './engine/decode.js'
 import { SECTORS } from './data/sectors.js'
 import { GOALS } from './engine/ads.js'
 
-const UA = 'Mozilla/5.0 (compatible; SEO360-Audit/1.0; +https://github.com/valeriongg/rgte-redesign)'
+// Par défaut, un agent de navigateur : beaucoup de pare-feu refusent les robots inconnus (on le détecte et le signale).
+const UAS = {
+  navigateur: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  seo360: 'Mozilla/5.0 (compatible; SEO360-Audit/2.0; +https://github.com/valeriongg/rgte-redesign)',
+}
+const MAX_BYTES = 5 * 1024 * 1024
 
 const args = process.argv.slice(2)
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
@@ -29,9 +35,14 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --ville <ville>       ville (SEO local + hashtags locaux)
   --marque <nom>        nom de marque
   --objectif <id>       ${Object.keys(GOALS).join(', ')}
-  --budget <€/mois>     budget publicitaire mensuel (défaut 1000)
+  --budget <€/mois>     budget publicitaire mensuel (vide = budget de départ conseillé)
   --valeur <€>          panier moyen / valeur d'un client (ROAS)
   --objectif-conv <n>   conversions visées par mois (budget nécessaire)
+  --marge <%>           votre marge (défaut selon l'objectif)
+  --signature <%>       part des contacts qui deviennent clients (leads)
+  --cpc <€>             votre CPC réel Google (Keyword Planner)
+  --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
+  --ua navigateur|seo360  agent utilisé pour lire le site (défaut : navigateur)
   --local / --national  forcer le mode local
   --langue fr|en|both   langue des hashtags
   --crawl <n>           explorer n pages du site (défaut 15, 0 = page seule)
@@ -45,14 +56,16 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   process.exit(target ? 0 : 1)
 }
 
+const UA = UAS[opt('ua', 'navigateur')] || UAS.navigateur
+
+// Lecture bornée (5 Mo) avec délai global de 25 s (en-têtes ET corps), décodage selon l'encodage déclaré.
 async function fetcher(url, { noFollow = false } = {}) {
   const redirects = []
-  let cur = url, res, t0 = performance.now(), ttfb
+  let cur = url, res, ttfb
+  const t0 = performance.now(), ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)
   try {
     for (let i = 0; i < 10; i++) {
-      const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 20000)
-      res = await fetch(cur, { redirect: 'manual', headers: { 'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.6', 'Accept-Encoding': 'br, gzip, deflate' }, signal: ctrl.signal })
-      clearTimeout(timer)
+      res = await fetch(cur, { redirect: 'manual', signal: ctrl.signal, headers: { 'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.6' } })
       ttfb ??= performance.now() - t0
       const loc = res.headers.get('location')
       if (res.status >= 300 && res.status < 400 && loc) {
@@ -61,17 +74,27 @@ async function fetcher(url, { noFollow = false } = {}) {
       }
       break
     }
-    const body = await res.text()
+    const reader = res.body?.getReader(), chunks = []
+    let size = 0, truncated = false
+    while (reader) {
+      const { done, value } = await reader.read()
+      if (done) break
+      size += value.length
+      if (size > MAX_BYTES) { truncated = true; await reader.cancel(); break }
+      chunks.push(value)
+    }
+    const buf = new Uint8Array(Buffer.concat(chunks.map((c) => Buffer.from(c))))
     const headers = Object.fromEntries(res.headers)
-    return { status: res.status, headers, body, finalUrl: cur, redirects, timeMs: performance.now() - t0, ttfbMs: ttfb }
+    return { status: res.status, headers, body: decodeBody(buf, headers['content-type']), finalUrl: cur, redirects, timeMs: performance.now() - t0, ttfbMs: ttfb, truncated }
   } catch (e) {
-    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (20 s)' : (e.cause?.code || e.message), finalUrl: cur, redirects }
-  }
+    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (25 s)' : (e.cause?.code || e.message), finalUrl: cur, redirects }
+  } finally { clearTimeout(timer) }
 }
 
 const input = {
   sector: opt('secteur', 'autre'), keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',
-  goal: opt('objectif', 'leads'), monthly: +opt('budget', 1000), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
+  goal: opt('objectif', 'leads'), monthly: opt('budget', null) == null ? null : +opt('budget'), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
+  margin: opt('marge', null) == null ? null : +opt('marge') / 100, closeRate: opt('signature', null) == null ? null : +opt('signature') / 100,
 }
 if (opt('local')) input.local = true
 if (opt('national')) input.local = false
@@ -100,6 +123,10 @@ if (comps.length) {
 const out = opt('sortie', 'rapports-seo')
 mkdirSync(out, { recursive: true })
 const slug = String(target).replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').slice(0, 60)
+if (opt('cpc') || opt('volume')) {
+  const { planBudget } = await import('./engine/ads.js')
+  report.budget = planBudget({ sector: input.sector, goal: report.kind === 'app' ? 'telechargements' : input.goal, monthly: input.monthly, local: report.input.local, avgValue: input.avgValue, margin: input.margin, closeRate: input.closeRate, targetConversions: input.targetConversions, searchVolume: +opt('volume', 0), cpcOverride: +opt('cpc', 0) })
+}
 const md = toMarkdown(report)
 writeFileSync(join(out, `${slug}.md`), md)
 writeFileSync(join(out, `${slug}.json`), JSON.stringify(report, null, 1))
@@ -108,9 +135,10 @@ if (quiet) { console.log(JSON.stringify(report, null, 1)); process.exit(0) }
 const R = report.result
 if (report.error) log(`\n⚠️  ${report.error}`)
 if (R) {
-  log(`\nScore global : ${R.global}/100 (${R.grade})`)
-  for (const s of Object.values(R.scores)) log(`  ${String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
-  log(`\nTop corrections :`)
-  for (const i of R.issues.slice(0, 10)) log(`  [${i.sev}] ${i.title}`)
+  if (R.incomplete) log(`\n⚠️  Audit incomplet : ${R.incomplete}. Pas de note globale.`)
+  else log(`\nNote : ${R.global}/100 (${R.grade}) · contrôles mesurés : ${Math.round(R.coverage * 100)} %${R.caps?.length ? ' · plafonnée : ' + R.caps.join(' ; ') : ''}`)
+  for (const s of Object.values(R.scores)) log(`  ${s.score == null ? '  —' : String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
+  if (report.plan?.week?.length) { log('\nVos 3 actions cette semaine :'); for (const i of report.plan.week) log(`  • ${i.title} (${i.who}${i.time ? ', ' + i.time : ''})`) }
+  if (report.budget?.verdict) log(`\nPublicité : ${report.budget.verdict.text}`)
 }
 log(`\n📄 Rapport : ${join(out, slug + '.md')}\n🧾 Données : ${join(out, slug + '.json')} (importable dans l’interface web)\n`)

@@ -70,8 +70,9 @@ export function audit(ctx) {
 
   // ───────────────────────── Technique ─────────────────────────
   const status = ctx.fetch?.status
-  if (ctx.fetch?.error) add('technique', 'critique', 'fetch-error', 'Page inaccessible', ctx.fetch.error, 'Vérifiez que le site répond (DNS, certificat, pare-feu, blocage des robots).', { effort: 3 })
-  else if (status && status >= 400) add('technique', 'critique', 'status', `La page répond ${status}`, 'Une page en erreur n’est pas indexée.', 'Corrigez la réponse serveur pour obtenir un 200.', { effort: 3 })
+  if (ctx.blocked) add('technique', 'info', 'blocked', `Le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection anti-robot'})`, ctx.blocked.reason || '', 'Ce n’est pas forcément un problème pour Google, mais vérifiez que votre pare-feu laisse passer Googlebot et Bingbot (Search Console → Inspection d’URL). Pour l’audit : bouton-favori ou code collé.', { effort: 1 })
+  else if (ctx.fetch?.error && ctx.fetch.source === 'node') add('technique', 'critique', 'fetch-error', 'Page inaccessible', ctx.fetch.error, 'Vérifiez que le site répond (DNS, certificat, pare-feu, blocage des robots).', { effort: 3 })
+  else if (status >= 400) add('technique', 'critique', 'status', `La page répond ${status}`, 'Une page en erreur n’est pas indexée.', 'Corrigez la réponse serveur pour obtenir un 200 (ou redirigez en 301 vers la bonne page).', { effort: 3 })
   else if (status === 200) add('technique', 'ok', 'status', 'La page répond 200')
 
   const redirects = ctx.fetch?.redirects || []
@@ -87,13 +88,19 @@ export function audit(ctx) {
   if (p) {
     const xr = (h['x-robots-tag'] || '').toLowerCase()
     const robotsMeta = [p.robots, p.googlebot, xr].filter(Boolean).join(',')
-    if (/noindex/.test(robotsMeta)) add('technique', 'critique', 'noindex', 'La page est en « noindex » : Google ne l’indexera pas', `Directive trouvée : ${robotsMeta}`, 'Retirez « noindex » de la balise meta robots / de l’en-tête X-Robots-Tag si la page doit être trouvée.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
-    if (/nofollow/.test(robotsMeta)) add('technique', 'important', 'nofollow', 'Les liens de la page sont en « nofollow »', robotsMeta, 'Retirez « nofollow » pour que Google suive vos liens internes.', { effort: 1 })
-    if (/max-image-preview:large/.test(robotsMeta) === false && !/noindex/.test(robotsMeta)) add('technique', 'faible', 'max-image-preview', 'Aperçus d’image en grand non autorisés (Discover)', 'Sans « max-image-preview:large », vos images apparaissent en petit dans Google Discover.', 'Ajoutez la directive dans la meta robots.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
+    const tokens = new Set(robotsMeta.split(/[\s,]+/).map((t) => t.replace(/^[a-z-]+bot:\s*/, '')).filter(Boolean))
+    const noindex = tokens.has('noindex') || tokens.has('none'), nofollow = tokens.has('nofollow') || tokens.has('none')
+    if (noindex) add('technique', 'critique', 'noindex', 'La page est en « noindex » : Google ne l’indexera pas', `Directive trouvée : ${robotsMeta}`, 'Retirez « noindex » de la balise meta robots / de l’en-tête X-Robots-Tag si la page doit être trouvée.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
+    if (nofollow) add('technique', 'important', 'nofollow', 'Les liens de la page sont en « nofollow »', robotsMeta, 'Retirez « nofollow » pour que Google suive vos liens internes.', { effort: 1 })
+    if (/max-image-preview:large/.test(robotsMeta) === false && !noindex) add('technique', 'faible', 'max-image-preview', 'Aperçus d’image en grand non autorisés (Discover)', 'Sans « max-image-preview:large », vos images apparaissent en petit dans Google Discover.', 'Ajoutez la directive dans la meta robots.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
 
     if (!p.canonical.length) add('technique', 'moyen', 'canonical', 'Pas de balise canonical', 'Sans canonical, les variantes d’URL (paramètres, majuscules, /index.html) peuvent créer du contenu dupliqué.', 'Ajoutez une canonical auto-référente absolue sur chaque page.', { effort: 1, code: `<link rel="canonical" href="${url}">` })
     else if (p.canonical.length > 1 && new Set(p.canonical).size > 1) add('technique', 'important', 'canonical-multi', 'Plusieurs canonical différentes', p.canonical.join(' | '), 'Gardez une seule balise canonical.', { effort: 1 })
-    else if (p.canonical[0] && url && normalize(p.canonical[0]) !== normalize(url)) add('technique', 'info', 'canonical-other', 'La canonical pointe vers une autre URL', `${p.canonical[0]} — vérifiez que c’est voulu (sinon la page ne sera pas indexée).`, '', { effort: 1 })
+    else if (p.canonical[0] && url && normalize(p.canonical[0]) !== normalize(url)) {
+      const other = tryHost(p.canonical[0]) && U && tryHost(p.canonical[0]) !== U.hostname.replace(/^www\./, '')
+      if (other) add('technique', 'critique', 'canonical-host', 'La canonical pointe vers un autre domaine', `${p.canonical[0]} : Google risque d’indexer cet autre domaine à la place du vôtre (oubli fréquent après une préproduction).`, 'Faites pointer la canonical vers l’URL de cette page sur votre domaine.', { effort: 1 })
+      else add('technique', 'info', 'canonical-other', 'La canonical pointe vers une autre URL', `${p.canonical[0]} — vérifiez que c’est voulu (sinon la page ne sera pas indexée).`, '', { effort: 1 })
+    }
     else add('technique', 'ok', 'canonical', 'Canonical auto-référente')
 
     if (!p.lang) add('technique', 'moyen', 'lang', 'Langue non déclarée (<html lang>)', 'Aide Google, les lecteurs d’écran et la traduction.', 'Ajoutez lang="fr" (ou fr-FR) sur la balise html.', { effort: 1, code: '<html lang="fr">' })
@@ -105,8 +112,8 @@ export function audit(ctx) {
       const langs = p.hreflang.map((x) => x.lang)
       if (!langs.includes('x-default')) add('technique', 'faible', 'hreflang-default', 'hreflang sans « x-default »', langs.join(', '), 'Ajoutez une alternative x-default (page de choix de langue ou langue principale).', { effort: 1 })
       if (!p.hreflang.some((x) => normalize(x.href) === normalize(url))) add('technique', 'moyen', 'hreflang-self', 'hreflang sans auto-référence', 'Chaque page doit se citer elle-même dans son jeu hreflang.', 'Ajoutez la ligne hreflang de la page courante.', { effort: 1 })
-      const bad = langs.filter((l) => l !== 'x-default' && !/^[a-z]{2,3}(-[a-z]{2}|-[a-z]{4})?$/.test(l))
-      if (bad.length) add('technique', 'moyen', 'hreflang-code', 'Codes hreflang invalides', bad.join(', '), 'Utilisez ISO 639-1 (+ ISO 3166-1 pour le pays) : fr, fr-fr, fr-be, en-gb…', { effort: 1 })
+      const bad = langs.filter((l) => { if (l === 'x-default') return false; const m = l.match(/^([a-z]{2,3})(?:-([a-z]{4}))?(?:-([a-z]{2}))?$/); return !m || (m[3] && !REGIONS.has(m[3])) })
+      if (bad.length) add('technique', 'moyen', 'hreflang-code', 'Codes hreflang invalides', bad.join(', '), 'Utilisez ISO 639-1 (+ ISO 3166-1 pour le pays) : fr, fr-fr, fr-be, en-gb (et non en-uk)…', { effort: 1 })
     }
     const kb = p.htmlBytes / 1024
     if (kb > 1024) add('performance', 'important', 'html-size', `HTML très lourd (${Math.round(kb)} Ko)`, 'Ralentit le premier rendu et le crawl.', 'Réduisez le HTML : retirez le JSON/état inline inutile, paginez les listes, chargez à la demande.', { effort: 3, value: Math.round(kb) })
@@ -134,22 +141,26 @@ export function audit(ctx) {
       meta.bots = botMatrix(parsed, path)
       meta.robotsSitemaps = parsed.sitemaps
       const g = meta.bots.find((b) => b.ua === 'Googlebot'), bing = meta.bots.find((b) => b.ua === 'Bingbot')
-      if (!g.allowed) add('technique', 'critique', 'robots-block', 'robots.txt bloque Googlebot sur cette page', '', 'Retirez la règle Disallow concernée.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      const starAll = parsed.groups.some((gr) => gr.agents.includes('*') && gr.rules.some((r) => !r.allow && r.path === '/'))
+      if (!g.allowed && starAll) add('technique', 'critique', 'robots-all', 'robots.txt interdit tout le site aux robots, Google compris', 'Disallow: / pour User-agent: *', 'Supprimez « Disallow: / » (souvent oublié après une préproduction).', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      else if (!g.allowed) add('technique', 'critique', 'robots-block', 'robots.txt bloque Googlebot sur cette page', '', 'Retirez la règle Disallow concernée.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      else if (starAll) add('technique', 'important', 'robots-star', 'robots.txt bloque tous les robots sauf Google', 'Bing (qui alimente ChatGPT Search et Copilot), Apple et les robots IA ne peuvent pas explorer le site.', 'Ouvrez au moins Bingbot, Applebot et les robots de recherche IA, ou retirez « Disallow: / » du groupe « * ».', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       if (!bing.allowed) add('ia', 'important', 'robots-bing', 'robots.txt bloque Bingbot', 'Bing alimente ChatGPT Search, Copilot et DuckDuckGo.', 'Autorisez Bingbot.', { effort: 1 })
       const blockedSearch = meta.bots.filter((b) => b.kind === 'ia-recherche' && !b.allowed)
       if (blockedSearch.length) add('ia', 'important', 'robots-ai-search', `Robots de recherche IA bloqués : ${blockedSearch.map((b) => b.ua).join(', ')}`, 'Ces robots servent à citer votre site dans les réponses (ChatGPT, Perplexity, Claude). Les bloquer = disparaître de ces réponses.', 'Autorisez au minimum OAI-SearchBot, PerplexityBot et Claude-SearchBot.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       const blockedTrain = meta.bots.filter((b) => b.kind === 'ia-entrainement' && !b.allowed)
       if (blockedTrain.length) add('ia', 'info', 'robots-ai-train', `Robots d’entraînement IA bloqués : ${blockedTrain.map((b) => b.ua).join(', ')}`, 'Choix éditorial légitime : sans effet sur Google, mais moins de présence dans les connaissances « de base » des modèles.', '', { effort: 1 })
       if (!parsed.sitemaps.length) add('technique', 'faible', 'robots-sitemap', 'robots.txt ne déclare pas le sitemap', '', `Ajoutez « Sitemap: ${origin}/sitemap.xml » à la fin du fichier.`, { effort: 1 })
-      if (parsed.groups.some((gr) => gr.agents.includes('*') && gr.rules.some((r) => !r.allow && r.path === '/'))) add('technique', 'critique', 'robots-all', 'robots.txt interdit tout le site à tous les robots', 'Disallow: / pour User-agent: *', 'Supprimez « Disallow: / » (souvent oublié après une préproduction).', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       if (/\.css|\.js|\/wp-content|\/assets/i.test(ctx.robots.body) && /disallow:\s*\S*(\.css|\.js|wp-content|wp-includes|assets)/i.test(ctx.robots.body)) add('technique', 'moyen', 'robots-assets', 'robots.txt bloque des CSS/JS', 'Google doit pouvoir charger les ressources pour rendre la page.', 'Retirez les Disallow sur les CSS/JS/thèmes.', { effort: 1 })
     } else if (ctx.robots.status >= 400 && ctx.robots.status < 500) add('technique', 'faible', 'robots-missing', 'Pas de fichier robots.txt', 'Sans robots.txt, tout est crawlable — mais vous ne pouvez pas déclarer le sitemap ni régler les robots IA.', 'Créez /robots.txt.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+    else if (!ctx.robots.status) add('technique', 'info', 'robots-unknown', 'robots.txt non vérifié', 'Le fichier n’a pas pu être lu par ce mode de collecte.', 'Ouvrez votre-site.fr/robots.txt ou utilisez le bouton-favori / la CLI.', { effort: 1 })
     else if (ctx.robots.status >= 500) add('technique', 'critique', 'robots-5xx', `robots.txt répond ${ctx.robots.status}`, 'Google ralentit voire suspend le crawl si robots.txt est en erreur serveur.', 'Corrigez la réponse du serveur (200 ou 404).', { effort: 2 })
   }
 
   // sitemap
   if (ctx.sitemap) {
-    if (ctx.sitemap.status !== 200 || !ctx.sitemap.count) add('technique', 'moyen', 'sitemap', 'Sitemap XML introuvable ou vide', ctx.sitemap.url || '', 'Générez un sitemap.xml (CMS / plugin) et déclarez-le dans Search Console et robots.txt.', { effort: 1 })
+    if (!ctx.sitemap.status) add('technique', 'info', 'sitemap-unknown', 'Sitemap non vérifié', 'Le fichier n’a pas pu être lu par ce mode de collecte.', 'Vérifiez dans Search Console → Sitemaps.', { effort: 1 })
+    else if (ctx.sitemap.status !== 200 || !ctx.sitemap.count) add('technique', 'moyen', 'sitemap', 'Sitemap XML introuvable ou vide', ctx.sitemap.url || '', 'Générez un sitemap.xml (CMS / plugin) et déclarez-le dans Search Console et robots.txt.', { effort: 1 })
     else {
       add('technique', 'ok', 'sitemap', `Sitemap trouvé : ${ctx.sitemap.count} ${ctx.sitemap.isIndex ? 'sitemaps' : 'URL'}`)
       if (ctx.sitemap.noLastmod) add('technique', 'faible', 'sitemap-lastmod', 'Le sitemap n’indique pas <lastmod>', '', 'Ajoutez des dates de modification fiables : Google et Bing s’en servent pour recrawler.', { effort: 1 })
@@ -186,14 +197,16 @@ export function audit(ctx) {
 
     const rootDiv = /<div[^>]+id=["'](root|app|__next|__nuxt|svelte|q-app)["'][^>]*>\s*(<\/div>|<noscript)/i.test(ctx.rawHead || '')
     const jsShell = (p.wordCount < 80 && rootDiv) || (p.wordCount < 30 && p.scripts.filter((x) => x.src).length >= 2)
-    if (jsShell) add('contenu', 'critique', 'js-render', 'Le contenu dépend du JavaScript (quasi aucun texte dans le HTML)', `${p.wordCount} mots dans le HTML initial. Google rend le JS avec retard ; la plupart des robots IA (ChatGPT, Perplexity, Claude) ne l’exécutent pas.`, 'Passez au rendu serveur (SSR) ou à la génération statique (Next.js, Nuxt, Astro…), ou au pré-rendu.', { effort: 4 })
+    const rw = ctx.rendered?.wordCount
+    if (rw >= 150 && p.wordCount < rw * 0.5) add('contenu', p.wordCount < rw * 0.2 ? 'critique' : 'important', 'js-render', `${Math.round((1 - p.wordCount / rw) * 100)} % du texte n’apparaît qu’après JavaScript`, `${p.wordCount} mots dans le HTML envoyé par le serveur, ${rw} après exécution du JavaScript. Google rend le JS avec retard ; la plupart des robots IA (ChatGPT, Perplexity, Claude) ne l’exécutent pas.`, 'Rendu serveur (SSR) ou génération statique pour le contenu principal (Next.js, Nuxt, Astro, ou pré-rendu).', { effort: 4 })
+    else if (jsShell && !(rw >= 150)) add('contenu', 'critique', 'js-render', 'Le contenu dépend du JavaScript (quasi aucun texte dans le HTML)', `${p.wordCount} mots dans le HTML initial. Google rend le JS avec retard ; la plupart des robots IA (ChatGPT, Perplexity, Claude) ne l’exécutent pas.`, 'Passez au rendu serveur (SSR) ou à la génération statique (Next.js, Nuxt, Astro…), ou au pré-rendu.', { effort: 4 })
     else if (p.wordCount < 150) add('contenu', 'important', 'thin', `Contenu très mince (${p.wordCount} mots)`, 'Trop peu de texte pour se positionner, être cité par une IA ou convaincre.', 'Visez 500+ mots utiles sur les pages clés : réponses, preuves, FAQ, cas clients.', { effort: 3, value: p.wordCount })
     else if (p.wordCount < 350) add('contenu', 'moyen', 'thin', `Contenu léger (${p.wordCount} mots)`, '', 'Enrichissez : questions des clients, chiffres, exemples, avis.', { effort: 3, value: p.wordCount })
     else add('contenu', 'ok', 'words', `${p.wordCount} mots de contenu`)
 
     const imgs = p.images.filter((i) => i.src && !/1x1|pixel|spacer|\.gif\?|facebook\.com\/tr/.test(i.src))
     const noAlt = imgs.filter((i) => i.alt === null && !i.decorative)
-    if (noAlt.length) add('contenu', noAlt.length > 5 ? 'important' : 'moyen', 'alt', `${noAlt.length} image(s) sans attribut alt sur ${imgs.length}`, noAlt.slice(0, 5).map((i) => i.src.split('/').pop()).join(', '), 'Décrivez chaque image utile (alt="vitrine réfrigérée en verre bombé 1,20 m") ; alt="" pour les images décoratives. Gain : Google Images + accessibilité.', { effort: 2, value: noAlt.length })
+    if (noAlt.length) add('contenu', noAlt.length > 5 ? 'important' : 'moyen', 'alt', `${noAlt.length} image(s) sans attribut alt sur ${imgs.length}`, noAlt.slice(0, 5).map((i) => i.src.split('/').pop()).join(', '), `Décrivez chaque image utile (ex. alt="${cap(sector.keywords[0])}${input.city ? ' – ' + input.city : ''} : ce que montre la photo") ; alt="" pour les images décoratives. Gain : Google Images + accessibilité.`, { effort: 2, value: noAlt.length })
     else if (imgs.length) add('contenu', 'ok', 'alt', 'Toutes les images ont un attribut alt')
     const badNames = imgs.filter((i) => /\/(img|image|dsc|photo|screenshot|capture|untitled|whatsapp)[_\- ]?\d+/i.test(i.src) || /\/[a-f0-9]{16,}\.(jpe?g|png|webp)/i.test(i.src))
     if (badNames.length >= 3) add('contenu', 'faible', 'img-names', 'Noms de fichiers d’images non descriptifs', badNames.slice(0, 3).map((i) => i.src.split('/').pop()).join(', '), 'Renommez : vitrine-refrigeree-patisserie.webp plutôt que IMG_1234.jpg.', { effort: 2 })
@@ -210,7 +223,8 @@ export function audit(ctx) {
     meta.internalLinks = internal.length; meta.externalLinks = external.length
 
     if (U) {
-      const path = decodeURIComponent(U.pathname)
+      let path = U.pathname
+      try { path = decodeURIComponent(U.pathname) } catch {}
       if (U.href.length > 115) add('contenu', 'faible', 'url-long', 'URL longue', U.href, 'Des URL courtes et lisibles cliquent mieux.', { effort: 3 })
       if (/[A-Z]/.test(U.pathname)) add('technique', 'faible', 'url-case', 'Majuscules dans l’URL', '', 'Utilisez des minuscules (risque de doublons).', { effort: 3 })
       if (/_/.test(path)) add('contenu', 'faible', 'url-underscore', 'Underscores dans l’URL', '', 'Google lit « - » comme séparateur, pas « _ ».', { effort: 3 })
@@ -266,7 +280,7 @@ export function audit(ctx) {
       const flat = meta.schemaTypes.join(',').toLowerCase()
       const wanted = sector.schema.filter((t) => !flat.includes(t.toLowerCase()))
       if (wanted.length === sector.schema.length) add('donnees', 'moyen', 'schema-sector', `Types conseillés pour votre secteur absents : ${wanted.join(', ')}`, '', 'Ajoutez le type le plus précis possible (ex. Bakery plutôt que LocalBusiness).', { effort: 2, code: schemaTemplate(sector, input, origin) })
-      if (!/organization|localbusiness|corporation|store|restaurant|bakery|service|agent|dentist|physician/.test(flat)) add('donnees', 'faible', 'schema-org', 'Pas de schéma Organization / LocalBusiness', 'C’est lui qui relie votre site à votre fiche Google et à vos réseaux (sameAs).', 'Ajoutez Organization avec name, url, logo, sameAs.', { effort: 1, code: schemaTemplate(sector, input, origin) })
+      if (!meta.schemaTypes.some((t) => t.toLowerCase().split(',').some((x) => ORG_TYPES.has(x) || LOCAL_TYPES.has(x)))) add('donnees', 'faible', 'schema-org', 'Pas de schéma Organization / LocalBusiness', 'C’est lui qui relie votre site à votre fiche Google et à vos réseaux (sameAs).', 'Ajoutez Organization avec name, url, logo, sameAs.', { effort: 1, code: schemaTemplate(sector, input, origin) })
       for (const t of types) checkSchemaProps(t, add)
       const hasSameAs = types.some((t) => t.node.sameAs)
       if (!hasSameAs) add('ia', 'moyen', 'sameas', 'Pas de « sameAs » vers vos profils officiels', 'sameAs relie votre marque à LinkedIn, Instagram, Wikidata… : clé pour l’entité Google (Knowledge Panel) et les IA.', 'Ajoutez sameAs dans le schéma Organization.', { effort: 1 })
@@ -276,16 +290,17 @@ export function audit(ctx) {
 
   // ───────────────────────── Visibilité IA (GEO) ─────────────────────────
   if (ctx.llms) {
-    if (ctx.llms.status === 200 && ctx.llms.bytes > 50) add('ia', 'ok', 'llms', 'Fichier /llms.txt présent')
-    else add('ia', 'faible', 'llms', 'Pas de /llms.txt', 'Proposition de standard (llmstxt.org) : un résumé Markdown de votre site pour les agents IA. Google ne l’utilise pas ; coût quasi nul.', 'Créez /llms.txt : qui vous êtes, offres, pages clés, contacts.', { effort: 1, code: llmsTemplate(input, origin, p) })
+    if (!ctx.llms.status) { /* non vérifié : rien à dire */ }
+    else if (ctx.llms.status === 200 && ctx.llms.bytes > 50) add('ia', 'ok', 'llms', 'Fichier /llms.txt présent')
+    else add('ia', 'info', 'llms', 'Pas de /llms.txt (optionnel)', 'Proposition de standard (llmstxt.org) : un résumé Markdown de votre site pour les agents IA. Google ne l’utilise pas ; coût quasi nul.', 'Créez /llms.txt : qui vous êtes, offres, pages clés, contacts.', { effort: 1, code: llmsTemplate(input, origin, p) })
   }
   if (p) {
     const qHeadings = p.headings.filter((x) => /\?\s*$/.test(x.text)).length
     if (qHeadings === 0 && p.wordCount > 150) add('ia', 'moyen', 'questions', 'Aucun intertitre sous forme de question', 'Les moteurs de réponse (AI Overviews, ChatGPT, Perplexity) citent des passages qui répondent directement à une question.', 'Ajoutez une section FAQ (5–8 vraies questions clients) avec des réponses de 40–60 mots, factuelles et chiffrées.', { effort: 2 })
     const textLow = (p.text || '').toLowerCase(), linkText = p.links.map((l) => (l.text + ' ' + (l.href || '')).toLowerCase()).join(' ')
     if (!/(à propos|a propos|qui sommes|notre histoire|about|equipe|équipe)/.test(linkText)) add('ia', 'faible', 'about', 'Pas de lien vers une page « À propos »', 'E-E-A-T : montrer qui est derrière le site (équipe, expérience, preuves).', 'Créez une page À propos riche (histoire, équipe, chiffres, certifications) et liez-la dans le menu/pied de page.', { effort: 2 })
-    if (!p.authorMeta && !p.times && !/(publié le|mis à jour|updated|par [A-Z])/i.test(p.text.slice(0, 3000)) && /article|blog|actualit|guide/i.test((U?.pathname || '') + ' ' + (p.title || ''))) add('ia', 'moyen', 'author-date', 'Article sans auteur ni date visibles', 'Les IA et Google privilégient les contenus datés et signés par un expert identifiable.', 'Affichez auteur (avec bio), date de publication et de mise à jour, + schéma Article.', { effort: 1 })
-    if (!p.verification.some((v) => /msvalidate/.test(v))) add('ia', 'faible', 'bing', 'Bing Webmaster Tools non vérifié (balise absente)', 'ChatGPT Search et Copilot s’appuient sur l’index Bing. La vérification peut aussi se faire par DNS ou via Search Console.', 'Inscrivez le site sur bing.com/webmasters (import depuis Search Console en 2 clics) et activez IndexNow.', { effort: 1 })
+    if (!p.authorMeta && !p.times && !/(publié le|mis à jour le|updated on|posted on)/i.test(p.text.slice(0, 3000)) && !/\b(?:Par|par|By|by) [A-ZÀ-Ý][a-zà-ÿ]+/.test(p.text.slice(0, 3000)) && /article|blog|actualit|guide/i.test((U?.pathname || '') + ' ' + (p.title || ''))) add('ia', 'moyen', 'author-date', 'Article sans auteur ni date visibles', 'Les IA et Google privilégient les contenus datés et signés par un expert identifiable.', 'Affichez auteur (avec bio), date de publication et de mise à jour, + schéma Article.', { effort: 1 })
+    if (!p.verification.some((v) => /msvalidate/.test(v))) add('ia', 'info', 'bing', 'Bing Webmaster Tools non vérifié (balise absente)', 'ChatGPT Search et Copilot s’appuient sur l’index Bing. La vérification peut aussi se faire par DNS ou via Search Console.', 'Inscrivez le site sur bing.com/webmasters (import depuis Search Console en 2 clics) et activez IndexNow.', { effort: 1 })
     const numbers = (p.text.match(/\b\d+[\d\s.,]*\s?(%|€|ans|clients|m2|m²|km|années|projets|\+)/gi) || []).length
     if (p.wordCount > 200 && numbers < 2) add('ia', 'faible', 'facts', 'Peu de faits chiffrés', 'Les IA citent volontiers des données précises (chiffres, dates, prix, délais).', 'Ajoutez des preuves chiffrées : années d’expérience, nombre de clients, délais, garanties, prix indicatifs.', { effort: 2 })
   }
@@ -306,15 +321,22 @@ export function audit(ctx) {
     else if (!p.icons.some((i) => /apple-touch-icon/.test(i.rel))) add('social', 'faible', 'apple-icon', 'Pas d’apple-touch-icon', '', 'Ajoutez une icône 180×180 pour les raccourcis iOS.', { effort: 1 })
   }
 
+  // Coordonnées détectées (servent aux correctifs prêts à coller)
+  if (p) {
+    const telLink = p.links.find((l) => /^tel:/.test(l.raw || ''))
+    meta.phone = (telLink && (telLink.text.match(PHONE_RE)?.[0] || decodeSafe(telLink.raw.slice(4)).trim())) || p.text.match(PHONE_RE)?.[0] || ''
+    meta.address = findAddress(p)
+  }
+
   // ───────────────────────── Local ─────────────────────────
   if (p && local) {
     const flat = (meta.schemaTypes || []).join(',').toLowerCase()
     const tel = p.links.some((l) => /^tel:/.test(l.raw || ''))
-    const phoneText = /(\+33|0)[1-9](?:[\s.-]?\d{2}){4}/.test(p.text)
+    const phoneText = PHONE_RE.test(p.text)
     if (!tel) add('local', phoneText ? 'faible' : 'important', 'tel', phoneText ? 'Numéro présent mais non cliquable' : 'Pas de numéro de téléphone', 'Sur mobile, l’appel en un clic est la première conversion locale.', 'Ajoutez <a href="tel:+33…">.', { effort: 1 })
     const address = /\b\d{5}\b/.test(p.text) || /postaladdress|address/.test(JSON.stringify(p.jsonLd).toLowerCase())
     if (!address) add('local', 'important', 'nap', 'Adresse (NAP) introuvable dans la page', 'Nom, adresse, téléphone doivent être identiques partout (site, fiche Google, annuaires).', 'Affichez l’adresse complète dans le pied de page et dans le schéma LocalBusiness.', { effort: 1 })
-    if (!/localbusiness|store|restaurant|bakery|salon|dentist|physician|agent|contractor|repair|hotel|business|service/.test(flat)) add('local', 'important', 'localbusiness', 'Pas de schéma LocalBusiness', '', 'Ajoutez LocalBusiness (type précis) avec adresse, téléphone, horaires, géo.', { effort: 1, code: schemaTemplate(sector, input, origin) })
+    if (!meta.schemaTypes.some((t) => t.toLowerCase().split(',').some((x) => LOCAL_TYPES.has(x)))) add('local', 'important', 'localbusiness', 'Pas de schéma LocalBusiness', '', 'Ajoutez LocalBusiness (type précis) avec adresse, téléphone, horaires, géo.', { effort: 1, code: schemaTemplate(sector, input, origin) })
     else if (!/openinghours/i.test(JSON.stringify(p.jsonLd))) add('local', 'faible', 'hours', 'Horaires non structurés', '', 'Ajoutez openingHoursSpecification au schéma.', { effort: 1 })
     if (!p.links.some((l) => /google\.[a-z.]+\/maps|maps\.app\.goo\.gl|g\.page|goo\.gl\/maps/.test(l.href || '')) && !p.iframes.some((s) => /google\.[a-z.]+\/maps/.test(s))) add('local', 'moyen', 'gbp-link', 'Pas de lien vers votre fiche Google / Maps', '', 'Liez votre fiche Google Business Profile (itinéraire, avis).', { effort: 1 })
     if (input.city && !norm(`${p.title} ${p.headings.map((x) => x.text).join(' ')}`).includes(norm(input.city))) add('local', 'moyen', 'city', `La ville « ${input.city} » n’apparaît ni dans le titre ni dans les intertitres`, '', `Ex. titre : « ${cap(input.keyword || sector.keywords[0])} à ${input.city} — ${input.brand || 'Marque'} ».`, { effort: 1 })
@@ -349,7 +371,7 @@ export function audit(ctx) {
   }
 
   // ───────────────────────── Crawl (plusieurs pages) ─────────────────────────
-  if (ctx.crawl?.pages?.length > 1) crawlFindings(ctx.crawl, add)
+  if (ctx.crawl?.pages?.length > 1) { const n = F.length; crawlFindings(ctx.crawl, add); for (const f of F.slice(n)) f.scope = 'site' }
 
   // ───────────────────────── PageSpeed Insights ─────────────────────────
   if (ctx.psi && !ctx.psi.error) psiFindings(ctx.psi, add)
@@ -415,24 +437,55 @@ function psiFindings(psi, add) {
   }
 }
 
+// Score honnête : une catégorie n'est notée que si elle a été mesurée ; pas de note globale sans la page ;
+// plafonds quand un blocage annule tout le reste (noindex, Google bloqué, canonical externe, page vide).
 function finalize(F, meta, ctx, local) {
-  const scores = {}
-  for (const [k, c] of Object.entries(CATEGORIES)) {
-    if (k === 'local' && !local) continue
-    const items = F.filter((f) => f.cat === k)
-    const pen = items.reduce((s, f) => s + SEVERITY[f.sev].penalty, 0)
-    scores[k] = { label: c.label, score: Math.max(0, Math.min(100, Math.round(100 - pen))), issues: items.filter((f) => SEVERITY[f.sev].penalty > 0).length, estimated: k === 'performance' && !ctx.psi?.scores }
-    if (k === 'performance' && ctx.psi?.scores?.performance != null) scores[k].score = Math.round(scores[k].score * 0.5 + ctx.psi.scores.performance * 0.5)
+  const p = ctx.page, psiOk = ctx.psi?.scores?.performance != null
+  const measured = {
+    technique: !!(p || ctx.fetch?.status > 0), contenu: !!p, donnees: !!p, ia: !!p, social: !!p, conformite: !!p, local: !!p && local,
+    performance: psiOk || !!p,
   }
-  const keys = Object.keys(scores)
-  const wsum = keys.reduce((s, k) => s + CATEGORIES[k].weight, 0)
-  const global = Math.round(keys.reduce((s, k) => s + scores[k].score * CATEGORIES[k].weight, 0) / wsum)
+  const ids = new Set(F.map((f) => f.id))
+  const caps = []
+  if (ids.has('noindex')) caps.push([30, 'la page est en noindex : Google ne l’affichera pas'])
+  if (ids.has('robots-all') || ids.has('robots-block')) caps.push([30, 'robots.txt bloque Google'])
+  if (ids.has('canonical-host')) caps.push([40, 'la canonical renvoie vers un autre domaine'])
+  if (F.some((f) => f.id === 'js-render' && f.sev === 'critique')) caps.push([40, 'le contenu n’existe qu’après JavaScript'])
+  else if (p && p.wordCount < 150) caps.push([60, `la page ne contient que ${p.wordCount} mots`])
+  const scoreOf = (list) => {
+    const scores = {}
+    for (const [k, c] of Object.entries(CATEGORIES)) {
+      if (k === 'local' && !local) continue
+      const items = list.filter((f) => f.cat === k)
+      const pen = items.reduce((s, f) => s + SEVERITY[f.sev].penalty, 0)
+      let score = measured[k] ? Math.max(0, Math.min(100, Math.round(100 - pen))) : null
+      if (k === 'performance' && psiOk) score = Math.round(score * 0.5 + ctx.psi.scores.performance * 0.5)
+      if (k === 'contenu' && score != null && p && p.wordCount < 150) score = Math.min(score, 40)
+      scores[k] = { label: c.label, score, measured: measured[k], issues: items.filter((f) => SEVERITY[f.sev].penalty > 0).length, estimated: k === 'performance' && !psiOk && measured[k] }
+    }
+    const keys = Object.keys(scores)
+    const w = (k) => CATEGORIES[k].weight * (scores[k].estimated ? 0.5 : 1)
+    const total = keys.reduce((s, k) => s + CATEGORIES[k].weight, 0)
+    const done = keys.filter((k) => scores[k].score != null)
+    const coverage = done.reduce((s, k) => s + w(k), 0) / total
+    const raw = done.length ? Math.round(done.reduce((s, k) => s + scores[k].score * w(k), 0) / done.reduce((s, k) => s + w(k), 0)) : null
+    let global = raw
+    for (const [cap] of caps) if (global != null) global = Math.min(global, cap)
+    return { scores, global, raw, coverage }
+  }
+  const all = scoreOf(F), page = scoreOf(F.filter((f) => f.scope !== 'site'))
+  let incomplete = null
+  if (!p) incomplete = ctx.blocked ? `le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection'})` : ctx.fetch?.status >= 400 ? `la page répond ${ctx.fetch.status}` : ctx.fetch?.source === 'psi' ? 'seule la vitesse a été mesurée (page non lue)' : 'la page n’a pas pu être lue'
+  else if (all.coverage < 0.6) incomplete = 'trop peu de contrôles ont pu être faits'
+  const global = incomplete ? null : all.global
   const issues = F.filter((f) => SEVERITY[f.sev].penalty > 0)
     .map((f) => ({ ...f, priority: Math.round((f.impact * 3 + (6 - f.effort) * 2) * 10) / 10 }))
     .sort((a, b) => SEVERITY[a.sev].rank - SEVERITY[b.sev].rank || b.priority - a.priority)
   return {
-    global, grade: global >= 85 ? 'A' : global >= 70 ? 'B' : global >= 55 ? 'C' : global >= 40 ? 'D' : 'E',
-    scores, issues, passed: F.filter((f) => f.sev === 'ok'), infos: F.filter((f) => f.sev === 'info'), meta,
+    global, grade: global == null ? null : global >= 85 ? 'A' : global >= 70 ? 'B' : global >= 55 ? 'C' : global >= 40 ? 'D' : 'E',
+    coverage: Math.round(all.coverage * 100) / 100, incomplete, caps: caps.filter(([c]) => all.raw != null && all.raw > c).map(([c, why]) => `${c}/100 maximum car ${why}`),
+    scores: all.scores, pageScores: Object.fromEntries(Object.entries(page.scores).map(([k, v]) => [k, v.score])), pageGlobal: incomplete ? null : page.global,
+    issues, passed: F.filter((f) => f.sev === 'ok'), infos: F.filter((f) => f.sev === 'info'), meta,
     counts: Object.fromEntries(Object.keys(SEVERITY).map((s) => [s, F.filter((f) => f.sev === s).length])),
   }
 }
@@ -451,7 +504,7 @@ const REQUIRED = {
 }
 function checkSchemaProps(t, add) {
   const key = t.type.toLowerCase().split(',')[0]
-  const isLocal = /store|restaurant|bakery|salon|dentist|agent|repair|business$/.test(key)
+  const isLocal = LOCAL_TYPES.has(key)
   const req = REQUIRED[key] || (isLocal ? REQUIRED.localbusiness : null)
   if (!req) return
   const miss = req.filter((r) => Array.isArray(r) ? !r.some((x) => t.node[x]) : !t.node[r]).map((r) => [].concat(r).join(' ou '))
@@ -516,8 +569,37 @@ export function scoreFindings(F, cats, meta = {}, scale = 1.6) {
   const global = Math.round(keys.reduce((s, k) => s + scores[k].score * cats[k].weight, 0) / w)
   const issues = F.filter((f) => SEVERITY[f.sev].penalty > 0).map((f) => ({ ...f, priority: f.impact * 3 + (6 - f.effort) * 2 }))
     .sort((a, b) => SEVERITY[a.sev].rank - SEVERITY[b.sev].rank || b.priority - a.priority)
-  return { global, grade: global >= 85 ? 'A' : global >= 70 ? 'B' : global >= 55 ? 'C' : global >= 40 ? 'D' : 'E', scores, issues, passed: F.filter((f) => f.sev === 'ok'), infos: F.filter((f) => f.sev === 'info'), meta, counts: Object.fromEntries(Object.keys(SEVERITY).map((s) => [s, F.filter((f) => f.sev === s).length])) }
+  return { global, grade: global >= 85 ? 'A' : global >= 70 ? 'B' : global >= 55 ? 'C' : global >= 40 ? 'D' : 'E', coverage: 1, incomplete: null, caps: [], scores, pageScores: Object.fromEntries(Object.entries(scores).map(([k, v]) => [k, v.score])), issues, passed: F.filter((f) => f.sev === 'ok'), infos: F.filter((f) => f.sev === 'info'), meta, counts: Object.fromEntries(Object.keys(SEVERITY).map((s) => [s, F.filter((f) => f.sev === s).length])) }
 }
 export function finding(cat, sev, id, title, detail = '', fix = '', o = {}) {
   return { cat, sev, id, title, detail, fix, impact: o.impact ?? ({ critique: 5, important: 4, moyen: 3, faible: 2, info: 1, ok: 0 }[sev]), effort: o.effort ?? 1, code: o.code || '', ref: o.ref || '', ...(o.penalty != null ? { penalty: o.penalty } : {}) }
 }
+
+function decodeSafe(x) { try { return decodeURIComponent(x) } catch { return x } }
+function tryHost(u) { try { return new URL(u).hostname.replace(/^www\./, '') } catch { return '' } }
+
+// Téléphone français : 04 78 00 00 00, 04.78.00.00.00, +33 4 78 00 00 00, +33 (0)4 78…
+export const PHONE_RE = /(?:\+33\s?(?:\(0\)\s?)?|\b0)[1-9](?:[\s.-]?\d{2}){4}\b/
+
+function findAddress(p) {
+  const walk = (n) => {
+    if (!n || typeof n !== 'object') return null
+    if (Array.isArray(n)) { for (const x of n) { const r = walk(x); if (r) return r } return null }
+    if (/PostalAddress/.test([].concat(n['@type'] || '').join(',')) && (n.postalCode || n.addressLocality)) return { street: n.streetAddress || '', postalCode: String(n.postalCode || ''), locality: n.addressLocality || '' }
+    for (const v of Object.values(n)) if (typeof v === 'object') { const r = walk(v); if (r) return r }
+    return null
+  }
+  const fromLd = walk(p.jsonLd)
+  if (fromLd) return fromLd
+  const m = p.text.match(/(\d{1,4}(?:\s?(?:bis|ter))?,?\s+(?:rue|avenue|av\.|boulevard|bd|place|chemin|route|all[ée]e|impasse|quai|cours|square|zone|za|zi|lieu-dit|parc)\b[^,\n]{2,60}?)[,\s–-]+(\d{5})\s+([A-ZÀ-Ý][A-Za-zÀ-ÿ'’ -]{1,40}?)(?=[\s,.;|]|$)/i)
+  if (m) return { street: m[1].trim(), postalCode: m[2], locality: m[3].trim() }
+  const c = p.text.match(/\b(\d{5})\s+([A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]{2,30}(?:[ -][A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]{2,30}){0,3})/)
+  return c ? { street: '', postalCode: c[1], locality: c[2] } : null
+}
+
+// Codes pays ISO 3166-1 alpha-2 (hreflang)
+const REGIONS = new Set('ad ae af ag ai al am ao aq ar as at au aw ax az ba bb bd be bf bg bh bi bj bl bm bn bo bq br bs bt bv bw by bz ca cc cd cf cg ch ci ck cl cm cn co cr cu cv cw cx cy cz de dj dk dm do dz ec ee eg eh er es et fi fj fk fm fo fr ga gb gd ge gf gg gh gi gl gm gn gp gq gr gs gt gu gw gy hk hm hn hr ht hu id ie il im in io iq ir is it je jm jo jp ke kg kh ki km kn kp kr kw ky kz la lb lc li lk lr ls lt lu lv ly ma mc md me mf mg mh mk ml mm mn mo mp mq mr ms mt mu mv mw mx my mz na nc ne nf ng ni nl no np nr nu nz om pa pe pf pg ph pk pl pm pn pr ps pt pw py qa re ro rs ru rw sa sb sc sd se sg sh si sj sk sl sm sn so sr ss st sv sx sy sz tc td tf tg th tj tk tl tm tn to tr tt tv tw tz ua ug um us uy uz va vc ve vg vi vn vu wf ws ye yt za zm zw 419'.split(' '))
+
+// Types schema.org : sous-types de LocalBusiness (et lieux physiques) / organisations
+export const LOCAL_TYPES = new Set(`localbusiness store restaurant bakery cafeorcoffeeshop barorpub brewery winery distillery fastfoodrestaurant icecreamshop foodestablishment beautysalon hairsalon nailsalon dayspa tattooparlor healthandbeautybusiness dentist physician medicalclinic medicalbusiness optician pharmacy veterinarycare realestateagent homeandconstructionbusiness generalcontractor plumber electrician roofingcontractor hvacbusiness housepainter locksmith movingcompany autorepair autodealer autobodyshop autopartsstore autorental automotivebusiness autowash gasstation motorcycledealer motorcyclerepair legalservice attorney notary accountingservice financialservice insuranceagency bankorcreditunion lodgingbusiness hotel motel bedandbreakfast hostel campground resort vacationrental sportsactivitylocation exercisegym healthclub golfcourse sportsclub bowlingalley skiresort stadiumorarena publicswimmingpool entertainmentbusiness nightclub movietheater amusementpark artgallery casino comedyclub professionalservice travelagency childcare drycleaningorlaundry employmentagency emergencyservice library recyclingcenter selfstorage shoppingcenter touristinformationcenter animalshelter archiveorganization governmentoffice internetcafe radiostation televisionstation petstore jewelrystore furniturestore clothingstore florist grocerystore hardwarestore homegoodsstore bookstore bikestore shoestore sportinggoodsstore toystore electronicsstore liquorstore mobilephonestore musicstore officeequipmentstore outletstore pawnshop computerstore conveniencestore departmentstore gardenstore hobbyshop tirestore wholesalestore`.split(/\s+/))
+const ORG_TYPES = new Set('organization corporation onlinestore onlinebusiness ngo educationalorganization medicalorganization sportsorganization performinggroup musicgroup newsmediaorganization researchorganization airline consortium cooperative fundingscheme governmentorganization librarysystem politicalparty project workersunion person brand'.split(' '))

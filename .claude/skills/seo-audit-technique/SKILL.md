@@ -22,6 +22,13 @@ Pour un point précis, le moteur est importable : `import { extract } from './se
 ## Livrer
 Pour chaque problème : URL(s) concernées → preuve (extrait, en-tête) → correctif exact (code, règle serveur, réglage CMS : WordPress/Yoast/Rank Math, Shopify, Wix, Webflow…) → comment vérifier (relancer la CLI, test des résultats enrichis, inspection d'URL Search Console).
 
+## Note honnête et pages pièges
+- Catégorie non mesurée = `score: null` ; pas de note globale sans la page (`result.incomplete`) ni sous 60 % de couverture.
+- Plafonds : noindex ou `none` → 30 ; robots.txt qui bloque Google → 30 ; canonical vers un autre domaine → 40 ; contenu seulement après JavaScript → 40 ; moins de 150 mots → 60.
+- Pare-feu (401/403/429/503, page de défi Cloudflare/DataDome) : la page d'erreur n'est pas auditée (constat « blocked »).
+- Statut 0 (non lu) sur robots.txt, sitemap ou llms.txt = « non vérifié », jamais « absent ».
+- Ces cas sont figés dans `seo/test/engine.test.mjs` : ajoutez-y tout nouveau faux positif rencontré.
+
 ## Pièges
 - Ne pas recommander `noindex` + `Disallow` ensemble (Google ne voit plus le noindex).
 - Canonical ≠ redirection : pour fusionner des pages, préférer la 301.

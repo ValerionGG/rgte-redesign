@@ -8,10 +8,14 @@ export async function collect(rawUrl, fetcher, opts = {}) {
   const ctx = { input: { ...(opts.input || {}), url }, collectedAt: new Date().toISOString(), source: opts.source || 'node' }
   const res = await fetcher(url)
   ctx.fetch = { url, finalUrl: res.finalUrl || url, status: res.status, headers: res.headers || {}, redirects: res.redirects || [], timeMs: res.timeMs, ttfbMs: res.ttfbMs, error: res.error, source: opts.source || 'node', bytes: res.body?.length || 0 }
-  if (res.body) {
+  // Protection anti-robot (pare-feu, Cloudflare…) : on n'audite pas la page d'erreur à la place du site
+  const blocked = blockedReason(res)
+  if (blocked) ctx.blocked = blocked
+  else if (res.body && res.status && res.status < 400) {
     ctx.page = extract(res.body, ctx.fetch.finalUrl)
     ctx.rawHead = res.body.slice(0, 20000)
   }
+  if (opts.rendered) ctx.rendered = opts.rendered
   let origin
   try { origin = new URL(ctx.fetch.finalUrl).origin } catch { return ctx }
   const side = await Promise.all([
@@ -93,7 +97,8 @@ export async function crawl(ctx, fetcher, max = 20, onProgress) {
     const batch = queue.splice(0, Math.min(CONC, max - pages.length))
     const results = await Promise.all(batch.map(async (q) => ({ q, r: await fetcher(q.url).catch((e) => ({ error: String(e) })) })))
     for (const { q, r } of results) {
-      if (!r.status || r.status >= 400) { broken.push({ url: q.url, from: q.from, status: r.status || 'erreur' }); pages.push({ url: q.url, status: r.status || 0, depth: q.depth }); continue }
+      if (!r.status || blockedReason(r)) continue // non lu ≠ cassé : on ne conclut rien
+      if (r.status >= 400) { broken.push({ url: q.url, from: q.from, status: r.status }); pages.push({ url: q.url, status: r.status, depth: q.depth }); continue }
       const isHtml = /<html|<!doctype/i.test((r.body || '').slice(0, 1000))
       if (!isHtml) continue
       const pg = extract(r.body, r.finalUrl || q.url)
@@ -114,3 +119,12 @@ function summary(p) {
   }
 }
 const clean = (u) => { try { const x = new URL(u); x.hash = ''; return x.href } catch { return u } }
+
+// 401/403/429/503 ou page de défi (Cloudflare, DataDome, Sucuri…) = le robot d'audit a été refusé.
+export function blockedReason(res) {
+  if (!res || !res.status) return null
+  const head = (res.body || '').slice(0, 6000)
+  if ([401, 403, 429, 503].includes(res.status)) return { status: res.status, reason: res.status === 429 ? 'Trop de requêtes : le serveur limite les robots.' : res.status === 503 ? 'Service indisponible ou protection anti-robot.' : 'Accès refusé (pare-feu ou protection anti-robot).' }
+  if (/cf-chl|challenge-platform|Just a moment\.\.\.|Attention Required! \| Cloudflare|captcha-delivery|datadome|sucuri_cloudproxy|Access denied \| /i.test(head) && (res.body || '').length < 60000) return { status: res.status, reason: 'Page de vérification anti-robot reçue à la place du site.' }
+  return null
+}

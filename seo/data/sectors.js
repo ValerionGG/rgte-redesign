@@ -19,13 +19,13 @@ export const SECTORS = [
     keywords: ['boulangerie', 'pâtisserie', 'gâteau anniversaire', 'pain au levain', 'chocolatier', 'viennoiseries', 'pièce montée'],
     hashtags: {
       fr: { large: ['patisserie', 'boulangerie', 'gourmandise', 'patisseriefrancaise', 'faitmaison', 'chocolat', 'gateau', 'viennoiserie'],
-        niche: ['artisanboulanger', 'painaulevain', 'patissier', 'croissant', 'entremets', 'tartealafraise', 'paris_patisserie', 'chocolatier', 'meilleurouvrierdefrance', 'boulangerieartisanale'] },
+        niche: ['artisanboulanger', 'painaulevain', 'patissier', 'croissant', 'entremets', 'tartealafraise', 'chocolatier', 'boulangerieartisanale'] },
       en: { large: ['pastry', 'bakery', 'patisserie', 'dessert', 'pastrychef', 'baking'], niche: ['frenchpastry', 'sourdough', 'viennoiserie', 'chocolatier', 'cakedesign'] },
     },
   },
   {
     id: 'equipement-pro', label: 'Équipement professionnel / industrie B2B', b2b: true, local: false, ads: 'industrial',
-    schema: ['Organization', 'Product', 'Manufacturer'], networks: ['linkedin', 'youtube', 'instagram', 'facebook'],
+    schema: ['Organization', 'Product'], networks: ['linkedin', 'youtube', 'instagram', 'facebook'],
     keywords: ['fabricant', 'sur mesure', 'devis', 'équipement professionnel', 'fiche technique', 'installation', 'agencement magasin'],
     hashtags: {
       fr: { large: ['industrie', 'fabricationfrancaise', 'madeinfrance', 'savoirfaire', 'b2b', 'innovation', 'equipementpro'],
@@ -125,7 +125,7 @@ export const SECTORS = [
     schema: ['FinancialService', 'AccountingService', 'InsuranceAgency'], networks: ['linkedin', 'youtube', 'instagram', 'tiktok'],
     keywords: ['expert comptable', 'assurance', 'crédit immobilier', 'simulation', 'placement', 'courtier', 'gestion de patrimoine'],
     hashtags: {
-      fr: { large: ['finance', 'investissement', 'epargne', 'assurance', 'patrimoine', 'entrepreneur'], niche: ['expertcomptable', 'gestiondepatrimoine', 'financespersonnelles', 'bourse', 'creditimmobilier', 'independanceFinanciere'] },
+      fr: { large: ['finance', 'investissement', 'epargne', 'assurance', 'patrimoine', 'entrepreneur'], niche: ['expertcomptable', 'gestiondepatrimoine', 'financespersonnelles', 'bourse', 'creditimmobilier', 'independancefinanciere'] },
       en: { large: ['finance', 'investing', 'money', 'personalfinance'], niche: ['fintech', 'wealthmanagement', 'accounting', 'insurtech'] },
     },
   },
@@ -152,7 +152,7 @@ export const SECTORS = [
     schema: ['EducationalOrganization', 'Course', 'Person'], networks: ['youtube', 'instagram', 'linkedin', 'tiktok'],
     keywords: ['formation', 'cours en ligne', 'certifiante', 'CPF', 'coaching', 'apprendre', 'Qualiopi'],
     hashtags: {
-      fr: { large: ['formation', 'apprendre', 'education', 'developpementpersonnel', 'coaching', 'reconversion'], niche: ['formationenligne', 'cpf', 'qualiopi', 'elearning', 'coachdevie', 'soft_skills', 'reconversionprofessionnelle'] },
+      fr: { large: ['formation', 'apprendre', 'education', 'developpementpersonnel', 'coaching', 'reconversion'], niche: ['formationenligne', 'cpf', 'qualiopi', 'elearning', 'coachdevie', 'reconversionprofessionnelle'] },
       en: { large: ['education', 'learning', 'coaching', 'motivation'], niche: ['onlinecourse', 'elearning', 'studytok', 'careerchange'] },
     },
   },

@@ -4,7 +4,7 @@ import { sectorById, BANNED_HASHTAGS } from '../data/sectors.js'
 import research from '../data/research/benchmarks.js'
 
 export const NETWORKS = {
-  instagram: { label: 'Instagram', max: 5, mix: { marque: 1, niche: 2, local: 1, sectoriel: 1 } },
+  instagram: { label: 'Instagram', max: 5, mix: { marque: 1, mot: 1, niche: 1, local: 1, sectoriel: 1 } },
   tiktok: { label: 'TikTok', max: 5, mix: { niche: 2, mot: 1, local: 1, large: 1 } },
   linkedin: { label: 'LinkedIn', max: 3, mix: { sectoriel: 1, niche: 1, marque: 1 } },
   youtube: { label: 'YouTube', max: 3, mix: { niche: 1, mot: 1, marque: 1 } },
@@ -59,21 +59,26 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
     for (const t of sector.hashtags[L]?.niche || []) push('niche', t, toTag(t))
     for (const t of sector.hashtags[L]?.large || []) push('sectoriel', t, toTag(t))
   }
+  // Expression complète si elle reste lisible (≤ 28 caractères), sinon ses 2 premiers mots significatifs
   for (const k of kw.slice(0, 12)) {
-    const words = k.split(/\s+/).filter((w) => !STOP.test(w.toLowerCase()))
-    if (words.length <= 3) push('mot', words.join(' '))
+    const all = k.split(/\s+/).filter(Boolean)
+    const sig = all.filter((w) => !STOP.test(w.toLowerCase()))
+    const pick = toTag(all.join(' ')).length <= 28 ? all : sig.slice(0, 2) // jamais de mots retirés au milieu (« réfrigérée mesure »)
+    if (pick.length && pick.length <= 4) push('mot', pick.join(' '))
   }
   const c = city.trim()
   if (c) {
     const key = c.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    push('local', c)
+    // « métier + ville » d'abord (plus précis), puis la ville seule
     const head = toTag((keywords[0] || sector.keywords[0]).split(/\s+/)[0])
-    if (head) push('local', `${head} ${c}`, camel(`${head} ${c}`))
+    if (head && !toTag(c).includes(head)) push('local', `${head} ${c}`, camel(`${head} ${c}`))
+    push('local', c)
     for (const r of CITY_REGION[key] || []) push('local', r, r)
     if (langs.includes('fr')) push('local', `${c} commerce`, camel(`${c} commerce`))
   }
   if (region) push('local', region)
-  const generic = { fr: ['madeinfrance', 'savoirfaire', 'artisanat', 'nouveaute'], en: ['smallbusiness', 'shopsmall', 'madeinfrance'] }
+  const digital = ['saas', 'app-mobile', 'gaming', 'agence', 'finance', 'formation'].includes(sector.id)
+  const generic = digital ? { fr: ['frenchtech', 'innovation'], en: ['startup', 'tech'] } : { fr: ['madeinfrance', 'savoirfaire', 'nouveaute'], en: ['smallbusiness', 'shopsmall', 'madeinfrance'] }
   for (const L of langs) for (const t of generic[L]) push('large', t, t)
 
   const out = {}

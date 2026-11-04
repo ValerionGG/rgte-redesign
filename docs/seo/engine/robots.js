@@ -71,14 +71,14 @@ export function botMatrix(parsed, path = '/') {
   return BOTS.map((b) => ({ ...b, ...allowed(parsed, b.ua, path) }))
 }
 
-export const ROBOTS_TEMPLATE = (origin) => `# robots.txt — moteurs et IA de recherche autorisés
+export const ROBOTS_TEMPLATE = (origin) => `# robots.txt — base à adapter (ne bloquez que ce qui ne doit pas être exploré)
 User-agent: *
-Disallow: /panier
-Disallow: /compte
-Disallow: /*?*sort=
-Disallow: /recherche
+# Exemples à adapter à VOTRE site (attention : « Disallow: /recherche » bloque aussi /recherche-et-developpement) :
+# Disallow: /panier/
+# Disallow: /mon-compte/
+Allow: /
 
-# Visibilité dans les réponses IA (ChatGPT, Perplexity, Claude…)
+# Robots de recherche IA (citations dans ChatGPT, Perplexity, Claude…) : autorisés
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
 User-agent: PerplexityBot
