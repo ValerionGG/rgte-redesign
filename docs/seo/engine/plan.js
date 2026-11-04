@@ -25,7 +25,7 @@ export function actionPlan(result, { local = false, hasAds = false, kind = 'site
   const quick = take(issues.filter((i) => i.effort <= 2 && i.impact >= 3).sort(byGain), Math.max(0, 7 - critiques.length))
   const m1 = take(issues.filter((i) => i.sev === 'important').sort(byGain), 12)
   const m2 = take(issues.filter((i) => ['technique', 'contenu', 'performance', 'donnees', 'local', 'decouverte', 'readme', 'metadonnees'].includes(i.cat)).sort(byGain), 12)
-  const m3 = take(issues.slice().sort(byGain), 30)
+  const m3 = take(issues.slice().sort(byGain), Infinity)
   const ex = (step, who, title) => ({ id: `x:${step}:${slug(title)}`, title, who, time: '', extra: true })
   const steps = [
     { id: 'semaine', title: 'Cette semaine', why: 'Les points bloquants, puis les corrections de moins d’une heure à fort effet.', items: [...critiques, ...quick], extra: [

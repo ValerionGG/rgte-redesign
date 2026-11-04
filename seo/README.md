@@ -21,7 +21,7 @@ Cinq experts indépendants (dirigeant de PME, designer produit, consultant SEO/S
 - **La preuve du progrès** : chaque nouvel audit d’une même adresse affiche les points corrigés, les nouveaux et l’évolution de la note. Statuts « fait » par constat, partagés entre la liste À faire et le plan.
 - **Partager et imprimer** : lien de partage sans serveur (rapport compressé dans l’adresse), rapport PDF complet (synthèse, à faire, budget).
 - **Plus simple** : 6 onglets au lieu de 10, formulaire réduit à 3 champs, glossaire au survol de chaque sigle, rapport d’exemple en un clic, contrastes WCAG AA.
-- **Plus fiable et plus sûr** : `rgte.fr` n’est plus pris pour une application, délais et erreurs visibles, pare-feu détectés, encodages ISO-8859-1, faux positifs corrigés (sous-types LocalBusiness, logo cliquable, +33, `en-uk`, `none`…), rapports importés vérifiés + politique de sécurité (CSP), jetons gardés pour la session seulement, proxy Cloudflare restreint et protégé contre le SSRF. 21 tests, dont les « pages pièges » des experts.
+- **Plus fiable et plus sûr** : `rgte.fr` n’est plus pris pour une application, délais et erreurs visibles, pare-feu détectés, encodages ISO-8859-1, faux positifs corrigés (sous-types LocalBusiness, logo cliquable, +33, `en-uk`, `none`…), rapports importés vérifiés + politique de sécurité (CSP), jetons gardés pour la session seulement, proxy Cloudflare restreint et protégé contre le SSRF. 24 tests, dont les « pages pièges » des experts et la boucle « corriger puis revérifier ». Critique finale à l’aveugle : v1 ≈ 31/100, v2 ≈ 71/100, puis une boucle de correction.
 
 ## Ce qui est analysé
 
@@ -120,7 +120,7 @@ seo/
     exemple.js     rapport fictif de démonstration (node seo/test/make-exemple.mjs)
     research/      études du 03/11/2026 (JSON source + modules JS) ; node seo/data/sync.mjs
   proxy/worker.js  proxy CORS optionnel (Cloudflare)
-  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (21 tests, pages pièges)
+  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (24 tests, pages pièges)
 ```
 
 `node build.mjs` copie l’interface, le moteur et les données dans `docs/seo/` (GitHub Pages).

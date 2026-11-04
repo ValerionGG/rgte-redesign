@@ -42,7 +42,7 @@ export async function analyze(target, o = {}) {
 
   if (kind === 'site') {
     const tasks = [o.noFetch ? Promise.resolve({ input: { ...input, local, url: normalize(target) }, fetch: { url: normalize(target), finalUrl: normalize(target), source: 'psi' } }) : collect(target, o.fetcher, { input: { ...input, local }, crawl: o.crawl || 0, source: o.source, rendered: o.rendered, onProgress: (n, m) => progress(`Exploration : ${n}/${m} pages`) })]
-    progress(o.noFetch ? 'Mesure de la vitesse (PageSpeed, 20 à 60 s)' : 'Lecture de la page, robots.txt, sitemap et mesure de la vitesse (20 à 60 s)')
+    progress(o.psi === false ? 'Lecture de la page, robots.txt et sitemap' : o.noFetch ? 'Mesure de la vitesse (PageSpeed, 20 à 60 s)' : 'Lecture de la page, robots.txt, sitemap et mesure de la vitesse (20 à 60 s)')
     if (o.psi !== false) tasks.push(runPSI(normalize(target), { key: o.psiKey, strategy: 'mobile', fetchImpl: o.fetchImpl }))
     const [ctx, psi] = await Promise.all(tasks)
     if (psi) ctx.psi = psi

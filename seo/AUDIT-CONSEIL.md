@@ -54,10 +54,47 @@ Demande : « Atteins un objectif meilleur, fais auditer ta solution en termes d�
 - Le budget 0 € remplacé par 1 000 €.
 - Les faux positifs http/www en mode code collé.
 
+## Critique finale indépendante (à l’aveugle)
+
+Un agent qui n’avait rien vu du processus a comparé les deux versions, présentées comme « X » et « Y » sans savoir laquelle était la nouvelle. Il a testé dans le navigateur (1366 et 390 px), avec la ligne de commande et avec des fichiers piégés.
+
+| Critère (poids) | v1 | v2 |
+|---|---:|---:|
+| Honnêteté (25) | 2/10 | 8/10 |
+| Actionnabilité (25) | 4/10 | 7/10 |
+| Parcours (20) | 4/10 | 6/10 |
+| Décision (15) | 3/10 | 7/10 |
+| Robustesse (15) | 2/10 | 7/10 |
+| **Total pondéré** | **≈ 31/100** | **≈ 71/100** |
+
+Son verdict : « Y est nettement meilleure […] Dès que la collecte échoue, X affiche 93 à 100/100 ou invente des comparaisons ; Y refuse de noter et dit ce qui manque. »
+
+**Boucle de correction unique** sur ses 5 problèmes restants et ses 4 régressions, chacun vérifié par un test ou dans le navigateur :
+- **Mobile** : un correctif ouvert élargissait la page jusqu’à 1 433 px. Elle reste à 390 px, tous correctifs ouverts.
+- **Les correctifs corrigent vraiment.** Test « corriger puis revérifier » : le titre et la description proposés ne sont plus signalés au nouvel audit. S’y ajoutent :
+  - la marque tirée des données structurées ;
+  - le code postal complété depuis le texte ;
+  - plus de lazy-loading sur l’image principale.
+- **Messages exacts** :
+  - limite de l’API GitHub = « non vérifié », plus un défaut ;
+  - aucun concurrent lisible = « comparaison impossible » ;
+  - « rien n’a pu être mesuré » quand PageSpeed est indisponible.
+- **Sécurité** : les clés de catégorie importées sont filtrées et échappées, et un rapport importé sans mesure n’est plus noté.
+- **Décision** :
+  - mots-clés adaptés au secteur ;
+  - champ mot-clé visible d’emblée ;
+  - budget affiché comme « pas recommandé » quand ce n’est pas rentable ;
+  - plan de lancement limité aux canaux retenus.
+- **Régressions réparées** :
+  - règles des hashtags dans l’export ;
+  - plan exhaustif (aucun constat masqué) ;
+  - la ligne de commande s’annonce « SEO360-Audit » et ne passe en navigateur que si le site refuse, ce que le rapport signale.
+- **Accessibilité** : glossaire lisible au toucher et onglets au clavier.
+
 ## Ce qui a changé (v2)
 
 Voir la section « Version 2 » du [README](README.md). En chiffres :
-- les tests passent de 8 à 21, dont les pages pièges des experts ;
+- les tests passent de 8 à 24, dont les pages pièges des experts et la boucle « corriger puis revérifier » ;
 - 98 % des constats du rapport d’exemple ont un correctif prêt à coller (16 % en v1) ;
 - la fourchette de budget est de ±35 % (jusqu’à ×22 en v1) ;
 - 6 onglets au lieu de 10 ;

@@ -44,13 +44,13 @@
         </div>
         <div class="grid main-fields">
           <label>Secteur<select name="sector" id="f-sector" required></select></label>
+          <label>Mot-clé visé (recommandé)<input name="keyword" placeholder="ex. vitrine réfrigérée sur mesure"></label>
           <label>Ville ou zone (si clientèle locale)<input name="city" placeholder="ex. Lyon" autocomplete="address-level2"></label>
           <button class="btn primary" type="submit" id="go">Analyser</button>
         </div>
         <details class="more">
-          <summary>Plus d’options : mot-clé, budget, concurrents, collecte</summary>
+          <summary>Plus d’options : marque, budget, concurrents, collecte</summary>
           <div class="grid">
-            <label>Mot-clé principal visé<input name="keyword" placeholder="ex. vitrine réfrigérée sur mesure"></label>
             <label>Nom de la marque<input name="brand" placeholder="ex. RGTE"></label>
             <label>Objectif<select name="goal" id="f-goal"></select></label>
             <label>Clientèle<select name="local"><option value="">Selon le secteur</option><option value="1">Locale (une zone)</option><option value="0">Nationale / internationale</option></select></label>

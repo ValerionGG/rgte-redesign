@@ -203,10 +203,17 @@ window.addEventListener('message', (e) => {
 function renderTabs() {
   const R = S.report?.result
   const n = R ? R.issues.filter((i) => ['critique', 'important'].includes(i.sev) && !isDone(i.id)).length : 0
-  $('#tabs').innerHTML = TABS.map(([id, label]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${S.tab === id}" ${S.tab === id ? 'aria-current="page"' : ''}>${label}${id === 'afaire' && n ? `<span class="count" aria-label="${n} points importants">${n}</span>` : ''}</button>`).join('')
+  $('#tabs').innerHTML = TABS.map(([id, label]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${S.tab === id}" tabindex="${S.tab === id ? 0 : -1}" ${S.tab === id ? 'aria-current="page"' : ''}>${label}${id === 'afaire' && n ? `<span class="count" aria-label="${n} points importants">${n}</span>` : ''}</button>`).join('')
   $(`#tabs [data-tab="${S.tab}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' })
 }
 $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab) })
+// Clavier : flèches gauche/droite, Début/Fin entre les onglets
+$('#tabs').addEventListener('keydown', (e) => {
+  const i = TABS.findIndex(([id]) => id === S.tab), n = TABS.length
+  const j = e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowLeft' ? (i - 1 + n) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1
+  if (j < 0) return
+  e.preventDefault(); go(TABS[j][0], { focus: false }); $(`#tabs [data-tab="${TABS[j][0]}"]`)?.focus()
+})
 function go(tab, { push = true, focus = true } = {}) {
   S.tab = tab
   if (push && location.hash !== '#' + tab) history.pushState({ tab }, '', '#' + tab)
@@ -303,7 +310,7 @@ function synthese() {
     <div class="card"><h3>Budget publicitaire</h3><p class="verdict v-${b.verdict.level}">${esc(b.verdict.text)}</p><p><a href="#budget" data-go="budget">Détail par canal et montée en charge →</a></p></div>
     <div class="card"><h3>Vos vraies données Google</h3>${gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes déjà proches du haut de page (Search Console).</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export « Requêtes » de Search Console : nous chiffrons les clics à gagner sur les requêtes où vous êtes déjà en page 1–2.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
   </div>
-  <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${k}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
+  <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
     <div class="chips">${['critique', 'important', 'moyen', 'faible', 'ok'].map((s) => `<span class="chip sev-${s}">${SEVERITY[s].label} · ${R.counts[s]}</span>`).join('')}</div></div>
   ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
   ${r.kind === 'site' && c.page ? `<details class="card fold"><summary><h3>La page en bref, technologies et robots IA</h3></summary>${siteFacts(r)}${m.bots ? `<div class="table-wrap"><table><caption class="sr">Accès des robots</caption><thead><tr><th>Robot</th><th>Usage</th><th>Accès</th></tr></thead><tbody>${m.bots.map((x) => `<tr><td><code>${esc(x.ua)}</code></td><td>${esc(x.owner)}</td><td>${x.allowed ? '<span class="chip sev-ok">autorisé</span>' : '<span class="chip sev-critique">bloqué</span>'}</td></tr>`).join('')}</tbody></table></div>` : ''}</details>` : ''}`
@@ -364,7 +371,7 @@ function afaire() {
   const cats = Object.entries(R.scores).filter(([, s]) => s.issues)
   return `<div class="section-head"><div><h2>À faire</h2><p>${nDone}/${all.length} fait · cochez au fur et à mesure (enregistré sur cet appareil). Cliquez une ligne pour le correctif.</p></div><div class="actions"><button class="btn" data-act="mail">Copier le message pour mon prestataire</button>${reportBar()}</div></div>
   <div class="progressbar" role="progressbar" aria-valuenow="${nDone}" aria-valuemin="0" aria-valuemax="${all.length}" aria-label="Avancement"><span style="width:${all.length ? (nDone / all.length) * 100 : 0}%"></span></div>
-  <div class="filters" role="group" aria-label="Filtrer par catégorie"><button class="chip tag" data-fcat="" aria-pressed="${!S.cat}">Toutes</button>${cats.map(([k, v]) => `<button class="chip tag" data-fcat="${k}" aria-pressed="${S.cat === k}">${esc(v.label)} · ${v.issues}</button>`).join('')}</div>
+  <div class="filters" role="group" aria-label="Filtrer par catégorie"><button class="chip tag" data-fcat="" aria-pressed="${!S.cat}">Toutes</button>${cats.map(([k, v]) => `<button class="chip tag" data-fcat="${esc(k)}" aria-pressed="${S.cat === k}">${esc(v.label)} · ${v.issues}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="Filtrer par gravité">${['critique', 'important', 'moyen', 'faible'].map((s) => `<button class="chip sev-${s}" data-fsev="${s}" aria-pressed="${S.sevs.has(s)}">${SEVERITY[s].label} · ${R.counts[s]}</button>`).join('')}</div>
   ${r.plan.steps.map((s) => { const items = [...s.items, ...s.extra].filter(visible); return items.length ? `<section class="step"><h3>${esc(s.title)} <span class="pct">${items.filter((i) => done[i.id]).length}/${items.length}</span></h3><p class="why">${esc(s.why)}</p><div class="issues">${items.map((i) => item(i, done)).join('')}</div></section>` : '' }).join('')}
   ${R.passed.length ? `<details class="card fold"><summary><h3>Déjà bien (${R.passed.length})</h3></summary><ul class="clean">${R.passed.map((p) => `<li><span class="chip sev-ok">OK</span> ${gloss(esc(p.title))}</li>`).join('')}</ul></details>` : ''}
@@ -465,7 +472,7 @@ function budget() {
     <label>Votre CPC réel Google (€)<input id="cpc" type="number" min="0" step="any" value="${store.get('cpc', 0) || ''}" placeholder="optionnel (Keyword Planner)"></label>
   </div><p class="note">Hypothèses utilisées : marge ${Math.round(b.assumptions.margin * 100)} %${b.goal === 'leads' ? `, ${Math.round(b.assumptions.closeRate * 100)} % des contacts signent` : ''}. Coût maximal rentable par ${b.unit} : <b>${b.maxCpa ? fmt(b.maxCpa) + ' €' : '— (indiquez la valeur d’un client)'}</b>.${b.cpcSource ? ' ' + esc(b.cpcSource) : ''}</p></div>
   <div class="kpis">
-    <div class="kpi"><div class="v">${fmt(b.monthly)} €</div><div class="k">${b.recommendedUsed ? 'budget conseillé' : 'par mois'} · ${fmt(b.daily)} €/jour</div></div>
+    <div class="kpi"><div class="v">${fmt(b.monthly)} €</div><div class="k">${b.recommendedUsed ? (b.verdict.level === 'non' ? 'budget minimum d’un test' : 'budget de départ conseillé') : 'par mois'} · ${fmt(b.daily)} €/jour</div></div>
     <div class="kpi"><div class="v">≈ ${fmt(b.totals.clicksMid)}</div><div class="k">clics / mois</div></div>
     <div class="kpi"><div class="v">≈ ${fmt(b.totals.mid)}</div><div class="k">${b.unit}s / mois (${rng(b.totals.band)})</div></div>
     <div class="kpi"><div class="v">≈ ${b.totals.cpaMid ? fmt(b.totals.cpaMid) + ' €' : '—'}</div><div class="k">coût par ${b.unit}</div></div>
@@ -515,7 +522,7 @@ function concurrents() {
     ${all.map((c) => `<tr class="${c.me ? 'us' : ''}"><td>${esc(c.url)}${c.me || c.comparable ? '' : `<br><span class="note">non comparable : ${esc(c.error || 'page non lue')}</span>`}</td><td class="n"><b style="color:${color(c.global)}">${c.global ?? '—'}</b></td>${cats.map((k) => `<td class="n">${c.me || c.comparable ? c.scores?.[k] ?? '—' : '—'}</td>`).join('')}<td class="n">${c.perf ?? '—'}</td><td class="n">${fmt(c.words)}</td><td class="note">${esc((c.social || []).join(', '))}</td></tr>`).join('')}
   </tbody></table></div>
   <div class="cols" style="margin-top:16px">
-    <div class="card"><h3>Ce qu’ils font mieux</h3><ul class="clean">${better.map((b) => `<li>• ${b}</li>`).join('') || '<li>Rien de mesurable : vous êtes devant ou à égalité sur les axes comparés.</li>'}</ul></div>
+    <div class="card"><h3>Ce qu’ils font mieux</h3><ul class="clean">${!comps.some((x) => x.comparable) ? '<li>Aucun concurrent n’a pu être lu : comparaison impossible. Essayez la ligne de commande ou un autre mode de collecte.</li>' : better.map((b) => `<li>• ${b}</li>`).join('') || '<li>Rien de mesurable : vous êtes devant ou à égalité sur les axes comparés.</li>'}</ul></div>
     <div class="card"><h3>Sujets qu’ils traitent et pas vous</h3>${gapTerms.length ? `<div class="tags">${gapTerms.map((t) => `<span class="chip tag">${esc(t)}</span>`).join('')}</div><p class="note">Termes fréquents chez vos concurrents, absents de votre page : pistes de contenu.</p>` : '<p class="note">Pas d’écart net détecté.</p>'}</div>
   </div>`
 }
@@ -585,6 +592,8 @@ function printReport() {
 
 // ───────── Rapports externes : types vérifiés avant affichage ─────────
 const SEVS = new Set(['critique', 'important', 'moyen', 'faible', 'info', 'ok'])
+const KEY = /^[a-z][a-z0-9_-]{0,30}$/
+const keyed = (o, fn) => Object.fromEntries(Object.entries(o || {}).filter(([k]) => KEY.test(k)).map(([k, v]) => [k, fn(v)]))
 const n100 = (v) => (v == null || v === '' ? null : Number.isFinite(+v) ? Math.max(0, Math.min(100, Math.round(+v))) : null)
 const str = (v, max = 2000) => (v == null ? '' : String(v).slice(0, max))
 function sanitizeReport(r) {
@@ -596,10 +605,14 @@ function sanitizeReport(r) {
     out.result = {
       ...R, global: n100(R.global), pageGlobal: n100(R.pageGlobal), grade: /^[A-E]$/.test(R.grade) ? R.grade : null, coverage: Math.max(0, Math.min(1, +R.coverage || 0)), incomplete: R.incomplete ? str(R.incomplete, 200) : null,
       caps: (R.caps || []).map((c) => str(c, 200)), issues: (R.issues || []).map(fnd).filter((f) => f.sev !== 'ok' && f.sev !== 'info'), passed: (R.passed || []).map(fnd), infos: (R.infos || []).map(fnd),
-      scores: Object.fromEntries(Object.entries(R.scores || {}).map(([k, v]) => [str(k, 40), { label: str(v?.label, 80), score: n100(v?.score), issues: Math.max(0, +v?.issues || 0), estimated: !!v?.estimated, measured: v?.measured !== false }])),
-      pageScores: Object.fromEntries(Object.entries(R.pageScores || {}).map(([k, v]) => [str(k, 40), n100(v)])),
+      scores: keyed(R.scores, (v) => ({ label: str(v?.label, 80), score: n100(v?.score), issues: Math.max(0, +v?.issues || 0), estimated: !!v?.estimated, measured: v?.measured !== false })),
+      pageScores: keyed(R.pageScores, n100),
       counts: Object.fromEntries([...SEVS].map((k) => [k, Math.max(0, +R.counts?.[k] || 0)])),
     }
+    // Couverture absente ou nulle : on la recalcule ; sans mesure, pas de note
+    const sc = Object.values(out.result.scores)
+    if (!(R.coverage > 0)) out.result.coverage = sc.length ? sc.filter((x) => x.score != null).length / sc.length : 0
+    if (out.result.coverage < 0.6 && out.result.global != null) { out.result.global = null; out.result.grade = null; out.result.incomplete ||= 'rapport importé sans détail de mesure' }
   } else out.result = null
   const c = r.ctx || {}, num0 = (v) => (Number.isFinite(+v) ? +v : null)
   out.ctx = {
@@ -610,7 +623,7 @@ function sanitizeReport(r) {
     crawl: c.crawl && { pages: (c.crawl.pages || []).slice(0, 200).map((x) => ({ ...x, url: str(x.url, 500), status: num0(x.status) })), broken: (c.crawl.broken || []).slice(0, 100).map((b) => ({ url: str(b.url, 500), from: str(b.from, 500), status: num0(b.status) })) },
     llms: c.llms && { status: num0(c.llms.status), bytes: num0(c.llms.bytes) },
   }
-  out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: Object.fromEntries(Object.entries(x.scores || {}).map(([k, v]) => [str(k, 40), n100(v)])), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null })) : undefined
+  out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null })) : undefined
   return out
 }
 

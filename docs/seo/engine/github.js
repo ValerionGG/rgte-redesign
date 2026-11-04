@@ -27,7 +27,11 @@ export async function fetchRepo(input, { token = '', fetchImpl = fetch } = {}) {
   const [readme, community, releases, contributors] = await Promise.all([
     get('/readme', 'application/vnd.github.raw+json'), get('/community/profile'), get('/releases?per_page=5'), get('/contributors?per_page=30&anon=1'),
   ])
-  return { repo: repo.data, readme: readme.data || '', community: community.data || null, releases: releases.data || [], contributors: Array.isArray(contributors.data) ? contributors.data.length : null }
+  return {
+    repo: repo.data, readme: readme.status === 200 ? readme.data : readme.status === 404 ? '' : null,
+    community: community.status === 200 ? community.data : null, releases: releases.status === 200 ? releases.data : null,
+    contributors: Array.isArray(contributors.data) ? contributors.data.length : null,
+  }
 }
 
 export function auditRepo(d) {
@@ -45,8 +49,9 @@ export function auditRepo(d) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(r.name)) add('decouverte', 'faible', 'name', 'Nom de dépôt peu lisible pour la recherche', r.name, 'Préférez des mots séparés par des tirets contenant le mot-clé (seo-audit-cli).')
   add('decouverte', 'info', 'social-preview', 'Image d’aperçu social à vérifier', 'Settings → Social preview : image 1280×640 affichée sur LinkedIn, X, Slack, Discord.', 'Ajoutez une image avec le nom + la promesse du projet.')
 
-  const words = md.split(/\s+/).filter(Boolean).length
-  if (!md) add('readme', 'critique', 'readme', 'Pas de README', '', 'Créez un README.md : titre, phrase de promesse, capture/GIF, installation, usage, exemples, licence.', { penalty: 100 })
+  const words = (md || '').split(/\s+/).filter(Boolean).length
+  if (d.readme == null) add('readme', 'info', 'readme-unknown', 'README non vérifié', 'L’API GitHub n’a pas répondu pour ce fichier (limite de 60 requêtes/h sans jeton).', 'Relancez avec un jeton GitHub.', { effort: 1 })
+  else if (!md) add('readme', 'critique', 'readme', 'Pas de README', '', 'Créez un README.md : titre, phrase de promesse, capture/GIF, installation, usage, exemples, licence.', { penalty: 100 })
   else {
     if (words < 150) add('readme', 'important', 'readme-short', `README très court (${words} mots)`, '', 'Développez : pourquoi, fonctionnalités, installation, exemple, FAQ.')
     else add('readme', 'ok', 'readme', `README de ${words} mots`)
@@ -64,9 +69,10 @@ export function auditRepo(d) {
   if (!r.license) add('confiance', 'important', 'license', 'Pas de licence', 'Sans licence, personne ne peut légalement réutiliser le code : frein majeur à l’adoption.', 'Ajoutez une licence (MIT, Apache-2.0, AGPL… selon vos objectifs).')
   else add('confiance', 'ok', 'license', `Licence ${r.license.spdx_id}`)
   const files = d.community?.files || {}
-  if (!files.contributing) add('confiance', 'faible', 'contributing', 'Pas de CONTRIBUTING.md', '', 'Expliquez comment contribuer : plus de PR, plus de signaux d’activité.')
-  if (!files.code_of_conduct) add('confiance', 'faible', 'coc', 'Pas de code de conduite', '', 'Ajoutez CODE_OF_CONDUCT.md (modèle Contributor Covenant).')
-  if (!files.issue_template) add('confiance', 'faible', 'issue-template', 'Pas de modèle d’issue', '', 'Ajoutez .github/ISSUE_TEMPLATE pour des rapports exploitables.')
+  if (!d.community) add('confiance', 'info', 'community-unknown', 'Fichiers communautaires non vérifiés', 'L’API GitHub n’a pas répondu (limite de 60 requêtes/h sans jeton).', 'Relancez avec un jeton GitHub.', { effort: 1 })
+  else if (!files.contributing) add('confiance', 'faible', 'contributing', 'Pas de CONTRIBUTING.md', '', 'Expliquez comment contribuer : plus de PR, plus de signaux d’activité.')
+  if (d.community && !files.code_of_conduct) add('confiance', 'faible', 'coc', 'Pas de code de conduite', '', 'Ajoutez CODE_OF_CONDUCT.md (modèle Contributor Covenant).')
+  if (d.community && !files.issue_template) add('confiance', 'faible', 'issue-template', 'Pas de modèle d’issue', '', 'Ajoutez .github/ISSUE_TEMPLATE pour des rapports exploitables.')
   if (!r.has_discussions) add('confiance', 'faible', 'discussions', 'Discussions désactivées', '', 'Activez Discussions : questions d’usage hors des issues, contenu indexé.')
   if (d.contributors != null && d.contributors < 2) add('confiance', 'info', 'contributors', 'Un seul contributeur', '', 'Taguez des issues « good first issue » pour attirer des contributeurs.')
 
@@ -74,7 +80,8 @@ export function auditRepo(d) {
   if (days > 365) add('activite', 'important', 'stale', `Aucun commit depuis ${Math.round(days)} jours`, 'Un projet inactif est moins recommandé et moins mis en avant.', 'Publiez une mise à jour (dépendances, docs) ou indiquez le statut (maintenu / archivé).')
   else if (days > 120) add('activite', 'faible', 'stale', `Dernier commit il y a ${Math.round(days)} jours`)
   else add('activite', 'ok', 'active', 'Dépôt actif')
-  if (!d.releases.length) add('activite', 'moyen', 'releases', 'Aucune release', 'Les releases déclenchent des notifications aux « watchers » et apparaissent dans les flux.', 'Publiez des releases versionnées (SemVer) avec notes de version.')
+  if (d.releases == null) add('activite', 'info', 'releases-unknown', 'Releases non vérifiées', 'L’API GitHub n’a pas répondu (limite d’appels).', '', { effort: 1 })
+  else if (!d.releases.length) add('activite', 'moyen', 'releases', 'Aucune release', 'Les releases déclenchent des notifications aux « watchers » et apparaissent dans les flux.', 'Publiez des releases versionnées (SemVer) avec notes de version.')
   if (r.archived) add('activite', 'important', 'archived', 'Dépôt archivé', '', 'Désarchivez si le projet est maintenu.')
   add('activite', 'info', 'promo', 'Diffusion', 'Listes « awesome-… » de votre domaine, Hacker News (Show HN), Reddit, Product Hunt, dev.to, LinkedIn, newsletter du domaine.', 'Préparez un post « Show HN » + une soumission à 2–3 listes awesome pertinentes.')
   return scoreFindings(F, GH_CATS, { stars: r.stargazers_count, forks: r.forks_count, watchers: r.subscribers_count, language: r.language, topics, homepage: r.homepage, name: r.full_name, description: desc })

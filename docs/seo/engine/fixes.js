@@ -18,7 +18,8 @@ export function facts(report) {
   const r = report, p = r.ctx?.pageFull || null, page = r.ctx?.page || {}, m = r.result?.meta || {}, input = r.input || {}
   let origin = 'https://votre-site.fr', url = r.target
   try { const U = new URL(r.ctx?.fetch?.finalUrl || r.target); origin = U.origin; url = U.href } catch {}
-  const brand = input.brand || page.og?.site_name || (page.title || '').split(/\s[|–—-]\s/).pop()?.trim() || ''
+  const parts = (page.title || '').split(/\s[|–—-]\s/)
+  const brand = input.brand || m.orgName || page.og?.site_name || (parts.length > 1 ? parts.pop().trim() : '')
   const h1 = page.h?.find((h) => h.level === 1)?.text || ''
   const phone = m.phone || ''
   const address = m.address || null
@@ -35,6 +36,11 @@ export function suggestTitle(f) {
   const brand = f.brand && !norm(subject).includes(norm(f.brand)) ? ` | ${f.brand}` : ''
   let t = `${subject}${city}${brand}`
   if (t.length > 60) t = `${subject}${city}`.length <= 60 ? `${subject}${city}` : cut(subject, 57)
+  // Trop court (< 30) : on complète avec un bénéfice du secteur, sans dépasser 60 caractères
+  if (t.length < 30) {
+    const more = [f.sector.keywords.find((k) => !norm(t).includes(norm(k)) && !/prix|devis|avis/.test(k)), 'sur mesure', 'artisanal'].filter(Boolean)
+    for (const x of more) { const c = t.replace(/ \| /, ` : ${x} | `); const cand = c === t ? `${t} : ${x}` : c; if (cand.length <= 60) { t = cand; if (t.length >= 30) break } }
+  }
   return t
 }
 
@@ -46,7 +52,12 @@ export function suggestDescription(f) {
   let intro = text ? cut(text, 150 - cta.length - 1) : ''
   const end = intro.lastIndexOf('. ')
   if (end >= 60) intro = intro.slice(0, end + 1)
-  const base = text ? intro : `${cap(f.keyword || f.h1 || f.sector.keywords[0])}${f.city ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
+  let base = text ? intro : `${cap(f.keyword || f.h1 || f.sector.keywords[0])}${f.city ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
+  // Le mot-clé principal doit figurer dans la description (c'est un contrôle de l'audit)
+  if (f.keyword && !norm(base).includes(norm(f.keyword))) {
+    const head = `${cap(f.keyword)} : `
+    base = head + (text ? cut(text, 150 - cta.length - head.length - 1) : base)
+  }
   return `${base.replace(/…$/, '.')} ${cta}`.replace(/\.\./g, '.').trim()
 }
 
@@ -121,8 +132,8 @@ export function buildFixes(report) {
   put('questions', { label: 'Section FAQ (à compléter avec vos vraies réponses)', lang: 'html', value: faq(f, report) })
   put('author-date', { label: 'Auteur et date', lang: 'html', value: `<p class="byline">Par <a href="/a-propos#equipe">Prénom Nom</a>, [fonction / expertise] — mis à jour le <time datetime="${new Date().toISOString().slice(0, 10)}">${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</time></p>` })
   put('about', { label: 'Plan d’une page « À propos » qui inspire confiance', lang: 'text', value: `# À propos de ${f.brand || 'nous'}\n- Notre histoire (date de création, lieu, fondateurs)\n- L’équipe (photos, rôles, expérience)\n- Chiffres clés (clients, projets, années, zone)\n- Certifications, labels, garanties, assurances\n- Avis et références clients\n- Coordonnées complètes (NAP)` })
-  const lazyImgs = (report.ctx?.page?.imagesSample || []).slice(0, 3)
-  put('lazy', { label: 'Images sous la ligne de flottaison', lang: 'html', value: (lazyImgs.length ? lazyImgs : ['/photo.webp']).map((s) => `<img src="${escAttr(s)}" loading="lazy" decoding="async" width="800" height="600" alt="…">`).join('\n'), note: 'Gardez la première image (héros) sans lazy.' })
+  const lazyImgs = (report.ctx?.page?.imagesSample || []).slice(1, 4) // la 1re image (héros) reste sans lazy
+  put('lazy', { label: 'Images sous la ligne de flottaison (pas la première)', lang: 'html', value: (lazyImgs.length ? lazyImgs : ['/photo.webp']).map((s) => `<img src="${escAttr(s)}" loading="lazy" decoding="async" width="LARGEUR" height="HAUTEUR" alt="…">`).join('\n'), note: 'Remplacez LARGEUR et HAUTEUR par les dimensions réelles de chaque image. La première image (héros) reste sans lazy.' })
   put('lcp-lazy', { label: 'Image principale (LCP)', lang: 'html', value: `<img src="${escAttr(report.ctx?.page?.imagesSample?.[0] || '/hero.webp')}" fetchpriority="high" width="1600" height="900" alt="…">` })
   put('img-dims', { label: 'Dimensions des images', lang: 'html', value: '<img src="photo.webp" width="800" height="600" alt="…">\n/* ou en CSS */\nimg { aspect-ratio: 4 / 3; height: auto; }' })
   put('img-format', { label: 'Conversion WebP / AVIF', lang: 'text', value: '# En ligne de commande (libwebp) :\ncwebp -q 80 photo.jpg -o photo.webp\n# WordPress : plugin de conversion (ex. Converter for Media) ou CDN d’images ;\n# Shopify / Wix : conversion automatique.' })

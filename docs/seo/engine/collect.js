@@ -7,7 +7,7 @@ export async function collect(rawUrl, fetcher, opts = {}) {
   const url = normalizeInput(rawUrl)
   const ctx = { input: { ...(opts.input || {}), url }, collectedAt: new Date().toISOString(), source: opts.source || 'node' }
   const res = await fetcher(url)
-  ctx.fetch = { url, finalUrl: res.finalUrl || url, status: res.status, headers: res.headers || {}, redirects: res.redirects || [], timeMs: res.timeMs, ttfbMs: res.ttfbMs, error: res.error, source: opts.source || 'node', bytes: res.body?.length || 0 }
+  ctx.fetch = { url, finalUrl: res.finalUrl || url, status: res.status, headers: res.headers || {}, redirects: res.redirects || [], timeMs: res.timeMs, ttfbMs: res.ttfbMs, error: res.error, source: opts.source || 'node', bytes: res.body?.length || 0, uaFallback: !!res.uaFallback }
   // Protection anti-robot (pare-feu, Cloudflare…) : on n'audite pas la page d'erreur à la place du site
   const blocked = blockedReason(res)
   if (blocked) ctx.blocked = blocked
@@ -92,8 +92,8 @@ export async function crawl(ctx, fetcher, max = 20, onProgress) {
   }
   for (const l of ctx.page.links) if (l.internal) enqueue(l.href, start, 1)
   for (const s of (ctx.sitemap?.sample || []).slice(0, max)) enqueue(s, 'sitemap', 1)
-  const CONC = 4
-  while (queue.length && pages.length < max) {
+  const CONC = 4, deadline = Date.now() + 45000 // l'exploration ne doit pas retarder tout le rapport
+  while (queue.length && pages.length < max && Date.now() < deadline) {
     const batch = queue.splice(0, Math.min(CONC, max - pages.length))
     const results = await Promise.all(batch.map(async (q) => ({ q, r: await fetcher(q.url).catch((e) => ({ error: String(e) })) })))
     for (const { q, r } of results) {

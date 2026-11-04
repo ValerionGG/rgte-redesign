@@ -326,7 +326,9 @@ export function audit(ctx) {
     const telLink = p.links.find((l) => /^tel:/.test(l.raw || ''))
     meta.phone = (telLink && (telLink.text.match(PHONE_RE)?.[0] || decodeSafe(telLink.raw.slice(4)).trim())) || p.text.match(PHONE_RE)?.[0] || ''
     meta.address = findAddress(p)
+    meta.orgName = orgName(p.jsonLd)
   }
+  if (ctx.fetch?.uaFallback) add('technique', 'info', 'ua-fallback', 'Le site refuse les robots inconnus', 'L’audit s’est d’abord présenté comme « SEO360-Audit » et a été refusé ; il a été fait en se présentant comme un navigateur.', 'Vérifiez dans Search Console (Inspection d’URL) que Googlebot et Bingbot passent bien votre pare-feu.', { effort: 1 })
 
   // ───────────────────────── Local ─────────────────────────
   if (p && local) {
@@ -475,7 +477,7 @@ function finalize(F, meta, ctx, local) {
   }
   const all = scoreOf(F), page = scoreOf(F.filter((f) => f.scope !== 'site'))
   let incomplete = null
-  if (!p) incomplete = ctx.blocked ? `le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection'})` : ctx.fetch?.status >= 400 ? `la page répond ${ctx.fetch.status}` : ctx.fetch?.source === 'psi' ? 'seule la vitesse a été mesurée (page non lue)' : 'la page n’a pas pu être lue'
+  if (!p) incomplete = ctx.blocked ? `le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection'})` : ctx.fetch?.status >= 400 ? `la page répond ${ctx.fetch.status}` : ctx.fetch?.source === 'psi' ? (ctx.psi?.scores ? 'seule la vitesse a été mesurée (page non lue)' : 'rien n’a pu être mesuré : page non lue et PageSpeed indisponible') : 'la page n’a pas pu être lue'
   else if (all.coverage < 0.6) incomplete = 'trop peu de contrôles ont pu être faits'
   const global = incomplete ? null : all.global
   const issues = F.filter((f) => SEVERITY[f.sev].penalty > 0)
@@ -590,11 +592,26 @@ function findAddress(p) {
     return null
   }
   const fromLd = walk(p.jsonLd)
-  if (fromLd) return fromLd
+  if (fromLd && fromLd.postalCode && fromLd.locality) return fromLd
   const m = p.text.match(/(\d{1,4}(?:\s?(?:bis|ter))?,?\s+(?:rue|avenue|av\.|boulevard|bd|place|chemin|route|all[ée]e|impasse|quai|cours|square|zone|za|zi|lieu-dit|parc)\b[^,\n]{2,60}?)[,\s–-]+(\d{5})\s+([A-ZÀ-Ý][A-Za-zÀ-ÿ'’ -]{1,40}?)(?=[\s,.;|]|$)/i)
-  if (m) return { street: m[1].trim(), postalCode: m[2], locality: m[3].trim() }
   const c = p.text.match(/\b(\d{5})\s+([A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]{2,30}(?:[ -][A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]{2,30}){0,3})/)
-  return c ? { street: '', postalCode: c[1], locality: c[2] } : null
+  const fromText = m ? { street: m[1].trim(), postalCode: m[2], locality: m[3].trim() } : c ? { street: '', postalCode: c[1], locality: c[2] } : null
+  if (!fromLd) return fromText
+  return { street: fromLd.street || fromText?.street || '', postalCode: fromLd.postalCode || fromText?.postalCode || '', locality: fromLd.locality || fromText?.locality || '' }
+}
+
+// Nom de l'entreprise déclaré dans les données structurées (sert de marque par défaut)
+function orgName(jsonLd) {
+  let name = ''
+  const walk = (n) => {
+    if (name || !n || typeof n !== 'object') return
+    if (Array.isArray(n)) return n.forEach(walk)
+    const t = [].concat(n['@type'] || '').join(',').toLowerCase()
+    if (n.name && typeof n.name === 'string' && t.split(',').some((x) => ORG_TYPES.has(x) || LOCAL_TYPES.has(x))) { name = n.name; return }
+    for (const v of Object.values(n)) if (typeof v === 'object') walk(v)
+  }
+  walk(jsonLd)
+  return name
 }
 
 // Codes pays ISO 3166-1 alpha-2 (hreflang)

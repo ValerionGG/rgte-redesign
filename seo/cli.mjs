@@ -11,6 +11,7 @@ import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
 import { googleSuggest } from './engine/keywords.js'
 import { decodeBody } from './engine/decode.js'
+import { blockedReason } from './engine/collect.js'
 import { SECTORS } from './data/sectors.js'
 import { GOALS } from './engine/ads.js'
 
@@ -42,7 +43,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --signature <%>       part des contacts qui deviennent clients (leads)
   --cpc <€>             votre CPC réel Google (Keyword Planner)
   --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
-  --ua navigateur|seo360  agent utilisé pour lire le site (défaut : navigateur)
+  --ua auto|seo360|navigateur  identité du robot (défaut auto : SEO360-Audit, puis navigateur si le site refuse)
   --local / --national  forcer le mode local
   --langue fr|en|both   langue des hashtags
   --crawl <n>           explorer n pages du site (défaut 15, 0 = page seule)
@@ -56,10 +57,22 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   process.exit(target ? 0 : 1)
 }
 
-const UA = UAS[opt('ua', 'navigateur')] || UAS.navigateur
+const UA_CHOICE = opt('ua', 'auto')
+
+// Par défaut : on se présente comme « SEO360-Audit » ; si le site refuse les robots inconnus, on réessaie
+// une fois en navigateur et le rapport le signale (constat « ua-fallback »).
+async function fetcher(url, o = {}) {
+  if (UA_CHOICE === 'navigateur') return fetchAs(url, UAS.navigateur, o)
+  const r = await fetchAs(url, UAS.seo360, o)
+  if (UA_CHOICE === 'auto' && !o.noFollow && blockedReason(r)) {
+    const r2 = await fetchAs(url, UAS.navigateur, o)
+    if (!blockedReason(r2)) return { ...r2, uaFallback: true }
+  }
+  return r
+}
 
 // Lecture bornée (5 Mo) avec délai global de 25 s (en-têtes ET corps), décodage selon l'encodage déclaré.
-async function fetcher(url, { noFollow = false } = {}) {
+async function fetchAs(url, UA, { noFollow = false } = {}) {
   const redirects = []
   let cur = url, res, ttfb
   const t0 = performance.now(), ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)

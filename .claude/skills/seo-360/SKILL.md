@@ -18,6 +18,7 @@ node seo/cli.mjs <cible> --secteur <id> --mot-cle "<mot-clé>" --ville <ville> -
 - Sans `--budget`, le budget de départ conseillé est calculé (minimum viable du canal principal).
 - PageSpeed : variable `PSI_KEY` ou `--psi-key` (sans clé, quota faible → `--no-psi` si 429).
 - Données réelles : `--cpc <€>` (CPC Keyword Planner) et `--volume <recherches/mois>` affinent le budget.
+- La CLI s'annonce « SEO360-Audit » ; si le site refuse les robots inconnus, elle réessaie en navigateur et le rapport le signale (`--ua seo360` pour l'interdire).
 - Sortie : `rapports-seo/<slug>.md` (synthèse, 3 actions, correctifs prêts à coller) et `.json` (importable dans l'interface).
 - Si le site refuse le robot (403, page de défi) ou si le réseau sortant est bloqué : le rapport le dit (`result.incomplete`). Proposer le **bouton-favori** de l'interface (onglet Ressources : il lit la page depuis le site de l'utilisateur, sans proxy), le code source collé, ou une autre machine.
 

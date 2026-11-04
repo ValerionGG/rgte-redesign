@@ -5,14 +5,24 @@ import { sectorById } from '../data/sectors.js'
 const MODS = {
   transactionnel: ['{b} prix', '{b} devis', '{b} tarif', 'acheter {b}', '{b} pas cher', '{b} sur mesure', '{b} livraison', '{b} promo'],
   local: ['{b} près de moi', '{b} {city}', '{b} à {city}', '{b} {city} centre', '{b} ouvert dimanche'],
-  commercial: ['{b} avis', '{b} comparatif', 'top {b}', '{b} classement', '{b} professionnel', '{b} haut de gamme'],
-  informationnel: ['comment choisir {b}', 'combien coûte {b}', 'guide {b}', '{b} : idées', 'entretien {b}', '{b} : questions fréquentes'],
+  commercial: ['{b} avis', '{b} comparatif', 'meilleure adresse {b}', '{b} professionnel', '{b} haut de gamme'],
+  informationnel: ['comment choisir {b}', 'combien coûte {b}', 'guide {b}', 'entretien {b}'],
+}
+// Gabarits réservés à certains secteurs (un « devis » de pâtisserie n'a pas de sens, un « entretien » non plus)
+const ONLY = {
+  '{b} devis': ['btp', 'equipement-pro', 'agence', 'evenementiel', 'juridique', 'finance', 'services-domicile', 'saas', 'immobilier', 'auto', 'formation', 'maison-deco'],
+  'entretien {b}': ['equipement-pro', 'auto', 'maison-deco', 'btp', 'services-domicile'],
+  '{b} sur mesure': ['equipement-pro', 'btp', 'maison-deco', 'luxe', 'evenementiel', 'ecommerce-mode', 'boulangerie'],
+  'acheter {b}': ['ecommerce', 'ecommerce-mode', 'luxe', 'maison-deco', 'equipement-pro', 'auto', 'immobilier', 'animaux'],
+  '{b} pas cher': ['ecommerce', 'ecommerce-mode', 'maison-deco', 'auto', 'tourisme', 'sport', 'beaute', 'restaurant'],
+  '{b} ouvert dimanche': ['restaurant', 'boulangerie', 'beaute', 'sante', 'sport', 'animaux', 'auto'],
+  'meilleure adresse {b}': ['restaurant', 'boulangerie', 'beaute', 'tourisme', 'sport', 'evenementiel'],
 }
 export const INTENTS = {
   transactionnel: 'Prêt à acheter — pages produits/services, Google Ads',
   local: 'Recherche locale — fiche Google, pages ville',
   commercial: 'Compare avant d’acheter — comparatifs, avis',
-  informationnel: 'Cherche à comprendre — guides, FAQ (et réponses des IA)',
+  informationnel: 'Idées de contenus (guides, FAQ) : vérifiez la demande réelle dans les suggestions Google ou Search Console',
 }
 const fold = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 
@@ -29,6 +39,7 @@ export function keywordIdeas({ seed = '', sector: sid, city = '', local } = {}) 
     if (intent === 'local' && !local) continue
     const list = new Set()
     for (const m of mods) {
+      if (ONLY[m] && !ONLY[m].includes(sector.id)) continue
       if (m.includes('{city}') && (!city || hasCity)) continue
       if (m.includes('près de moi') && hasCity) continue
       const extra = fold(m.replace('{b}', '').replace('{city}', '').replace(/[:]/g, '').trim())

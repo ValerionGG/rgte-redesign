@@ -173,23 +173,26 @@ function verdict(b) {
 }
 
 function rampUp(monthly, channels) {
+  const ids = new Set(channels.map((c) => c.id))
+  const social = ['meta', 'tiktok', 'snapchat', 'pinterest', 'linkedin', 'youtube'].filter((x) => ids.has(x))
+  const tags = [ids.has('google_search') || ids.has('google_pmax') || ids.has('google_app') ? 'Google Ads' : '', ids.has('microsoft') ? 'Microsoft Ads' : '', ids.has('meta') ? 'Meta (API Conversions)' : '', ids.has('tiktok') ? 'TikTok (Events API)' : '', ids.has('linkedin') ? 'LinkedIn (Insight Tag)' : ''].filter(Boolean)
   return [
     { phase: 'Semaines 1–2 : lancement', actions: [
-      'Mesure des conversions vérifiée (GA4 + balises Google Ads / Meta / TikTok, Consent Mode v2, API Conversions Meta).',
-      `Démarrez à ~70 % du budget (${Math.round(monthly * 0.7)} €/mois) ; gardez 10–20 % pour tester audiences et créations.`,
-      '3 à 5 créations par ensemble (vidéo verticale, carrousel, image), 2 ou 3 accroches différentes.',
+      `Mesure des conversions vérifiée : GA4${tags.length ? ' + ' + tags.join(', ') : ''}, Consent Mode v2.`,
+      `Démarrez à ~70 % du budget (${Math.round(monthly * 0.7)} €/mois) ; gardez 10–20 % pour tester ${social.length ? 'audiences et créations' : 'de nouveaux mots-clés'}.`,
+      social.length ? '3 à 5 créations par ensemble (vidéo verticale, carrousel, image), 2 ou 3 accroches différentes.' : '2 ou 3 annonces par groupe, avec le mot-clé dans le titre ; extensions (appel, lieu, liens annexes) activées.',
       'Ne touchez à rien pendant 7 jours (apprentissage), sauf erreur flagrante.',
     ] },
     { phase: 'Semaines 3–6 : optimisation', actions: [
       'Coupez les annonces et mots-clés dont le coût par client dépasse 2× la cible après 50–100 clics.',
       'Ajoutez chaque semaine les recherches non pertinentes en mots-clés négatifs (Google).',
       'Augmentez les gagnants de 15–20 % maximum tous les 3–7 jours (au-delà, l’algorithme réapprend).',
-      'Renouvelez les créations quand la fréquence dépasse ~3 (Meta) ou que le CTR baisse de 30 %.',
+      social.length ? 'Renouvelez les créations quand la fréquence dépasse ~3 ou que le CTR baisse de 30 %.' : 'Ajustez les enchères par appareil, horaire et zone selon le coût par client réel.',
     ] },
     { phase: 'Mois 2–3 : montée en charge', actions: [
       'Enchères automatiques (CPA ou ROAS cible) dès 30 conversions par mois et par campagne.',
       `Montez vers ${Math.round(monthly * 1.3)}–${Math.round(monthly * 1.6)} €/mois si le coût réel reste sous votre seuil de rentabilité.`,
-      'Remarketing (visiteurs 30 jours, vidéos vues à 50 %), puis audiences similaires.',
+      social.length ? 'Remarketing (visiteurs 30 jours, vidéos vues à 50 %), puis audiences similaires.' : 'Remarketing des visiteurs (30 jours) quand le volume le permet.',
       channels.length < 2 ? 'Ajoutez un 2e canal seulement quand le 1er est rentable et stable.' : 'Comparez les canaux au coût par client réel (pas au CPC) et réallouez chaque mois.',
     ] },
   ]

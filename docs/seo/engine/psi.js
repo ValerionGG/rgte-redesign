@@ -3,7 +3,7 @@
 
 const CATS = ['performance', 'seo', 'accessibility', 'best-practices']
 
-export async function runPSI(url, { strategy = 'mobile', key = '', fetchImpl = fetch, timeoutMs = 90000 } = {}) {
+export async function runPSI(url, { strategy = 'mobile', key = '', fetchImpl = fetch, timeoutMs = 75000 } = {}) {
   const q = new URLSearchParams({ url, strategy, locale: 'fr' })
   for (const c of CATS) q.append('category', c)
   if (key) q.set('key', key)

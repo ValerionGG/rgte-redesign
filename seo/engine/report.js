@@ -53,7 +53,8 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   if (m.bots) L.push('## Robots des moteurs et des IA', '', '| Robot | Usage | Accès |', '|---|---|---|', ...m.bots.map((b) => `| ${b.ua} | ${b.owner} | ${b.allowed ? 'autorisé' : '**bloqué**'} |`), '')
   if (r.budget) {
     const b = r.budget
-    L.push(`## Budget publicitaire — ${eur(b.monthly)}/mois${b.recommendedUsed ? ' (budget de départ conseillé)' : ''}`, '', `**${b.verdict.text}**${b.verdict.detail ? ' ' + b.verdict.detail : ''}`, '')
+    L.push(b.verdict.level === 'non' ? `## Budget publicitaire — pas recommandé pour l’instant` : `## Budget publicitaire — ${eur(b.monthly)}/mois${b.recommendedUsed ? ' (budget de départ conseillé)' : ''}`, '', `**${b.verdict.text}**${b.verdict.detail ? ' ' + b.verdict.detail : ''}`, '')
+    if (b.verdict.level === 'non') L.push(`_Si vous testez malgré tout : ${eur(b.monthly)}/mois minimum, répartis ainsi :_`, '')
     L.push('| Canal | Budget/mois | €/jour | Clics ≈ | ' + b.unit[0].toUpperCase() + b.unit.slice(1) + 's ≈ | Coût par ' + b.unit + ' ≈ |', '|---|---:|---:|---:|---:|---:|')
     for (const c of b.channels) L.push(`| ${c.label} | ${eur(c.budget)} | ${c.daily} € | ${c.mid ? c.mid.clicks : '—'} | ${c.mid ? Math.round(c.mid.conv) : '—'} | ${c.mid?.cpa ? eur(c.mid.cpa) : '—'} |`)
     L.push('', `Fourchette indicative : ${rng(b.totals.band)} ${b.unit}s/mois. ${b.cpcSource || ''}`, '')
@@ -69,8 +70,13 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   }
   if (r.hashtags) {
     L.push('## Hashtags par réseau', '')
-    for (const n of Object.values(r.hashtags.networks)) L.push(`- **${n.label}** (${n.rules?.recommended_count || n.max}) : ${n.tags.map((t) => '#' + t.camel).join(' ') || '—'}`)
-    L.push('', `À bannir : ${r.hashtags.banned.map((t) => '#' + t).join(' ')}`, '')
+    for (const n of Object.values(r.hashtags.networks)) {
+      L.push(`### ${n.label} — ${n.rules?.recommended_count || n.max} hashtags`, '', n.tags.map((t) => '#' + t.camel).join(' ') || '—', '')
+      if (n.rules) L.push(`- Limite : ${n.rules.hashtag_limit}`, `- Placement : ${n.rules.placement}`, `- Rythme : ${n.rules.posting_frequency || '—'} · Moments : ${n.rules.best_times_fr || '—'}`)
+      if (n.reserve?.length) L.push(`- Réserve à faire tourner : ${n.reserve.slice(0, 10).map((t) => '#' + t.camel).join(' ')}`)
+      L.push('')
+    }
+    L.push(`À bannir : ${r.hashtags.banned.map((t) => '#' + t).join(' ')}`, '')
   }
   if (r.competitors?.length) {
     L.push('## Concurrents (page d’accueil, mêmes conditions)', '', '| Site | Note | Vitesse mobile | Mots |', '|---|---:|---:|---:|')

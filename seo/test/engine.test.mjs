@@ -267,6 +267,32 @@ test('GitHub & ASO : audits sans réseau ; fiche Play illisible = pas de note', 
   assert.deepEqual(parseStoreUrl('https://apps.apple.com/fr/app/super/id123456789'), { store: 'ios', country: 'fr', id: '123456789' })
   assert.equal(parseStoreUrl('rgte.fr'), null)
 })
+// ───────── Critique finale : les correctifs proposés corrigent vraiment ─────────
+test('boucle corriger → revérifier : titre et description proposés ne sont plus signalés', async () => {
+  const html = readFileSync(new URL('index.html', root), 'utf8')
+  const pages = { [O + '/']: { body: html } }
+  const rep = await analyze(O + '/', { fetcher: vfetch(pages), psi: false, input: { sector: 'boulangerie', city: 'Lyon', keyword: 'pâtisserie lyon' } })
+  const fx = buildFixes(rep)
+  const fixed = html.replace(/<title>[^<]*<\/title>/, fx.title.value + fx.description.value)
+  const again = await analyze(O + '/', { fetcher: vfetch({ [O + '/']: { body: fixed } }), psi: false, input: { sector: 'boulangerie', city: 'Lyon', keyword: 'pâtisserie lyon' } })
+  const ids = again.result.issues.map((i) => i.id)
+  for (const id of ['title-short', 'title-long', 'description', 'description-short', 'description-long']) assert.ok(!ids.includes(id), 'encore signalé : ' + id)
+  const kw = again.result.issues.find((i) => i.id === 'keyword')
+  assert.ok(!kw || !/titre|meta description/.test(kw.title), 'mot-clé encore absent : ' + kw?.title)
+  assert.ok(!fx.lazy.value.includes(rep.ctx.page.imagesSample[0]), 'la première image ne doit pas être en lazy')
+})
+test('GitHub : appels secondaires refusés (limite d’API) = non vérifié, pas défaut', () => {
+  const g = auditRepo({ repo: { name: 'react', full_name: 'facebook/react', description: 'The library for web and native user interfaces.', topics: ['react', 'javascript', 'ui', 'frontend', 'library', 'declarative'], homepage: 'https://react.dev', license: { spdx_id: 'MIT' }, pushed_at: new Date().toISOString(), has_discussions: true, stargazers_count: 240000 }, readme: null, community: null, releases: null, contributors: null })
+  const ids = g.issues.map((i) => i.id)
+  for (const id of ['readme', 'contributing', 'coc', 'issue-template', 'releases']) assert.ok(!ids.includes(id), 'faux défaut : ' + id)
+  assert.ok(g.infos.some((i) => i.id === 'community-unknown'))
+})
+test('mots-clés : gabarits adaptés au secteur (pas de « devis » ni « entretien » de pâtisserie)', () => {
+  const all = Object.values(keywordIdeas({ seed: 'pâtisserie lyon', sector: 'boulangerie', city: 'Lyon' }).groups).flat().map((x) => x.keyword)
+  assert.ok(!all.some((k) => /devis|entretien|: idées|questions fréquentes/.test(k)), all.join(' | '))
+  const b2b = Object.values(keywordIdeas({ seed: 'vitrine réfrigérée', sector: 'equipement-pro' }).groups).flat().map((x) => x.keyword)
+  assert.ok(b2b.some((k) => /devis/.test(k)))
+})
 test('topTerms ignore les mots vides', () => {
   assert.equal(topTerms('La vitrine réfrigérée et la vitrine réfrigérée pour la pâtisserie de la ville').phrases[0].term, 'vitrine réfrigérée')
 })
