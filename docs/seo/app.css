@@ -250,3 +250,5 @@ ol.todo { padding-left: 1.3em; margin: 6px 0 10px; } ol.todo li { margin: 5px 0;
 label.inline { display: inline-flex; flex-direction: row; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); font-weight: 600; }
 .htag.lvl-niche { border-left: 3px solid var(--ok); } .htag.lvl-moyen { border-left: 3px solid var(--mid); } .htag.lvl-large { border-left: 3px solid var(--line); }
 ul.checks li { margin: 8px 0; }
+.tool summary h3 { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.tool p, .tool li { overflow-wrap: anywhere; }

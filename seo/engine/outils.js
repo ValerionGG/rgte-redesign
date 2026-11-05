@@ -90,10 +90,20 @@ export function recommendTools(report = {}) {
 }
 
 const price = (t) => t.prix || (t.gratuit ? 'Gratuit (offre gratuite ; offres payantes : à vérifier)' : 'Prix : à vérifier')
+// Prix court pour une pastille : « Gratuit », « Gratuit + offres payantes » ou le premier montant
+export function shortPrice(t) {
+  const p = String(t.prix || '')
+  if (/^\s*sur devis/i.test(p)) return 'Sur devis'
+  if (t.gratuit && (!p || /^gratuit/i.test(p))) return /payant|pro|premium|starter|plus|360|€|\$|£/i.test(p.replace(/^gratuit\s*/i, '')) ? 'Gratuit + options payantes' : 'Gratuit'
+  if (t.gratuit) return 'Offre gratuite'
+  const m = p.match(/(à partir de |dès )?\d[\d\s.,]*\s?(€|\$|£)(\s?HT)?(\s?(par |\/)\s?[a-zé]+)?(\/[a-zé]+)?/i)
+  return m ? m[0].replace(/\s+/g, ' ').trim() : /devis/i.test(p) ? 'Sur devis' : 'Payant'
+}
 export function toolsMarkdown(rec, { guides = true } = {}) {
   const L = ['## Outils recommandés et guides d’installation', '', `Choisis d’après votre audit, votre secteur et vos réseaux. Prix d’entrée indicatifs, vérifiés le ${new Date(rec.verifie + 'T12:00:00Z').toLocaleDateString('fr-FR')} (hors taxes sauf mention) : à reconfirmer chez l’éditeur.`, '']
   const block = (t, withGuide) => {
-    const lines = [`- **[${t.nom}](${t.url})** — ${price(t)}${t.limites_gratuit ? ` (gratuit : ${t.limites_gratuit})` : ''}`, `  ${t.raisons.join(' ') || t.pourquoi}`]
+    const lines = [`- **[${t.nom}](${t.url})** — ${price(t)}`, `  ${t.raisons.join(' ') || t.pourquoi}`]
+    if (t.limites_gratuit && withGuide) lines.push(`  Offre gratuite : ${t.limites_gratuit}`)
     if (withGuide && t.etapes?.length) lines.push(...t.etapes.map((e, i) => `  ${i + 1}. ${e}`))
     if (withGuide && t.doc) lines.push(`  Aide officielle : ${t.doc}`)
     return lines.join('\n')

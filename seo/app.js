@@ -11,7 +11,7 @@ import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts } from './engine/fixes.js'
 import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
 import { upcoming, frShort } from './engine/calendar.js'
-import { recommendTools, WEEK } from './engine/outils.js'
+import { recommendTools, WEEK, shortPrice } from './engine/outils.js'
 import { encodeReport, decodeReport, slimForShare } from './engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmarklet.js'
 import { extract } from './engine/html.js'
@@ -24,6 +24,9 @@ import oss from './data/research/github-oss.js'
 import bench from './data/research/benchmarks.js'
 
 const $ = (s, el = document) => el.querySelector(s)
+// Version publiée en page claude.ai (Artifact) : aucun accès aux autres sites, pas de téléchargement ni d'impression
+const ARTIFACT = !!document.querySelector('meta[name="seo360-mode"][content="artifact"]')
+const ARTIFACT_MSG = 'Dans cette version de démonstration (page claude.ai), l’analyse en direct est bloquée : la page ne peut joindre aucun autre site. Pour tester : « Voir un exemple », importez le .json d’un audit fait avec la ligne de commande, ou collez le code source de votre page dans « Plus d’options ».'
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 const num = (v, d = 0) => (Number.isFinite(+v) ? +v : d)
@@ -136,6 +139,7 @@ async function run({ bundle } = {}) {
   const target = bundle ? bundle.url : v.url.trim()
   if (!target) { progress('Indiquez l’adresse de votre site, de votre application ou de votre dépôt GitHub.', 'err'); form.elements.url.focus(); return }
   if (!form.elements.sector.value && !bundle) { progress('Choisissez votre secteur : il sert aux mots-clés, hashtags et budgets.', 'err'); form.elements.sector.focus(); return }
+  if (ARTIFACT && !bundle && !(v.html || '').trim()) { progress(ARTIFACT_MSG, 'err'); return }
   const kind = bundle ? 'site' : detectKind(target)
   const pasted = !bundle && v.html?.trim() ? { url: target, html: v.html } : null
   const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted)
@@ -262,6 +266,8 @@ async function action(a) {
   if (!r) return
   if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
   if (a === 'json') download(`seo360-${slug()}.json`, JSON.stringify(r, null, 1), 'application/json')
+  if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }))
+  if (a === 'json-copy') copy(JSON.stringify(r))
   if (a === 'pdf') printReport()
   if (a === 'share') {
     try { const code = await encodeReport(r); const url = location.href.split('#')[0] + '#r=' + code; copy(url); toast(`Lien copié (${fmt(url.length)} caractères)`) } catch (err) { toast('Partage impossible : ' + err.message) }
@@ -276,7 +282,7 @@ function syncForm(r) {
   if (r.target) form.elements.url.value = r.target
   updateKind(); persist()
 }
-const reportBar = () => `<div class="actions">
+const reportBar = () => ARTIFACT ? `<div class="actions"><button class="btn" data-act="md-copy">Copier le rapport (Markdown)</button><button class="btn" data-act="json-copy">Copier les données (JSON)</button></div>` : `<div class="actions">
   <button class="btn" data-act="pdf">Rapport PDF</button><button class="btn" data-act="share">Copier le lien de partage</button>
   <button class="btn" data-act="md">Markdown</button><button class="btn" data-act="json">JSON</button>${S.shared ? '' : '<button class="btn" data-act="recheck">Revérifier</button>'}</div>`
 
@@ -499,8 +505,8 @@ function outilsView() {
   const v = vals(), r = S.report
   const rec = recommendTools(r || { kind: 'site', input: inputOf(v), result: { issues: [], meta: {} } })
   const price = (t) => t.prix || (t.gratuit ? 'Gratuit (offres payantes : à vérifier)' : 'Prix : à vérifier')
-  const card = (t, guide) => `<details class="card fold tool"><summary><h3>${esc(t.nom)} <span class="chip ${t.gratuit ? 'sev-ok' : 'tag'}">${esc(price(t))}</span></h3></summary>
-    <p>${esc(t.raisons.join(' ') || t.pourquoi)}</p>${t.limites_gratuit ? `<p class="note">Offre gratuite : ${esc(t.limites_gratuit)}</p>` : ''}
+  const card = (t, guide) => `<details class="card fold tool"><summary><h3>${esc(t.nom)} <span class="chip ${t.gratuit ? 'sev-ok' : 'tag'}">${esc(shortPrice(t))}</span></h3></summary>
+    <p>${esc(t.raisons.join(' ') || t.pourquoi)}</p><p class="note"><b>Prix :</b> ${esc(price(t))}${t.confiance === 'vérifié' ? '' : ' (à vérifier)'}</p>${t.limites_gratuit ? `<p class="note">Offre gratuite : ${esc(t.limites_gratuit)}</p>` : ''}
     ${guide && t.etapes?.length ? `<ol class="todo">${t.etapes.map((e) => `<li>${esc(e)}</li>`).join('')}</ol>` : ''}
     <p class="note"><a href="${esc(t.url)}" target="_blank" rel="noopener">Ouvrir ${esc(t.nom)}</a>${t.doc ? ` · <a href="${esc(t.doc)}" target="_blank" rel="noopener">aide officielle</a>` : ''}${t.source_prix ? ` · <a href="${esc(t.source_prix)}" target="_blank" rel="noopener">prix</a>` : ''}</p></details>`
   const sec = (title, note, list, guide) => list.length ? `<div class="section-head" style="margin-top:18px"><div><h3>${esc(title)}</h3><p class="note">${esc(note)}</p></div></div><div class="stack">${list.map((t) => card(t, guide)).join('')}</div>` : ''
@@ -518,7 +524,8 @@ function calendarPanel(v) {
     <p class="note">Dates calculées pour votre secteur. Préparez le contenu à J-30, la pub à J-14, les posts à J-7 et les horaires de votre fiche Google avant chaque jour férié. Calendrier complet de l’année : <code>node seo/cli.mjs calendrier --secteur ${esc(v.sector)} --sortie rapports-seo</code> (tableur et agenda .ics).</p>
     <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
-async function autoSuggest() {
+async function autoSuggest(ev) {
+  if (ARTIFACT) { if (ev) toast('Suggestions Google indisponibles ici : utilisez la version complète ou la ligne de commande.'); return }
   const v = vals(), seed = v.keyword || S.report?.result?.meta?.terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
   const btn = $('#suggest'); if (btn) { btn.disabled = true; btn.textContent = 'Interrogation de Google…' }
   S.suggestions = await googleSuggest(seed).catch(() => [])
@@ -651,11 +658,11 @@ function ressources() {
   if (S.res === 'marche') return head + marcheView()
   const code = bookmarkletCode(location.href.split('#')[0])
   return head + `<div class="cols">
-    <div class="card"><h3>Le bouton-favori « Auditer cette page »</h3><p>Il lit votre page <b>depuis votre propre site</b> : HTML réel, en-têtes, robots.txt, sitemap, jusqu’à 15 pages internes et le rendu après JavaScript. Aucun proxy, aucun serveur intermédiaire.</p>
+    ${ARTIFACT ? `<div class="card"><h3>Le bouton-favori « Auditer cette page »</h3><p>Il fonctionne avec la version complète de SEO 360 (GitHub Pages ou votre propre hébergement), pas dans cette page de démonstration : ici, la page ne peut recevoir aucune donnée d’un autre site.</p><p class="note">En attendant, lancez l’audit en ligne de commande (ci-contre) et importez le .json dans « Plus d’options ».</p></div>` : `<div class="card"><h3>Le bouton-favori « Auditer cette page »</h3><p>Il lit votre page <b>depuis votre propre site</b> : HTML réel, en-têtes, robots.txt, sitemap, jusqu’à 15 pages internes et le rendu après JavaScript. Aucun proxy, aucun serveur intermédiaire.</p>
       <ol><li>Glissez ce bouton dans votre barre de favoris (sur ordinateur) :</li></ol>
       <p><a class="btn primary bm" href="${esc(code)}" draggable="true">📌 Auditer avec SEO 360</a></p>
       <ol start="2"><li>Ouvrez votre site, sur la page à auditer.</li><li>Cliquez sur le favori : SEO 360 s’ouvre et lance l’analyse.</li></ol>
-      <p class="note">Si rien ne se passe : autorisez les fenêtres pop-up pour votre site. Certains sites très protégés bloquent les favoris : utilisez alors la ligne de commande.</p></div>
+      <p class="note">Si rien ne se passe : autorisez les fenêtres pop-up pour votre site. Certains sites très protégés bloquent les favoris : utilisez alors la ligne de commande.</p></div>`}
     <div class="card"><h3>La ligne de commande (audit le plus complet)</h3><p>Exploration de tout le site, redirections, en-têtes, encodages, concurrents. Node 18 ou plus, aucune installation.</p>
       <div class="code"><pre>node seo/cli.mjs https://www.votre-site.fr \\
   --secteur ${esc(vals().sector)} --ville "${esc(vals().city || 'Lyon')}" --crawl 30 \\
@@ -758,6 +765,12 @@ $('#f-import').addEventListener('change', async (e) => {
     S.report = rep; S.shared = false; refreshDerived(); syncForm(rep); remember(rep); collapseHero(true); progress(`Rapport importé : ${rep.target}`, 'ok'); go('synthese')
   } catch { progress('Fichier JSON invalide : importez un rapport produit par SEO 360 (CLI ou bouton JSON).', 'err') }
 })
+if (ARTIFACT) {
+  const n = document.createElement('p')
+  n.className = 'cap'; n.id = 'artifact-note'; n.setAttribute('role', 'note')
+  n.textContent = 'Version de démonstration : tout fonctionne sauf l’analyse en direct d’un site (bloquée dans cette page). Ouvrez « Voir un exemple », ou importez le .json d’un audit fait avec la ligne de commande.'
+  $('#hero .hero-full')?.prepend(n)
+}
 ;(async () => {
   const h = location.hash
   if (h.startsWith('#r=')) {

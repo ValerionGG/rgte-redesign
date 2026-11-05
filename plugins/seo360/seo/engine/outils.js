@@ -93,7 +93,8 @@ const price = (t) => t.prix || (t.gratuit ? 'Gratuit (offre gratuite ; offres pa
 export function toolsMarkdown(rec, { guides = true } = {}) {
   const L = ['## Outils recommandés et guides d’installation', '', `Choisis d’après votre audit, votre secteur et vos réseaux. Prix d’entrée indicatifs, vérifiés le ${new Date(rec.verifie + 'T12:00:00Z').toLocaleDateString('fr-FR')} (hors taxes sauf mention) : à reconfirmer chez l’éditeur.`, '']
   const block = (t, withGuide) => {
-    const lines = [`- **[${t.nom}](${t.url})** — ${price(t)}${t.limites_gratuit ? ` (gratuit : ${t.limites_gratuit})` : ''}`, `  ${t.raisons.join(' ') || t.pourquoi}`]
+    const lines = [`- **[${t.nom}](${t.url})** — ${price(t)}`, `  ${t.raisons.join(' ') || t.pourquoi}`]
+    if (t.limites_gratuit && withGuide) lines.push(`  Offre gratuite : ${t.limites_gratuit}`)
     if (withGuide && t.etapes?.length) lines.push(...t.etapes.map((e, i) => `  ${i + 1}. ${e}`))
     if (withGuide && t.doc) lines.push(`  Aide officielle : ${t.doc}`)
     return lines.join('\n')
