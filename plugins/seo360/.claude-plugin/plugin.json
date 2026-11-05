@@ -1,0 +1,21 @@
+{
+  "name": "seo360",
+  "version": "3.0.0",
+  "description": "Pack SEO 360 en français pour TPE et PME : 20 skills (audit SEO, SEO local, IA/GEO, Search Console, contenus, réseaux sociaux, hashtags, budget publicitaire, conformité marketing, calendrier) et la ligne de commande SEO 360 embarquée.",
+  "author": {
+    "name": "ValerionGG",
+    "url": "https://github.com/valeriongg"
+  },
+  "homepage": "https://valeriongg.github.io/rgte-redesign/seo/",
+  "repository": "https://github.com/valeriongg/rgte-redesign",
+  "keywords": [
+    "seo",
+    "seo-local",
+    "geo",
+    "search-console",
+    "hashtags",
+    "google-ads",
+    "tpe",
+    "francais"
+  ]
+}

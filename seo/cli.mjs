@@ -24,9 +24,10 @@ const MAX_BYTES = 5 * 1024 * 1024
 
 const args = process.argv.slice(2)
 
-// ───────── Sous-commande : veille sociale via Agent Reach ─────────
-if (args[0] === 'veille') {
-  await import('./veille-cli.mjs').then((m) => m.main(args.slice(1)))
+// ───────── Sous-commandes : veille sociale (Agent Reach), Search Console, calendrier ─────────
+const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs' }
+if (SUB[args[0]]) {
+  await import(SUB[args[0]]).then((m) => m.main(args.slice(1)))
   process.exit(process.exitCode || 0)
 }
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
@@ -37,6 +38,10 @@ if (!target || opt(['help', 'aide'])) {
 
 Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
         node seo/cli.mjs veille "<sujet>" [--sources reddit,youtube,web] [--marque X]   (veille via Agent Reach)
+        node seo/cli.mjs gsc <export.zip> [--avant <export-precedent.zip>] [--marque X]   (diagnostic Search Console)
+        node seo/cli.mjs calendrier [année] [--secteur <id>] [--alsace] [--sortie dossier]   (temps forts français)
+        node seo/cli.mjs budget --secteur <id> [--objectif leads] [--budget €] [--valeur €] [--marge %]   (budget pub seul)
+        node seo/cli.mjs hashtags --secteur <id> [--mot-cle "a, b"] [--ville X] [--marque X]   (hashtags seuls)
 
   --secteur <id>        ${SECTORS.map((s) => s.id).join(', ')}
   --mot-cle "<texte>"   mot-clé principal visé
@@ -55,6 +60,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --local / --national  forcer le mode local
   --langue fr|en|both   langue des hashtags
   --crawl <n>           explorer n pages du site (défaut 15, 0 = page seule)
+  --avant <rapport.json>  comparer à un audit précédent (refonte, migration) : critique / alerte / info
   --concurrents a,b,c   URL concurrentes à comparer
   --psi-key <clé>       clé API PageSpeed Insights (ou variable PSI_KEY)
   --no-psi              ne pas lancer PageSpeed Insights
@@ -160,8 +166,19 @@ if (opt('veille')) {
   }
 }
 if (opt('cpc') || opt('volume')) {
-  const { planBudget } = await import('./engine/ads.js')
+  const { planBudget, preSpendChecks } = await import('./engine/ads.js')
   report.budget = planBudget({ sector: input.sector, goal: report.kind === 'app' ? 'telechargements' : input.goal, monthly: input.monthly, local: report.input.local, avgValue: input.avgValue, margin: input.margin, closeRate: input.closeRate, targetConversions: input.targetConversions, searchVolume: +opt('volume', 0), cpcOverride: +opt('cpc', 0) })
+  report.budget.checks = preSpendChecks(report)
+}
+// Refonte ou migration : comparaison avec un rapport précédent (critique / alerte / info)
+if (typeof opt('avant') === 'string') {
+  const { readFileSync } = await import('node:fs')
+  const { compareReports } = await import('./engine/drift.js')
+  try {
+    const old = JSON.parse(readFileSync(opt('avant'), 'utf8'))
+    if (!old || typeof old !== 'object' || !old.target || !(old.result || old.ctx)) throw new Error('ce fichier n’est pas un rapport SEO 360 (.json)')
+    report.drift = compareReports(old, report)
+  } catch (e) { log(`\n⚠️  --avant ignoré : ${e.message}`) }
 }
 const md = toMarkdown(report)
 writeFileSync(join(out, `${slug}.md`), md)
@@ -175,6 +192,9 @@ if (R) {
   else log(`\nNote : ${R.global}/100 (${R.grade}) · contrôles mesurés : ${Math.round(R.coverage * 100)} %${R.caps?.length ? ' · plafonnée : ' + R.caps.join(' ; ') : ''}`)
   for (const s of Object.values(R.scores)) log(`  ${s.score == null ? '  —' : String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
   if (report.plan?.week?.length) { log('\nVos 3 actions cette semaine :'); for (const i of report.plan.week) log(`  • ${i.title} (${i.who}${i.time ? ', ' + i.time : ''})`) }
-  if (report.budget?.verdict) log(`\nPublicité : ${report.budget.verdict.text}`)
+  if (report.drift) log(`\nDérive après refonte : ${report.drift.verdict}${report.drift.items.length ? '\n' + report.drift.items.filter((i) => i.level !== 'info').slice(0, 8).map((i) => `  [${i.level}] ${i.rule} — ${i.url}`).join('\n') : ''}`)
+  if (report.budget?.verdict) log(`\nPublicité : ${report.budget.verdict.text}${report.budget.checks?.blocked ? `\n  ⚠️  ${report.budget.checks.message}` : ''}`)
 }
-log(`\n📄 Rapport : ${join(out, slug + '.md')}\n🧾 Données : ${join(out, slug + '.json')} (importable dans l’interface web)\n`)
+log(`\n📄 Rapport : ${join(out, slug + '.md')}\n🧾 Données : ${join(out, slug + '.json')} (importable dans l’interface web)`)
+const firstFix = report.plan?.week?.[0]
+log(`\nProchaine étape : ${firstFix ? `« ${firstFix.title} » (${firstFix.who}${firstFix.time ? ', ' + firstFix.time : ''}), puis relancez l’audit avec --avant ${join(out, slug + '.json')} pour vérifier.` : report.kind === 'site' ? `importez votre export Search Console : node seo/cli.mjs gsc <export.zip>.` : 'appliquez le plan du rapport, puis relancez l’audit.'}\n`)

@@ -121,7 +121,7 @@ export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = nu
   const totals = { clicksMid: Math.round(clicksMid), mid, band: mid != null ? [Math.round(mid * (1 - BAND)), Math.round(mid * (1 + BAND))] : null, cpaMid, impressions: Math.round(est.reduce((s, c) => s + (c.mid.impressions || 0), 0)) }
   const out = {
     sector: sector.label, goal, goalLabel: GOALS[goal], unit, monthly, daily: Math.round(monthly / 30.4), recommended, recommendedUsed, b2b, local, bench, channels,
-    assumptions, maxCpa, totals, cpcSource: cpcOverride > 0 ? `CPC Google : votre valeur (${cpcOverride} €).` : 'CPC Google : estimé d’après des médianes américaines ajustées pour la France ; saisissez votre CPC réel (Keyword Planner) pour un calcul fiable.', dropped: ordered.filter((id) => !active.includes(id)).map((id) => CHANNELS[id].short),
+    assumptions, maxCpa, totals, roasBreakEven: goal === 'ventes' && assumptions.margin > 0 ? 1 / assumptions.margin : null, cpcSource: cpcOverride > 0 ? `CPC Google : votre valeur (${cpcOverride} €).` : 'CPC Google : estimé d’après des médianes américaines ajustées pour la France ; saisissez votre CPC réel (Keyword Planner) pour un calcul fiable.', dropped: ordered.filter((id) => !active.includes(id)).map((id) => CHANNELS[id].short),
     warnings: channels.flatMap((c) => c.warnings), rampUp: rampUp(monthly, channels), seo: seoBudget(sector, local),
   }
   out.verdict = verdict(out)
@@ -155,6 +155,32 @@ function estimate(id, budget, { cpc, cvr, cpm, p }, goal, unit, bench, searchVol
     return { id, label: ch.label, budget, daily: Math.round(daily), min, cpc, cvr, cpm, mid, capClicks, learning: p.learning_phase || '', minimum: p.min_daily_budget || '', bestFor: p.best_for || '', warnings }
   }
   return { id, label: ch.label, budget, daily: Math.round(daily), min, cpc: null, cvr: null, cpm: null, mid: null, noEstimate: ch.noData, learning: '', minimum: `Minimum pratique ≈ ${min} €/mois.`, bestFor: id === 'apple_ads' ? 'Utilisateurs iPhone qui cherchent dans l’App Store : intention forte.' : 'Installations Android et iOS sur Search, Play, YouTube et Display.', warnings }
+}
+
+// Contrôle avant dépense : chaque point vaut ✓ (vérifié), ✗ (manquant) ou ? (à vérifier vous-même).
+// Un ✗ suspend le verdict « rentable » : sans mesure fiable ni page qui convertit, la pub ne peut pas être jugée.
+export function preSpendChecks(report, budget = report?.budget) {
+  const m = report?.result?.meta || {}, psi = report?.ctx?.psi && !report.ctx.psi.error ? report.ctx.psi : null
+  const site = report?.kind === 'site' && !!report?.ctx?.page, tr = m.trackers || [], cmp = m.cmp || []
+  const goal = budget?.goal || report?.input?.goal
+  const conv = tr.includes('Google Ads') ? '✓' : !site ? '?' : tr.some((t) => /Analytics|Tag Manager|Matomo|Piano/.test(t)) ? '?' : '✗'
+  const consent = !site ? '?' : cmp.includes('Consent Mode Google') ? '✓' : cmp.length ? '?' : tr.some((t) => /Ads|Pixel|Analytics|Insight|UET|Tag/.test(t)) ? '✗' : '?'
+  const perf = psi?.scores?.performance, lcp = psi?.field?.LCP
+  const mobile = perf == null && !lcp ? '?' : (perf == null || perf >= 50) && !(lcp > 4000) ? '✓' : '✗'
+  const contact = !site || goal === 'ventes' || goal === 'telechargements' ? '?' : m.telLink || m.forms > 0 ? '✓' : '✗'
+  const checks = [
+    { id: 'conversion', label: 'Conversion suivie', short: 'la mesure des conversions', status: conv, detail: conv === '✓' ? 'Balise Google Ads détectée : vérifiez que l’action de conversion (appel, formulaire, achat) est « principale ».' : conv === '?' ? 'Déclarez vos contacts ou achats comme événements clés dans GA4 et importez-les dans Google Ads (ou ajoutez la balise de conversion).' : 'Aucune mesure détectée : sans conversion suivie, l’algorithme optimise à l’aveugle et vous ne saurez pas ce que rapporte la pub.' },
+    { id: 'consent', label: 'Consent Mode v2', short: 'le Consent Mode v2', status: consent, detail: consent === '✓' ? 'Consent Mode détecté.' : consent === '✗' ? 'Traceurs sans gestion du consentement : obligatoire (CNIL) et indispensable pour que Google Ads modélise les conversions.' : 'Vérifiez dans votre bandeau cookies que le Consent Mode v2 de Google est activé.' },
+    { id: 'mobile', label: 'Vitesse mobile', short: 'la vitesse sur mobile', status: mobile, detail: mobile === '?' ? 'Vitesse non mesurée : lancez l’audit avec PageSpeed.' : mobile === '✓' ? `Score mobile ${perf ?? '—'}${lcp ? `, LCP réel ${(lcp / 1000).toFixed(1).replace('.', ',')} s` : ''}.` : `Page lente sur mobile (score ${perf ?? '—'}${lcp ? `, LCP ${(lcp / 1000).toFixed(1).replace('.', ',')} s` : ''}) : chaque clic payé risque d’être perdu avant l’affichage.` },
+    { id: 'contact', label: 'Téléphone et formulaire', short: 'le téléphone cliquable ou le formulaire', status: contact, detail: contact === '✓' ? `${m.telLink ? 'Téléphone cliquable' : ''}${m.telLink && m.forms ? ' et ' : ''}${m.forms ? 'formulaire' : ''} détecté(s) sur la page.` : contact === '✗' ? 'Ni téléphone cliquable ni formulaire sur la page : ajoutez un lien « tel: » et un formulaire court avant d’acheter des clics.' : goal === 'ventes' ? 'Testez un achat complet sur mobile (fiche produit → panier → paiement).' : 'À vérifier sur la page de destination de vos annonces.' },
+    { id: 'prix', label: 'Prix identiques à l’annonce', status: '?', detail: 'À vérifier vous-même : même offre, même prix, même promesse dans l’annonce et sur la page (sinon clics perdus, et risque de pratique trompeuse).' },
+    { id: 'suivi', label: 'UTM et numéro suivi', status: '?', detail: 'Ajoutez des paramètres UTM aux liens des réseaux et un suivi des appels (extension d’appel Google ou numéro dédié) pour savoir quel canal rapporte.' },
+  ]
+  const missing = checks.filter((c) => c.status === '✗')
+  return {
+    checks, blocked: missing.length > 0,
+    message: missing.length ? `Verdict suspendu : corrigez d’abord ${missing.map((c) => c.short || c.label).join(', ').replace(/, ([^,]*)$/, ' et $1')}.` : checks.some((c) => c.status === '?') ? 'Rien de bloquant détecté : vérifiez les points « ? » avant de lancer.' : 'Tout est prêt pour mesurer la rentabilité.',
+  }
 }
 
 function verdict(b) {

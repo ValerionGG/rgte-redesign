@@ -2,6 +2,7 @@
 // produit des constats classés (critique → faible), des scores par catégorie et un score global.
 import { schemaTypes, topTerms } from './html.js'
 import { parseRobots, botMatrix, ROBOTS_TEMPLATE } from './robots.js'
+import { scoreBlocks, citabilityTemplate } from './citability.js'
 import { sectorById } from '../data/sectors.js'
 
 export const CATEGORIES = {
@@ -148,8 +149,16 @@ export function audit(ctx) {
       if (!bing.allowed) add('ia', 'important', 'robots-bing', 'robots.txt bloque Bingbot', 'Bing alimente ChatGPT Search, Copilot et DuckDuckGo.', 'Autorisez Bingbot.', { effort: 1 })
       const blockedSearch = meta.bots.filter((b) => b.kind === 'ia-recherche' && !b.allowed)
       if (blockedSearch.length) add('ia', 'important', 'robots-ai-search', `Robots de recherche IA bloqués : ${blockedSearch.map((b) => b.ua).join(', ')}`, 'Ces robots servent à citer votre site dans les réponses (ChatGPT, Perplexity, Claude). Les bloquer = disparaître de ces réponses.', 'Autorisez au minimum OAI-SearchBot, PerplexityBot et Claude-SearchBot.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      const blockedUser = meta.bots.filter((b) => b.kind === 'ia-utilisateur' && !b.allowed)
+      if (blockedUser.length) add('ia', 'moyen', 'robots-ai-user', `Lecture à la demande bloquée : ${blockedUser.map((b) => b.ua).join(', ')}`, 'Ces agents lisent votre page quand un utilisateur pose une question à ChatGPT, Claude, Perplexity ou Le Chat (et la cite). Les bloquer empêche de répondre avec vos informations.', 'Autorisez ChatGPT-User, Claude-User, Perplexity-User et MistralAI-User.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       const blockedTrain = meta.bots.filter((b) => b.kind === 'ia-entrainement' && !b.allowed)
-      if (blockedTrain.length) add('ia', 'info', 'robots-ai-train', `Robots d’entraînement IA bloqués : ${blockedTrain.map((b) => b.ua).join(', ')}`, 'Choix éditorial légitime : sans effet sur Google, mais moins de présence dans les connaissances « de base » des modèles.', '', { effort: 1 })
+      if (blockedTrain.length) add('ia', 'info', 'robots-ai-train', `Robots d’entraînement IA bloqués : ${blockedTrain.map((b) => b.ua).join(', ')}`, `Choix éditorial légitime : sans effet sur la recherche Google${blockedTrain.some((b) => b.ua === 'Google-Extended') ? ' ni sur AI Overviews (Google-Extended ne règle que Gemini)' : ''}, mais moins de présence dans les connaissances « de base » des modèles. Pour de grands éditeurs, bloquer les robots IA a coûté environ 7 % de trafic (étude révisée, ppc.land 2026) et 70,6 % des sites bloquants restent cités.`, '', { effort: 1 })
+      if (parsed.signal && Object.keys(parsed.signal).length) {
+        const sg = parsed.signal, txt = Object.entries(sg).map(([k, v]) => `${k}=${v ? 'yes' : 'no'}`).join(', ')
+        meta.contentSignal = sg
+        if (sg['ai-input'] === false) add('ia', 'moyen', 'content-signal', `Content-Signal refuse les réponses IA (${txt})`, 'Ligne « Content-Signal » (politique de Cloudflare) : vous demandez que vos contenus ne servent pas de source aux réponses IA. C’est une préférence, pas un blocage technique ; les moteurs qui la respectent vous citeront moins.', 'Si vous voulez être cité par les IA, passez à « Content-Signal: search=yes, ai-input=yes, ai-train=no » (réglage dans Cloudflare : AI Crawl Control).', { effort: 1 })
+        else add('ia', 'ok', 'content-signal', `Préférences IA déclarées (Content-Signal : ${txt})`)
+      }
       if (!parsed.sitemaps.length) add('technique', 'faible', 'robots-sitemap', 'robots.txt ne déclare pas le sitemap', '', `Ajoutez « Sitemap: ${origin}/sitemap.xml » à la fin du fichier.`, { effort: 1 })
       if (/\.css|\.js|\/wp-content|\/assets/i.test(ctx.robots.body) && /disallow:\s*\S*(\.css|\.js|wp-content|wp-includes|assets)/i.test(ctx.robots.body)) add('technique', 'moyen', 'robots-assets', 'robots.txt bloque des CSS/JS', 'Google doit pouvoir charger les ressources pour rendre la page.', 'Retirez les Disallow sur les CSS/JS/thèmes.', { effort: 1 })
     } else if (ctx.robots.status >= 400 && ctx.robots.status < 500) add('technique', 'faible', 'robots-missing', 'Pas de fichier robots.txt', 'Sans robots.txt, tout est crawlable — mais vous ne pouvez pas déclarer le sitemap ni régler les robots IA.', 'Créez /robots.txt.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
@@ -303,6 +312,14 @@ export function audit(ctx) {
     if (!p.verification.some((v) => /msvalidate/.test(v))) add('ia', 'info', 'bing', 'Bing Webmaster Tools non vérifié (balise absente)', 'ChatGPT Search et Copilot s’appuient sur l’index Bing. La vérification peut aussi se faire par DNS ou via Search Console.', 'Inscrivez le site sur bing.com/webmasters (import depuis Search Console en 2 clics) et activez IndexNow.', { effort: 1 })
     const numbers = (p.text.match(/\b\d+[\d\s.,]*\s?(%|€|ans|clients|m2|m²|km|années|projets|\+)/gi) || []).length
     if (p.wordCount > 200 && numbers < 2) add('ia', 'faible', 'facts', 'Peu de faits chiffrés', 'Les IA citent volontiers des données précises (chiffres, dates, prix, délais).', 'Ajoutez des preuves chiffrées : années d’expérience, nombre de clients, délais, garanties, prix indicatifs.', { effort: 2 })
+    // Citabilité par bloc H2/H3 : les 3 passages à réécrire en priorité
+    const scored = scoreBlocks(p.blocks)
+    if (scored.length >= 2) {
+      meta.citabilite = scored.slice(0, 20)
+      const weak = scored.filter((b) => b.score <= 2).sort((a, b) => a.score - b.score || b.words - a.words)
+      if (weak.length) add('ia', weak.length >= 3 && weak.length / scored.length >= 0.5 ? 'moyen' : 'faible', 'citabilite', `${weak.length} bloc(s) sur ${scored.length} peu citables par les IA`, `Un passage est repris par les moteurs de réponse quand il se suffit à lui-même. À réécrire d’abord : ${weak.slice(0, 3).map((b) => `« ${b.heading} » (manque : ${b.fails.join(', ')})`).join(' ; ')}.`, 'Pour chaque bloc : intertitre en vraie question, réponse directe dès la 1re phrase qui nomme le sujet, un fait précis (prix, délai, lieu, chiffre daté), 50 à 200 mots.', { effort: 2, code: citabilityTemplate(weak.slice(0, 3)) })
+      else add('ia', 'ok', 'citabilite', `Blocs citables : ${scored.length}/${scored.length} passent au moins 3 règles sur 5`)
+    }
   }
 
   // ───────────────────────── Social & marque ─────────────────────────
@@ -326,6 +343,8 @@ export function audit(ctx) {
     const telLink = p.links.find((l) => /^tel:/.test(l.raw || ''))
     meta.phone = (telLink && (telLink.text.match(PHONE_RE)?.[0] || decodeSafe(telLink.raw.slice(4)).trim())) || p.text.match(PHONE_RE)?.[0] || ''
     meta.address = findAddress(p)
+    meta.telLink = !!telLink
+    meta.forms = p.forms || 0
     meta.orgName = orgName(p.jsonLd)
   }
   if (ctx.fetch?.uaFallback) add('technique', 'info', 'ua-fallback', 'Le site refuse les robots inconnus', 'L’audit s’est d’abord présenté comme « SEO360-Audit » et a été refusé ; il a été fait en se présentant comme un navigateur.', 'Vérifiez dans Search Console (Inspection d’URL) que Googlebot et Bingbot passent bien votre pare-feu.', { effort: 1 })

@@ -1,6 +1,6 @@
 {
- "generated": "2026-11-03",
- "method": "Environ 55 requêtes GitHub Search API (gh api search/repositories, tri par étoiles) sur l'audit, le crawl, la performance, les données structurées, le suivi de positions, les mots-clés, le GEO/llms.txt, l'ASO, les hashtags, la publicité, l'analytics et les skills d'agent, plus les topics seo/seo-tools/aso/llms-txt ; sélection manuelle selon la pertinence et les étoiles. Chiffres relevés le 2026-11-03.",
+ "generated": "2026-11-05",
+ "method": "Environ 55 requêtes GitHub Search API (gh api search/repositories, tri par étoiles) sur l'audit, le crawl, la performance, les données structurées, le suivi de positions, les mots-clés, le GEO/llms.txt, l'ASO, les hashtags, la publicité, l'analytics et les skills d'agent, plus les topics seo/seo-tools/aso/llms-txt ; sélection manuelle selon la pertinence et les étoiles. Chiffres relevés le 2026-11-03. Complété le 2026-11-05 : 32 dépôts de skills d'agent lus (étoiles, licences, dates via l'API GitHub), dont les idées reprises sont indiquées ; aucun texte copié, aucun script exécuté.",
  "projects": [
   {
    "name": "Panniantong/Agent-Reach",
@@ -10,8 +10,8 @@
    "license": "MIT",
    "last_push": "2026-11-05",
    "category": "social-hashtags",
-   "what": "CLI en lecture seule qui donne aux agents IA l’accès à Reddit, YouTube (sous-titres), X, GitHub, LinkedIn, Instagram, XiaoHongShu et au web, avec une sortie JSON unique et des codes d’erreur normalisés.",
-   "borrow": "Intégré à SEO 360 : commande « veille » (questions réelles, hashtags observés, mentions de marque) et skill veille-sociale ; reprise de ses règles (lecture seule, pas de relance en boucle, connexion faite par l’utilisateur)."
+   "what": "CLI en lecture seule qui donne aux agents IA l’accès à Reddit, YouTube (sous-titres), GitHub et au web, avec X et Instagram en expérimental et LinkedIn limité aux offres d’emploi (pas de TikTok) ; sortie JSON unique et codes d’erreur normalisés.",
+   "borrow": "Intégré à SEO 360 : commande « veille » (questions réelles, hashtags observés, mentions de marque) et skill veille-sociale ; reprise de ses règles (lecture seule, 10 s entre deux recherches sur une même plateforme, pas de relance en boucle, connexion faite par l’utilisateur, installation officielle depuis GitHub)."
   },
   {
    "name": "coreyhaines31/marketingskills",
@@ -22,7 +22,7 @@
    "last_push": "2026-10-31",
    "category": "agent-skills",
    "what": "Bibliothèque de skills marketing pour Claude Code et agents IA (CRO, copywriting, SEO, analytics, growth).",
-   "borrow": "Structurer nos modules en skills composables et documentés (un SKILL.md par tâche) que les agents des clients peuvent appeler."
+   "borrow": "Skill contexte-entreprise : .claude/contexte-entreprise.md lu par les 20 skills avant toute question ; méthode « remonter les positions 8-20 » (une modification à la fois, 3 à 4 semaines) dans seo-360 et l'import Search Console."
   },
   {
    "name": "gitroomhq/postiz-app",
@@ -99,7 +99,7 @@
    "last_push": "2026-11-01",
    "category": "agent-skills",
    "what": "Skill SEO universel pour Claude Code : 26 sous-skills et 19 sous-agents (technique, E-E-A-T, schema, GEO, local).",
-   "borrow": "Orchestration en sous-agents spécialisés lancés en parallèle, chacun produisant une section de rapport scorée."
+   "borrow": "Comparaison avant/après refonte (node seo/cli.mjs <url> --avant) classée critique / alerte / info ; garde-fou des pages ville ; FAQPage présenté de façon neutre ; vérification du type de page dominant dans seo-360."
   },
   {
    "name": "every-app/open-seo",
@@ -143,7 +143,7 @@
    "last_push": "2026-10-27",
    "category": "agent-skills",
    "what": "Serveur MCP SEO gratuit et skills SEO/GEO pour Claude (mots-clés, positions, audits, backlinks).",
-   "borrow": "Exposer toute la plateforme via un serveur MCP pour que Claude/ChatGPT interrogent nos données directement."
+   "borrow": "Comparaison de deux périodes dans l'import Search Console (gagnants, perdants, pages en déclin, cause probable) ; arbitrage SEO contre SEA dans budget-publicite."
   },
   {
    "name": "GoogleChrome/web-vitals",
@@ -562,6 +562,83 @@
    "category": "social-hashtags",
    "what": "Petit générateur qui convertit des mots-clés en hashtags pour Facebook, Instagram et X.",
    "borrow": "Montre le vide du domaine : partir de cette base simple et ajouter volumes, tendances et règles par réseau."
+  },
+  {
+   "name": "anthropics/skills",
+   "url": "https://github.com/anthropics/skills",
+   "stars": 187679,
+   "language": "Markdown/Python",
+   "license": "Apache-2.0 par skill",
+   "last_push": "2026-10-28",
+   "category": "agent-skills",
+   "what": "Dépôt officiel des Agent Skills d'Anthropic, dont skill-creator : écrire un skill, l'évaluer avec et sans, comparer deux versions à l'aveugle et ajuster sa description.",
+   "borrow": "Évaluations par skill (2 cas qui déclenchent, 1 cas voisin qui ne doit pas) dans plugins/seo360/evals, descriptions resserrées pour la liste des skills."
+  },
+  {
+   "name": "mvanhorn/last30days-skill",
+   "url": "https://github.com/mvanhorn/last30days-skill",
+   "stars": 66700,
+   "language": "Python",
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "category": "social-hashtags",
+   "what": "Skill de veille sur les 30 derniers jours : Reddit, Hacker News, GitHub, Polymarket sans clé ; TikTok, Instagram, Threads et LinkedIn via ScrapeCreators (clé payante).",
+   "borrow": "Complément d'Agent Reach pour TikTok (que la commande veille ignore en l'expliquant) dans le skill veille-sociale."
+  },
+  {
+   "name": "ScrapeCreators/social-media-research-skills",
+   "url": "https://github.com/ScrapeCreators/social-media-research-skills",
+   "stars": 5759,
+   "language": "Markdown",
+   "license": "MIT",
+   "last_push": "2026-08-26",
+   "category": "social-hashtags",
+   "what": "13 skills de recherche sociale (commentaires, tendances, bibliothèques publicitaires, concurrents) sur TikTok, Instagram, YouTube via l'API ScrapeCreators.",
+   "borrow": "Publications « hors norme » (1,5×, 2×, 5× la médiane du compte) et classement des commentaires dans veille-sociale et contenus-reseaux-video."
+  },
+  {
+   "name": "sergebulaev/instagram-skills",
+   "url": "https://github.com/sergebulaev/instagram-skills",
+   "stars": 754,
+   "language": "Markdown",
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "category": "social-hashtags",
+   "what": "Skills Instagram : hashtags par taille, accroche dans les 125 premiers caractères.",
+   "borrow": "Niveau attendu par hashtag (niche, moyen, large) dans le générateur, l'interface et le rapport, avec le mélange 2-3 / 1-2 / 0-1."
+  },
+  {
+   "name": "rampstackco/claude-skills",
+   "url": "https://github.com/rampstackco/claude-skills",
+   "stars": 1037,
+   "language": "Markdown",
+   "license": "MIT",
+   "last_push": "2026-10-27",
+   "category": "agent-skills",
+   "what": "Skills SEO avec sections fixes (« Quand ne pas l'utiliser ») et diagnostic de baisse en couches.",
+   "borrow": "Skill diagnostic-baisse-trafic (5 couches) ; sections « Quand ne pas l'utiliser », « Terminé quand », « Jamais » dans les 20 skills, vérifiées par un test."
+  },
+  {
+   "name": "iannuttall/seo",
+   "url": "https://github.com/iannuttall/seo",
+   "stars": 604,
+   "language": "Markdown",
+   "license": "Apache-2.0",
+   "last_push": "2026-11-05",
+   "category": "agent-skills",
+   "what": "Skill SEO avec statut des actions et prochaine étape en fin de sortie.",
+   "borrow": "Statut « fait (déclaré) » contre « encore détecté » au contrôle suivant ; ligne « Prochaine étape » à la fin de chaque commande."
+  },
+  {
+   "name": "ChromeDevTools/chrome-devtools-mcp",
+   "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+   "stars": 54800,
+   "language": "TypeScript",
+   "license": "Apache-2.0",
+   "last_push": "2026-11-04",
+   "category": "performance",
+   "what": "MCP officiel de Chrome : traces de performance, Lighthouse (dont la catégorie « agentic browsing »), console et réseau.",
+   "borrow": "Piste pour mesurer la vitesse en local quand PageSpeed est indisponible ; cité dans le skill seo-audit-technique."
   }
  ],
  "feature_gaps": [
@@ -577,6 +654,7 @@
   "Recherche de mots-clés ASO multi-pays fiable sans abonnement coûteux : les outils open-source se limitent souvent à iOS ou au desktop macOS."
  ],
  "top_insights": [
+  "Les meilleurs packs de skills (marketingskills 58,7 k étoiles, claude-seo 26,9 k) partagent trois choses que SEO 360 a reprises : un fichier de contexte lu par tous les skills, des évaluations par skill, et des sections fixes (quand ne pas l’utiliser, terminé quand, jamais). Aucun ne couvre le droit français, les temps forts français ni l’export Search Console lu en local : c’est l’avantage de SEO 360.",
   "Agent Reach (≈ 109 000 étoiles, MIT) est devenu la brique standard pour donner aux agents l’accès aux réseaux sociaux en lecture : c’est la source de données réelles qui manquait pour les hashtags et la demande (questions Reddit, titres YouTube).",
   "Le centre de gravité a basculé vers les skills et serveurs MCP pour agents IA : marketingskills (58k), claude-seo (26k), geo-seo-claude (11k) et claude-ads (10k) dépassent en étoiles tous les outils SEO classiques sauf Lighthouse.",
   "Le GEO/AEO est la catégorie la plus active : des dizaines de projets poussés en octobre-novembre 2026 (elmo, GEOInflow, geo-optimizer, trackers de visibilité IA), mais tous encore petits ; la place de leader est à prendre.",

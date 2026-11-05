@@ -5,7 +5,7 @@ import { runPSI } from './psi.js'
 import { actionPlan } from './plan.js'
 import { generateHashtags } from './hashtags.js'
 import { keywordIdeas } from './keywords.js'
-import { planBudget, GOALS } from './ads.js'
+import { planBudget, preSpendChecks, GOALS } from './ads.js'
 import { fetchRepo, auditRepo, parseRepo, GH_CATS } from './github.js'
 import { parseStoreUrl, lookupIOS, auditIOS, auditPlayHtml, ASO_CATS } from './appstore.js'
 import { sectorById } from '../data/sectors.js'
@@ -73,6 +73,7 @@ export async function analyze(target, o = {}) {
   report.hashtags = generateHashtags({ sector: input.sector, keywords: kws, terms, city: input.city, region: input.region, brand: input.brand, lang: input.lang })
   report.keywords = keywordIdeas({ seed: input.keyword || terms[0] || '', sector: input.sector, city: input.city, local })
   report.budget = planBudget({ sector: input.sector, goal: kind === 'app' ? 'telechargements' : input.goal, monthly: input.monthly == null || input.monthly === '' ? null : +input.monthly, local, avgValue: +input.avgValue || 0, margin: input.margin, closeRate: input.closeRate, targetConversions: +input.targetConversions || 0 })
+  report.budget.checks = preSpendChecks(report)
   report.plan = actionPlan(report.result, { local, hasAds: +input.monthly > 0, kind })
   return report
 }

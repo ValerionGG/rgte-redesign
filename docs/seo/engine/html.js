@@ -50,6 +50,9 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
   }
   const stack = [] // éléments capturant du texte : {tag, text}
   const textParts = []
+  // Blocs H2/H3 (pour la citabilité) : position dans le texte visible à l'ouverture et à la fermeture du titre
+  const marks = []
+  let tlen = 0, footerAt = -1
   let inHead = true, inBody = false, inSvg = 0
   const HEADISH = new Set(['html', 'head', 'title', 'meta', 'link', 'script', 'style', 'base', 'noscript', 'template'])
   const tagRe = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<!doctype[^>]*>|<\?[\s\S]*?\?>|<(\/?)([a-zA-Z][\w:-]*)((?:\s+(?:[^\s"'>\/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)|\s*\/(?!>))*)\s*(\/?)>/g
@@ -57,11 +60,11 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
   const pushText = (raw) => {
     if (!raw) return
     const t = decode(raw)
-    if (!inSvg && (inBody || !inHead)) textParts.push(t)
+    if (!inSvg && (inBody || !inHead)) { textParts.push(t); tlen += t.length }
     for (const s of stack) if (s.text.length < 3000) s.text += t
   }
   // Séparateur de mots entre éléments en ligne (sinon « Accueil » + « Nos gâteaux » = « AccueilNos gâteaux »)
-  const sep = () => { textParts.push(' '); for (const s of stack) s.text += ' ' }
+  const sep = () => { textParts.push(' '); tlen++; for (const s of stack) s.text += ' ' }
   while ((m = tagRe.exec(html))) {
     pushText(html.slice(last, m.index))
     last = tagRe.lastIndex
@@ -82,6 +85,8 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
       for (let i = stack.length - 1; i >= 0; i--) if (same(stack[i])) { finish(stack.splice(i, 1)[0]); break }
     }
     if (tag === 'body') { inBody = true; inHead = false }
+    if ((tag === 'h2' || tag === 'h3') && !inSvg) marks.push({ level: +tag[1], open: tlen })
+    if (tag === 'footer' && footerAt < 0) footerAt = tlen
     else if (inHead && !HEADISH.has(tag)) inHead = false
     if (tag === 'svg') inSvg++
     if (RAW.has(tag)) {
@@ -192,7 +197,10 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
   function finish(s) {
     const text = clean(s.text)
     if (s.tag === 'title') { if (!inSvg) { p.titles.push(text); if (p.title === null) p.title = text } }
-    else if (/^h[1-6]$/.test(s.tag)) p.headings.push({ level: +s.tag[1], text })
+    else if (/^h[1-6]$/.test(s.tag)) {
+      p.headings.push({ level: +s.tag[1], text })
+      if (s.tag === 'h2' || s.tag === 'h3') { const mk = marks.findLast((x) => x.start == null && x.level === +s.tag[1]); if (mk) { mk.start = tlen; mk.text = text } }
+    }
     else if (s.tag === 'a') {
       const raw = s.attrs.href
       const href = raw != null ? resolve(raw, p.base ? resolve(p.base, baseUrl) : baseUrl) : null
@@ -206,8 +214,16 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     else if (s.tag === 'p') { if (text.length >= 40) p.paragraphs.push(text) }
   }
 
-  p.text = textParts.join('').replace(/\s+/g, ' ').trim()
+  const raw = textParts.join('')
+  p.text = raw.replace(/\s+/g, ' ').trim()
   p.wordCount = p.text ? p.text.split(' ').filter((w) => /[\p{L}\p{N}]/u.test(w)).length : 0
+  const done = marks.filter((x) => x.start != null && x.text && !(footerAt >= 0 && x.open >= footerAt))
+  p.blocks = done.slice(0, 40).map((x, i) => {
+    let end = i + 1 < done.length ? done[i + 1].open : raw.length
+    if (footerAt > x.start && footerAt < end) end = footerAt
+    const text = raw.slice(x.start, end).replace(/\s+/g, ' ').trim()
+    return { level: x.level, heading: x.text, text: text.slice(0, 2500), words: text ? text.split(' ').filter((w) => /[\p{L}\p{N}]/u.test(w)).length : 0 }
+  })
   return p
 }
 

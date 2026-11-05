@@ -158,6 +158,38 @@ Recherche du 2026-11-03 menée par agents (recherche web + API GitHub). Données
 - Les licences sont majoritairement MIT/Apache, mais les plateformes complètes (Postiz, Plausible, RespectASO) sont en AGPL : on peut s'en inspirer, mais pas intégrer leur code dans un SaaS fermé.
 - Attention aux étoiles gonflées sur certains dépôts récents de skills ou MCP (dépôt de scripts Shell à plusieurs milliers d'étoiles, dépôts sans licence) : vérifier la qualité réelle avant de s'en inspirer.
 
+## 5 bis. Écosystème des skills d’agent (novembre 2026)
+
+Étude du 5 novembre 2026 : 32 dépôts de skills et de serveurs MCP lus (étoiles, licences et dates relevées par l’API GitHub), plus une veille Reddit et web. Les idées reprises sont citées ; aucun texte n’a été copié et aucun script exécuté. Le dépôt irinabuht12-oss/marketing-skills n’a pas de licence : idées seulement.
+
+| Dépôt | ★ | Licence | Ce que SEO 360 en a repris |
+|---|---:|---|---|
+| anthropics/skills (skill-creator) | 187,7 k | Apache-2.0 par skill | Évaluations par skill (2 cas qui déclenchent, 1 cas voisin), descriptions resserrées |
+| Panniantong/Agent-Reach | 109,1 k | MIT | Commande `veille`, installation officielle, 10 s entre deux recherches, lecture seule |
+| mvanhorn/last30days-skill | 66,7 k | MIT | Complément pour TikTok, qu’Agent Reach ne couvre pas |
+| coreyhaines31/marketingskills | 58,7 k | MIT | Fichier de contexte partagé (`.claude/contexte-entreprise.md`), positions 8-20 |
+| AgriciDaniel/claude-seo | 26,9 k | MIT | Dérive après refonte (`--avant`), garde-fou pages ville, FAQPage neutre |
+| zubair-trabzada/geo-seo-claude | 11,5 k | MIT | Citabilité par bloc H2/H3 dans l’audit |
+| AgriciDaniel/claude-ads | 10,8 k | MIT | ROAS d’équilibre, contrôle avant dépense |
+| Ryze-AI-Adgent/open-seo-mcp-skills | 8,9 k | MIT | Comparaison de deux périodes Search Console, SEO contre SEA |
+| ScrapeCreators/social-media-research-skills | 5,8 k | MIT | Publications hors norme (médiane du compte), commentaires classés |
+| rampstackco/claude-skills | 1,0 k | MIT | Diagnostic de baisse en 5 couches, sections fixes |
+| iannuttall/seo | 0,6 k | Apache-2.0 | « Fait (déclaré) » contre « encore détecté », prochaine étape |
+
+**Ce qui distingue SEO 360 :**
+- C’est le seul pack en français, et le seul à couvrir le droit français : influence, prix de référence sur 30 jours, avis en ligne, démarchage.
+- Il intègre les temps forts français calculés, avec l’export CSV et .ics.
+- Il lit l’export Search Console en local, sans clé ni compte de service.
+
+Les packs étudiés citent la FTC et le CAN-SPAM, et leurs calendriers sont américains.
+
+**Ce qui reste devant nous :**
+- suivi automatisé des réponses IA (elmo) ;
+- analyse des journaux serveur ;
+- grille de positions locales ;
+- import des termes de recherche Google Ads ;
+- statistiques de posts en CSV.
+
 ## 6. Benchmarks clés 2026
 
 | Secteur (Google Ads, US) | CTR | CPC | Taux conv. | Coût/lead |

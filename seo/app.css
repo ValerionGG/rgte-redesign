@@ -245,3 +245,8 @@ dl.gloss { grid-template-columns: 180px 1fr; }
 /* Glossaire lisible au toucher et au clavier : la définition s'affiche en bas de l'écran au focus */
 abbr[title]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 abbr[title]:focus::after { content: attr(title); position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60; max-width: 640px; margin: 0 auto; background: var(--text); color: var(--bg); font-size: .9rem; font-weight: 500; line-height: 1.45; padding: 12px 14px; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); text-decoration: none; }
+.card h4 { margin: 16px 0 6px; font-size: .95rem; }
+ol.todo { padding-left: 1.3em; margin: 6px 0 10px; } ol.todo li { margin: 5px 0; }
+label.inline { display: inline-flex; flex-direction: row; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); font-weight: 600; }
+.htag.lvl-niche { border-left: 3px solid var(--ok); } .htag.lvl-moyen { border-left: 3px solid var(--mid); } .htag.lvl-large { border-left: 3px solid var(--line); }
+ul.checks li { margin: 8px 0; }

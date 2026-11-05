@@ -4,10 +4,61 @@ Entrez **un site, une application (App Store / Google Play) ou un dépôt GitHub
 
 - **Interface web** : `seo/index.html`, publiée sur https://valeriongg.github.io/rgte-redesign/seo/
 - **CLI** (audit complet : en-têtes, redirections, crawl) : `node seo/cli.mjs <cible>`
-- **Skills Claude Code** : `.claude/skills/` (9 skills, voir plus bas)
+- **Skills Claude Code** : `.claude/skills/` (20 skills, voir plus bas), aussi installables comme plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`
 - **Étude concurrentielle & benchmark** : [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md)
 
 Aucune dépendance : Node ≥ 18 et un navigateur récent suffisent.
+
+## Version 3 : les meilleurs skills de GitHub, Reddit et du web, intégrés
+
+Trois études parallèles (5 novembre 2026) :
+- 32 dépôts de skills et de MCP lus (anthropics/skills, marketingskills, claude-seo, geo-seo-claude, claude-ads…) ;
+- une veille Reddit et web (63 constats sourcés, 24 outils) ;
+- Agent Reach relu à la source.
+
+Ce qui en sort, détail dans [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md) :
+
+**20 skills au lieu de 10.**
+- 10 nouveaux :
+  - `contexte-entreprise` : une fiche lue par tous les skills, pour ne plus répéter ses infos ;
+  - `avis-clients-reputation`, `diagnostic-baisse-trafic`, `conversion-site`, `contenu-seo-redaction`, `contenus-reseaux-video` ;
+  - `conformite-marketing-fr` : droit français vérifié sur Légifrance, la DGCCRF et la CNIL ;
+  - `calendrier-marketing-fr`, `suivi-performance-mensuel`, `netlinking-mentions-locales`.
+- Les 10 existants sont réécrits :
+  - verdict d'abord, et constats étiquetés Confirmé, Probable ou Hypothèse ;
+  - sections fixes « quand ne pas l'utiliser », « terminé quand » et « jamais » ;
+  - descriptions resserrées : 9 800 caractères au lieu de 19 000 pour la liste des skills.
+- 60 évaluations (`plugins/seo360/evals`, format `claude plugin eval`) : 2 cas qui déclenchent chaque skill, 1 cas voisin qui ne doit pas.
+- Plugin Claude Code `seo360`, validé par `claude plugin validate`, avec la ligne de commande embarquée. Il s'installe dans n'importe quel projet.
+
+**Search Console complet.** Le ZIP est lu en entier : requêtes, pages, pays, appareils, courbe quotidienne. On y trouve :
+- la part des clics de marque, les requêtes de marque étant écartées des opportunités ;
+- la comparaison de deux périodes, avec gagnants, perdants et cause probable (« positions stables, moins de clics : réponse IA, pas une pénalité ») ;
+- la chute datée, rapprochée des mises à jour Google confirmées ;
+- l'export « Liens » : sites référents, ancres suroptimisées, liens perdus entre deux exports.
+
+Interface et `node seo/cli.mjs gsc`.
+
+**Audit.**
+- Citabilité par bloc H2/H3 : les 3 passages à réécrire pour être cité par les IA, avec un gabarit.
+- Robots IA en 3 niveaux (recherche, lecture à la demande, entraînement). Correction : Google-Extended n'agit pas sur AI Overviews.
+- Lecture de `Content-Signal`.
+- Comparaison avant/après refonte (`--avant ancien-rapport.json`), classée critique, alerte ou info.
+
+**Décision.**
+- Contrôle avant dépense : 6 points ✓, ✗ ou ?. Un ✗ suspend le verdict « rentable ».
+- ROAS d'équilibre.
+- Hashtags classés niche, moyen ou large.
+- Calendrier français calculé (soldes, fête des mères, Black Friday, fériés, ponts, Alsace-Moselle), avec export CSV et .ics.
+- Statut « fait (déclaré) » ou « encore détecté » au contrôle suivant.
+- Évolution de note affichée seulement à couverture comparable.
+
+**Faits 2026 corrigés et datés.**
+- Rapport IA de Search Console (juin 2026), filtre de marque.
+- Spam updates de juin, août et septembre.
+- Q&R de la fiche Google remplacées par Ask Maps.
+- Mentions de marque plus corrélées que les liens à la visibilité IA (0,664 contre 0,218).
+- Un test échoue si les données de référence ont plus de 120 jours.
 
 ## Version 2 : ce que l’audit du conseil a changé
 
@@ -49,7 +100,7 @@ Et en plus de l’audit :
 
 ## Veille sociale avec Agent Reach
 
-[Agent Reach](https://github.com/Panniantong/Agent-Reach) (MIT, ≈ 109 000 étoiles) donne à un agent IA un accès en lecture seule à Reddit, YouTube, X, GitHub, LinkedIn, Instagram et au web. SEO 360 s’en sert pour mesurer la **demande réelle** :
+[Agent Reach](https://github.com/Panniantong/Agent-Reach) (MIT, ≈ 109 000 étoiles) donne à un agent IA un accès en lecture seule à Reddit, YouTube (sous-titres compris), GitHub et au web ; X et Instagram y sont expérimentaux, LinkedIn se limite aux offres d’emploi et TikTok n’existe pas (la commande le signale et propose last30days-skill). SEO 360 s’en sert pour mesurer la **demande réelle** :
 
 ```bash
 node seo/cli.mjs veille "pâtisserie lyon" --sources reddit,youtube,web --marque "Maison Exemple" --requetes "gâteau anniversaire lyon"
@@ -62,13 +113,14 @@ Le rapport contient :
 
 Le `.json` s’importe dans l’onglet Mots-clés & réseaux : les hashtags vus dans au moins 2 publications deviennent prioritaires dans les sélections par réseau.
 
-Les règles d’Agent Reach sont respectées : lecture seule, l’utilisateur se connecte lui-même, et pas de relance en boucle sur « connexion requise » ou « limite atteinte ».
+Les règles d’Agent Reach sont respectées : lecture seule, l’utilisateur se connecte lui-même, 10 secondes entre deux recherches sur une même plateforme, et pas de relance en boucle sur « connexion requise » ou « limite atteinte ».
 
 Installation, **depuis GitHub uniquement** (le paquet PyPI homonyme n’est pas ce projet) :
 
 ```bash
-uv tool install https://github.com/Panniantong/Agent-Reach/archive/refs/tags/v1.6.0.zip
+uv tool install https://github.com/Panniantong/Agent-Reach/releases/latest/download/agent-reach.zip
 agent-reach setup
+agent-reach check reddit --text   # test réel d’un canal (« doctor » seul peut se tromper)
 ```
 
 Le skill `veille-sociale` guide Claude Code de bout en bout.
@@ -84,8 +136,17 @@ node seo/cli.mjs https://www.exemple.fr \
 
 node seo/cli.mjs https://apps.apple.com/fr/app/<nom>/id<ID> --mot-cle "recettes"
 node seo/cli.mjs owner/repo
+node seo/cli.mjs https://www.exemple.fr --avant rapports-seo/www-exemple-fr.json   # après une refonte
+
+node seo/cli.mjs gsc export.zip liens.zip --avant export-precedent.zip --marque RGTE   # Search Console
+node seo/cli.mjs calendrier 2027 --secteur restaurant --sortie rapports-seo          # temps forts (.md, .csv, .ics)
+node seo/cli.mjs budget --secteur btp --budget 1500 --valeur 2500 --marge 40        # budget pub sans audit
+node seo/cli.mjs hashtags --secteur boulangerie --mot-cle "entremets" --ville Lyon  # hashtags sans audit
+node seo/cli.mjs veille "pâtisserie lyon" --marque "Maison Exemple"                 # demande réelle (Agent Reach)
 node seo/cli.mjs --aide
 ```
+
+Chaque commande se termine par la prochaine étape à faire.
 
 Variables d’environnement : `PSI_KEY` (clé PageSpeed Insights gratuite, fortement conseillée) et `GITHUB_TOKEN`.
 
@@ -103,30 +164,41 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 
 | Skill | Usage |
 |---|---|
-| `seo-360` | étude complète : audit, plan, mots-clés, hashtags, budget, concurrents |
-| `seo-audit-technique` | diagnostic technique / on-page approfondi avec correctifs |
+| `contexte-entreprise` | la fiche `.claude/contexte-entreprise.md` lue par tous les skills (à faire en premier) |
+| `seo-360` | point d'entrée : audit complet, plan, mots-clés, hashtags, budget, concurrents |
+| `seo-audit-technique` | technique et on-page, refonte et migration (`--avant`) |
+| `diagnostic-baisse-trafic` | chute de trafic en 5 couches, avec l'import Search Console |
 | `geo-visibilite-ia` | être cité par ChatGPT, Perplexity, Claude, Gemini, AI Overviews |
-| `seo-local` | fiche Google, avis, NAP, pages ville |
-| `hashtags-reseaux` | hashtags et légendes par réseau (règles 2026) |
-| `budget-publicite` | budget et répartition Google / Meta / TikTok / LinkedIn… |
-| `benchmark-concurrents` | concurrents, marché, SWOT, positionnement |
+| `contenu-seo-redaction` | pages et articles qui se classent et que les IA citent |
+| `netlinking-mentions-locales` | liens et mentions propres, audit de l'export « Liens » |
+| `seo-local` | fiche Google, NAP, pages ville, fiche suspendue, entreprise sans vitrine |
+| `avis-clients-reputation` | obtenir des avis, y répondre, faux avis, règles françaises |
+| `conversion-site` | transformer les visites en appels, devis, ventes |
+| `hashtags-reseaux` | hashtags et légendes par réseau, niveau niche / moyen / large |
+| `contenus-reseaux-video` | accroches, scripts Reels / TikTok / Shorts, plan de 2 semaines |
+| `veille-sociale` | demande réelle via Agent Reach : questions, hashtags observés, mentions |
+| `calendrier-marketing-fr` | temps forts français calculés, export CSV et .ics |
+| `budget-publicite` | budget, verdict de rentabilité, contrôle avant dépense |
+| `conformite-marketing-fr` | droit français du marketing (influence, prix, avis, démarchage, cookies) |
+| `suivi-performance-mensuel` | rapport mensuel, « fait » contre « encore détecté », marque blanche |
+| `benchmark-concurrents` | concurrents, pubs actives, SWOT, positionnement |
 | `aso-application` | App Store / Google Play |
 | `github-seo` | référencement d’un dépôt GitHub |
-| `veille-sociale` | demande réelle via Agent Reach : questions Reddit/YouTube, hashtags observés, mentions |
 
-Pour les utiliser dans un autre projet, copiez le dossier `.claude/skills/<nom>` dans `~/.claude/skills/` (et le dossier `seo/` pour les outils). Sur claude.ai, chaque dossier zippé peut s’importer comme skill.
+**Dans un autre projet**, installez le plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`. Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Sur claude.ai, chaque dossier de skill zippé peut s’importer.
 
 ## Structure
 
 ```
 seo/
   index.html, app.css, app.js   interface (modules ES, sans build)
-  cli.mjs                       ligne de commande
+  cli.mjs                       ligne de commande (+ veille, gsc, calendrier, budget, hashtags)
+  plugin.mjs                    construit plugins/seo360 (node seo/plugin.mjs ; --check)
   engine/                       moteur partagé navigateur + Node
     html.js        extraction HTML sans dépendance
     collect.js     page, robots.txt, sitemap, llms.txt, variantes, crawl
     audit.js       ~120 contrôles, scores, modèles de code
-    robots.js      robots.txt (RFC 9309) + 19 robots moteurs/IA
+    robots.js      robots.txt (RFC 9309), robots IA en 3 niveaux, Content-Signal
     psi.js         PageSpeed Insights (CrUX + Lighthouse)
     plan.js        plan 30/60/90 + KPI
     keywords.js    intentions, suggestions Google
@@ -136,7 +208,10 @@ seo/
     appstore.js    ASO iOS / Android
     checklists.js  10 checklists + guide 2026
     fixes.js       correctifs prêts à coller construits avec la page
-    gsc.js         import Search Console (CSV ou ZIP) et clics gagnables
+    gsc.js         Search Console (ZIP complet) : marque, comparaison, chute datée, liens
+    calendar.js    calendrier marketing français calculé (CSV, .ics)
+    citability.js  citabilité des blocs H2/H3 pour les IA
+    drift.js       dérive après refonte (avant / après)
     bookmarklet.js bouton-favori « Auditer cette page »
     share.js       lien de partage compressé (sans serveur)
     glossary.js    glossaire des sigles
@@ -145,17 +220,19 @@ seo/
   data/
     sectors.js     28 secteurs : mots-clés, schema, hashtags FR/EN, réseaux
     exemple.js     rapport fictif de démonstration (node seo/test/make-exemple.mjs)
-    research/      études du 03/11/2026 (JSON source + modules JS) ; node seo/data/sync.mjs
+    research/      études (vérifiées le 05/11/2026, JSON source + modules JS) ; node seo/data/sync.mjs
+    google-updates.js  mises à jour Google confirmées 2025-2026 (datation des chutes)
   proxy/worker.js  proxy CORS optionnel (Cloudflare)
-  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (24 tests, pages pièges)
+  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (34 tests : pages pièges, Search Console, calendrier, skills, plugin)
 ```
 
 `node build.mjs` copie l’interface, le moteur et les données dans `docs/seo/` (GitHub Pages).
 
 ## Limites (honnêtes)
 
-- Pas de base de backlinks, de volumes de recherche ni de suivi de positions propriétaires : SEO 360 s’appuie sur Search Console (import), Keyword Planner (CPC et volume saisis) et les suggestions Google. Les suites payantes restent utiles pour ces besoins (voir l’étude).
-- Popularité des hashtags : aucune source gratuite fiable ; chaque hashtag renvoie vers sa page sur le réseau pour la vérifier.
+- Pas de base de backlinks, de volumes de recherche ni de suivi de positions propriétaires : SEO 360 s’appuie sur Search Console (exports Performances et Liens), Keyword Planner (CPC et volume saisis) et les suggestions Google. Les suites payantes restent utiles pour ces besoins (voir l’étude).
+- Les en-têtes exacts des exports « Liens » de Search Console varient selon la langue : la lecture est tolérante (français et anglais) et l’interface signale un fichier non reconnu.
+- Popularité des hashtags : aucune source gratuite fiable ; le niveau (niche, moyen, large) est attendu, pas mesuré, et chaque hashtag renvoie vers sa page sur le réseau pour vérifier le compteur.
 - Le bouton-favori fonctionne sur ordinateur ; certains sites très protégés peuvent le bloquer (la CLI reste la solution).
 - Les budgets sont des ordres de grandeur issus de benchmarks publics (souvent US). Recalez-les sur vos comptes après 2 à 4 semaines.
 - Les proxys publics sont parfois lents ou indisponibles. Votre propre proxy, ou la CLI, est plus fiable.

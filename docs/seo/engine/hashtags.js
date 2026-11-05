@@ -3,6 +3,9 @@
 import { sectorById, BANNED_HASHTAGS } from '../data/sectors.js'
 import research from '../data/research/benchmarks.js'
 
+// Niveau attendu par origine (heuristique, sans compteur) : la ville ou la région seules et les tags du secteur sont très utilisés.
+const NIVEAU = { observe: 'niche', marque: 'niche', niche: 'niche', mot: 'niche', local: 'moyen', sectoriel: 'large', large: 'large' }
+
 export const NETWORKS = {
   instagram: { label: 'Instagram', max: 5, mix: { marque: 1, mot: 1, niche: 1, local: 1, sectoriel: 1 } },
   tiktok: { label: 'TikTok', max: 5, mix: { niche: 2, mot: 1, local: 1, large: 1 } },
@@ -47,11 +50,13 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
   const sector = sectorById(sid)
   const kw = [...keywords, ...terms].map((k) => String(k).trim()).filter(Boolean)
   const pools = { observe: [], marque: [], niche: [], mot: [], local: [], sectoriel: [], large: [] }
-  const push = (g, phrase, display) => {
+  // Niveau attendu (à confirmer avec le compteur du réseau) : niche < 50 000 publications, moyen 50 000–500 000, large au-delà.
+  // Mélange conseillé : 2–3 niche, 1–2 moyen, 0–1 large.
+  const push = (g, phrase, display, niveau = NIVEAU[g]) => {
     const t = toTag(phrase)
     if (!t || t.length < 3 || t.length > 30 || BAN.has(t) || /^\d+$/.test(t)) return
     if (Object.values(pools).some((p) => p.some((x) => x.tag === t))) return
-    pools[g].push({ tag: t, camel: display || camel(phrase) || t })
+    pools[g].push({ tag: t, camel: display || camel(phrase) || t, niveau })
   }
   // Hashtags réellement observés dans des publications (veille Agent Reach) : prioritaires
   for (const o of observed.slice(0, 15)) push('observe', typeof o === 'string' ? o : o.tag, typeof o === 'string' ? camel(o) || o : o.camel)
@@ -74,11 +79,11 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
     // « métier + ville » d'abord (plus précis), puis la ville seule
     const head = toTag((keywords[0] || sector.keywords[0]).split(/\s+/)[0])
     if (head && !toTag(c).includes(head)) push('local', `${head} ${c}`, camel(`${head} ${c}`))
-    push('local', c)
-    for (const r of CITY_REGION[key] || []) push('local', r, r)
+    push('local', c, undefined, 'large')
+    for (const r of CITY_REGION[key] || []) push('local', r, r, 'large')
     if (langs.includes('fr')) push('local', `${c} commerce`, camel(`${c} commerce`))
   }
-  if (region) push('local', region)
+  if (region) push('local', region, undefined, 'large')
   const digital = ['saas', 'app-mobile', 'gaming', 'agence', 'finance', 'formation'].includes(sector.id)
   const generic = digital ? { fr: ['frenchtech', 'innovation'], en: ['startup', 'tech'] } : { fr: ['madeinfrance', 'savoirfaire', 'nouveaute'], en: ['smallbusiness', 'shopsmall', 'madeinfrance'] }
   for (const L of langs) for (const t of generic[L]) push('large', t, t)

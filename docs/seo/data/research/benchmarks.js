@@ -1,8 +1,9 @@
-// Généré depuis benchmarks.json (recherche du 2026-11-03). Ne pas éditer à la main : modifiez le .json puis node seo/data/sync.mjs
+// Généré depuis benchmarks.json (recherche du 2026-11-05). Ne pas éditer à la main : modifiez le .json puis node seo/data/sync.mjs
 export default {
- "generated": "2026-11-03",
+ "generated": "2026-11-05",
+ "review_by": "2027-03-05",
  "meta": {
-  "method": "Recherche web (WebSearch) du 2026-11-03. WebFetch bloqué par le réseau de la session (wordstream.com, localiq.com non joignables) : les chiffres WordStream/LocaliQ proviennent de résumés secondaires concordants qui citent le rapport. A revérifier sur la source primaire avant publication client.",
+  "method": "Recherche web (WebSearch) du 2026-11-03. WebFetch bloqué par le réseau de la session (wordstream.com, localiq.com non joignables) : les chiffres WordStream/LocaliQ proviennent de résumés secondaires concordants qui citent le rapport. A revérifier sur la source primaire avant publication client. Mise à jour du 2026-11-05 : rapport IA et filtre marque de Search Console, spam updates 2026, fiche Google (Ask Maps, GA4), GEO (mentions de marque, citations, fraîcheur, robots IA), nuances sur l'effet des hashtags ; sources citées pour chaque fait.",
   "google_ads_dataset": "WordStream/LocaliQ Search Advertising Benchmarks 2026 : campagnes Search US (Google Ads + ~15-20% Microsoft Ads), avril 2025 - mars 2026, ~13 474 campagnes, 23 secteurs, valeurs médianes. Moyenne tous secteurs : CTR 6.64%, CPC 5.42 USD, CVR 8.18%, CPL 66.69 USD (édition 2025 : CTR 6.66%, CPC 5.26 USD, CVR 7.52%, CPL 70.11 USD).",
   "us_only_warning": "Données Google Ads par secteur = US uniquement. Aucune source primaire publique FR. Ajustement FR pratique (non sourcé officiellement, ratio observé par agences) : CPC FR ≈ 40-60% du CPC US ; CTR et CVR comparables ; CPL FR ≈ 45-65% du CPL US. Fourchettes FR publiées par blogs : immobilier 1.5-5 EUR, assurance/mutuelle 4-15 EUR, avocat 3-12 EUR.",
   "fx": "Conversion USD->EUR à 0.86 (EUR/USD ≈ 1.16, 2026). Les fourchettes EUR plateformes = estimations FR/UE dérivées de benchmarks publiés, à recaler avec les données du compte.",
@@ -493,7 +494,7 @@ export default {
    "network": "instagram",
    "hashtag_limit": "5 hashtags max par post et Reel (annonce Adam Mosseri / @creators, déc. 2025 ; avant : 30).",
    "recommended_count": "3-5",
-   "placement": "Dans la légende, en fin de texte ; privilégier des mots-clés dans la légende (indexés par la recherche Instagram) plutôt que des hashtags génériques (#reels, #explore inutiles).",
+   "placement": "Dans la légende, en fin de texte ; privilégier des mots-clés dans la légende (indexés par la recherche Instagram) plutôt que des hashtags génériques (#reels, #explore inutiles). Effet réel faible : 5 hashtags ≈ +2 % de portée par rapport à aucun (Fanpage Karma, 1,6 M publications) ; dans la légende plutôt qu'en commentaire (test Agorapulse).",
    "caption_limit": "2 200 caractères (~125 visibles avant « plus »)",
    "best_formats": [
     "Reels 9:16 de 7-30 s",
@@ -510,7 +511,7 @@ export default {
    "network": "tiktok",
    "hashtag_limit": "5 hashtags max signalé depuis août 2025 (message « Maximum 5 hashtags » ; sources contradictoires, certains guides 2026 indiquent encore 30). Considérer 5 comme plafond sûr.",
    "recommended_count": "3-5",
-   "placement": "Fin de légende ; mots-clés recherchés aussi dans le texte parlé, le texte à l'écran et la légende (TikTok = moteur de recherche).",
+   "placement": "Fin de légende ; mots-clés recherchés aussi dans le texte parlé, le texte à l'écran et la légende (TikTok = moteur de recherche). Les hashtags pèsent peu : environ 10 % des vues (Metricool 2026), le fil Pour toi domine.",
    "caption_limit": "4 000 caractères (hashtags inclus)",
    "best_formats": [
     "Vidéo verticale 9:16 de 15-60 s avec accroche < 3 s",
@@ -688,8 +689,8 @@ export default {
   },
   {
    "topic": "Mises à jour Google 2026",
-   "fact": "Février 2026 : première core update Discover seule (5-27 fév.). Spam update mars 2026 (24-25 mars, < 20 h). Core update mars 2026 (27 mars-8 avr.). Core update mai 2026 (21 mai-2 juin). Spam update septembre 2026 (début 24 sept.). Aucune core update confirmée après mai 2026 au 6 oct. 2026.",
-   "source": "https://www.seroundtable.com/google-september-2026-spam-update-42163.html"
+   "fact": "Février 2026 : core update Discover seule (5-27 fév.). Spam update mars 2026 (24-25 mars, < 20 h). Core update mars 2026 (27 mars-8 avr.). Core update mai 2026 (21 mai-2 juin). Spam update juin 2026 (24-26 juin). Spam update août 2026 (18-21 août, ne vise ni le spam de liens ni l'abus de réputation). Spam update septembre 2026 (24 sept.-8 oct., 13 j 16 h, la plus longue de l'année). Aucune autre core update confirmée début novembre 2026 ; liste datée dans seo/data/google-updates.js.",
+   "source": "https://www.searchenginejournal.com/google-september-2026-spam-update-complete/592283/"
   },
   {
    "topic": "AI Overviews - portée",
@@ -758,8 +759,38 @@ export default {
   },
   {
    "topic": "Search Console et IA",
-   "fact": "Les impressions/clics d'AI Mode et AI Overviews sont comptés dans le rapport Performance « Web » de Search Console, sans filtre dédié ; Google conteste les études de baisse de clics (Pew).",
-   "source": "https://developers.google.com/search/docs/appearance/ai-features"
+   "fact": "Depuis le 3 juin 2026, Search Console a un rapport « Search generative AI performance » : impressions seulement (ni clics ni position), AI Overviews et AI Mode ensemble, Discover à part, par page, pays, appareil et date ; déploiement progressif (vérifiez dans votre propriété). Les clics des fonctions IA restent comptés dans le rapport Performance « Web ». Google teste aussi un réglage d'exclusion des AI Overviews, d'AI Mode et de l'IA de Discover au niveau du domaine (sans effet sur ChatGPT ou Perplexity).",
+   "source": "https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports"
+  },
+  {
+   "topic": "Search Console - marque et pays",
+   "fact": "Filtre des requêtes de marque dans le rapport Performance (mars 2026) et sélection de plusieurs pays (octobre 2026). Search Console masque une partie des requêtes rares : les tableaux par requête sont incomplets.",
+   "source": "https://www.seroundtable.com/branded-queries-filter-rolling-out-in-search-console-41064.html"
+  },
+  {
+   "topic": "Google Business Profile 2026",
+   "fact": "Q&R de la fiche supprimées (API arrêtée en nov. 2025, section retirée ensuite) et remplacées par Ask Maps (Gemini, annoncé en mars 2026, États-Unis et Inde) qui répond à partir de la fiche et des avis. Depuis juin 2026, GA4 importe 7 mesures de la fiche (appels, itinéraires, clics vers le site, réservations…), 6 mois d'historique, sans détail par établissement.",
+   "source": "https://ppc.land/google-quietly-kills-q-a-for-an-ai-button-most-wont-use/"
+  },
+  {
+   "topic": "GEO - mentions de marque",
+   "fact": "Ahrefs (mai 2025, 75 000 marques) : les mentions de la marque sur le web sont corrélées à 0,664 avec la visibilité dans AI Overviews, contre 0,218 pour les backlinks (corrélation, pas causalité). Étude de suivi (déc. 2025, ChatGPT, AI Mode, AI Overviews) : mentions YouTube ≈ 0,737.",
+   "source": "https://ahrefs.com/blog/ai-overview-brand-correlation/"
+  },
+  {
+   "topic": "GEO - citation, clics et fraîcheur",
+   "fact": "Seer 2026 : être cité dans l'AI Overview donne +120 % de clics par impression par rapport à une page non citée, mais -38 % par rapport à une page de résultats sans AI Overview. 75 % des pages citées par ChatGPT, Gemini et Perplexity ont été mises à jour depuis moins d'un an (42 % publiées depuis moins d'un an) : mettre à jour vaut mieux que republier.",
+   "source": "https://seerinteractive.com/insights/aio-impact-on-google-ctr-2026-update"
+  },
+  {
+   "topic": "Robots IA - bloquer ou non",
+   "fact": "Bloquer les robots IA a coûté environ 7 % de trafic à de grands éditeurs de presse (étude révisée, 23 % en première version) et 70,6 % des sites qui bloquent restent cités. Google-Extended ne règle que Gemini : sans effet sur la recherche Google ni sur AI Overviews (contrôlés par Googlebot, nosnippet, max-snippet). Cloudflare Content-Signal (search, ai-input, ai-train) dans robots.txt exprime une préférence, pas un blocage.",
+   "source": "https://ppc.land/blocking-ai-crawlers-cost-news-publishers-7-of-traffic-study-finds/"
+  },
+  {
+   "topic": "Bing et IA",
+   "fact": "Bing Webmaster Tools a un rapport « AI Performance » en aperçu depuis février 2026 : citations dans Copilot et les résumés IA de Bing, requêtes de grounding et pages citées, sans clics. Seule mesure gratuite et officielle de citations IA hors Google.",
+   "source": "https://previsible.io/seo-ai-news/bing-ai-performance-report/"
   }
  ],
  "budget_rules": [
@@ -972,6 +1003,54 @@ export default {
   {
    "title": "Blog du Modérateur - Chiffres réseaux sociaux 2026",
    "url": "https://www.blogdumoderateur.com/chiffres-reseaux-sociaux/"
+  },
+  {
+   "title": "Google Search Central - Search generative AI performance reports (juin 2026)",
+   "url": "https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports"
+  },
+  {
+   "title": "Search Engine Roundtable - Branded queries filter in Search Console",
+   "url": "https://www.seroundtable.com/branded-queries-filter-rolling-out-in-search-console-41064.html"
+  },
+  {
+   "title": "Search Engine Journal - September 2026 spam update complete",
+   "url": "https://www.searchenginejournal.com/google-september-2026-spam-update-complete/592283/"
+  },
+  {
+   "title": "PPC Land - Google replaces Q&A with Ask Maps",
+   "url": "https://ppc.land/google-quietly-kills-q-a-for-an-ai-button-most-wont-use/"
+  },
+  {
+   "title": "Ahrefs - AI Overview brand visibility factors (75K brands)",
+   "url": "https://ahrefs.com/blog/ai-overview-brand-correlation/"
+  },
+  {
+   "title": "Seer Interactive - AIO impact on Google CTR (2026)",
+   "url": "https://seerinteractive.com/insights/aio-impact-on-google-ctr-2026-update"
+  },
+  {
+   "title": "Seer Interactive - Content recency and AI visibility (2026)",
+   "url": "https://www.seerinteractive.com/insights/study-content-recencys-impact-on-ai-visibility-in-2026"
+  },
+  {
+   "title": "PPC Land - Blocking AI crawlers cost publishers 7% of traffic",
+   "url": "https://ppc.land/blocking-ai-crawlers-cost-news-publishers-7-of-traffic-study-finds/"
+  },
+  {
+   "title": "Cloudflare - Content Signals Policy",
+   "url": "https://blog.cloudflare.com/content-signals-policy/"
+  },
+  {
+   "title": "Previsible - Bing AI Performance report",
+   "url": "https://previsible.io/seo-ai-news/bing-ai-performance-report/"
+  },
+  {
+   "title": "Fanpage Karma - Do Instagram hashtags work?",
+   "url": "https://www.fanpagekarma.com/insights/do-instagram-hashtags-work/"
+  },
+  {
+   "title": "Metricool - TikTok study 2026",
+   "url": "https://metricool.com/press-release-tiktok-study-2026/"
   }
  ]
 }

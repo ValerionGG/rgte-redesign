@@ -75,7 +75,7 @@ export function analyzeVeille(results, { sujet = '', marque = '' } = {}) {
   const top = items.slice().sort((a, b) => engagement(b) - engagement(a)).slice(0, 15).map((it) => ({ title: it.title, url: it.url, channel: it.channel, author: clean(it.author).slice(0, 80), date: clean(it.published_at).slice(0, 10), engagement: Math.round(engagement(it)) }))
   const brand = clean(marque).toLowerCase()
   const mentions = brand ? items.filter((it) => `${it.title} ${it.text}`.toLowerCase().includes(brand)).slice(0, 20).map((it) => ({ title: it.title, url: it.url, channel: it.channel })) : []
-  const bloquees = sources.filter((s) => !s.ok && STOP_ERRORS.has(s.error?.code))
+  const bloquees = sources.filter((s) => !s.ok && (STOP_ERRORS.has(s.error?.code) || s.error?.code === 'UNSUPPORTED'))
   return {
     type: 'seo360-veille', version: 1, generatedAt: new Date().toISOString(), sujet: clean(sujet), marque: clean(marque),
     sources, total: items.length, questions, hashtags, termes, top, mentions,
@@ -92,7 +92,7 @@ function recommandations({ questions, hashtags, termes, top, mentions, bloquees,
   const yt = top.filter((t) => t.channel === 'youtube').slice(0, 3)
   if (yt.length) out.push(`Vidéos qui marchent sur ce sujet (inspirez-vous des titres) : ${yt.map((t) => `« ${t.title} »`).join(' ; ')}.`)
   if (marque) out.push(mentions.length ? `${mentions.length} mention(s) de votre marque trouvée(s) : répondez-y et citez les avis positifs sur votre site.` : 'Aucune mention de votre marque trouvée : cherchez à être cité (réponses utiles sur Reddit, vidéos, comparatifs) — les IA s’appuient beaucoup sur ces sources.')
-  if (bloquees.length) out.push(`Sources non lues : ${bloquees.map((s) => `${s.channel} (${s.error.code})`).join(', ')}. Suivez l’indication d’Agent Reach (connexion, attente) sans relancer en boucle.`)
+  if (bloquees.length) out.push(`Sources non lues : ${bloquees.map((s) => `${s.channel} (${s.error.code}${s.error.hint ? ' : ' + s.error.hint : ''})`).join(' ; ')}. Suivez l’indication (connexion par vous-même, attente) sans relancer en boucle.`)
   return out
 }
 

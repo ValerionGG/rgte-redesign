@@ -2,6 +2,7 @@
 // réseaux détectés…) et non de gabarits à trous. Ce qui n'est pas connu est omis plutôt qu'inventé.
 // Chaque correctif : { label, lang: 'html'|'text'|'json'|'apache'|'nginx', value, note? }
 import { sectorById } from '../data/sectors.js'
+import { ROBOTS_TEMPLATE } from './robots.js'
 
 const cut = (s, n) => {
   s = String(s || '').replace(/\s+/g, ' ').trim()
@@ -181,28 +182,7 @@ export function buildFixes(report) {
 }
 
 function robotsTxt(origin) {
-  return `# robots.txt — base à adapter (ne bloquez que ce qui ne doit pas être exploré)
-User-agent: *
-# Exemples à adapter à VOTRE site :
-# Disallow: /panier/
-# Disallow: /mon-compte/
-Allow: /
-
-# Robots de recherche IA (citations dans ChatGPT, Perplexity, Claude…) : autorisés
-User-agent: OAI-SearchBot
-User-agent: ChatGPT-User
-User-agent: PerplexityBot
-User-agent: Claude-SearchBot
-Allow: /
-
-# Entraînement des modèles : choix éditorial (décommentez pour refuser)
-# User-agent: GPTBot
-# User-agent: ClaudeBot
-# User-agent: Google-Extended
-# User-agent: CCBot
-# Disallow: /
-
-Sitemap: ${origin}/sitemap.xml`
+  return ROBOTS_TEMPLATE(origin)
 }
 
 function llmsTxt(f, report) {

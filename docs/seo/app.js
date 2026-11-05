@@ -4,12 +4,13 @@
 import { analyze, competitorSummary, detectKind, SEVERITY, GOALS } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
 import { generateHashtags } from './engine/hashtags.js'
-import { planBudget } from './engine/ads.js'
+import { planBudget, preSpendChecks } from './engine/ads.js'
 import { keywordIdeas, googleSuggest, classify, INTENTS } from './engine/keywords.js'
 import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts } from './engine/fixes.js'
-import { parseGsc, opportunities, readGscFile } from './engine/gsc.js'
+import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
+import { upcoming, frShort } from './engine/calendar.js'
 import { encodeReport, decodeReport, slimForShare } from './engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmarklet.js'
 import { extract } from './engine/html.js'
@@ -34,6 +35,7 @@ const sess = { get: (k) => tryJ(() => sessionStorage.getItem('seo360:' + k) || '
 const color = (s) => (s == null ? 'var(--line)' : s >= 85 ? 'var(--ok)' : s >= 70 ? 'var(--accent-2)' : s >= 50 ? 'var(--mid)' : 'var(--crit)')
 const meter = (n, label) => `<span class="meter" role="img" aria-label="${label} ${n} sur 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span>`
 const KIND = { site: 'Site web', app: 'Application', github: 'Dépôt GitHub' }
+const frDay = (d) => (d ? new Date(d + 'T12:00:00Z').toLocaleDateString('fr-FR') : '—')
 const targetKey = (t) => tryJ(() => { const u = new URL(/^https?:/.test(t) ? t : 'https://' + t); return u.host.replace(/^www\./, '') + u.pathname.replace(/\/$/, '') }, String(t))
 
 const TABS = [['synthese', 'Synthèse'], ['afaire', 'À faire'], ['visibilite', 'Mots-clés & réseaux'], ['budget', 'Budget'], ['concurrents', 'Concurrents'], ['ressources', 'Ressources']]
@@ -75,6 +77,7 @@ function refreshDerived() {
   r.hashtags = generateHashtags({ sector: v.sector, keywords: [v.keyword].filter(Boolean), terms, city: v.city, brand: v.brand, lang: v.lang })
   r.keywords = keywordIdeas({ seed: v.keyword || terms[0] || '', sector: v.sector, city: v.city, local: v.local })
   r.budget = planBudget({ sector: v.sector, goal: r.kind === 'app' ? 'telechargements' : v.goal, monthly: v.monthly, local: v.local, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, targetConversions: store.get('target', 0), searchVolume: store.get('volume', 0), cpcOverride: store.get('cpc', 0) })
+  r.budget.checks = preSpendChecks(r)
   r.plan = actionPlan(r.result, { local: v.local ?? sectorById(v.sector).local, hasAds: !!v.monthly, kind: r.kind })
   S.fixes = r.result ? buildFixes(r) : {}
 }
@@ -177,7 +180,7 @@ function remember(rep) {
   if (!R || R.global == null) return
   const k = 'hist:' + targetKey(rep.target)
   const hist = store.get(k, [])
-  hist.push({ date: rep.generatedAt, global: R.global, coverage: R.coverage, issues: R.issues.map((i) => [i.id, i.sev, i.title]) })
+  hist.push({ date: rep.generatedAt, global: R.global, coverage: R.coverage, cats: Object.entries(R.scores || {}).filter(([, x]) => x.score != null).map(([k]) => k).sort(), issues: R.issues.map((i) => [i.id, i.sev, i.title]) })
   store.set(k, hist.slice(-12))
 }
 function progressSince(rep) {
@@ -185,7 +188,10 @@ function progressSince(rep) {
   if (hist.length < 2) return null
   const [prev, cur] = hist.slice(-2)
   const now = new Set(cur.issues.map((i) => i[0])), before = new Set(prev.issues.map((i) => i[0]))
-  return { prev, cur, fixed: prev.issues.filter((i) => !now.has(i[0])), added: cur.issues.filter((i) => !before.has(i[0])), delta: cur.global - prev.global }
+  // Évolution de note seulement à couverture comparable : sinon un simple changement de mesure passe pour un progrès
+  const comparable = !prev.cats || !cur.cats || prev.cats.join() === cur.cats.join()
+  const diffCats = comparable ? [] : [...new Set([...prev.cats, ...cur.cats])].filter((k) => !(prev.cats.includes(k) && cur.cats.includes(k)))
+  return { prev, cur, comparable, diffCats, fixed: prev.issues.filter((i) => !now.has(i[0])), added: cur.issues.filter((i) => !before.has(i[0])), delta: cur.global - prev.global, still: stillDetected(rep) }
 }
 
 // ───────── Bouton-favori : réception des données ─────────
@@ -277,7 +283,9 @@ const reportBar = () => `<div class="actions">
 const doneKey = () => 'done:' + targetKey(S.report?.target || '')
 const doneMap = () => store.get(doneKey(), {})
 const isDone = (id) => !!doneMap()[id]
-function setDone(id, v) { const d = doneMap(); if (v) d[id] = true; else delete d[id]; store.set(doneKey(), d) }
+// La date du « fait » permet de distinguer, au contrôle suivant, ce qui est déclaré fait de ce qui a vraiment disparu
+function setDone(id, v) { const d = doneMap(); if (v) d[id] = new Date().toISOString(); else delete d[id]; store.set(doneKey(), d) }
+const stillDetected = (rep, done = doneMap()) => (rep?.result?.issues || []).filter((i) => typeof done[i.id] === 'string' && done[i.id] < rep.generatedAt)
 
 // ───────── Synthèse ─────────
 function ring(score, grade) {
@@ -293,7 +301,7 @@ function synthese() {
   const week = r.plan?.week || []
   const prog = S.shared ? null : progressSince(r)
   const b = r.budget
-  const gscOpp = S.gsc ? opportunities(S.gsc) : []
+  const G = gscAnalysis(), gscOpp = G?.opportunities || []
   const head = `<div class="section-head"><div><h2>${esc(r.target)}</h2><p>${KIND[r.kind]} · ${esc(sectorById(r.input.sector).label)}${r.input.city ? ' · ' + esc(r.input.city) : ''} · ${new Date(r.generatedAt).toLocaleString('fr-FR')}${c.fetch?.source ? ' · collecte : ' + esc(SOURCE[c.fetch.source] || c.fetch.source) : ''}</p></div>${reportBar()}</div>`
   const incomplete = R.incomplete ? `<div class="card alert" role="alert"><h3>Audit incomplet : ${esc(R.incomplete)}</h3><p>Nous n’affichons pas de note quand l’essentiel n’a pas pu être mesuré : elle serait trompeuse. Ce qui a été mesuré reste listé ci-dessous.</p>${solutions()}</div>` : ''
   const caps = (R.caps || []).length ? `<p class="cap">Note plafonnée : ${R.caps.map((x) => esc(x)).join(' · ')}</p>` : ''
@@ -307,9 +315,9 @@ function synthese() {
   </div>
   <div class="cols" style="margin-top:16px">
     ${c.page ? serpCard(r) : ''}
-    ${prog ? `<div class="card"><h3>Vos progrès</h3><p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p><p>✅ ${prog.fixed.length} point(s) corrigé(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
+    ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
     <div class="card"><h3>Budget publicitaire</h3><p class="verdict v-${b.verdict.level}">${esc(b.verdict.text)}</p><p><a href="#budget" data-go="budget">Détail par canal et montée en charge →</a></p></div>
-    <div class="card"><h3>Vos vraies données Google</h3>${gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes déjà proches du haut de page (Search Console).</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export « Requêtes » de Search Console : nous chiffrons les clics à gagner sur les requêtes où vous êtes déjà en page 1–2.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
+    <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Chute de ${Math.round(G.drop.drop * 100)} % des clics depuis le ${esc(frShort(G.drop.date))}</p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
   </div>
   <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
     <div class="chips">${['critique', 'important', 'moyen', 'faible', 'ok'].map((s) => `<span class="chip sev-${s}">${SEVERITY[s].label} · ${R.counts[s]}</span>`).join('')}</div></div>
@@ -379,10 +387,10 @@ function afaire() {
   ${R.infos.length ? `<details class="card fold" open><summary><h3>Non vérifié ou à vérifier hors site (${R.infos.length})</h3></summary><ul class="clean">${R.infos.map((p) => `<li><span class="chip sev-info">À vérifier</span> <b>${gloss(esc(p.title))}</b>${p.detail ? ` — <span class="note">${esc(p.detail)}</span>` : ''}${p.fix ? `<br><span class="note">${esc(p.fix)}</span>` : ''}</li>`).join('')}</ul></details>` : ''}`
 }
 function item(i, done) {
-  const fx = S.fixes[i.id], d = !!done[i.id]
+  const fx = S.fixes[i.id], d = !!done[i.id], again = typeof done[i.id] === 'string' && S.report && done[i.id] < S.report.generatedAt
   if (i.extra) return `<div class="issue extra ${d ? 'is-done' : ''}"><label class="row"><input type="checkbox" data-done="${esc(i.id)}" ${d ? 'checked' : ''}><span class="t">${gloss(esc(i.title))}</span><span class="m"><span class="chip tag">${esc(i.who)}</span></span></label></div>`
   return `<details class="issue ${i.sev} ${d ? 'is-done' : ''}">
-    <summary><input type="checkbox" data-done="${esc(i.id)}" ${d ? 'checked' : ''} aria-label="Marquer comme fait : ${esc(i.title)}"><span class="chip sev-${i.sev}">${SEVERITY[i.sev].label}</span><span class="t">${gloss(esc(i.title))}</span><span class="m"><span class="chip tag">${esc(i.who)}</span><span class="chip tag">⏱ ${esc(i.time)}</span>${fx || i.code ? '<span class="chip ok-soft">correctif prêt</span>' : ''}</span></summary>
+    <summary><input type="checkbox" data-done="${esc(i.id)}" ${d ? 'checked' : ''} aria-label="Marquer comme fait : ${esc(i.title)}"><span class="chip sev-${i.sev}">${SEVERITY[i.sev].label}</span><span class="t">${gloss(esc(i.title))}</span><span class="m">${again ? '<span class="chip sev-important" title="Marqué fait avant ce contrôle, mais toujours détecté">encore détecté</span>' : ''}<span class="chip tag">${esc(i.who)}</span><span class="chip tag">⏱ ${esc(i.time)}</span>${fx || i.code ? '<span class="chip ok-soft">correctif prêt</span>' : ''}</span></summary>
     <div class="body">${i.detail ? `<p>${gloss(esc(i.detail))}</p>` : ''}${i.fix ? `<div class="fix"><b>À faire :</b> ${gloss(esc(i.fix))}</div>` : ''}
       ${fx ? `<div class="code"><p class="note"><b>${esc(fx.label)}</b>${fx.note ? ' — ' + esc(fx.note) : ''}</p><pre>${esc(fx.value)}</pre><button class="btn sm" data-copy="">Copier</button></div>` : i.code ? `<div class="code"><pre>${esc(i.code)}</pre><button class="btn sm" data-copy="">Copier</button></div>` : ''}
       <p class="note">Impact ${meter(i.impact, 'impact')} · Effort ${meter(i.effort, 'effort')} · ${esc(i.cat)} · <a href="${esc(reportIssueUrl(i))}" target="_blank" rel="noopener">Ce constat est faux ?</a></p></div></details>`
@@ -410,27 +418,24 @@ function visibilite() {
   const terms = r?.result?.meta?.terms
   const seed = v.keyword || terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
   const k = keywordIdeas({ seed, sector: v.sector, city: v.city, local: v.local })
-  const opp = S.gsc ? opportunities(S.gsc) : []
   const extra = store.get('hkw', '')
   const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: observedForHashtags(S.veille) })
   const nets = Object.values(h.networks).sort((a, b) => (h.priority.indexOf(a.id) + 1 || 99) - (h.priority.indexOf(b.id) + 1 || 99))
   return `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.</p></div></div>
-  <div class="card"><h3>Vos vraies requêtes Google (Search Console)</h3>
-    ${opp.length ? `<p>≈ <b>+${fmt(opp.reduce((s, o) => s + o.gain, 0))} clics/mois</b> possibles (estimation prudente si chaque requête gagne le top 3).</p><div class="table-wrap"><table><thead><tr><th>${S.gsc.kind === 'pages' ? 'Page' : 'Requête'}</th><th class="n">Position</th><th class="n">Impressions</th><th class="n">CTR</th><th class="n">Gain ≈ clics/mois</th><th>Action</th></tr></thead><tbody>${opp.map((o) => `<tr><td>${esc(o.key)}</td><td class="n">${fmt(o.position, 1)}</td><td class="n">${fmt(o.impressions)}</td><td class="n">${fmt(o.ctr * 100, 1)} %</td><td class="n"><b>+${fmt(o.gain)}</b></td><td class="note">${esc(o.action)}</td></tr>`).join('')}</tbody></table></div><p class="note">Courbe de clics prudente (sans résumé IA). Période supposée : 3 mois (export par défaut).</p>`
-      : `<p class="note">Search Console → Performances → Exporter → « Télécharger au format CSV », puis importez le fichier .zip tel quel. Rien n’est envoyé : il est lu dans votre navigateur.</p>`}
-    <div class="row-inputs"><label>Export Search Console (.zip ou .csv)<input type="file" id="gsc-file" accept=".zip,.csv,text/csv,application/zip"></label>${S.gsc ? '<button class="btn sm" id="gsc-clear" type="button">Retirer les données</button>' : ''}</div></div>
+  ${gscPanel()}
   ${veillePanel()}
   <div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
     ${S.suggestions.length ? `<p><b>Suggestions Google réelles</b> (ce que les gens tapent) :</p><div class="tags">${S.suggestions.map((s) => `<span class="chip tag" title="${esc(classify(s))}">${esc(s)}</span>`).join('')}</div><button class="btn sm" data-copy="${esc(S.suggestions.join('\n'))}">Copier</button>` : ''}
     <div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>
     ${terms ? `<p class="note" style="margin-top:12px"><b>Sujets que Google lit sur votre page :</b> ${esc([...terms.phrases, ...terms.words].slice(0, 12).map((t) => t.term).join(' · '))}</p>` : ''}
     <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>
-  <div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier.</p></div>
+  <div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Bordure verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
     <label style="min-width:260px">Mots-clés en plus (séparés par des virgules)<input id="hkw" value="${esc(extra)}" placeholder="ex. vitrine pâtissière"></label></div>
   <div class="cols">${nets.map((n, idx) => `<details class="card net" ${idx < 2 ? 'open' : ''}><summary><h3>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
     <div class="actions"><button class="btn sm" data-copy="${esc(n.tags.map((t) => '#' + t.camel).join(' '))}">Copier les hashtags</button><button class="btn sm" data-copy="${esc(n.caption)}">Copier un modèle de légende</button></div>
     ${n.reserve.length ? `<p class="note">À faire tourner d’un post à l’autre :</p><div class="tags">${n.reserve.slice(0, 10).map((t) => `<span class="htag res">#${esc(t.camel)}</span>`).join('')}</div>` : ''}
     ${n.rules ? `<dl><dt>Limite</dt><dd>${esc(n.rules.hashtag_limit)}</dd><dt>Placement</dt><dd>${esc(n.rules.placement)}</dd><dt>Rythme</dt><dd>${esc(n.rules.posting_frequency)}</dd><dt>Moments</dt><dd>${esc(n.rules.best_times_fr)}</dd><dt>Formats</dt><dd>${esc((n.rules.best_formats || []).join(' · '))}</dd></dl>` : ''}</details>`).join('')}</div>
+  ${calendarPanel(v)}
   <div class="card" style="margin-top:16px"><h3>À ne jamais utiliser</h3><p class="note">Hashtags d’engagement artificiel : signal de spam, portée réduite.</p><div class="tags">${h.banned.map((t) => `<span class="chip sev-critique">#${esc(t)}</span>`).join('')}</div></div>`
 }
 after.visibilite = () => {
@@ -441,14 +446,60 @@ after.visibilite = () => {
   $('#veille-clear')?.addEventListener('click', () => { S.veille = null; store.del('veille'); render() })
   $('#hkw')?.addEventListener('change', (e) => { store.set('hkw', e.target.value); render() })
   $('#suggest')?.addEventListener('click', autoSuggest)
+  const readAll = async (list) => { const all = []; for (const f of list) all.push(...await readGscFiles(await f.arrayBuffer(), f.name)); return parseGscFiles(all) }
+  const saveGsc = () => { if (S.report) store.set('gsc:' + targetKey(S.report.target), S.gsc); render() }
   $('#gsc-file')?.addEventListener('change', async (e) => {
-    const f = e.target.files[0]; if (!f) return
-    let p
-    try { p = parseGsc((await readGscFile(await f.arrayBuffer())).text) } catch (err) { toast(err.message); return }
-    if (p.error) { toast(p.error); return }
-    S.gsc = p; if (S.report) store.set('gsc:' + targetKey(S.report.target), p); render()
+    if (!e.target.files.length) return
+    let b
+    try { b = await readAll([...e.target.files]) } catch (err) { toast(err.message); return }
+    if (!Object.keys(b.perf).length && !Object.keys(b.liens).length) { toast('Aucun tableau Search Console reconnu : exportez le ZIP depuis Performances (ou Liens).'); return }
+    const cur = S.gsc?.cur && !S.gsc.rows ? S.gsc.cur : null
+    // Un export « Liens » complète l'export « Performances » déjà chargé, et inversement
+    if (cur && !Object.keys(b.perf).length) b = { ...cur, liens: { ...cur.liens, ...b.liens } }
+    else if (cur && !Object.keys(b.liens).length && Object.keys(cur.liens || {}).length) b.liens = cur.liens
+    S.gsc = { cur: b, prev: S.gsc?.prev || null }; saveGsc()
+  })
+  $('#gsc-prev')?.addEventListener('change', async (e) => {
+    if (!e.target.files.length || !S.gsc) return
+    let b
+    try { b = await readAll([...e.target.files]) } catch (err) { toast(err.message); return }
+    if (!Object.keys(b.perf).length) { toast('Ce fichier ne contient pas de tableau « Performances ».'); return }
+    S.gsc = { cur: S.gsc.cur || S.gsc, prev: b }; saveGsc()
   })
   $('#gsc-clear')?.addEventListener('click', () => { S.gsc = null; if (S.report) store.del('gsc:' + targetKey(S.report.target)); render() })
+  $('#cal-alsace')?.addEventListener('change', (e) => { store.set('alsace', e.target.checked); render() })
+}
+function gscAnalysis() {
+  if (!S.gsc) return null
+  const v = vals()
+  return tryJ(() => analyzeGsc({ cur: S.gsc.cur || S.gsc, prev: S.gsc.prev || null, brand: v.brand, domain: S.report?.target || '' }), null)
+}
+const pctv = (x) => (x == null ? '—' : `${x >= 0 ? '+' : ''}${Math.round(x * 100)} %`)
+function gscPanel() {
+  const a = gscAnalysis()
+  const rowsTable = (list, cause = true) => `<div class="table-wrap"><table><thead><tr><th>Page ou requête</th><th class="n">Clics avant → après</th><th class="n">Écart</th>${cause ? '<th>Cause probable</th>' : ''}</tr></thead><tbody>${list.map((r) => `<tr><td>${esc(r.key)}</td><td class="n">${fmt(r.prevClicks)} → ${fmt(r.clicks)}</td><td class="n"><b>${r.delta > 0 ? '+' : ''}${fmt(r.delta)}</b></td>${cause ? `<td class="note">${esc(r.cause)}</td>` : ''}</tr>`).join('')}</tbody></table></div>`
+  const body = !a ? `<p class="note">Search Console → Performances → Exporter → « Télécharger le fichier ZIP », puis déposez le ZIP tel quel (il contient la courbe quotidienne). Ajoutez l’export de la période précédente pour comparer, et les exports du rapport « Liens » si vous les avez. Rien n’est envoyé : tout est lu dans votre navigateur.</p>` : `
+    ${a.totals ? `<p>Période ≈ ${fmt(a.months, 1)} mois · <b>${fmt(a.totals.clicks)}</b> clics · ${fmt(a.totals.impressions)} impressions</p>` : ''}
+    ${a.actions.length ? `<h4>À faire, dans l’ordre</h4><ol class="todo">${a.actions.map((x) => `<li>${gloss(esc(x))}</li>`).join('')}</ol>` : ''}
+    ${a.brand?.share != null ? `<h4>Marque et hors marque</h4><div class="bar"><span class="lbl">Clics de marque</span><span class="track"><span class="fill" style="width:${Math.round(a.brand.share * 100)}%;background:var(--accent-2)"></span></span><b>${Math.round(a.brand.share * 100)} %</b></div><p class="note">${esc(a.brand.lecture)}</p>` : ''}
+    ${a.compare ? `<h4>Comparaison avec la période précédente</h4><p>Clics : ${fmt(a.compare.prevClicks)} → <b>${fmt(a.compare.clicks)}</b> (${pctv(a.compare.evolution)})${a.compare.horsMarque ? ` · hors marque : <b>${pctv(a.compare.horsMarque.evolution)}</b>` : ''}</p>
+      ${['pages', 'requetes'].map((k) => a.compare[k]?.perdants?.length ? `<p class="note"><b>${k === 'pages' ? 'Pages' : 'Requêtes'} en recul</b></p>${rowsTable(a.compare[k].perdants)}` : '').join('')}
+      ${['pages', 'requetes'].map((k) => a.compare[k]?.gagnants?.length ? `<details><summary class="note">${k === 'pages' ? 'Pages' : 'Requêtes'} en progrès (${a.compare[k].gagnants.length})</summary>${rowsTable(a.compare[k].gagnants.slice(0, 8), false)}</details>` : '').join('')}` : ''}
+    ${a.drop ? `<h4>Chute détectée</h4><p>Depuis le <b>${esc(frShort(a.drop.date))}</b> : ${fmt(a.drop.before, 1)} → ${fmt(a.drop.after, 1)} clics par jour (−${Math.round(a.drop.drop * 100)} %).</p><p class="note">Mises à jour Google proches : ${a.drop.updates.length ? a.drop.updates.map((u) => esc(u.label)).join(' · ') : 'aucune connue'}. ${esc(a.drop.lecture)}</p>` : ''}
+    ${a.opportunities.length ? `<h4>Requêtes à remonter</h4><p>≈ <b>+${fmt(a.opportunities.reduce((s, o) => s + o.gain, 0))} clics/mois</b> possibles (estimation prudente si chaque requête gagne le top 3${a.terms.length ? ', requêtes de marque exclues' : ''}).</p><div class="table-wrap"><table><thead><tr><th>Requête</th><th class="n">Position</th><th class="n">Impressions</th><th class="n">CTR</th><th class="n">Gain ≈ clics/mois</th><th>Action</th></tr></thead><tbody>${a.opportunities.map((o) => `<tr><td>${esc(o.key)}</td><td class="n">${fmt(o.position, 1)}</td><td class="n">${fmt(o.impressions)}</td><td class="n">${fmt(o.ctr * 100, 1)} %</td><td class="n"><b>+${fmt(o.gain)}</b></td><td class="note">${esc(o.action)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${a.appareils || a.pays ? `<details><summary class="note">Appareils et pays</summary><ul class="clean">${[...(a.appareils || []), ...(a.pays || []).slice(0, 4)].map((r) => `<li>${esc(r.key)} : ${Math.round(r.part * 100)} % des clics, position ${fmt(r.position, 1)}</li>`).join('')}</ul></details>` : ''}
+    ${a.liens ? `<h4>Liens vers votre site</h4><p>${fmt(a.liens.nbSites)} site(s) référent(s)${a.liens.totalAncres ? ` · ancres : marque ${fmt(a.liens.kinds.marque)}, adresse ${fmt(a.liens.kinds.url)}, génériques ${fmt(a.liens.kinds.generique)}, mots-clés ${fmt(a.liens.kinds.mots)}` : ''}</p>${a.liens.sites.length ? `<div class="tags">${a.liens.sites.slice(0, 12).map((x) => `<span class="chip tag">${esc(x.key)} · ${fmt(x.links)}</span>`).join('')}</div>` : ''}` : ''}
+    ${a.warnings.length ? `<p class="note">${a.warnings.map((w) => esc(w)).join('<br>')}</p>` : ''}`
+  return `<div class="card"><h3>Vos vraies données Google (Search Console)</h3>${body}
+    <div class="row-inputs"><label>Export Search Console (.zip ou .csv, plusieurs fichiers possibles)<input type="file" id="gsc-file" multiple accept=".zip,.csv,text/csv,application/zip"></label>${S.gsc ? `<label>Période précédente (facultatif)<input type="file" id="gsc-prev" multiple accept=".zip,.csv,text/csv,application/zip"></label><button class="btn sm" id="gsc-clear" type="button">Retirer les données</button>` : ''}</div></div>`
+}
+function calendarPanel(v) {
+  const alsace = store.get('alsace', false)
+  const list = upcoming(new Date(), { days: 90, sector: v.sector, alsace })
+  if (!list.length) return ''
+  return `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Temps forts des 90 prochains jours</h3><label class="inline"><input type="checkbox" id="cal-alsace" ${alsace ? 'checked' : ''}> Alsace-Moselle</label></div>
+    <p class="note">Dates calculées pour votre secteur. Préparez le contenu à J-30, la pub à J-14, les posts à J-7 et les horaires de votre fiche Google avant chaque jour férié. Calendrier complet de l’année : <code>node seo/cli.mjs calendrier --secteur ${esc(v.sector)} --sortie rapports-seo</code> (tableur et agenda .ics).</p>
+    <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
 async function autoSuggest() {
   const v = vals(), seed = v.keyword || S.report?.result?.meta?.terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
@@ -494,14 +545,18 @@ function veillePanel() {
 // ───────── Budget ─────────
 // Lien vers la page du hashtag sur le réseau : pour juger soi-même sa popularité et sa fraîcheur.
 const TAG_URL = { instagram: (t) => `https://www.instagram.com/explore/tags/${t}/`, tiktok: (t) => `https://www.tiktok.com/tag/${t}`, linkedin: (t) => `https://www.linkedin.com/feed/hashtag/${t}/`, x: (t) => `https://x.com/hashtag/${t}`, facebook: (t) => `https://www.facebook.com/hashtag/${t}`, youtube: (t) => `https://www.youtube.com/hashtag/${t}`, pinterest: (t) => `https://www.pinterest.fr/search/pins/?q=%23${t}`, threads: (t) => `https://www.threads.net/search?q=${t}`, bluesky: (t) => `https://bsky.app/hashtag/${t}` }
-const tagLink = (net, t) => TAG_URL[net] ? `<a class="htag" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="Voir ce hashtag sur le réseau">#${esc(t.camel)}</a>` : `<span class="htag">#${esc(t.camel)}</span>`
+const NIV = { niche: 'niche (moins de 50 000 publications)', moyen: 'moyen (50 000 à 500 000)', large: 'large (plus de 500 000)' }
+const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}</span>` }
 const CH_COLORS = ['#4338ca', '#0f766e', '#b45309', '#be185d', '#0369a1', '#4d7c0f', '#7e22ce']
 function budget() {
   const v = vals(), r = S.report
   const b = planBudget({ sector: v.sector, goal: r?.kind === 'app' ? 'telechargements' : v.goal, monthly: v.monthly, local: v.local, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, targetConversions: store.get('target', 0), searchVolume: store.get('volume', 0), cpcOverride: store.get('cpc', 0) })
   const ind = bench.google_ads_by_industry || []
+  const ck = r ? preSpendChecks(r, b) : null
+  const susp = ck?.blocked && ['ok', 'test'].includes(b.verdict.level)
   return `<div class="section-head"><div><h2>Budget publicitaire</h2><p>${esc(b.sector)} · ${esc(b.goalLabel)} · ${b.local ? 'zone locale' : 'national'}</p></div></div>
-  <div class="card verdict-card v-${b.verdict.level}"><p class="verdict">${esc(b.verdict.text)}</p>${b.verdict.detail ? `<p class="note">${esc(b.verdict.detail)}</p>` : ''}</div>
+  <div class="card verdict-card v-${susp ? 'inconnu' : b.verdict.level}"><p class="verdict">${susp ? 'Sur le papier : ' : ''}${esc(b.verdict.text)}</p>${susp ? `<p><b>${esc(ck.message)}</b></p>` : ''}${b.verdict.detail ? `<p class="note">${esc(b.verdict.detail)}</p>` : ''}</div>
+  ${ck ? `<div class="card" style="margin-top:14px"><h3>Contrôle avant dépense</h3><p class="note">${esc(ck.message)}</p><ul class="clean checks">${ck.checks.map((c) => `<li><span class="chip ${c.status === '✓' ? 'sev-ok' : c.status === '✗' ? 'sev-critique' : 'tag'}" aria-label="${c.status === '✓' ? 'vérifié' : c.status === '✗' ? 'manquant' : 'à vérifier'}">${c.status}</span> <b>${esc(c.label)}</b> — <span class="note">${esc(c.detail)}</span></li>`).join('')}</ul></div>` : ''}
   <div class="card" style="margin-top:14px"><h3>Vos chiffres</h3><div class="grid">
     <label>Budget pub par mois (€)<input data-b="monthly" type="number" min="0" step="any" value="${v.monthly ?? ''}" placeholder="vide = budget conseillé"></label>
     <label>Valeur d’un client (€)<input data-b="avgValue" type="number" min="0" step="any" value="${v.avgValue || ''}" placeholder="panier ou contrat moyen"></label>
@@ -510,7 +565,7 @@ function budget() {
     <label>Clients visés par mois<input id="target" type="number" min="0" step="any" value="${store.get('target', 0) || ''}" placeholder="optionnel"></label>
     <label>Recherches / mois sur vos mots-clés<input id="volume" type="number" min="0" step="any" value="${store.get('volume', 0) || ''}" placeholder="optionnel (Keyword Planner)"></label>
     <label>Votre CPC réel Google (€)<input id="cpc" type="number" min="0" step="any" value="${store.get('cpc', 0) || ''}" placeholder="optionnel (Keyword Planner)"></label>
-  </div><p class="note">Hypothèses utilisées : marge ${Math.round(b.assumptions.margin * 100)} %${b.goal === 'leads' ? `, ${Math.round(b.assumptions.closeRate * 100)} % des contacts signent` : ''}. Coût maximal rentable par ${b.unit} : <b>${b.maxCpa ? fmt(b.maxCpa) + ' €' : '— (indiquez la valeur d’un client)'}</b>.${b.cpcSource ? ' ' + esc(b.cpcSource) : ''}</p></div>
+  </div><p class="note">Hypothèses utilisées : marge ${Math.round(b.assumptions.margin * 100)} %${b.goal === 'leads' ? `, ${Math.round(b.assumptions.closeRate * 100)} % des contacts signent` : ''}. Coût maximal rentable par ${b.unit} : <b>${b.maxCpa ? fmt(b.maxCpa) + ' €' : '— (indiquez la valeur d’un client)'}</b>.${b.roasBreakEven ? ` ROAS d’équilibre : <b>${fmt(b.roasBreakEven, 1)}</b> (1 ÷ marge : en dessous, chaque vente payée par la pub vous coûte de l’argent).` : ''}${b.cpcSource ? ' ' + esc(b.cpcSource) : ''}</p></div>
   <div class="kpis">
     <div class="kpi"><div class="v">${fmt(b.monthly)} €</div><div class="k">${b.recommendedUsed ? (b.verdict.level === 'non' ? 'budget minimum d’un test' : 'budget de départ conseillé') : 'par mois'} · ${fmt(b.daily)} €/jour</div></div>
     <div class="kpi"><div class="v">≈ ${fmt(b.totals.clicksMid)}</div><div class="k">clics / mois</div></div>
@@ -573,7 +628,7 @@ function ressources() {
   const subs = [['favori', 'Bouton-favori & CLI'], ['checklists', 'Checklists'], ['guide', 'Guide 2026'], ['glossaire', 'Glossaire'], ['marche', 'Étude de marché']]
   const head = `<div class="section-head"><div><h2>Ressources</h2></div><div class="actions" role="tablist">${subs.map(([k, l]) => `<button class="btn ${S.res === k ? 'primary' : ''}" data-sub="${k}" role="tab" aria-selected="${S.res === k}">${l}</button>`).join('')}</div></div>`
   if (S.res === 'checklists') return head + checklistsView()
-  if (S.res === 'guide') return head + `<div class="stack">${GUIDE.map((g) => `<div class="card"><h3>${esc(g.title)}</h3><ul class="clean">${g.body.map((b) => `<li>• ${gloss(esc(b))}</li>`).join('')}</ul></div>`).join('')}<details class="card fold"><summary><h3>Faits sourcés</h3></summary><div class="table-wrap"><table><tbody>${(bench.seo_facts || []).map((f) => `<tr><th>${esc(f.topic)}</th><td>${esc(f.fact)}${f.source ? `<br><a class="src" href="${esc(f.source)}" target="_blank" rel="noopener">source</a>` : ''}</td></tr>`).join('')}</tbody></table></div></details></div>`
+  if (S.res === 'guide') return head + `<p class="note">Données de référence vérifiées le ${esc(frDay(bench.generated))}${bench.review_by ? ` · à revoir avant le ${esc(frDay(bench.review_by))}` : ''} (sources citées pour chaque fait).</p><div class="stack">${GUIDE.map((g) => `<div class="card"><h3>${esc(g.title)}</h3><ul class="clean">${g.body.map((b) => `<li>• ${gloss(esc(b))}</li>`).join('')}</ul></div>`).join('')}<details class="card fold"><summary><h3>Faits sourcés</h3></summary><div class="table-wrap"><table><tbody>${(bench.seo_facts || []).map((f) => `<tr><th>${esc(f.topic)}</th><td>${esc(f.fact)}${f.source ? `<br><a class="src" href="${esc(f.source)}" target="_blank" rel="noopener">source</a>` : ''}</td></tr>`).join('')}</tbody></table></div></details></div>`
   if (S.res === 'glossaire') return head + `<div class="card"><dl class="gloss">${Object.entries(GLOSSARY).map(([k, d]) => `<dt>${esc(k)}</dt><dd>${esc(d)}</dd>`).join('')}</dl></div>`
   if (S.res === 'marche') return head + marcheView()
   const code = bookmarkletCode(location.href.split('#')[0])
