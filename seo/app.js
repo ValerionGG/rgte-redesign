@@ -756,7 +756,10 @@ after.budget = () => {
 // ───────── Concurrents ─────────
 function concurrents() {
   const r = S.report
-  if (!r?.competitors?.length) return `<div class="card empty"><h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p><p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
+  // Sans liste : un lien pour trouver ses concurrents locaux et en ligne (Maps et recherche Google préremplies)
+  const q = r ? [sectorById(r.input?.sector).label.split(/[,(/]/)[0].trim(), r.input?.city].filter(Boolean).join(' ') : ''
+  const finders = q ? `<p>Pour les trouver : <a href="https://www.google.com/maps/search/${encodeURIComponent(q)}" target="_blank" rel="noopener">vos concurrents sur Google Maps</a> · <a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">sur Google</a>. Gardez les 3 à 5 sites qui apparaissent avant vous, hors annuaires et plateformes.</p>` : ''
+  if (!r?.competitors?.length) return `<div class="card empty"><h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p>${finders}<p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
   const R = r.result
   const base = R.pageScores || Object.fromEntries(Object.entries(R.scores).map(([k, v]) => [k, v.score]))
   const me = { url: r.target + ' (vous)', global: R.pageGlobal ?? R.global, scores: base, perf: r.ctx?.psi?.scores?.performance, lcp: r.ctx?.psi?.field?.LCP, words: r.ctx?.page?.wordCount, schema: R.meta?.schemaTypes?.join(', '), social: Object.keys(R.meta?.social || {}), llms: r.ctx?.llms?.status === 200, terms: R.meta?.terms?.words?.map((t) => t.term) || [], me: true }

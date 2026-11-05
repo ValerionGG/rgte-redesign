@@ -3,6 +3,7 @@
 Entrez **un site, une application (App Store / Google Play) ou un dépôt GitHub** : SEO 360 liste tout ce qu’il faut corriger, par priorité, avec le correctif. Il donne aussi le plan d’action, les mots-clés, les hashtags par réseau, le budget publicitaire et un benchmark de vos concurrents.
 
 - **Interface web** : `seo/index.html`, publiée sur https://valeriongg.github.io/rgte-redesign/seo/ dès que la branche est fusionnée dans `main` (GitHub Pages publie `main`). En attendant : `python3 -m http.server --directory docs` puis http://localhost:8000/seo/, ou la page claude.ai privée en mode démonstration.
+- **Confidentialité et sécurité** : [PRIVACY.md](PRIVACY.md) (qui reçoit quoi) et [SECURITY.md](SECURITY.md) (protections, limites, signaler une faille).
 - **CLI** (audit complet : en-têtes, redirections, crawl) : `node seo/cli.mjs <cible>`
 - **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin : `/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d`, puis `/plugin install seo360@seo360-fr`
 - **Étude concurrentielle & benchmark** : [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md)

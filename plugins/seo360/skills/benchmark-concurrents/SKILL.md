@@ -19,6 +19,8 @@ metadata:
 
 ## 1. Sites concurrents (plateforme)
 
+Pas de liste fournie : la chercher plutôt que la demander. Recherche web « <activité> <ville> » (et « <activité> près de <ville> »), garder les 3 à 5 sites qui sortent en premier, hors annuaires, places de marché et plateformes (PagesJaunes, Tripadvisor, Doctolib, Amazon…), puis les annoncer à l'utilisateur avant l'analyse pour qu'il corrige la liste.
+
 ```bash
 node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" monsite.fr --secteur <id> --concurrents c1.fr,c2.fr,c3.fr --crawl 10
 ```
