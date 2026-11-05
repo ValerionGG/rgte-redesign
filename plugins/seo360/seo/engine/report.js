@@ -1,6 +1,7 @@
 // Export Markdown (CLI, bouton « Markdown », skills) : la synthèse et les 3 actions d'abord, puis le détail.
 import { SEVERITY } from './audit.js'
 import { driftMarkdown } from './drift.js'
+import { recommendTools, toolsMarkdown } from './outils.js'
 import { CHANNELS } from './ads.js'
 import { buildFixes } from './fixes.js'
 
@@ -55,6 +56,7 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   if (m.cms?.length || m.trackers?.length) L.push('## Technologies détectées', '', `- CMS / framework : ${m.cms?.join(', ') || '—'}`, `- Mesure & pixels : ${m.trackers?.join(', ') || 'aucun'}`, `- Bandeau cookies : ${m.cmp?.join(', ') || 'non détecté'}`, '')
   if (m.bots) L.push('## Robots des moteurs et des IA', '', '| Robot | Usage | Accès |', '|---|---|---|', ...m.bots.map((b) => `| ${b.ua} | ${b.owner} | ${b.allowed ? 'autorisé' : '**bloqué**'} |`), '')
   if (r.budget) L.push(...budgetSection(r.budget))
+  if (R && r.kind) L.push(toolsMarkdown(recommendTools(r), { guides: true }))
   if (r.veille) {
     const v = r.veille
     L.push(`## Ce que disent les internautes (veille Agent Reach, ${v.total} publications)`, '', ...v.recommandations.map((x) => `- ${x}`), '')

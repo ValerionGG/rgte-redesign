@@ -25,7 +25,7 @@ const MAX_BYTES = 5 * 1024 * 1024
 const args = process.argv.slice(2)
 
 // ───────── Sous-commandes : veille sociale (Agent Reach), Search Console, calendrier ─────────
-const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs' }
+const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs' }
 if (SUB[args[0]]) {
   await import(SUB[args[0]]).then((m) => m.main(args.slice(1)))
   process.exit(process.exitCode || 0)
@@ -42,6 +42,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
         node seo/cli.mjs calendrier [année] [--secteur <id>] [--alsace] [--sortie dossier]   (temps forts français)
         node seo/cli.mjs budget --secteur <id> [--objectif leads] [--budget €] [--valeur €] [--marge %]   (budget pub seul)
         node seo/cli.mjs hashtags --secteur <id> [--mot-cle "a, b"] [--ville X] [--marque X]   (hashtags seuls)
+        node seo/cli.mjs outils [--rapport site.json | --secteur <id> --local]   (outils gratuits et payants + guides)
 
   --secteur <id>        ${SECTORS.map((s) => s.id).join(', ')}
   --mot-cle "<texte>"   mot-clé principal visé

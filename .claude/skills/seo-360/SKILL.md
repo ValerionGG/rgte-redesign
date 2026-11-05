@@ -82,6 +82,7 @@ Lire : part des clics de marque et hors marque, opportunités hors marque (posit
 | Besoin | Skill |
 |---|---|
 | Fiche d'identité de l'entreprise, lue par tous les skills | `contexte-entreprise` |
+| Plan complet multicanal à partir d'un lien : toutes les améliorations, outils et guides, 90 jours | `plan-croissance-360` |
 | Indexation, vitesse, données structurées, refonte | `seo-audit-technique` |
 | Chute de trafic ou de clics | `diagnostic-baisse-trafic` |
 | Fiche Google, pack local | `seo-local` |

@@ -1,0 +1,1025 @@
+// Généré depuis outils.json (recherche du 2026-11-05). Ne pas éditer à la main : modifiez le .json puis node seo/data/sync.mjs
+export default {
+ "generated": "2026-11-05",
+ "review_by": "2027-03-05",
+ "method": "Catalogue construit le 2026-11-05 à partir de l'étude de marché (competitors.json, prix vérifiés le 2026-11-03) et d'une recherche web dédiée aux outils gratuits et aux pages d'aide officielles. Les prix d'entrée sont indicatifs (hors taxes sauf mention) : les reconfirmer sur la page de l'éditeur.",
+ "tools": [
+  {
+   "id": "search-console",
+   "nom": "Google Search Console",
+   "url": "https://search.google.com/search-console",
+   "besoins": [
+    "mesure",
+    "seo"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vos vraies requêtes, positions, pages indexées et problèmes vus par Google ; indispensable pour mesurer chaque correction.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "ga4",
+   "nom": "Google Analytics 4",
+   "url": "https://analytics.google.com",
+   "besoins": [
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Visites, sources de trafic et conversions (appels, formulaires, achats) déclarées comme événements clés.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "gtm",
+   "nom": "Google Tag Manager",
+   "url": "https://tagmanager.google.com",
+   "besoins": [
+    "mesure",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Installe GA4, les balises de conversion et les pixels sans retoucher le code à chaque fois.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "consent-mode",
+   "nom": "Consent Mode v2 (Google)",
+   "url": "https://developers.google.com/tag-platform/security/guides/consent",
+   "besoins": [
+    "conformite",
+    "mesure",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Obligatoire pour mesurer et faire de la pub Google en respectant le consentement (CNIL) ; sans lui, Google Ads perd une partie des conversions.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (avec une CMP)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "clarity",
+   "nom": "Microsoft Clarity",
+   "url": "https://clarity.microsoft.com",
+   "besoins": [
+    "mesure",
+    "conversion"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Cartes de chaleur et enregistrements de sessions gratuits : voir où les visiteurs bloquent.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "bing-webmaster",
+   "nom": "Bing Webmaster Tools + IndexNow",
+   "url": "https://www.bing.com/webmasters",
+   "besoins": [
+    "seo",
+    "ia"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Bing alimente Copilot et une partie de ChatGPT Search ; rapport « AI Performance » des citations IA ; IndexNow signale vos nouvelles pages en quelques minutes.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "gbp",
+   "nom": "Google Business Profile",
+   "url": "https://business.google.com",
+   "besoins": [
+    "local",
+    "avis"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Premier levier du SEO local : apparaître dans Google Maps et le pack local, récolter et répondre aux avis.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "apple-business",
+   "nom": "Apple Business Connect",
+   "url": "https://businessconnect.apple.com",
+   "besoins": [
+    "local"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Votre fiche dans Apple Plans, Siri et Spotlight (iPhone).",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "bing-places",
+   "nom": "Bing Places for Business",
+   "url": "https://www.bingplaces.com",
+   "besoins": [
+    "local"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Votre fiche dans Bing Maps et Copilot ; import en un clic depuis Google Business Profile.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "merchant-center",
+   "nom": "Google Merchant Center (fiches gratuites)",
+   "url": "https://merchants.google.com",
+   "besoins": [
+    "ecommerce",
+    "seo"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vos produits gratuitement dans l'onglet Shopping, Google Images et la recherche.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "looker-studio",
+   "nom": "Looker Studio",
+   "url": "https://lookerstudio.google.com",
+   "besoins": [
+    "mesure"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Un tableau de bord mensuel gratuit qui réunit Search Console et GA4.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "keyword-planner",
+   "nom": "Google Keyword Planner",
+   "url": "https://ads.google.com/aw/keywordplanner/home",
+   "besoins": [
+    "mots-cles",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Volumes de recherche et CPC réels par mot-clé (compte Google Ads requis, sans obligation de dépenser).",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (compte Google Ads)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "google-trends",
+   "nom": "Google Trends",
+   "url": "https://trends.google.fr",
+   "besoins": [
+    "mots-cles",
+    "contenu"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Saisonnalité et tendances d'un sujet en France : quand publier et quand lancer la pub.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "psi-key",
+   "nom": "Clé API PageSpeed Insights",
+   "url": "https://developers.google.com/speed/docs/insights/v5/get-started",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Mesure la vitesse réelle (Core Web Vitals) à chaque audit SEO 360 sans dépasser le quota gratuit.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "rich-results",
+   "nom": "Test des résultats enrichis + validateur Schema.org",
+   "url": "https://search.google.com/test/rich-results",
+   "besoins": [
+    "technique",
+    "donnees"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vérifie vos données structurées (LocalBusiness, Product, Article…) avant et après correction.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": "https://validator.schema.org",
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "ahrefs-awt",
+   "nom": "Ahrefs Webmaster Tools",
+   "url": "https://ahrefs.com/webmaster-tools",
+   "besoins": [
+    "liens",
+    "technique"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Audit de site et liens entrants de VOTRE site, gratuitement (propriété vérifiée).",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "screaming-frog",
+   "nom": "Screaming Frog SEO Spider",
+   "url": "https://www.screamingfrog.co.uk/seo-spider/",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Explore tout le site comme Google : erreurs, redirections, titres, canonical ; gratuit jusqu'à 500 URL.",
+   "gratuit": true,
+   "limites_gratuit": "500 URL, sans sauvegarde des crawls",
+   "prix": "199 £/an par licence (version gratuite 500 URL)",
+   "mois_eur": 20,
+   "source_prix": "https://www.screamingfrog.co.uk/seo-spider/pricing/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "cloudflare",
+   "nom": "Cloudflare (offre gratuite)",
+   "url": "https://www.cloudflare.com",
+   "besoins": [
+    "technique",
+    "ia",
+    "securite"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "CDN, HTTPS, cache et protection gratuits ; réglage des robots IA (AI Crawl Control, Content Signals).",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (offres payantes en option)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "tarteaucitron",
+   "nom": "tarteaucitron.js",
+   "url": "https://tarteaucitron.io",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Bandeau de consentement cookies gratuit, open source, compatible Consent Mode v2.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (version hébergée payante)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "meta-business",
+   "nom": "Meta Business Suite + Pixel Meta + API Conversions",
+   "url": "https://business.facebook.com",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Publier et planifier sur Facebook et Instagram, statistiques, et mesurer les conversions pour la pub Meta.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (publicité payante)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "tiktok-business",
+   "nom": "TikTok Business Center + Pixel TikTok + Events API",
+   "url": "https://business.tiktok.com",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Compte professionnel, statistiques TikTok, et mesure des conversions pour TikTok Ads.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (publicité payante)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "linkedin-insight",
+   "nom": "LinkedIn Campaign Manager + Insight Tag",
+   "url": "https://www.linkedin.com/campaignmanager",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Mesure des visiteurs B2B et des conversions pour la pub LinkedIn.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (publicité payante)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "pinterest-business",
+   "nom": "Pinterest Business + balise Pinterest",
+   "url": "https://business.pinterest.com",
+   "besoins": [
+    "reseaux",
+    "pub"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Épingles indexées par Google, trafic durable pour la déco, la mode, la cuisine, le mariage.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit (publicité payante)",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "youtube-studio",
+   "nom": "YouTube Studio",
+   "url": "https://studio.youtube.com",
+   "besoins": [
+    "reseaux",
+    "video"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Chaîne, Shorts et statistiques ; YouTube est aussi une source majeure de citations IA.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "canva",
+   "nom": "Canva",
+   "url": "https://www.canva.com",
+   "besoins": [
+    "design",
+    "reseaux"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Visuels, carrousels et miniatures aux formats de chaque réseau.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "capcut",
+   "nom": "CapCut",
+   "url": "https://www.capcut.com",
+   "besoins": [
+    "video",
+    "reseaux"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Montage vidéo au téléphone pour Reels, TikTok et Shorts : sous-titres automatiques, formats verticaux.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "metricool",
+   "nom": "Metricool",
+   "url": "https://metricool.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Planifier les posts de tous les réseaux et suivre les statistiques au même endroit.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit / ~22 $/mois (Starter) — à vérifier",
+   "mois_eur": 20,
+   "source_prix": "https://metricool.com/pricing/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "buffer",
+   "nom": "Buffer",
+   "url": "https://buffer.com/pricing",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Planification simple des posts, offre gratuite pour quelques comptes.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "later",
+   "nom": "Later",
+   "url": "https://later.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Planification visuelle Instagram et TikTok, liens en bio.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "25 $/mois (Starter)",
+   "mois_eur": 22,
+   "source_prix": "https://later.com/pricing/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "agorapulse",
+   "nom": "Agorapulse",
+   "url": "https://www.agorapulse.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Planification, boîte de réception commune des commentaires et rapports, pour une équipe ou une agence.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "answerthepublic",
+   "nom": "AnswerThePublic",
+   "url": "https://answerthepublic.com",
+   "besoins": [
+    "contenu",
+    "mots-cles"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Les questions que les gens posent autour d'un mot-clé : FAQ, intertitres, idées de vidéos.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "alsoasked",
+   "nom": "AlsoAsked",
+   "url": "https://alsoasked.com",
+   "besoins": [
+    "contenu",
+    "mots-cles"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Les « Autres questions posées » de Google en arbre : plan d'un article qui répond à tout.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "haloscan",
+   "nom": "Haloscan",
+   "url": "https://www.haloscan.com/",
+   "besoins": [
+    "mots-cles",
+    "contenu",
+    "concurrents"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Outil français de mots-clés et de concurrents, moins cher que les suites américaines.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "59 € HT/mois (Starter) — freemium limité",
+   "mois_eur": 59,
+   "source_prix": "https://www.haloscan.com/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "semrush",
+   "nom": "Semrush",
+   "url": "https://www.semrush.com/prices/",
+   "besoins": [
+    "mots-cles",
+    "concurrents",
+    "liens",
+    "pub"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suite complète : mots-clés, concurrents, backlinks, pub ; utile pour une agence ou un marché concurrentiel.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "139,95 $/mois (Pro, mensuel) — ~117 $/mois en annuel",
+   "mois_eur": 120,
+   "source_prix": "https://www.semrush.com/prices/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "ahrefs",
+   "nom": "Ahrefs",
+   "url": "https://ahrefs.com/pricing",
+   "besoins": [
+    "liens",
+    "concurrents",
+    "mots-cles"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Référence des backlinks et de l'analyse concurrentielle.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "129 $/mois (Lite) — Starter à 29 $/mois très limité",
+   "mois_eur": 111,
+   "source_prix": "https://ahrefs.com/pricing",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "otterly",
+   "nom": "Otterly.AI",
+   "url": "https://otterly.ai/pricing",
+   "besoins": [
+    "ia"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suit vos citations dans ChatGPT, Perplexity, AI Overviews : savoir si vous êtes recommandé.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "29 $/mois (Lite, 15 prompts)",
+   "mois_eur": 25,
+   "source_prix": "https://otterly.ai/pricing",
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "peec",
+   "nom": "Peec AI",
+   "url": "https://peec.ai/pricing",
+   "besoins": [
+    "ia"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suivi de visibilité IA plus complet (plusieurs moteurs, concurrents, sources citées).",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "89 €/mois (Starter)",
+   "mois_eur": 89,
+   "source_prix": "https://peec.ai/pricing",
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "calendly",
+   "nom": "Calendly",
+   "url": "https://calendly.com/pricing",
+   "besoins": [
+    "conversion"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Prise de rendez-vous en ligne depuis le site et les réseaux, rappels automatiques.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "call-tracking",
+   "nom": "Suivi d’appels (Ringover ou CallRail)",
+   "url": "https://www.ringover.fr",
+   "besoins": [
+    "conversion",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Savoir quel canal (Google, Maps, pub, réseaux) fait sonner le téléphone.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "hotjar",
+   "nom": "Hotjar",
+   "url": "https://www.hotjar.com/pricing/",
+   "besoins": [
+    "conversion"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Enquêtes et retours visiteurs en plus des cartes de chaleur (Clarity suffit souvent au début).",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "brevo",
+   "nom": "Brevo",
+   "url": "https://www.brevo.com/fr/pricing/",
+   "besoins": [
+    "emailing",
+    "sms"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "E-mails et SMS (outil français) : relances, lettre d'information, avis clients.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "make",
+   "nom": "Make",
+   "url": "https://www.make.com/en/pricing",
+   "besoins": [
+    "automatisation"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Automatiser sans coder : formulaire → CRM → e-mail → avis.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "zapier",
+   "nom": "Zapier",
+   "url": "https://zapier.com/pricing",
+   "besoins": [
+    "automatisation"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Automatisations prêtes à l'emploi entre plus de 7 000 applications.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "axeptio",
+   "nom": "Axeptio",
+   "url": "https://www.axeptio.eu/fr/pricing",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Bandeau cookies français, apprécié des visiteurs, Consent Mode v2 intégré.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "didomi",
+   "nom": "Didomi",
+   "url": "https://www.didomi.io/pricing",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Gestion du consentement pour les sites à fort trafic ou multi-pays.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "rank-math",
+   "nom": "Rank Math",
+   "url": "https://rankmath.com/pricing/",
+   "besoins": [
+    "technique",
+    "contenu"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Extension SEO WordPress : titres, descriptions, sitemap, données structurées.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "yoast",
+   "nom": "Yoast SEO",
+   "url": "https://yoast.com/wordpress/plugins/seo/",
+   "besoins": [
+    "technique",
+    "contenu"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Alternative à Rank Math, très répandue.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "wp-rocket",
+   "nom": "WP Rocket",
+   "url": "https://wp-rocket.me/pricing/",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Cache et optimisation de vitesse WordPress en quelques clics.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "partoo",
+   "nom": "Partoo",
+   "url": "https://www.partoo.co/fr/",
+   "besoins": [
+    "local",
+    "avis"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Gérer et synchroniser plusieurs fiches locales (réseaux de magasins, franchises).",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "guest-suite",
+   "nom": "Guest Suite",
+   "url": "https://www.guest-suite.com/",
+   "besoins": [
+    "avis"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Collecte d'avis clients vérifiés et diffusion sur Google, outil français.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "trustpilot",
+   "nom": "Trustpilot",
+   "url": "https://business.trustpilot.com/pricing",
+   "besoins": [
+    "avis"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Avis clients publics pour l'e-commerce, avec une offre gratuite de base.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": null,
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  }
+ ]
+}

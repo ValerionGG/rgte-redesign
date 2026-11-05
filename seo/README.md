@@ -4,7 +4,7 @@ Entrez **un site, une application (App Store / Google Play) ou un dépôt GitHub
 
 - **Interface web** : `seo/index.html`, publiée sur https://valeriongg.github.io/rgte-redesign/seo/
 - **CLI** (audit complet : en-têtes, redirections, crawl) : `node seo/cli.mjs <cible>`
-- **Skills Claude Code** : `.claude/skills/` (20 skills, voir plus bas), aussi installables comme plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`
+- **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`
 - **Étude concurrentielle & benchmark** : [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md)
 
 Aucune dépendance : Node ≥ 18 et un navigateur récent suffisent.
@@ -143,6 +143,7 @@ node seo/cli.mjs calendrier 2027 --secteur restaurant --sortie rapports-seo     
 node seo/cli.mjs budget --secteur btp --budget 1500 --valeur 2500 --marge 40        # budget pub sans audit
 node seo/cli.mjs hashtags --secteur boulangerie --mot-cle "entremets" --ville Lyon  # hashtags sans audit
 node seo/cli.mjs veille "pâtisserie lyon" --marque "Maison Exemple"                 # demande réelle (Agent Reach)
+node seo/cli.mjs outils --rapport rapports-seo/www-exemple-fr.json                  # outils gratuits et payants + guides
 node seo/cli.mjs --aide
 ```
 
@@ -165,6 +166,7 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 | Skill | Usage |
 |---|---|
 | `contexte-entreprise` | la fiche `.claude/contexte-entreprise.md` lue par tous les skills (à faire en premier) |
+| `plan-croissance-360` | **donnez un lien** (site, app, profil social, repo) : toutes les améliorations gratuites et payantes par canal, outils avec prix et guides d'installation, plan 90 jours |
 | `seo-360` | point d'entrée : audit complet, plan, mots-clés, hashtags, budget, concurrents |
 | `seo-audit-technique` | technique et on-page, refonte et migration (`--avant`) |
 | `diagnostic-baisse-trafic` | chute de trafic en 5 couches, avec l'import Search Console |
@@ -184,6 +186,10 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 | `benchmark-concurrents` | concurrents, pubs actives, SWOT, positionnement |
 | `aso-application` | App Store / Google Play |
 | `github-seo` | référencement d’un dépôt GitHub |
+
+**Boîte à outils.** Chaque audit se termine par les outils à installer, choisis d'après ce qu'il a trouvé : 51 outils au catalogue (`seo/data/research/outils.json`), gratuits d'abord. Les 6 premiers sont à installer cette semaine, dans l'ordre, avec le guide pas à pas tiré des pages d'aide officielles. Puis viennent ceux du mois, les recommandés et les payants, avec leur prix d'entrée daté et le budget mensuel. On les retrouve dans l'onglet Ressources → Boîte à outils et avec `node seo/cli.mjs outils`.
+
+**Packs complémentaires** (claude-seo, claude-ads, instagram-skills, linkedin-skills, ScrapeCreators, sélection de marketingskills…) : relus commit par commit, avec leur coût en jetons et la commande d'installation, dans [`plan-croissance-360/references/packs-complementaires.md`](../.claude/skills/plan-croissance-360/references/packs-complementaires.md). Installez peu mais juste : chaque skill coûte des jetons à chaque échange.
 
 **Dans un autre projet**, installez le plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`. Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Sur claude.ai, chaque dossier de skill zippé peut s’importer.
 
@@ -212,6 +218,7 @@ seo/
     calendar.js    calendrier marketing français calculé (CSV, .ics)
     citability.js  citabilité des blocs H2/H3 pour les IA
     drift.js       dérive après refonte (avant / après)
+    outils.js      boîte à outils : choix selon l'audit, ordre d'installation, guides, coûts
     bookmarklet.js bouton-favori « Auditer cette page »
     share.js       lien de partage compressé (sans serveur)
     glossary.js    glossaire des sigles
@@ -223,7 +230,7 @@ seo/
     research/      études (vérifiées le 05/11/2026, JSON source + modules JS) ; node seo/data/sync.mjs
     google-updates.js  mises à jour Google confirmées 2025-2026 (datation des chutes)
   proxy/worker.js  proxy CORS optionnel (Cloudflare)
-  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (34 tests : pages pièges, Search Console, calendrier, skills, plugin)
+  test/            NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs (35 tests : pages pièges, Search Console, calendrier, boîte à outils, skills, plugin)
 ```
 
 `node build.mjs` copie l’interface, le moteur et les données dans `docs/seo/` (GitHub Pages).

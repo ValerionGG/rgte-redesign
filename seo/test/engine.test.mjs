@@ -8,6 +8,7 @@ import { extract, topTerms } from '../engine/html.js'
 import { parseRobots, allowed, botMatrix, BOTS } from '../engine/robots.js'
 import { scoreBlocks } from '../engine/citability.js'
 import { compareReports } from '../engine/drift.js'
+import { recommendTools, toolsMarkdown, TOOLS } from '../engine/outils.js'
 import { analyze, detectKind, competitorSummary } from '../engine/index.js'
 import { toMarkdown } from '../engine/report.js'
 import { generateHashtags } from '../engine/hashtags.js'
@@ -341,10 +342,28 @@ test('contrôle avant dépense : un ✗ suspend le verdict, ROAS d’équilibre'
   assert.equal(preSpendChecks({ kind: 'app', input: {}, ctx: {}, result: { meta: {} } }).blocked, false, 'app : rien de bloquant sans mesure')
   assert.equal(planBudget({ sector: 'ecommerce', goal: 'ventes', monthly: 1000, avgValue: 60, margin: 0.4 }).roasBreakEven, 2.5)
 })
+test('boîte à outils : choix selon l’audit, ordre d’installation, guides et prix', () => {
+  const rep = { kind: 'site', input: { sector: 'boulangerie', local: true, monthly: 300, goal: 'leads' }, result: { issues: [{ id: 'analytics', sev: 'important' }, { id: 'cmp', sev: 'important' }, { id: 'lcp', sev: 'important' }, { id: 'bing', sev: 'info' }], meta: { cms: ['WordPress'], forms: 1 } } }
+  const t = recommendTools(rep)
+  const ids = t.essentiel.map((x) => x.id)
+  assert.deepEqual(ids.slice(0, 3), ['search-console', 'gbp', 'tarteaucitron'], 'ordre : Search Console, fiche Google, bandeau cookies')
+  for (const id of ['ga4', 'gtm', 'consent-mode', 'rank-math', 'meta-business', 'tiktok-business', 'psi-key']) assert.ok(ids.includes(id), id)
+  assert.ok(t.recommande.some((x) => x.id === 'wp-rocket'), 'WordPress lent → WP Rocket')
+  assert.ok(t.pro.some((x) => x.id === 'call-tracking'), 'pub sur des contacts → suivi d’appels')
+  assert.ok(t.essentiel.find((x) => x.id === 'ga4').raisons[0].includes('Aucun outil de mesure'))
+  const md = toolsMarkdown(t)
+  assert.match(md, /### Cette semaine \(gratuit, dans cet ordre\)/); assert.match(md, /### Ce mois-ci/); assert.match(md, /Budget outils/)
+  // Sans audit : base sectorielle, rien de payant imposé
+  const base = recommendTools({ kind: 'site', input: { sector: 'saas' }, result: { issues: [], meta: {} } })
+  assert.ok(!base.essentiel.some((x) => x.id === 'gbp')); assert.ok(base.essentiel.some((x) => x.id === 'linkedin-insight' || x.id === 'search-console'))
+  for (const x of Object.values(TOOLS)) { assert.match(x.url, /^https:\/\//, x.id); assert.ok(['essentiel', 'recommande', 'pro'].includes(x.niveau), x.id); if (x.niveau === 'essentiel') assert.ok(x.gratuit, `${x.id} : un essentiel doit être gratuit`) }
+  const r = spawnSync(process.execPath, [new URL('../cli.mjs', import.meta.url).pathname, 'outils', '--secteur', 'restaurant', '--local'], { encoding: 'utf8' })
+  assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /Google Business Profile/)
+})
 test('skills : frontmatter, sections obligatoires, références liées, 3 évaluations dont 1 négative, plugin à jour', () => {
   const root = new URL('../../', import.meta.url), dir = new URL('.claude/skills/', root)
   const names = readdirSync(dir).filter((n) => existsSync(new URL(`${n}/SKILL.md`, dir)))
-  assert.equal(names.length, 20)
+  assert.equal(names.length, 21)
   const evals = readdirSync(new URL('plugins/seo360/evals/', root))
   for (const n of names) {
     const s = readFileSync(new URL(`${n}/SKILL.md`, dir), 'utf8'), fm = s.match(/^---\n([\s\S]*?)\n---/)?.[1] || ''

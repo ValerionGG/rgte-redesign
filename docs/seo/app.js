@@ -11,6 +11,7 @@ import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts } from './engine/fixes.js'
 import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
 import { upcoming, frShort } from './engine/calendar.js'
+import { recommendTools, WEEK } from './engine/outils.js'
 import { encodeReport, decodeReport, slimForShare } from './engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmarklet.js'
 import { extract } from './engine/html.js'
@@ -39,7 +40,7 @@ const frDay = (d) => (d ? new Date(d + 'T12:00:00Z').toLocaleDateString('fr-FR')
 const targetKey = (t) => tryJ(() => { const u = new URL(/^https?:/.test(t) ? t : 'https://' + t); return u.host.replace(/^www\./, '') + u.pathname.replace(/\/$/, '') }, String(t))
 
 const TABS = [['synthese', 'Synthèse'], ['afaire', 'À faire'], ['visibilite', 'Mots-clés & réseaux'], ['budget', 'Budget'], ['concurrents', 'Concurrents'], ['ressources', 'Ressources']]
-const S = { report: null, fixes: {}, tab: 'synthese', res: 'favori', cat: '', sevs: new Set(['critique', 'important', 'moyen', 'faible']), suggestions: [], gsc: null, mk: 'outils', shared: false, busy: false }
+const S = { report: null, fixes: {}, tab: 'synthese', res: 'outils', cat: '', sevs: new Set(['critique', 'important', 'moyen', 'faible']), suggestions: [], gsc: null, mk: 'outils', shared: false, busy: false }
 
 // ───────── Formulaire ─────────
 const form = $('#form')
@@ -317,6 +318,7 @@ function synthese() {
     ${c.page ? serpCard(r) : ''}
     ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
     <div class="card"><h3>Budget publicitaire</h3><p class="verdict v-${b.verdict.level}">${esc(b.verdict.text)}</p><p><a href="#budget" data-go="budget">Détail par canal et montée en charge →</a></p></div>
+    ${(() => { const t = recommendTools(r); return `<div class="card"><h3>Vos outils</h3><p class="big">${Math.min(WEEK, t.essentiel.length)} outils gratuits cette semaine</p><p class="note">${esc(t.essentiel.slice(0, 3).map((x) => x.nom).join(', '))}… avec le guide d’installation de chacun, puis les outils payants seulement s’ils servent.</p><a href="#ressources" data-res="outils">Voir la boîte à outils →</a></div>` })()}
     <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Chute de ${Math.round(G.drop.drop * 100)} % des clics depuis le ${esc(frShort(G.drop.date))}</p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
   </div>
   <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
@@ -493,6 +495,21 @@ function gscPanel() {
   return `<div class="card"><h3>Vos vraies données Google (Search Console)</h3>${body}
     <div class="row-inputs"><label>Export Search Console (.zip ou .csv, plusieurs fichiers possibles)<input type="file" id="gsc-file" multiple accept=".zip,.csv,text/csv,application/zip"></label>${S.gsc ? `<label>Période précédente (facultatif)<input type="file" id="gsc-prev" multiple accept=".zip,.csv,text/csv,application/zip"></label><button class="btn sm" id="gsc-clear" type="button">Retirer les données</button>` : ''}</div></div>`
 }
+function outilsView() {
+  const v = vals(), r = S.report
+  const rec = recommendTools(r || { kind: 'site', input: inputOf(v), result: { issues: [], meta: {} } })
+  const price = (t) => t.prix || (t.gratuit ? 'Gratuit (offres payantes : à vérifier)' : 'Prix : à vérifier')
+  const card = (t, guide) => `<details class="card fold tool"><summary><h3>${esc(t.nom)} <span class="chip ${t.gratuit ? 'sev-ok' : 'tag'}">${esc(price(t))}</span></h3></summary>
+    <p>${esc(t.raisons.join(' ') || t.pourquoi)}</p>${t.limites_gratuit ? `<p class="note">Offre gratuite : ${esc(t.limites_gratuit)}</p>` : ''}
+    ${guide && t.etapes?.length ? `<ol class="todo">${t.etapes.map((e) => `<li>${esc(e)}</li>`).join('')}</ol>` : ''}
+    <p class="note"><a href="${esc(t.url)}" target="_blank" rel="noopener">Ouvrir ${esc(t.nom)}</a>${t.doc ? ` · <a href="${esc(t.doc)}" target="_blank" rel="noopener">aide officielle</a>` : ''}${t.source_prix ? ` · <a href="${esc(t.source_prix)}" target="_blank" rel="noopener">prix</a>` : ''}</p></details>`
+  const sec = (title, note, list, guide) => list.length ? `<div class="section-head" style="margin-top:18px"><div><h3>${esc(title)}</h3><p class="note">${esc(note)}</p></div></div><div class="stack">${list.map((t) => card(t, guide)).join('')}</div>` : ''
+  return `<p class="note">${r ? `Choisis d’après l’audit de ${esc(r.target)}` : 'Lancez un audit pour une sélection adaptée à votre site ; voici la base pour votre secteur'}. Prix d’entrée vérifiés le ${esc(frDay(rec.verifie))}, hors taxes sauf mention : à reconfirmer chez l’éditeur. Budget : 0 € pour démarrer${rec.couts.recommandeOptionnel ? `, ≈ ${fmt(rec.couts.recommandeOptionnel)} €/mois avec les offres payantes recommandées` : ''}${rec.couts.pro ? `, ≈ ${fmt(rec.couts.pro)} €/mois de plus au niveau pro` : ''}.</p>
+    ${sec('Cette semaine (gratuit, dans cet ordre)', 'Ouvrez chaque outil pour le guide d’installation pas à pas.', rec.essentiel.slice(0, WEEK), true)}
+    ${sec('Ce mois-ci (gratuit)', '', rec.essentiel.slice(WEEK), true)}
+    ${sec('Recommandés (gratuits ou petit budget)', '', rec.recommande, true)}
+    ${sec('Pour aller plus loin (payants)', 'Seulement quand les bases sont en place.', rec.pro, false)}`
+}
 function calendarPanel(v) {
   const alsace = store.get('alsace', false)
   const list = upcoming(new Date(), { days: 90, sector: v.sector, alsace })
@@ -625,8 +642,9 @@ function concurrents() {
 // ───────── Ressources ─────────
 const FEAT = { audit_technique: 'Audit', mots_cles: 'Mots-clés', backlinks: 'Liens', rank_tracking: 'Positions', geo_ia: 'IA', local: 'Local', aso: 'ASO', hashtags_social: 'Social', ads_budget: 'Pub', francais: 'FR' }
 function ressources() {
-  const subs = [['favori', 'Bouton-favori & CLI'], ['checklists', 'Checklists'], ['guide', 'Guide 2026'], ['glossaire', 'Glossaire'], ['marche', 'Étude de marché']]
+  const subs = [['outils', 'Boîte à outils'], ['favori', 'Bouton-favori & CLI'], ['checklists', 'Checklists'], ['guide', 'Guide 2026'], ['glossaire', 'Glossaire'], ['marche', 'Étude de marché']]
   const head = `<div class="section-head"><div><h2>Ressources</h2></div><div class="actions" role="tablist">${subs.map(([k, l]) => `<button class="btn ${S.res === k ? 'primary' : ''}" data-sub="${k}" role="tab" aria-selected="${S.res === k}">${l}</button>`).join('')}</div></div>`
+  if (S.res === 'outils') return head + outilsView()
   if (S.res === 'checklists') return head + checklistsView()
   if (S.res === 'guide') return head + `<p class="note">Données de référence vérifiées le ${esc(frDay(bench.generated))}${bench.review_by ? ` · à revoir avant le ${esc(frDay(bench.review_by))}` : ''} (sources citées pour chaque fait).</p><div class="stack">${GUIDE.map((g) => `<div class="card"><h3>${esc(g.title)}</h3><ul class="clean">${g.body.map((b) => `<li>• ${gloss(esc(b))}</li>`).join('')}</ul></div>`).join('')}<details class="card fold"><summary><h3>Faits sourcés</h3></summary><div class="table-wrap"><table><tbody>${(bench.seo_facts || []).map((f) => `<tr><th>${esc(f.topic)}</th><td>${esc(f.fact)}${f.source ? `<br><a class="src" href="${esc(f.source)}" target="_blank" rel="noopener">source</a>` : ''}</td></tr>`).join('')}</tbody></table></div></details></div>`
   if (S.res === 'glossaire') return head + `<div class="card"><dl class="gloss">${Object.entries(GLOSSARY).map(([k, d]) => `<dt>${esc(k)}</dt><dd>${esc(d)}</dd>`).join('')}</dl></div>`

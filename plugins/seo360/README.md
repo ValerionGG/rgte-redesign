@@ -1,6 +1,6 @@
 # SEO 360 — plugin Claude Code
 
-Pack de 20 skills en français pour les TPE, PME, artisans, commerces et freelances : audit SEO complet, SEO local et fiche Google, visibilité dans les IA (GEO), diagnostic Search Console, rédaction, réseaux sociaux et hashtags, budget publicitaire, conformité marketing française et calendrier des temps forts. La ligne de commande SEO 360 est embarquée : les skills l'utilisent pour mesurer au lieu de deviner.
+Pack de 21 skills en français pour les TPE, PME, artisans, commerces et freelances : audit SEO complet, SEO local et fiche Google, visibilité dans les IA (GEO), diagnostic Search Console, rédaction, réseaux sociaux et hashtags, budget publicitaire, conformité marketing française et calendrier des temps forts. La ligne de commande SEO 360 est embarquée : les skills l'utilisent pour mesurer au lieu de deviner.
 
 ## Installation
 
@@ -31,6 +31,7 @@ Dites « voici mon entreprise » : le skill `contexte-entreprise` crée `.claude
 - **github-seo** — Référencement d'un dépôt GitHub : description, topics, README, image d'aperçu, GitHub Pages, licence, SECURITY.md, CITATION.cff, releases, diffusion (listes awesome, Show HN, Reddit) et mesure (requêtes suivies, trafic a
 - **hashtags-reseaux** — Hashtags et légendes par réseau (Instagram, TikTok, LinkedIn, YouTube, X, Facebook, Pinterest, Threads, Bluesky, Snapchat) selon le secteur, la ville et la marque, avec les règles 2026 (5 au maximum sur Instagram), un ni
 - **netlinking-mentions-locales** — Liens et mentions gratuits et propres : audit de l'export « Liens » de Search Console (sites référents, ancres, liens perdus), sources françaises (annuaires de qualité, CCI, CMA, fédérations, fournisseurs, presse locale,
+- **plan-croissance-360** — Plan de croissance complet à partir d'un lien (site, application, profil Instagram, TikTok, LinkedIn ou YouTube, dépôt GitHub) : audit mesuré, toutes les améliorations gratuites et payantes par canal (Google, local, IA, 
 - **seo-360** — Point d'entrée du pack : étude SEO complète d'un site, d'une application ou d'un dépôt GitHub. Verdict d'abord, corrections (technique, contenu, vitesse, IA, local, RGPD) avec correctifs prêts à coller et niveau de confi
 - **seo-audit-technique** — Audit SEO technique approfondi (indexation, robots.txt, sitemap, canonical, hreflang, redirections, Core Web Vitals, rendu JavaScript, données structurées) avec correctifs en code et recettes par CMS ; mode refonte et mi
 - **seo-local** — SEO local et fiche Google Business Profile des commerces, artisans, restaurants et cabinets : catégories, photos, services, NAP, pages ville, LocalBusiness, annuaires, Apple Plans, Bing Places, entreprises sans vitrine, 
@@ -47,6 +48,6 @@ Tout tourne sur votre machine : les exports Search Console et les rapports ne so
 
 ## Évaluations
 
-`claude plugin eval plugins/seo360` lance les 60 cas du dossier `evals/` (2 cas qui doivent déclencher chaque skill, 1 cas voisin qui ne doit pas), avec et sans le plugin.
+`claude plugin eval plugins/seo360` lance les 63 cas du dossier `evals/` (2 cas qui doivent déclencher chaque skill, 1 cas voisin qui ne doit pas), avec et sans le plugin.
 
 Généré par `node seo/plugin.mjs` depuis `.claude/skills` (version 3.0.0) : ne modifiez pas les fichiers de ce dossier à la main, sauf `evals/`.
