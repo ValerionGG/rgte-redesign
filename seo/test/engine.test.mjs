@@ -327,6 +327,11 @@ test('veille en ligne de commande : appelle Agent Reach, s’arrête sur « conn
   assert.equal(v.type, 'seo360-veille'); assert.ok(v.total >= 4)
   assert.equal(v.sources.filter((s) => s.channel === 'twitter').length, 1, 'une seule tentative après NEED_LOGIN')
   assert.ok(v.hashtags.some((h) => h.tag === 'patisserielyon'))
+  // Audit complet avec --veille : questions réelles dans le rapport, hashtags observés prioritaires
+  execFileSync(process.execPath, [cli, origin + '/', '--secteur', 'boulangerie', '--mot-cle', 'pâtisserie lyon', '--no-psi', '--crawl', '0', '--veille', 'reddit', '--agent-reach', stub, '--sortie', out], { stdio: 'pipe', env: { ...process.env, NO_PROXY: '127.0.0.1', no_proxy: '127.0.0.1' } })
+  const rep = JSON.parse(readFileSync(join(out, origin.replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') + '.json'), 'utf8'))
+  assert.ok(rep.veille?.questions?.length >= 2)
+  assert.ok(rep.hashtags.networks.instagram.tags.some((t) => t.tag === 'patisserielyon'))
   const miss = spawnSync(process.execPath, [cli, 'veille', 'x', '--agent-reach', '/chemin/inexistant/agent-reach', '--sortie', out], { encoding: 'utf8' })
   assert.equal(miss.status, 2); assert.match(miss.stderr, /GitHub UNIQUEMENT/)
 })

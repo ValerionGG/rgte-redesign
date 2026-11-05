@@ -681,6 +681,7 @@ $('#f-import').addEventListener('change', async (e) => {
     if (data?.type === 'seo360-veille') { S.veille = sanitizeVeille(data); store.set('veille', S.veille); progress(`Veille importée : ${S.veille.sujet} (${S.veille.total} publications)`, 'ok'); go('visibilite'); return }
     if (data?.type === 'seo360-bm') { if (!validateBundle(data)) throw new Error('format'); form.elements.url.value = data.url; updateKind(); run({ bundle: data }); return }
     const rep = sanitizeReport(data)
+    if (data.veille?.type === 'seo360-veille') { S.veille = sanitizeVeille(data.veille); store.set('veille', S.veille) }
     S.report = rep; S.shared = false; refreshDerived(); syncForm(rep); remember(rep); collapseHero(true); progress(`Rapport importé : ${rep.target}`, 'ok'); go('synthese')
   } catch { progress('Fichier JSON invalide : importez un rapport produit par SEO 360 (CLI ou bouton JSON).', 'err') }
 })

@@ -50,6 +50,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --signature <%>       part des contacts qui deviennent clients (leads)
   --cpc <€>             votre CPC réel Google (Keyword Planner)
   --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
+  --veille [sources]    ajoute la veille sociale Agent Reach sur le mot-clé (défaut : reddit,youtube,web)
   --ua auto|seo360|navigateur  identité du robot (défaut auto : SEO360-Audit, puis navigateur si le site refuse)
   --local / --national  forcer le mode local
   --langue fr|en|both   langue des hashtags
@@ -143,6 +144,21 @@ if (comps.length) {
 const out = opt('sortie', 'rapports-seo')
 mkdirSync(out, { recursive: true })
 const slug = String(target).replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').slice(0, 60)
+// Veille sociale (Agent Reach) sur le mot-clé : questions réelles et hashtags observés dans le rapport
+if (opt('veille')) {
+  const { collectVeille, INSTALL_HELP } = await import('./veille-cli.mjs')
+  const { analyzeVeille, observedForHashtags } = await import('./engine/veille.js')
+  const { generateHashtags } = await import('./engine/hashtags.js')
+  const sujet = input.keyword || report.keywords?.base || ''
+  const srcOpt = opt('veille')
+  const got = await collectVeille({ sujet, sources: typeof srcOpt === 'string' ? srcOpt.split(',') : undefined, marque: input.brand, bin: opt('agent-reach', process.env.AGENT_REACH_BIN || 'agent-reach'), log })
+  if (got.missing) log('\n' + INSTALL_HELP)
+  else {
+    report.veille = analyzeVeille(got.results, { sujet, marque: input.brand })
+    const terms = report.result?.meta?.terms?.phrases?.map((t) => t.term).slice(0, 5) || []
+    report.hashtags = generateHashtags({ sector: input.sector, keywords: [input.keyword].filter(Boolean), terms, city: input.city, brand: input.brand, lang: input.lang, observed: observedForHashtags(report.veille) })
+  }
+}
 if (opt('cpc') || opt('volume')) {
   const { planBudget } = await import('./engine/ads.js')
   report.budget = planBudget({ sector: input.sector, goal: report.kind === 'app' ? 'telechargements' : input.goal, monthly: input.monthly, local: report.input.local, avgValue: input.avgValue, margin: input.margin, closeRate: input.closeRate, targetConversions: input.targetConversions, searchVolume: +opt('volume', 0), cpcOverride: +opt('cpc', 0) })

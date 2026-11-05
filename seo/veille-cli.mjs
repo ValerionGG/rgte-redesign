@@ -31,6 +31,23 @@ export function runReach(bin, argv, timeout = 180000) {
   })
 }
 
+// Collecte réutilisable (audit avec --veille) : renvoie { results } ou { missing: true }
+export async function collectVeille({ sujet, sources = ['reddit', 'youtube', 'web'], requetes = [], marque = '', limit = 10, bin = process.env.AGENT_REACH_BIN || 'agent-reach', log = () => {} }) {
+  const results = []
+  for (const ch of sources) {
+    const qs = [sujet, ...requetes, ...(marque && ['reddit', 'web', 'twitter', 'youtube'].includes(ch) ? [marque] : [])]
+    for (const q of qs) {
+      log(`  · ${ch} : « ${q} »`)
+      const r = await runReach(bin, [ch, 'search', q, '--limit', String(limit)])
+      if (r.missing) return { missing: true }
+      results.push({ ...r, channel: r.channel || ch, action: r.action || 'search', query: q })
+      if (!r.ok) { log(`    ${r.error?.code || 'erreur'} : ${r.error?.hint || r.error?.message || ''}`); if (STOP.has(r.error?.code)) break }
+    }
+  }
+  return { results }
+}
+export const INSTALL_HELP = INSTALL
+
 export async function main(args) {
   const sujet = args[0] && !args[0].startsWith('--') ? args[0] : ''
   if (!sujet) { console.log('Usage : node seo/cli.mjs veille "<sujet>" [--sources reddit,youtube,web] [--limit 10] [--requetes "a;b"] [--marque X] [--sortie dossier]'); process.exitCode = 1; return }

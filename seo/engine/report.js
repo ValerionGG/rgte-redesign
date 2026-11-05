@@ -63,6 +63,12 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
     if (b.warnings.length) L.push(...b.warnings.map((w) => `- ⚠️ ${w}`), '')
     for (const p of b.rampUp) L.push(`### ${p.phase}`, '', ...p.actions.map((a) => `- ${a}`), '')
   }
+  if (r.veille) {
+    const v = r.veille
+    L.push(`## Ce que disent les internautes (veille Agent Reach, ${v.total} publications)`, '', ...v.recommandations.map((x) => `- ${x}`), '')
+    if (v.questions.length) L.push('**Questions réelles** :', '', ...v.questions.slice(0, 12).map((q) => `- ${q.question} (${q.channel})`), '')
+    if (v.hashtags.length) L.push(`**Hashtags observés** : ${v.hashtags.slice(0, 20).map((h) => `#${h.camel} (${h.count})`).join(' · ')}`, '')
+  }
   if (r.keywords) {
     L.push('## Mots-clés', '')
     if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
