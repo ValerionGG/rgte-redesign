@@ -32,7 +32,7 @@ abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; cur
 .tabs button { border: 0; background: none; color: var(--muted); font: inherit; font-size: .9rem; font-weight: 600; padding: 8px 12px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
 .tabs button:hover { background: var(--surface-2); color: var(--text); }
 .tabs button[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
-.tabs .count { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 9px; background: var(--crit); color: #fff; font-size: .7rem; line-height: 18px; text-align: center; }
+.tabs .count { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 9px; background: var(--crit); color: var(--bg); font-size: .7rem; line-height: 18px; text-align: center; }
 .icon-btn { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 9px; width: 40px; height: 40px; cursor: pointer; flex: none; display: grid; place-items: center; }
 
 main { max-width: 1180px; margin: 0 auto; padding: 20px 20px 40px; }
@@ -252,3 +252,43 @@ label.inline { display: inline-flex; flex-direction: row; gap: 6px; align-items:
 ul.checks li { margin: 8px 0; }
 .tool summary h3 { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
 .tool p, .tool li { overflow-wrap: anywhere; }
+.ai-box:empty { display: none; }
+.ai-box { margin-top: 10px; }
+.ai-out { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-wrap: anywhere; }
+.ai-out h4 { margin: 10px 0 4px; font-size: .95rem; }
+.ai-out p, .ai-out li { margin: 4px 0; }
+.ai-out ul, .ai-out ol { padding-left: 1.2em; margin: 4px 0 8px; }
+.ai-code { white-space: pre-wrap; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-family: var(--mono); font-size: .82rem; }
+.ai-err { color: var(--crit); }
+.ai-q input { flex: 1 1 260px; min-width: 0; }
+.live-list li { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
+
+/* Conseil v3 : états, erreurs sous le champ, menu d'export, contrastes des champs (WCAG 1.4.11 : 3:1) */
+:root { --field-line: #767f92; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --field-line: #7d88a3; } }
+:root[data-theme="dark"] { --field-line: #7d88a3; }
+input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea { border-color: var(--field-line) !important; }
+.progress.warn { color: var(--imp); font-weight: 600; }
+.field-err { color: var(--crit); font-weight: 600; margin: 6px 0 0; font-size: .95rem; }
+[aria-invalid="true"] { border-color: var(--crit) !important; box-shadow: 0 0 0 2px var(--crit-bg); }
+.export-menu { position: relative; display: inline-block; }
+.export-menu > summary { list-style: none; cursor: pointer; }
+.export-menu > summary::-webkit-details-marker { display: none; }
+.export-menu > summary::after { content: ' ▾'; }
+.export-menu[open] > .menu { position: absolute; right: 0; z-index: 30; display: grid; gap: 6px; min-width: 230px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.export-menu .menu .btn { width: 100%; justify-content: flex-start; text-align: left; }
+input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+.htag .lvl { font-family: var(--font); font-size: .72rem; color: var(--muted); margin-left: 4px; }
+label.visible-label { display: block; font-weight: 700; margin: 0 0 6px; }
+@media (max-width: 560px) {
+  .tabs { flex-wrap: wrap; -webkit-mask-image: none; mask-image: none; padding-right: 0; overflow: visible; }
+  .export-menu[open] > .menu { right: auto; left: 0; }
+}
+.demo-note { background: var(--info-bg); color: var(--text); border-left: 4px solid var(--info); padding: 10px 14px; border-radius: 10px; font-weight: 500; }
+/* Téléphone : les 3 actions de la semaine avant la note (elles restaient sous l'écran) */
+@media (max-width: 560px) {
+  .summary .week { order: -1; }
+  .section-head h2 { font-size: 1.1rem; overflow-wrap: anywhere; }
+  .section-head p { font-size: .82rem; }
+  .tabs button { padding: 7px 8px; }
+}

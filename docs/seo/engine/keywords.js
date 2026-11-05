@@ -17,6 +17,11 @@ const ONLY = {
   '{b} pas cher': ['ecommerce', 'ecommerce-mode', 'maison-deco', 'auto', 'tourisme', 'sport', 'beaute', 'restaurant'],
   '{b} ouvert dimanche': ['restaurant', 'boulangerie', 'beaute', 'sante', 'sport', 'animaux', 'auto'],
   'meilleure adresse {b}': ['restaurant', 'boulangerie', 'beaute', 'tourisme', 'sport', 'evenementiel'],
+  // Comparatifs, guides de choix et « combien coûte » : utiles pour un produit ou un service qu'on compare, pas pour un commerce de bouche.
+  '{b} comparatif': ['equipement-pro', 'ecommerce', 'ecommerce-mode', 'saas', 'app-mobile', 'finance', 'auto', 'maison-deco', 'formation', 'animaux', 'gaming'],
+  'comment choisir {b}': ['equipement-pro', 'ecommerce', 'ecommerce-mode', 'saas', 'finance', 'auto', 'maison-deco', 'formation', 'immobilier', 'sante', 'animaux', 'juridique'],
+  'combien coûte {b}': ['btp', 'equipement-pro', 'services-domicile', 'juridique', 'finance', 'auto', 'immobilier', 'formation', 'evenementiel', 'dentaire', 'sante', 'agence', 'saas', 'luxe'],
+  '{b} promo': ['ecommerce', 'ecommerce-mode', 'maison-deco', 'tourisme', 'sport', 'beaute', 'auto', 'gaming'],
 }
 export const INTENTS = {
   transactionnel: 'Prêt à acheter — pages produits/services, Google Ads',

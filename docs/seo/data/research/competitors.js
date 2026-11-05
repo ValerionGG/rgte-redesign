@@ -102,8 +102,8 @@ export default {
    "name": "SE Ranking",
    "url": "https://seranking.com/subscription.html",
    "category": "suite",
-   "price_entry": "65 $/mois (Essential) — ~52 $/mois en annuel",
-   "price_note": "Vérifié par recherche web (agrégateurs concordants, nov. 2026) ; site éditeur non accessible depuis la session — à reconfirmer sur la page tarifs officielle. Pro 119 $, Business 259 $ ; add-on AI Search en sus. Prix régionaux variables.",
+   "price_entry": "Core 129 $/mois (grille de 2026) — l’offre Essential à 65 $ n’est plus proposée",
+   "price_note": "Grille refondue en 2026 : Core, Growth et Enterprise (TechRadar, Stork, vérifié le 5/11/2026). Montants à reconfirmer sur la page tarifs officielle, inaccessible depuis la session.",
    "strengths": [
     "Meilleur rapport qualité/prix des suites",
     "Interface en français, marque blanche",
@@ -167,7 +167,7 @@ export default {
    "url": "https://neilpatel.com/ubersuggest/",
    "category": "suite",
    "price_entry": "12 à 29 $/mois (Individual) — à vérifier",
-   "price_note": "à vérifier — sources tierces divergentes ou anciennes. Formule à vie proposée historiquement.",
+   "price_note": "à vérifier — sources tierces divergentes ou anciennes. Formule à vie proposée historiquement. Suivi de la visibilité dans les réponses IA lancé en septembre 2025 (PPC Land).",
    "strengths": [
     "Très accessible financièrement",
     "Interface simple, disponible en français",
@@ -185,7 +185,7 @@ export default {
     "backlinks": 1,
     "rank_tracking": 1,
     "contenu_ia": 1,
-    "geo_ia": 0,
+    "geo_ia": 1,
     "local": 0,
     "aso": 0,
     "hashtags_social": 0,
@@ -455,7 +455,7 @@ export default {
    "url": "https://www.haloscan.com/",
    "category": "fr-local",
    "price_entry": "59 € HT/mois (Starter) — freemium limité",
-   "price_note": "Plusieurs revues FR 2026 ; Agency 79 €, Guru 449 € selon Digitiz ; 49 € dans une source ancienne — à vérifier.",
+   "price_note": "Starter 59 €/mois et Agency 179 €/mois d’après la page tarifs officielle (voir outils.json) ; une revue citait 79 € pour Agency, montant non retrouvé. Freemium limité.",
    "strengths": [
     "Très grosse base de mots-clés FR",
     "Prix agressif, 2 mois offerts en annuel",
@@ -871,7 +871,7 @@ export default {
    "url": "https://metricool.com/pricing/",
    "category": "social",
    "price_entry": "Gratuit / ~22 $/mois (Starter)",
-   "price_note": "à vérifier — sources tierces divergentes ou anciennes. Advanced ~54 $ ; 20 $/mois selon une autre source.",
+   "price_note": "à vérifier — sources tierces divergentes ou anciennes. Advanced ~54 $ ; 20 $/mois selon une autre source. Programme et publie les posts de la fiche Google Business Profile (aide officielle Metricool).",
    "strengths": [
     "Planification + analytics + ads réunis",
     "Suivi de hashtags et benchmark concurrents",
@@ -890,7 +890,7 @@ export default {
     "rank_tracking": 0,
     "contenu_ia": 1,
     "geo_ia": 0,
-    "local": 0,
+    "local": 1,
     "aso": 0,
     "hashtags_social": 2,
     "ads_budget": 1,
@@ -1120,6 +1120,42 @@ export default {
     "ads_budget": 2,
     "benchmark_concurrents": 0,
     "francais": 0
+   }
+  },
+  {
+   "name": "SEO 360",
+   "url": "https://github.com/ValerionGG/rgte-redesign",
+   "category": "Cette plateforme (gratuite, à titre de comparaison)",
+   "price_entry": "Gratuit",
+   "price_note": "Notes attribuées par nous-mêmes avec la même grille que les autres outils : à lire avec recul.",
+   "strengths": [
+    "Correctifs prêts à coller tirés de la page",
+    "Verdict de rentabilité publicitaire et contrôle avant dépense",
+    "Droit français (CNIL, LCEN, consentement)",
+    "Robots IA en 3 niveaux, Content-Signal, citabilité par bloc",
+    "Ligne de commande et 21 skills Claude Code"
+   ],
+   "weaknesses": [
+    "Aucune donnée de marché : ni volumes, ni positions, ni base de liens",
+    "Concurrents à fournir soi-même",
+    "Ne lit pas la fiche Google Business Profile",
+    "Visibilité IA diagnostiquée, pas mesurée",
+    "Pas de suivi automatique"
+   ],
+   "best_for": "TPE française qui veut savoir quoi corriger lundi, sans abonnement",
+   "features": {
+    "audit_technique": 2,
+    "mots_cles": 1,
+    "backlinks": 1,
+    "rank_tracking": 0,
+    "contenu_ia": 1,
+    "geo_ia": 1,
+    "local": 1,
+    "aso": 1,
+    "hashtags_social": 1,
+    "ads_budget": 2,
+    "benchmark_concurrents": 1,
+    "francais": 2
    }
   }
  ],

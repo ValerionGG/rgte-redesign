@@ -25,6 +25,17 @@ export function competitorSummary(url, rep) {
 }
 
 // « rgte.fr » est un site, « monsite.fr/contact » aussi ; « owner/repo » (sans point dans owner) est un dépôt GitHub.
+// Profil de réseau social : la plateforme ne laisse pas lire un compte (statistiques, abonnés) sans connexion.
+// On ne l'audite pas comme un site (on noterait la page de TikTok, pas la vôtre).
+const SOCIAL_PROFILE = [
+  ['TikTok', /tiktok\.com\/@([\w.-]+)/i], ['Instagram', /instagram\.com\/(?!p\/|reel\/|explore\/)([\w.]+)/i], ['YouTube', /youtube\.com\/(?:@|c\/|channel\/|user\/)([\w.-]+)/i],
+  ['LinkedIn', /linkedin\.com\/(?:company|in|school)\/([\w-]+)/i], ['Facebook', /facebook\.com\/(?!sharer|dialog|plugins)([\w.-]+)/i], ['X', /(?:twitter|x)\.com\/(?!intent|share|home)(\w+)/i],
+  ['Pinterest', /pinterest\.[a-z.]+\/(?!pin\/)([\w-]+)/i], ['Threads', /threads\.(?:net|com)\/@([\w.]+)/i],
+]
+export function socialProfile(u) {
+  for (const [network, re] of SOCIAL_PROFILE) { const m = String(u || '').match(re); if (m) return { network, handle: m[1] } }
+  return null
+}
 export function detectKind(u) {
   u = String(u || '').trim()
   if (parseStoreUrl(u)) return 'app'
@@ -40,12 +51,15 @@ export async function analyze(target, o = {}) {
   const report = { version: 2, generatedAt: new Date().toISOString(), target, kind, input: { ...input, local } }
   const progress = o.onProgress || (() => {})
 
+  const social = kind === 'site' ? socialProfile(target) : null
+  if (social) { o = { ...o, noFetch: true, psi: false }; report.social = social }
   if (kind === 'site') {
     const tasks = [o.noFetch ? Promise.resolve({ input: { ...input, local, url: normalize(target) }, fetch: { url: normalize(target), finalUrl: normalize(target), source: 'psi' } }) : collect(target, o.fetcher, { input: { ...input, local }, crawl: o.crawl || 0, source: o.source, rendered: o.rendered, onProgress: (n, m) => progress(`Exploration : ${n}/${m} pages`) })]
     progress(o.psi === false ? 'Lecture de la page, robots.txt et sitemap' : o.noFetch ? 'Mesure de la vitesse (PageSpeed, 20 à 60 s)' : 'Lecture de la page, robots.txt, sitemap et mesure de la vitesse (20 à 60 s)')
     if (o.psi !== false) tasks.push(runPSI(normalize(target), { key: o.psiKey, strategy: 'mobile', fetchImpl: o.fetchImpl }))
     const [ctx, psi] = await Promise.all(tasks)
     if (psi) ctx.psi = psi
+    if (social) ctx.social = social
     progress('Analyse…')
     report.ctx = slim(ctx)
     report.result = audit(ctx)

@@ -3,11 +3,21 @@ import { SEVERITY } from './audit.js'
 import { driftMarkdown } from './drift.js'
 import { recommendTools, toolsMarkdown } from './outils.js'
 import { CHANNELS } from './ads.js'
-import { buildFixes } from './fixes.js'
+import research from '../data/research/benchmarks.js'
+// Données datées (prix, CPC, règles) : signalées dès que leur date de revérification est passée.
+export function staleNote(now = new Date()) {
+  const due = research.review_by && Date.parse(research.review_by)
+  return due && now.getTime() > due ? `⚠ Données de référence vérifiées le ${research.generated}, à revérifier depuis le ${research.review_by} : prix, CPC et règles ont pu changer.` : null
+}
+import { buildFixes, whereToApply } from './fixes.js'
 
 const eur = (n) => (n == null || !Number.isFinite(+n) ? '—' : `${Math.round(n).toLocaleString('fr-FR')} €`)
 const rng = (a, f = (x) => Math.round(x).toLocaleString('fr-FR')) => (a && a[0] != null ? `${f(a[0])} – ${a[1] != null ? f(a[1]) : '?'}` : '—')
-const fence = (lang, code) => ['```' + (lang === 'apache' || lang === 'text' ? 'text' : lang === 'json' ? 'json' : 'html'), code, '```']
+// Chaque ligne du code est un élément du tableau : l'indentation ajoutée par l'appelant s'applique à toutes les lignes.
+const fence = (lang, code) => {
+  const body = String(code ?? '').replace(/\s+$/, '').split('\n'), tick = body.some((l) => l.trimStart().startsWith('```')) ? '````' : '```'
+  return [tick + (lang === 'apache' || lang === 'text' ? 'text' : lang === 'json' ? 'json' : 'html'), ...body, tick]
+}
 
 export function toMarkdown(r, { fixes, done = {} } = {}) {
   const L = [], R = r.result
@@ -17,7 +27,9 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   if (!R && r.drift) L.push(driftMarkdown(r.drift))
   if (R) {
     if (R.incomplete) L.push(`> **Audit incomplet : ${R.incomplete}.** Pas de note globale (elle serait trompeuse). Pour l’audit complet : bouton-favori, code collé ou ligne de commande.`, '')
-    L.push(`## En bref`, '', `- **Note : ${R.global == null ? 'non notée' : `${R.global}/100 (${R.grade})`}** · contrôles mesurés : ${Math.round((R.coverage || 0) * 100)} %${(R.caps || []).length ? ` · plafonnée : ${R.caps.join(' ; ')}` : ''}`)
+    if (r.provenance === 'import' || r.provenance === 'partage') L.push(`> Rapport ${r.provenance === 'import' ? 'importé' : 'partagé'} : la note n’a pas été revérifiée par SEO 360.`, '')
+    if (staleNote()) L.push(`> ${staleNote()}`, '')
+    L.push(`## En bref`, '', `- **Note : ${R.global == null ? 'non notée' : `${R.global}/100 (${R.grade})`}** · part mesurée (catégories lues, pondérées) : ${Math.round((R.coverage || 0) * 100)} %${(R.caps || []).length ? ` · plafonnée : ${R.caps.join(' ; ')}` : ''}`)
     L.push(`- Critiques : ${R.counts.critique} · Importants : ${R.counts.important} · Moyens : ${R.counts.moyen} · Faibles : ${R.counts.faible} · Validés : ${R.counts.ok}`)
     if (r.budget?.verdict) L.push(`- **Publicité :** ${r.budget.verdict.text}${r.budget.checks?.blocked ? ` — ${r.budget.checks.message}` : ''}`)
     L.push('')
@@ -32,7 +44,7 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
     L.push('')
   }
   if (r.plan) {
-    L.push('## Plan d’action détaillé', '')
+    L.push('## Plan d’action détaillé', '', '_Avant de coller un correctif : sauvegardez le site (ou testez sur une copie), changez une chose à la fois, notez comment revenir en arrière, puis relancez l’audit._', '')
     for (const s of r.plan.steps) {
       const items = [...s.items, ...s.extra]
       if (!items.length) continue
@@ -42,6 +54,8 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
         if (i.extra) continue
         if (i.detail) L.push(`  - ${i.detail}`)
         if (i.fix) L.push(`  - À faire : ${i.fix}`)
+        const w = whereToApply(i.id, R?.meta?.cms)
+        if (w) L.push(`  - Où le faire sur ${w.cms} : ${w.text}`)
         const fx = fixes[i.id]
         if (fx) L.push('', `  ${fx.label}${fx.note ? ' — ' + fx.note : ''}`, '', ...fence(fx.lang, fx.value).map((l) => '  ' + l), '')
         else if (i.code) L.push('', ...fence(i.code.trim().startsWith('<') ? 'html' : 'text', i.code).map((l) => '  ' + l), '')
@@ -66,6 +80,7 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   if (r.keywords) {
     L.push('## Mots-clés', '')
     if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
+    else if (r.suggestionsError) L.push('_Suggestions Google indisponibles pendant cet audit : les idées ci-dessus sont des gabarits, sans preuve de demande. Vérifiez-les dans Search Console ou Keyword Planner avant d’y consacrer une page._', '')
     for (const [intent, list] of Object.entries(r.keywords.groups)) L.push(`**${intent}** : ${list.map((k) => k.keyword).join(' · ')}`, '')
   }
   if (r.hashtags) {
@@ -91,7 +106,7 @@ export { CHANNELS }
 
 export function budgetSection(b) {
   const L = []
-  L.push(b.verdict.level === 'non' ? `## Budget publicitaire — pas recommandé pour l’instant` : `## Budget publicitaire — ${eur(b.monthly)}/mois${b.recommendedUsed ? ' (budget de départ conseillé)' : ''}`, '', `**${b.verdict.text}**${b.verdict.detail ? ' ' + b.verdict.detail : ''}`, '')
+  L.push(b.verdict.level === 'non' ? `## Budget publicitaire — pas recommandé pour l’instant` : `## Budget publicitaire — ${eur(b.monthly)}/mois${b.recommendedUsed ? ' (minimum pour tester)' : ''}`, '', `**${b.verdict.text}**${b.verdict.detail ? ' ' + b.verdict.detail : ''}`, '')
   if (b.checks) L.push('### Contrôle avant dépense', '', `**${b.checks.message}**`, '', ...b.checks.checks.map((c) => `- ${c.status} **${c.label}** — ${c.detail}`), '')
   if (b.roasBreakEven) L.push(`ROAS d’équilibre : ${b.roasBreakEven.toFixed(1).replace('.', ',')} (1 ÷ marge).`, '')
   if (b.verdict.level === 'non') L.push(`_Si vous testez malgré tout : ${eur(b.monthly)}/mois minimum, répartis ainsi :_`, '')

@@ -8,7 +8,7 @@ import { readGscFiles, parseGscFiles, analyzeGsc, gscMarkdown } from './engine/g
 
 const USAGE = `Usage : node seo/cli.mjs gsc <export.zip|.csv> [autres exports…] [--avant <export-precedent.zip>] [--marque "Nom"] [--site exemple.fr] [--sortie dossier] [--json]
 
-  Search Console → Performances → (période voulue) → Exporter → « Télécharger le fichier ZIP ».
+  Search Console → Performances → (période voulue) → bouton « Exporter » → format CSV (vous obtenez un .zip).
   Pour comparer : exportez aussi la période précédente (--avant), ou utilisez « Comparer » dans le filtre de dates avant l'export.
   Liens : Search Console → Liens → Exporter (sites, pages, textes) et ajoutez les fichiers à la commande.`
 

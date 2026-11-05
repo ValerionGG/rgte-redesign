@@ -49,9 +49,11 @@ export const GLOSSARY = {
 const keys = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length)
 const re = new RegExp(`(^|[^\\w-])(${keys.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?=$|[^\\w-])`, 'g')
 
-// À appliquer sur du texte DÉJÀ échappé. Une seule explication par terme et par bloc.
+// À appliquer sur du texte DÉJÀ échappé. Une seule explication par terme et par écran : glossReset() à chaque rendu
+// (sinon 40 sigles prennent le focus clavier avant le 10e constat).
+let seen = new Set()
+export function glossReset() { seen = new Set() }
 export function gloss(escaped) {
-  const seen = new Set()
   return String(escaped).replace(re, (m, pre, term) => {
     if (seen.has(term)) return m
     seen.add(term)

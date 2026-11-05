@@ -2,20 +2,22 @@
 // Principes : aucune note sans mesure ; 3 actions claires par semaine ; correctif prêt à coller ;
 // preuve du progrès d'un audit à l'autre ; tout reste dans le navigateur.
 import { analyze, competitorSummary, detectKind, SEVERITY, GOALS } from './engine/index.js'
-import { toMarkdown } from './engine/report.js'
+import { toMarkdown, staleNote } from './engine/report.js'
 import { generateHashtags } from './engine/hashtags.js'
 import { planBudget, preSpendChecks } from './engine/ads.js'
 import { keywordIdeas, googleSuggest, classify, INTENTS } from './engine/keywords.js'
 import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
-import { buildFixes, suggestTitle, suggestDescription, facts } from './engine/fixes.js'
+import { buildFixes, suggestTitle, suggestDescription, facts, whereToApply } from './engine/fixes.js'
 import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
 import { upcoming, frShort } from './engine/calendar.js'
 import { recommendTools, WEEK, shortPrice } from './engine/outils.js'
+import { live, initLive, saveReport, saveFile, ask, AI_ERRORS, promptPlan, promptFix, promptPosts, promptQuestion, renderMd } from './live.js'
+import { calendar, calendarCsv } from './engine/calendar.js'
 import { encodeReport, decodeReport, slimForShare } from './engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmarklet.js'
 import { extract } from './engine/html.js'
-import { gloss, GLOSSARY } from './engine/glossary.js'
+import { gloss, glossReset, GLOSSARY } from './engine/glossary.js'
 import { observedForHashtags } from './engine/veille.js'
 import { SECTORS, sectorById } from './data/sectors.js'
 import EXEMPLE from './data/exemple.js'
@@ -26,7 +28,7 @@ import bench from './data/research/benchmarks.js'
 const $ = (s, el = document) => el.querySelector(s)
 // Version publiée en page claude.ai (Artifact) : aucun accès aux autres sites, pas de téléchargement ni d'impression
 const ARTIFACT = !!document.querySelector('meta[name="seo360-mode"][content="artifact"]')
-const ARTIFACT_MSG = 'Dans cette version de démonstration (page claude.ai), l’analyse en direct est bloquée : la page ne peut joindre aucun autre site. Pour tester : « Voir un exemple », importez le .json d’un audit fait avec la ligne de commande, ou collez le code source de votre page dans « Plus d’options ».'
+const ARTIFACT_MSG = 'Dans cette page claude.ai, SEO 360 ne peut pas lire un site lui-même. Collez le code source de votre page (et votre robots.txt) dans « Plus d’options », demandez l’audit à Claude dans la conversation (« audite mon-site.fr »), ou ouvrez l’exemple.'
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 const num = (v, d = 0) => (Number.isFinite(+v) ? +v : d)
@@ -43,13 +45,13 @@ const frDay = (d) => (d ? new Date(d + 'T12:00:00Z').toLocaleDateString('fr-FR')
 const targetKey = (t) => tryJ(() => { const u = new URL(/^https?:/.test(t) ? t : 'https://' + t); return u.host.replace(/^www\./, '') + u.pathname.replace(/\/$/, '') }, String(t))
 
 const TABS = [['synthese', 'Synthèse'], ['afaire', 'À faire'], ['visibilite', 'Mots-clés & réseaux'], ['budget', 'Budget'], ['concurrents', 'Concurrents'], ['ressources', 'Ressources']]
-const S = { report: null, fixes: {}, tab: 'synthese', res: 'outils', cat: '', sevs: new Set(['critique', 'important', 'moyen', 'faible']), suggestions: [], gsc: null, mk: 'outils', shared: false, busy: false }
+const S = { ai: {}, live: { reports: [], conseil: [], status: 'off', first: false }, report: null, fixes: {}, tab: 'synthese', res: 'outils', cat: '', sevs: new Set(['critique', 'important', 'moyen', 'faible']), suggestions: [], gsc: null, mk: 'outils', shared: false, busy: false }
 
 // ───────── Formulaire ─────────
 const form = $('#form')
 $('#f-sector').innerHTML = `<option value="">Choisissez votre secteur…</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
 $('#f-goal').innerHTML = Object.entries(GOALS).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')
-for (const [k, v] of Object.entries(store.get('form', {}))) { const el = form.elements[k]; if (el && el.type !== 'file' && !['html', 'psiKey', 'githubToken'].includes(k)) el.value = v }
+for (const [k, v] of Object.entries(store.get('form', {}))) { const el = form.elements[k]; if (el && el.type !== 'file' && !['html', 'robotsTxt', 'psiKey', 'githubToken'].includes(k)) el.value = v }
 form.elements.psiKey.value = sess.get('psiKey'); form.elements.githubToken.value = sess.get('githubToken')
 const vals = () => {
   const o = Object.fromEntries(new FormData(form))
@@ -59,7 +61,7 @@ const vals = () => {
   }
 }
 const inputOf = (v) => ({ sector: v.sector, keyword: v.keyword.trim(), city: v.city.trim(), brand: v.brand.trim(), goal: v.goal, monthly: v.monthly, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, lang: v.lang, local: v.local })
-const persist = () => { const v = Object.fromEntries(new FormData(form)); delete v.html; delete v.psiKey; delete v.githubToken; store.set('form', v) }
+const persist = () => { const v = Object.fromEntries(new FormData(form)); delete v.html; delete v.robotsTxt; delete v.psiKey; delete v.githubToken; store.set('form', v) }
 const updateKind = () => { $('#kind').textContent = KIND[detectKind(form.elements.url.value || 'exemple.fr')] }
 form.addEventListener('input', (e) => {
   if (e.target.name === 'url') updateKind()
@@ -88,15 +90,38 @@ function refreshDerived() {
 
 // ───────── Progression & erreurs ─────────
 const progress = (m, kind = '') => { const p = $('#progress'); p.textContent = m; p.className = 'progress ' + kind }
+// Erreurs techniques traduites (jamais « Failed to fetch » brut).
+function humanError(err) {
+  const m = String(err?.message || err || '')
+  if (/failed to fetch|networkerror|load failed|fetch/i.test(m) && !/[éè]/.test(m)) return 'Connexion impossible : le site ou le service de lecture n’a pas répondu (réseau, pare-feu ou proxy bloqué).'
+  if (/maximum call stack|too much recursion/i.test(m)) return 'Page impossible à analyser : sa structure est anormalement imbriquée.'
+  if (/abort/i.test(m)) return 'Temps dépassé : le service n’a pas répondu à temps.'
+  if (/unexpected token|json/i.test(m) && !/[éè]/.test(m)) return 'Réponse illisible : ce n’est pas le format attendu.'
+  return m || 'Erreur inconnue.'
+}
+// Message d'erreur placé sous le champ concerné (visible sur mobile, annoncé aux lecteurs d'écran).
+function fieldError(el, msg) {
+  if (!el) return
+  const id = 'err-' + (el.name || el.id)
+  let box = document.getElementById(id)
+  if (!box) { box = document.createElement('p'); box.id = id; box.className = 'field-err'; box.setAttribute('role', 'alert'); (el.closest('.target') || el.closest('label') || el).after(box) }
+  box.textContent = msg
+  el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', id)
+  el.addEventListener('input', () => { el.removeAttribute('aria-invalid'); box.remove() }, { once: true })
+  el.focus(); box.scrollIntoView({ block: 'center' })
+}
 function showError(title, detail, actions = true) {
   progress(title, 'err')
   $('#view').innerHTML = `<div class="card alert" role="alert"><h2>${esc(title)}</h2>${detail ? `<p>${esc(detail)}</p>` : ''}${actions ? solutions() : ''}</div>`
   $('#view').scrollIntoView({ block: 'start' })
 }
-const solutions = () => `<div class="sol"><p><b>3 façons d’obtenir l’audit complet :</b></p><ol>
-  <li><b>Le bouton-favori (recommandé)</b> : il lit votre page depuis votre propre site, sans intermédiaire. <a href="#ressources" data-res="favori">L’installer (30 s)</a></li>
-  <li><b>Coller le code source</b> : sur votre page, clic droit → « Afficher le code source » → tout copier, puis collez-le dans « Plus d’options ». <button class="btn sm" type="button" data-open-paste>Coller le code</button></li>
-  <li><b>La ligne de commande</b> (audit le plus complet, avec exploration du site) : <code>node seo/cli.mjs votre-site.fr</code></li></ol></div>`
+// Sur téléphone, le favori, le clic droit et la ligne de commande sont impossibles : on propose d'abord de finir sur ordinateur.
+const MOBILE = matchMedia('(pointer: coarse)').matches && matchMedia('(max-width: 900px)').matches
+const solutions = () => `<div class="sol"><p><b>${MOBILE ? 'Sur téléphone, la lecture complète n’est pas possible ici. Deux solutions :' : '3 façons d’obtenir l’audit complet :'}</b></p><ol>
+  ${MOBILE ? `<li><b>Finir sur ordinateur</b> : envoyez-vous ce lien, puis utilisez le bouton-favori ou collez le code de votre page. <button class="btn sm primary" type="button" data-send-self>M’envoyer le lien</button></li>
+  <li><b>Demander à Claude</b> : dans une conversation avec Claude Code, écrivez « audite mon-site.fr » : il lit le site complet avec la ligne de commande et vous envoie le rapport.</li>` : `<li><b>Le bouton-favori (recommandé)</b> : il lit votre page depuis votre propre site, sans intermédiaire. <a href="#ressources" data-res="favori">L’installer (30 s)</a></li>
+  <li><b>Coller le code source</b> : sur votre page, clic droit → « Afficher le code source » → tout copier, puis collez-le dans « Plus d’options » (et votre robots.txt juste en dessous). <button class="btn sm" type="button" data-open-paste>Coller le code</button></li>
+  <li><b>La ligne de commande</b> (audit le plus complet, avec exploration du site ; Node 18 et le dossier seo/) : <code>node seo/cli.mjs votre-site.fr</code></li>`}</ol></div>`
 
 // ───────── Collecte via proxy (navigateur) ─────────
 const PROXIES = {
@@ -108,6 +133,7 @@ function makeFetcher(v, pasted) {
   return async (url, { noFollow = false } = {}) => {
     if (noFollow && v.proxy !== 'custom') return {} // redirections http/www : vérifiables seulement en CLI ou via votre proxy
     if (pasted && !noFollow && sameDoc(url, pasted.url)) return { status: 200, body: pasted.html, finalUrl: url, headers: {}, redirects: [] }
+    if (pasted?.robots && !noFollow && tryJ(() => new URL(url).pathname === '/robots.txt' && new URL(url).origin === new URL(pasted.url).origin, false)) return { status: 200, body: pasted.robots, finalUrl: url, headers: {}, redirects: [] }
     for (const name of order) {
       const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 15000)
       try {
@@ -137,11 +163,11 @@ async function run({ bundle } = {}) {
   if (S.busy) return
   const v = vals()
   const target = bundle ? bundle.url : v.url.trim()
-  if (!target) { progress('Indiquez l’adresse de votre site, de votre application ou de votre dépôt GitHub.', 'err'); form.elements.url.focus(); return }
-  if (!form.elements.sector.value && !bundle) { progress('Choisissez votre secteur : il sert aux mots-clés, hashtags et budgets.', 'err'); form.elements.sector.focus(); return }
+  if (!target) { progress('Indiquez l’adresse de votre site, de votre application ou de votre dépôt GitHub.', 'err'); fieldError(form.elements.url, 'Indiquez une adresse : votre-site.fr, un lien App Store ou Google Play, ou owner/repo.'); return }
+  if (!form.elements.sector.value && !bundle) { progress('Choisissez votre secteur : il sert aux mots-clés, hashtags et budgets.', 'err'); fieldError(form.elements.sector, 'Choisissez votre secteur : il sert aux mots-clés, aux hashtags et au budget.'); return }
   if (ARTIFACT && !bundle && !(v.html || '').trim()) { progress(ARTIFACT_MSG, 'err'); return }
   const kind = bundle ? 'site' : detectKind(target)
-  const pasted = !bundle && v.html?.trim() ? { url: target, html: v.html } : null
+  const pasted = !bundle && v.html?.trim() ? { url: target, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
   const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted)
   const canRead = bundle || pasted || kind !== 'site' || v.proxy !== 'none'
   const input = inputOf(v)
@@ -165,15 +191,18 @@ async function run({ bundle } = {}) {
     refreshDerived()
     remember(rep)
     const psiErr = rep.ctx?.psi?.error
-    progress(rep.error ? rep.error : `Analyse terminée en ${Math.round((performance.now() - t0) / 1000)} s.${psiErr ? ' Vitesse non mesurée : ' + psiShort(psiErr) : ''}`, rep.error ? 'err' : 'ok')
+    // Le vert n'est donné que si la note est complète : un audit incomplet ou provisoire est annoncé comme tel.
+    const R0 = rep.result, secs = Math.round((performance.now() - t0) / 1000)
+    const done = R0?.global == null && R0?.incomplete ? `Audit incomplet (${secs} s) : ${R0.incomplete}.` : `Analyse terminée en ${secs} s.${R0?.caps?.length ? ' Note plafonnée : ' + R0.caps[0] + '.' : ''}`
+    progress(rep.error ? humanError(rep.error) : `${done}${psiErr ? ' Vitesse non mesurée : ' + psiShort(psiErr) : ''}`, rep.error ? 'err' : R0?.global == null || R0?.caps?.length ? 'warn' : 'ok')
     collapseHero(true)
     go('synthese')
     autoSuggest()
   } catch (err) {
     console.error(err)
-    showError('L’analyse n’a pas abouti', err.message)
+    showError('L’analyse n’a pas abouti', humanError(err))
   } finally {
-    clearInterval(tick); S.busy = false; $('#go').disabled = false; $('#go').textContent = 'Analyser'
+    clearInterval(tick); S.busy = false; $('#go').disabled = false; $('#go').textContent = ARTIFACT ? 'Analyser le code collé' : 'Analyser'
   }
 }
 const psiShort = (e) => (/429|quota/i.test(e) ? 'quota PageSpeed atteint (ajoutez une clé gratuite dans « Plus d’options »).' : e)
@@ -202,6 +231,8 @@ function progressSince(rep) {
 // ───────── Bouton-favori : réception des données ─────────
 window.addEventListener('message', (e) => {
   if (!e.data || e.data.type !== 'seo360-bm') return
+  // Seule la page décrite peut envoyer ses données : une autre page ouverte ne peut pas injecter un faux audit.
+  if (e.origin !== tryJ(() => new URL(e.data.url).origin, null)) return
   if (!validateBundle(e.data)) return
   tryJ(() => e.source?.postMessage('seo360-ack', e.origin))
   if (S.bmUrl === e.data.url && S.busy) return
@@ -216,7 +247,9 @@ function renderTabs() {
   const R = S.report?.result
   const n = R ? R.issues.filter((i) => ['critique', 'important'].includes(i.sev) && !isDone(i.id)).length : 0
   $('#tabs').innerHTML = TABS.map(([id, label]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${S.tab === id}" tabindex="${S.tab === id ? 0 : -1}" ${S.tab === id ? 'aria-current="page"' : ''}>${label}${id === 'afaire' && n ? `<span class="count" aria-label="${n} points importants">${n}</span>` : ''}</button>`).join('')
-  $(`#tabs [data-tab="${S.tab}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' })
+  // Défilement horizontal seul : scrollIntoView déplaçait aussi la page et sautait le lien « Aller au contenu ».
+  const tb = $('#tabs'), cur = $(`#tabs [data-tab="${S.tab}"]`)
+  if (cur && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = cur.offsetLeft - (tb.clientWidth - cur.offsetWidth) / 2
 }
 $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab) })
 // Clavier : flèches gauche/droite, Début/Fin entre les onglets
@@ -236,6 +269,7 @@ window.addEventListener('popstate', () => { const h = location.hash.slice(1); if
 
 function render() {
   renderTabs()
+  glossReset()
   const fn = { synthese, afaire, visibilite, budget, concurrents, ressources }[S.tab] || synthese
   $('#view').innerHTML = fn()
   after[S.tab]?.()
@@ -251,15 +285,38 @@ document.addEventListener('click', (e) => {
   if (t.closest('[data-edit]')) { collapseHero(false); form.elements.url.focus() }
   const g = t.closest('[data-go]'); if (g) { e.preventDefault(); go(g.dataset.go) }
   const rs = t.closest('[data-res]'); if (rs) { e.preventDefault(); S.res = rs.dataset.res; go('ressources') }
+  if (t.closest('.export-menu .menu .btn')) t.closest('details.export-menu')?.removeAttribute('open')
+  if (t.closest('[data-send-self]')) {
+    const url = location.href.split('#')[0], title = 'SEO 360 : finir mon audit sur ordinateur'
+    if (navigator.share) navigator.share({ title, url }).catch(() => {})
+    else location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`
+  }
   if (t.closest('[data-open-paste]')) { collapseHero(false); $('details.more').open = true; form.elements.html.focus(); form.elements.html.scrollIntoView({ block: 'center' }) }
   const c = t.closest('[data-copy]'); if (c) copy(c.dataset.copy !== undefined && c.dataset.copy !== '' ? c.dataset.copy : c.closest('.code')?.querySelector('pre')?.textContent || '')
   const act = t.closest('[data-act]')?.dataset.act; if (act) action(act)
+  const ai = t.closest('[data-ai]'); if (ai) { e.preventDefault(); runAi(ai.dataset.ai, ai.dataset.aiId || '') }
+  const lv = t.closest('[data-live]'); if (lv) openLive(lv.dataset.live)
+  if (t.closest('[data-cal-csv]')) exportCalendar()
   if (t.closest('[data-exemple]')) { S.report = structuredClone(EXEMPLE); S.shared = true; refreshDerived(); syncForm(S.report); collapseHero(true); go('synthese'); progress('Exemple fictif : « Maison Exemple », pâtisserie à Lyon.', 'ok') }
 })
+function openLive(id) {
+  const x = S.live.reports.find((d) => d.id === id)
+  const rep = x && tryJ(() => sanitizeReport(x.report, x.source === 'claude' ? 'claude' : 'import'), null)
+  if (!rep) { toast('Rapport illisible.'); return }
+  S.report = rep; S.shared = false; S.ai = {}; refreshDerived(); syncForm(rep); collapseHero(true); go('synthese')
+  progress(`Rapport ${x.source === 'claude' ? 'envoyé par Claude' : 'enregistré'} : ${rep.target}`, 'ok')
+}
+function exportCalendar() {
+  const v = vals(), y = new Date().getMonth() >= 9 ? new Date().getFullYear() + 1 : new Date().getFullYear()
+  const csv = calendarCsv(calendar(y, { sector: v.sector, alsace: store.get('alsace', false) })), name = `calendrier-${y}-${v.sector || 'secteur'}.csv`
+  if (!ARTIFACT) return download(name, csv, 'text/csv')
+  if (live.downloads) saveFile(name, csv).then(() => toast('Calendrier enregistré'), (e) => { if (e?.code !== 'declined') { copy(csv) } })
+  else copy(csv)
+}
 function copy(t) { navigator.clipboard?.writeText(t).then(() => toast('Copié'), () => toast('Copie impossible : sélectionnez le texte')) }
-function toast(m) { const d = document.createElement('div'); d.className = 'toast'; d.setAttribute('role', 'status'); d.textContent = m; document.body.append(d); setTimeout(() => d.remove(), 1800) }
+function toast(m) { const d = document.createElement('div'); d.className = 'toast'; d.setAttribute('role', 'status'); d.textContent = m; document.body.append(d); setTimeout(() => d.remove(), Math.max(4000, Math.min(8000, m.length * 70))) }
 function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000) }
-const slug = () => String(S.report?.target || 'rapport').replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').slice(0, 50)
+const slug = () => String(S.report?.target || 'rapport').replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'rapport'
 
 async function action(a) {
   const r = S.report
@@ -267,6 +324,9 @@ async function action(a) {
   if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
   if (a === 'json') download(`seo360-${slug()}.json`, JSON.stringify(r, null, 1), 'application/json')
   if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }))
+  if (a === 'md-dl') saveFile(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() })).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici : utilisez « Copier ».') })
+  if (a === 'json-dl') saveFile(`seo360-${slug()}.json`, JSON.stringify(r, null, 1)).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici.') })
+  if (a === 'live-save') saveReport(r).then(() => toast('Rapport enregistré : il apparaît sur tous vos appareils.'), (e) => toast(e?.code === 'quota_exceeded' ? 'Espace plein : supprimez d’anciens rapports.' : 'Enregistrement impossible pour l’instant.'))
   if (a === 'json-copy') copy(JSON.stringify(r))
   if (a === 'pdf') printReport()
   if (a === 'share') {
@@ -282,9 +342,10 @@ function syncForm(r) {
   if (r.target) form.elements.url.value = r.target
   updateKind(); persist()
 }
-const reportBar = () => ARTIFACT ? `<div class="actions"><button class="btn" data-act="md-copy">Copier le rapport (Markdown)</button><button class="btn" data-act="json-copy">Copier les données (JSON)</button></div>` : `<div class="actions">
-  <button class="btn" data-act="pdf">Rapport PDF</button><button class="btn" data-act="share">Copier le lien de partage</button>
-  <button class="btn" data-act="md">Markdown</button><button class="btn" data-act="json">JSON</button>${S.shared ? '' : '<button class="btn" data-act="recheck">Revérifier</button>'}</div>`
+// Exports regroupés dans un menu : sur téléphone, les 3 actions de la semaine restent dans le premier écran.
+const exportMenu = (items) => `<details class="export-menu"><summary class="btn">Exporter</summary><div class="menu">${items}</div></details>`
+const reportBar = () => ARTIFACT ? `<div class="actions">${live.db && live.owner ? '<button class="btn primary" data-act="live-save">Enregistrer (synchronisé)</button>' : ''}${exportMenu(live.downloads ? '<button class="btn" data-act="md-dl">Télécharger le rapport (.md)</button><button class="btn" data-act="json-dl">Télécharger les données (.json)</button>' : '<button class="btn" data-act="md-copy">Copier le rapport (Markdown)</button><button class="btn" data-act="json-copy">Copier les données (JSON)</button>')}</div>` : `<div class="actions">${S.shared ? '' : '<button class="btn" data-act="recheck">Revérifier</button>'}
+  ${exportMenu('<button class="btn" data-act="pdf">Rapport PDF</button><button class="btn" data-act="share">Copier le lien de partage</button><button class="btn" data-act="md">Markdown</button><button class="btn" data-act="json">JSON</button>')}</div>`
 
 // ───────── Statuts « fait » (une seule source, par identifiant) ─────────
 const doneKey = () => 'done:' + targetKey(S.report?.target || '')
@@ -309,13 +370,13 @@ function synthese() {
   const prog = S.shared ? null : progressSince(r)
   const b = r.budget
   const G = gscAnalysis(), gscOpp = G?.opportunities || []
-  const head = `<div class="section-head"><div><h2>${esc(r.target)}</h2><p>${KIND[r.kind]} · ${esc(sectorById(r.input.sector).label)}${r.input.city ? ' · ' + esc(r.input.city) : ''} · ${new Date(r.generatedAt).toLocaleString('fr-FR')}${c.fetch?.source ? ' · collecte : ' + esc(SOURCE[c.fetch.source] || c.fetch.source) : ''}</p></div>${reportBar()}</div>`
+  const head = `<div class="section-head"><div><h2>${esc(r.target)}</h2><p>${KIND[r.kind]} · ${esc(sectorById(r.input.sector).label)}${r.input.city ? ' · ' + esc(r.input.city) : ''} · ${new Date(r.generatedAt).toLocaleString('fr-FR')}${c.fetch?.source ? ' · collecte : ' + esc(SOURCE[c.fetch.source] || c.fetch.source) : ''}</p>${r.provenance ? `<p class="chip tag">${esc(PROVENANCE[r.provenance])}</p>` : ''}</div>${reportBar()}</div>`
   const incomplete = R.incomplete ? `<div class="card alert" role="alert"><h3>Audit incomplet : ${esc(R.incomplete)}</h3><p>Nous n’affichons pas de note quand l’essentiel n’a pas pu être mesuré : elle serait trompeuse. Ce qui a été mesuré reste listé ci-dessous.</p>${solutions()}</div>` : ''
   const caps = (R.caps || []).length ? `<p class="cap">Note plafonnée : ${R.caps.map((x) => esc(x)).join(' · ')}</p>` : ''
   return `${head}${incomplete}
   <div class="summary">
     <div class="card ring">${ring(R.global, R.grade)}<p>${R.global == null ? 'Complétez la collecte pour obtenir une note.' : R.global >= 85 ? 'Excellent socle : place à la croissance.' : R.global >= 70 ? 'Bon niveau, quelques freins à lever.' : R.global >= 50 ? 'Des corrections importantes vont débloquer du trafic.' : 'Priorité : corriger les points critiques.'}</p>
-      <p class="cover">Mesuré : <b>${Math.round((R.coverage || 0) * 100)} %</b> des contrôles${R.coverage < 1 ? ` <a href="#" data-go="afaire">(voir ce qui manque)</a>` : ''}</p>${caps}</div>
+      <p class="cover">Part mesurée : <b>${Math.round((R.coverage || 0) * 100)} %</b> <span class="note">(catégories lues, pondérées par leur poids)</span>${R.coverage < 1 ? ` <a href="#" data-go="afaire">(voir ce qui manque)</a>` : ''}</p>${caps}</div>
     <div class="card week"><h3>Vos 3 actions cette semaine</h3>
       ${week.length ? `<ol class="clean steps">${week.slice(0, 3).map((i) => `<li><div><b>${gloss(esc(i.title))}</b><p class="note">${esc(i.fix || '')}</p><p class="who"><span class="chip tag">${esc(i.who)}</span>${i.time ? ` <span class="chip tag">⏱ ${esc(i.time)}</span>` : ''}${S.fixes[i.id] ? ' <span class="chip ok-soft">correctif prêt</span>' : ''}</p></div></li>`).join('')}</ol>
       <div class="actions"><button class="btn primary" data-go="afaire">Voir les correctifs</button><button class="btn" data-act="mail">Copier le message pour mon prestataire</button></div>` : '<p>Rien d’urgent : place au contenu et à la visibilité.</p>'}</div>
@@ -325,8 +386,9 @@ function synthese() {
     ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
     <div class="card"><h3>Budget publicitaire</h3><p class="verdict v-${b.verdict.level}">${esc(b.verdict.text)}</p><p><a href="#budget" data-go="budget">Détail par canal et montée en charge →</a></p></div>
     ${(() => { const t = recommendTools(r); return `<div class="card"><h3>Vos outils</h3><p class="big">${Math.min(WEEK, t.essentiel.length)} outils gratuits cette semaine</p><p class="note">${esc(t.essentiel.slice(0, 3).map((x) => x.nom).join(', '))}… avec le guide d’installation de chacun, puis les outils payants seulement s’ils servent.</p><a href="#ressources" data-res="outils">Voir la boîte à outils →</a></div>` })()}
-    <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Chute de ${Math.round(G.drop.drop * 100)} % des clics depuis le ${esc(frShort(G.drop.date))}</p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
+    <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Clics par jour en baisse de ${Math.round(G.drop.drop * 100)} % depuis le ${esc(frShort(G.drop.date))} <span class="note">(14 jours après comparés aux 14 jours avant, à ne pas confondre avec l’écart entre deux périodes)</span></p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
   </div>
+  ${aiConsultant()}
   <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
     <div class="chips">${['critique', 'important', 'moyen', 'faible', 'ok'].map((s) => `<span class="chip sev-${s}">${SEVERITY[s].label} · ${R.counts[s]}</span>`).join('')}</div></div>
   ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
@@ -367,10 +429,80 @@ function intro() {
     <div class="card"><h3>2. Des correctifs prêts à coller</h3><p class="note">Titre, description, données structurées, robots.txt… construits à partir de votre page, avec qui s’en charge et combien de temps.</p></div>
     <div class="card"><h3>3. Un budget et la preuve du progrès</h3><p class="note">Combien investir en publicité et si c’est rentable ; à chaque nouvel audit : points corrigés et évolution de la note.</p></div>
   </div>
-  <div class="actions" style="margin-top:16px"><button class="btn" data-exemple>Voir un exemple de rapport</button>${last ? `<button class="btn" id="restore">Rouvrir : ${esc(last.target)}</button>` : ''}<a class="btn" href="#ressources" data-res="favori">Installer le bouton-favori</a></div>`
+  <div class="actions" style="margin-top:16px"><button class="btn" data-exemple>Voir un exemple de rapport</button>${last ? `<button class="btn" id="restore">Rouvrir : ${esc(last.target)}</button>` : ''}<a class="btn" href="#ressources" data-res="favori">Installer le bouton-favori</a></div>
+  ${liveReportsCard()}`
 }
+// ───────── En direct (page claude.ai) ─────────
+const LIVE_STATUS = { connecting: 'connexion…', ok: 'synchronisé', stale: 'données injoignables pour l’instant', error: 'synchronisation interrompue', off: '' }
+function liveReportsCard(all = false) {
+  if (!live.db) return ''
+  const list = S.live.reports.slice(0, all ? 30 : 5)
+  return `<div class="card" style="margin-top:16px"><h3>Rapports en direct <span class="chip ${S.live.status === 'ok' ? 'sev-ok' : 'tag'}">${esc(LIVE_STATUS[S.live.status] || '')}</span></h3>
+    ${list.length ? `<ul class="clean live-list">${list.map((x) => `<li><button class="btn sm" data-live="${esc(x.id)}">Ouvrir</button> <b>${esc(x.target)}</b> <span class="note">${esc(x.source === 'claude' ? 'envoyé par Claude' : 'enregistré ici')} · ${esc(new Date(x.savedAt).toLocaleString('fr-FR'))}${x.global != null ? ` · ${esc(x.global)}/100` : ''}</span></li>`).join('')}</ul>` : '<p class="note">Aucun rapport pour l’instant. Envoyez un lien à Claude dans la conversation : le rapport apparaît ici dès qu’il est prêt, sur tous vos appareils.</p>'}</div>`
+}
+function conseilView() {
+  const c = S.live.conseil
+  return `<div class="card"><h3>Conseil d’agents, en direct</h3><p class="note">Plusieurs agents Claude auditent la plateforme sans se voir, se notent à l’aveugle sur 100, puis un critique indépendant compare l’ancienne et la nouvelle version. Les notes s’affichent ici dès qu’elles tombent. Tous les agents sont le même modèle : une note élevée n’est pas une preuve à elle seule.</p></div>
+  ${c.length ? c.map((x) => `<div class="card" style="margin-top:12px"><h3>${esc(x.titre || x.id)} <span class="chip tag">${esc(x.statut || '')}</span></h3>${x.etape ? `<p>${esc(x.etape)}</p>` : ''}
+    ${x.noteAvant != null || x.noteApres != null ? `<p class="big">${x.noteAvant != null ? esc(String(x.noteAvant).replace('.', ',')) : '—'} → <b>${x.noteApres != null ? esc(String(x.noteApres).replace('.', ',')) : '…'}</b> <span class="note">/100 : note de la plateforme avant → après (critique indépendant)</span></p>` : ''}
+    ${Array.isArray(x.rows) && x.rows.length ? `<div class="table-wrap"><table><thead><tr><th>Perspective</th><th class="n" title="Note que cet expert donne à la plateforme">Note de la plateforme</th><th class="n" title="Note de son audit par les 5 relecteurs, à l’aveugle">Note de l’audit</th><th class="n">Rang</th><th>Ce qu’on garde</th></tr></thead><tbody>${x.rows.map((r) => `<tr><td>${esc(r.perspective)}</td><td class="n">${r.notePlateforme == null ? '…' : esc(String(r.notePlateforme).replace('.', ','))}</td><td class="n">${r.score == null ? '…' : esc(String(r.score).replace('.', ','))}</td><td class="n">${r.rang == null ? '' : esc(r.rang)}</td><td class="note">${esc(r.garde || '')}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${x.commentaire ? `<p class="note">${esc(x.commentaire)}</p>` : ''}<p class="note">Mis à jour : ${esc(x.date ? new Date(x.date).toLocaleString('fr-FR') : '')}</p></div>`).join('') : '<div class="card" style="margin-top:12px"><p class="note">Le tableau du conseil apparaîtra ici.</p></div>'}
+  ${liveReportsCard(true)}`
+}
+// ───────── Claude dans la page ─────────
+const aiOn = () => !!live.sample && !live.aiOff
+const aiId = (key) => 'ai-' + key.replace(/[^a-z0-9]+/gi, '-')
+function aiBtn(kind, label, id = '') {
+  if (!aiOn()) return ''
+  const key = kind === 'fix' ? 'fix:' + id : kind, st = S.ai[key], busy = st && (st.status === 'thinking' || st.status === 'streaming')
+  return `<button class="btn sm ai-btn" type="button" data-ai="${esc(kind)}"${id ? ` data-ai-id="${esc(id)}"` : ''} data-ai-key="${esc(key)}" aria-controls="${aiId(key)}">${busy ? 'Arrêter' : esc(label)}</button>`
+}
+function aiInner(key) {
+  const st = S.ai[key]
+  if (!st) return ''
+  return `${st.status === 'thinking' ? '<p class="note">Claude réfléchit… (la première réponse peut prendre jusqu’à une minute)</p>' : ''}${st.text ? `<div class="ai-out">${renderMd(st.text)}</div>` : ''}${st.error ? `<p class="note ai-err">${esc(st.error)}</p>` : ''}${st.truncated ? '<p class="note">Réponse coupée : demandez moins à la fois.</p>' : ''}${st.status === 'done' && st.text ? `<button class="btn sm" type="button" data-copy="${esc(st.text)}">Copier la réponse</button>` : ''}`
+}
+const aiBox = (key) => `<div class="ai-box" id="${aiId(key)}" aria-live="polite">${aiInner(key)}</div>`
+function paintAi(key) {
+  const el = document.getElementById(aiId(key)); if (el) el.innerHTML = aiInner(key)
+  const st = S.ai[key], busy = st && (st.status === 'thinking' || st.status === 'streaming')
+  document.querySelectorAll(`[data-ai-key="${CSS.escape(key)}"]`).forEach((b) => { b.textContent = busy ? 'Arrêter' : b.dataset.label || b.textContent })
+}
+const hashtagLine = (r) => { const h = r.hashtags; if (!h) return null; return Object.values(h.networks).filter((n) => h.priority.includes(n.id)).slice(0, 2).map((n) => `${n.label} : ${n.tags.map((t) => `#${t.camel} (${t.niveau || '?'})`).join(' ')}`).join(' | ') }
+async function runAi(kind, id = '') {
+  const r = S.report
+  if (!r || !aiOn()) return
+  const key = kind === 'fix' ? 'fix:' + id : kind
+  const prev = S.ai[key]
+  if (prev && (prev.status === 'thinking' || prev.status === 'streaming')) { prev.ctl?.abort(); return }
+  const ctx = { tools: recommendTools(r).essentiel, upcoming: upcoming(new Date(), { days: 90, sector: r.input?.sector }), hashtags: kind === 'posts' ? hashtagLine(r) : null }
+  let prompt
+  if (kind === 'plan') prompt = promptPlan(r, ctx)
+  else if (kind === 'posts') prompt = promptPosts(r, ctx)
+  else if (kind === 'fix') { const issue = r.result?.issues.find((x) => x.id === id); if (!issue) return; prompt = promptFix(r, issue, ctx) }
+  else if (kind === 'question') { const q = $('#ai-q')?.value.trim(); if (!q) { $('#ai-q')?.focus(); return } prompt = promptQuestion(r, q, ctx) }
+  else return
+  document.querySelectorAll(`[data-ai-key="${CSS.escape(key)}"]`).forEach((b) => { b.dataset.label ||= b.textContent })
+  const ctl = new AbortController(), st = S.ai[key] = { status: 'thinking', text: '', ctl }
+  paintAi(key)
+  try {
+    const res = await ask(prompt, { signal: ctl.signal, cache: kind === 'question' ? false : undefined, onText: ({ text }) => { st.status = 'streaming'; st.text = text; paintAi(key) } })
+    Object.assign(st, { status: 'done', text: res.text, truncated: res.truncated })
+  } catch (e) {
+    Object.assign(st, { status: e?.code === 'cancelled' ? 'stopped' : 'error', text: e?.text ?? (e?.code === 'refused' ? '' : st.text), error: e?.code === 'cancelled' ? '' : AI_ERRORS[e?.code] || AI_ERRORS.upstream_error })
+  }
+  st.ctl = null
+  if (live.aiOff) render(); else paintAi(key)
+}
+function aiConsultant() {
+  if (!aiOn() || !S.report) return ''
+  return `<div class="card" style="margin-top:16px"><h3>Claude, votre consultant</h3><p class="note">Claude lit ce rapport et vous répond en direct. Chaque demande utilise votre compte Claude ; la première vous demande votre accord.</p>
+    <div class="actions">${aiBtn('plan', 'Rédiger mon plan sur 90 jours')}</div>${aiBox('plan')}
+    <form id="ai-q-form" class="row-inputs ai-q"><label for="ai-q" class="sr">Votre question sur ce rapport</label><input id="ai-q" type="text" maxlength="600" placeholder="Ex. : par quoi je commence si j’ai 2 heures par semaine ?"><button class="btn" type="submit">${S.ai.question && (S.ai.question.status === 'thinking' || S.ai.question.status === 'streaming') ? 'Arrêter' : 'Demander à Claude'}</button></form>${aiBox('question')}</div>`
+}
+after.synthese_ai = () => { $('#ai-q-form')?.addEventListener('submit', (e) => { e.preventDefault(); runAi('question') }) }
 const _afterSyn = after.synthese
-after.synthese = () => { _afterSyn(); $('#restore')?.addEventListener('click', () => { S.report = tryJ(() => sanitizeReport(store.get('last')), null); if (!S.report) return; refreshDerived(); syncForm(S.report); collapseHero(true); render() }) }
+after.synthese = () => { _afterSyn(); after.synthese_ai(); $('#restore')?.addEventListener('click', () => { S.report = tryJ(() => sanitizeReport(store.get('last')), null); if (!S.report) return; refreshDerived(); syncForm(S.report); collapseHero(true); render() }) }
 
 function prestataireMessage() {
   const r = S.report, items = (r.plan?.steps || []).flatMap((s) => s.items.filter((i) => !isDone(i.id)).map((i) => ({ ...i, step: s.title }))).filter((i) => i.who !== 'Vous')
@@ -386,11 +518,11 @@ function afaire() {
   const all = r.plan.steps.flatMap((s) => [...s.items, ...s.extra])
   const nDone = all.filter((i) => done[i.id]).length
   const cats = Object.entries(R.scores).filter(([, s]) => s.issues)
-  return `<div class="section-head"><div><h2>À faire</h2><p>${nDone}/${all.length} fait · cochez au fur et à mesure (enregistré sur cet appareil). Cliquez une ligne pour le correctif.</p></div><div class="actions"><button class="btn" data-act="mail">Copier le message pour mon prestataire</button>${reportBar()}</div></div>
+  return `<div class="section-head"><div><h2>À faire</h2><p>${nDone}/${all.length} fait · cochez au fur et à mesure (enregistré sur cet appareil). Cliquez une ligne pour le correctif. Avant de coller un correctif : sauvegardez le site, changez une chose à la fois et notez comment revenir en arrière.</p></div><div class="actions"><button class="btn" data-act="mail">Copier le message pour mon prestataire</button>${reportBar()}</div></div>
   <div class="progressbar" role="progressbar" aria-valuenow="${nDone}" aria-valuemin="0" aria-valuemax="${all.length}" aria-label="Avancement"><span style="width:${all.length ? (nDone / all.length) * 100 : 0}%"></span></div>
   <div class="filters" role="group" aria-label="Filtrer par catégorie"><button class="chip tag" data-fcat="" aria-pressed="${!S.cat}">Toutes</button>${cats.map(([k, v]) => `<button class="chip tag" data-fcat="${esc(k)}" aria-pressed="${S.cat === k}">${esc(v.label)} · ${v.issues}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="Filtrer par gravité">${['critique', 'important', 'moyen', 'faible'].map((s) => `<button class="chip sev-${s}" data-fsev="${s}" aria-pressed="${S.sevs.has(s)}">${SEVERITY[s].label} · ${R.counts[s]}</button>`).join('')}</div>
-  ${r.plan.steps.map((s) => { const items = [...s.items, ...s.extra].filter(visible); return items.length ? `<section class="step"><h3>${esc(s.title)} <span class="pct">${items.filter((i) => done[i.id]).length}/${items.length}</span></h3><p class="why">${esc(s.why)}</p><div class="issues">${items.map((i) => item(i, done)).join('')}</div></section>` : '' }).join('')}
+  ${r.plan.steps.map((s) => { const items = [...s.items, ...s.extra].filter(visible); if (s.id === 'semaine') { const w = (r.plan.week || []).map((x) => x.id), at = (i) => (w.includes(i.id) ? w.indexOf(i.id) : 99); items.sort((a, b) => at(a) - at(b)) } return items.length ? `<section class="step"><h3>${esc(s.title)} <span class="pct">${items.filter((i) => done[i.id]).length}/${items.length}</span></h3><p class="why">${esc(s.why)}</p><div class="issues">${items.map((i) => item(i, done)).join('')}</div></section>` : '' }).join('')}
   ${R.passed.length ? `<details class="card fold"><summary><h3>Déjà bien (${R.passed.length})</h3></summary><ul class="clean">${R.passed.map((p) => `<li><span class="chip sev-ok">OK</span> ${gloss(esc(p.title))}</li>`).join('')}</ul></details>` : ''}
   ${R.infos.length ? `<details class="card fold" open><summary><h3>Non vérifié ou à vérifier hors site (${R.infos.length})</h3></summary><ul class="clean">${R.infos.map((p) => `<li><span class="chip sev-info">À vérifier</span> <b>${gloss(esc(p.title))}</b>${p.detail ? ` — <span class="note">${esc(p.detail)}</span>` : ''}${p.fix ? `<br><span class="note">${esc(p.fix)}</span>` : ''}</li>`).join('')}</ul></details>` : ''}`
 }
@@ -399,8 +531,9 @@ function item(i, done) {
   if (i.extra) return `<div class="issue extra ${d ? 'is-done' : ''}"><label class="row"><input type="checkbox" data-done="${esc(i.id)}" ${d ? 'checked' : ''}><span class="t">${gloss(esc(i.title))}</span><span class="m"><span class="chip tag">${esc(i.who)}</span></span></label></div>`
   return `<details class="issue ${i.sev} ${d ? 'is-done' : ''}">
     <summary><input type="checkbox" data-done="${esc(i.id)}" ${d ? 'checked' : ''} aria-label="Marquer comme fait : ${esc(i.title)}"><span class="chip sev-${i.sev}">${SEVERITY[i.sev].label}</span><span class="t">${gloss(esc(i.title))}</span><span class="m">${again ? '<span class="chip sev-important" title="Marqué fait avant ce contrôle, mais toujours détecté">encore détecté</span>' : ''}<span class="chip tag">${esc(i.who)}</span><span class="chip tag">⏱ ${esc(i.time)}</span>${fx || i.code ? '<span class="chip ok-soft">correctif prêt</span>' : ''}</span></summary>
-    <div class="body">${i.detail ? `<p>${gloss(esc(i.detail))}</p>` : ''}${i.fix ? `<div class="fix"><b>À faire :</b> ${gloss(esc(i.fix))}</div>` : ''}
+    <div class="body">${i.detail ? `<p>${gloss(esc(i.detail))}</p>` : ''}${i.fix ? `<div class="fix"><b>À faire :</b> ${gloss(esc(i.fix))}</div>` : ''}${(() => { const w = whereToApply(i.id, S.report?.result?.meta?.cms); return w ? `<p class="note"><b>Où le faire sur ${esc(w.cms)} :</b> ${esc(w.text)}</p>` : '' })()}
       ${fx ? `<div class="code"><p class="note"><b>${esc(fx.label)}</b>${fx.note ? ' — ' + esc(fx.note) : ''}</p><pre>${esc(fx.value)}</pre><button class="btn sm" data-copy="">Copier</button></div>` : i.code ? `<div class="code"><pre>${esc(i.code)}</pre><button class="btn sm" data-copy="">Copier</button></div>` : ''}
+      ${aiOn() ? `<div class="actions">${aiBtn('fix', 'Rédiger avec Claude', i.id)}</div>${aiBox('fix:' + i.id)}` : ''}
       <p class="note">Impact ${meter(i.impact, 'impact')} · Effort ${meter(i.effort, 'effort')} · ${esc(i.cat)} · <a href="${esc(reportIssueUrl(i))}" target="_blank" rel="noopener">Ce constat est faux ?</a></p></div></details>`
 }
 after.afaire = () => {
@@ -439,6 +572,7 @@ function visibilite() {
     <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>
   <div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Bordure verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
     <label style="min-width:260px">Mots-clés en plus (séparés par des virgules)<input id="hkw" value="${esc(extra)}" placeholder="ex. vitrine pâtissière"></label></div>
+  ${aiOn() && S.report ? `<div class="card"><h3>Idées de publications</h3><p class="note">Claude propose 5 publications pour vos 2 réseaux prioritaires, avec l’accroche, la légende et les hashtags de cette page.</p><div class="actions">${aiBtn('posts', 'Proposer 5 publications')}</div>${aiBox('posts')}</div>` : ''}
   <div class="cols">${nets.map((n, idx) => `<details class="card net" ${idx < 2 ? 'open' : ''}><summary><h3>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
     <div class="actions"><button class="btn sm" data-copy="${esc(n.tags.map((t) => '#' + t.camel).join(' '))}">Copier les hashtags</button><button class="btn sm" data-copy="${esc(n.caption)}">Copier un modèle de légende</button></div>
     ${n.reserve.length ? `<p class="note">À faire tourner d’un post à l’autre :</p><div class="tags">${n.reserve.slice(0, 10).map((t) => `<span class="htag res">#${esc(t.camel)}</span>`).join('')}</div>` : ''}
@@ -486,7 +620,7 @@ const pctv = (x) => (x == null ? '—' : `${x >= 0 ? '+' : ''}${Math.round(x * 1
 function gscPanel() {
   const a = gscAnalysis()
   const rowsTable = (list, cause = true) => `<div class="table-wrap"><table><thead><tr><th>Page ou requête</th><th class="n">Clics avant → après</th><th class="n">Écart</th>${cause ? '<th>Cause probable</th>' : ''}</tr></thead><tbody>${list.map((r) => `<tr><td>${esc(r.key)}</td><td class="n">${fmt(r.prevClicks)} → ${fmt(r.clicks)}</td><td class="n"><b>${r.delta > 0 ? '+' : ''}${fmt(r.delta)}</b></td>${cause ? `<td class="note">${esc(r.cause)}</td>` : ''}</tr>`).join('')}</tbody></table></div>`
-  const body = !a ? `<p class="note">Search Console → Performances → Exporter → « Télécharger le fichier ZIP », puis déposez le ZIP tel quel (il contient la courbe quotidienne). Ajoutez l’export de la période précédente pour comparer, et les exports du rapport « Liens » si vous les avez. Rien n’est envoyé : tout est lu dans votre navigateur.</p>` : `
+  const body = !a ? `<p class="note">Search Console → Performances → bouton « Exporter » (en haut à droite) → format CSV : vous obtenez un fichier .zip. Déposez-le tel quel (il contient la courbe quotidienne). Ajoutez l’export de la période précédente pour comparer, et les exports du rapport « Liens » si vous les avez. Rien n’est envoyé : tout est lu dans votre navigateur.</p>` : `
     ${a.totals ? `<p>Période ≈ ${fmt(a.months, 1)} mois · <b>${fmt(a.totals.clicks)}</b> clics · ${fmt(a.totals.impressions)} impressions</p>` : ''}
     ${a.actions.length ? `<h4>À faire, dans l’ordre</h4><ol class="todo">${a.actions.map((x) => `<li>${gloss(esc(x))}</li>`).join('')}</ol>` : ''}
     ${a.brand?.share != null ? `<h4>Marque et hors marque</h4><div class="bar"><span class="lbl">Clics de marque</span><span class="track"><span class="fill" style="width:${Math.round(a.brand.share * 100)}%;background:var(--accent-2)"></span></span><b>${Math.round(a.brand.share * 100)} %</b></div><p class="note">${esc(a.brand.lecture)}</p>` : ''}
@@ -494,7 +628,7 @@ function gscPanel() {
       ${['pages', 'requetes'].map((k) => a.compare[k]?.perdants?.length ? `<p class="note"><b>${k === 'pages' ? 'Pages' : 'Requêtes'} en recul</b></p>${rowsTable(a.compare[k].perdants)}` : '').join('')}
       ${['pages', 'requetes'].map((k) => a.compare[k]?.gagnants?.length ? `<details><summary class="note">${k === 'pages' ? 'Pages' : 'Requêtes'} en progrès (${a.compare[k].gagnants.length})</summary>${rowsTable(a.compare[k].gagnants.slice(0, 8), false)}</details>` : '').join('')}` : ''}
     ${a.drop ? `<h4>Chute détectée</h4><p>Depuis le <b>${esc(frShort(a.drop.date))}</b> : ${fmt(a.drop.before, 1)} → ${fmt(a.drop.after, 1)} clics par jour (−${Math.round(a.drop.drop * 100)} %).</p><p class="note">Mises à jour Google proches : ${a.drop.updates.length ? a.drop.updates.map((u) => esc(u.label)).join(' · ') : 'aucune connue'}. ${esc(a.drop.lecture)}</p>` : ''}
-    ${a.opportunities.length ? `<h4>Requêtes à remonter</h4><p>≈ <b>+${fmt(a.opportunities.reduce((s, o) => s + o.gain, 0))} clics/mois</b> possibles (estimation prudente si chaque requête gagne le top 3${a.terms.length ? ', requêtes de marque exclues' : ''}).</p><div class="table-wrap"><table><thead><tr><th>Requête</th><th class="n">Position</th><th class="n">Impressions</th><th class="n">CTR</th><th class="n">Gain ≈ clics/mois</th><th>Action</th></tr></thead><tbody>${a.opportunities.map((o) => `<tr><td>${esc(o.key)}</td><td class="n">${fmt(o.position, 1)}</td><td class="n">${fmt(o.impressions)}</td><td class="n">${fmt(o.ctr * 100, 1)} %</td><td class="n"><b>+${fmt(o.gain)}</b></td><td class="note">${esc(o.action)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${a.opportunities.length ? `<h4>Requêtes à remonter</h4><p>≈ <b>+${fmt(a.opportunities.reduce((s, o) => s + o.gain, 0))} clics/mois</b> possibles (ordre de grandeur : courbe de clics réduite d’un tiers à cause des réponses IA${a.terms.length ? ', requêtes de marque exclues' : ''}).</p><div class="table-wrap"><table><thead><tr><th>Requête</th><th class="n">Position</th><th class="n">Impressions</th><th class="n">CTR</th><th class="n">Gain ≈ clics/mois</th><th>Action</th></tr></thead><tbody>${a.opportunities.map((o) => `<tr><td>${esc(o.key)}</td><td class="n">${fmt(o.position, 1)}</td><td class="n">${fmt(o.impressions)}</td><td class="n">${fmt(o.ctr * 100, 1)} %</td><td class="n">${o.gainUnknown ? '<span class="note">non chiffrable</span>' : `<b>+${fmt(o.gain)}</b>`}</td><td class="note">${esc(o.action)}</td></tr>`).join('')}</tbody></table></div>` : ''}
     ${a.appareils || a.pays ? `<details><summary class="note">Appareils et pays</summary><ul class="clean">${[...(a.appareils || []), ...(a.pays || []).slice(0, 4)].map((r) => `<li>${esc(r.key)} : ${Math.round(r.part * 100)} % des clics, position ${fmt(r.position, 1)}</li>`).join('')}</ul></details>` : ''}
     ${a.liens ? `<h4>Liens vers votre site</h4><p>${fmt(a.liens.nbSites)} site(s) référent(s)${a.liens.totalAncres ? ` · ancres : marque ${fmt(a.liens.kinds.marque)}, adresse ${fmt(a.liens.kinds.url)}, génériques ${fmt(a.liens.kinds.generique)}, mots-clés ${fmt(a.liens.kinds.mots)}` : ''}</p>${a.liens.sites.length ? `<div class="tags">${a.liens.sites.slice(0, 12).map((x) => `<span class="chip tag">${esc(x.key)} · ${fmt(x.links)}</span>`).join('')}</div>` : ''}` : ''}
     ${a.warnings.length ? `<p class="note">${a.warnings.map((w) => esc(w)).join('<br>')}</p>` : ''}`
@@ -510,7 +644,7 @@ function outilsView() {
     ${guide && t.etapes?.length ? `<ol class="todo">${t.etapes.map((e) => `<li>${esc(e)}</li>`).join('')}</ol>` : ''}
     <p class="note"><a href="${esc(t.url)}" target="_blank" rel="noopener">Ouvrir ${esc(t.nom)}</a>${t.doc ? ` · <a href="${esc(t.doc)}" target="_blank" rel="noopener">aide officielle</a>` : ''}${t.source_prix ? ` · <a href="${esc(t.source_prix)}" target="_blank" rel="noopener">prix</a>` : ''}</p></details>`
   const sec = (title, note, list, guide) => list.length ? `<div class="section-head" style="margin-top:18px"><div><h3>${esc(title)}</h3><p class="note">${esc(note)}</p></div></div><div class="stack">${list.map((t) => card(t, guide)).join('')}</div>` : ''
-  return `<p class="note">${r ? `Choisis d’après l’audit de ${esc(r.target)}` : 'Lancez un audit pour une sélection adaptée à votre site ; voici la base pour votre secteur'}. Prix d’entrée vérifiés le ${esc(frDay(rec.verifie))}, hors taxes sauf mention : à reconfirmer chez l’éditeur. Budget : 0 € pour démarrer${rec.couts.recommandeOptionnel ? `, ≈ ${fmt(rec.couts.recommandeOptionnel)} €/mois avec les offres payantes recommandées` : ''}${rec.couts.pro ? `, ≈ ${fmt(rec.couts.pro)} €/mois de plus au niveau pro` : ''}.</p>
+  return `<p class="note">${r ? `Sélection faite d’après l’audit de ${esc(r.target)}` : 'Lancez un audit pour une sélection adaptée à votre site ; voici la base pour votre secteur'}. Prix d’entrée vérifiés le ${esc(frDay(rec.verifie))}, hors taxes sauf mention : à reconfirmer chez l’éditeur. Budget : 0 € pour démarrer${rec.couts.recommandeOptionnel ? `, ≈ ${fmt(rec.couts.recommandeOptionnel)} €/mois avec les offres payantes recommandées` : ''}${rec.couts.pro ? `, ≈ ${fmt(rec.couts.pro)} €/mois de plus au niveau pro` : ''}.</p>
     ${sec('Cette semaine (gratuit, dans cet ordre)', 'Ouvrez chaque outil pour le guide d’installation pas à pas.', rec.essentiel.slice(0, WEEK), true)}
     ${sec('Ce mois-ci (gratuit)', '', rec.essentiel.slice(WEEK), true)}
     ${sec('Recommandés (gratuits ou petit budget)', '', rec.recommande, true)}
@@ -522,6 +656,7 @@ function calendarPanel(v) {
   if (!list.length) return ''
   return `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Temps forts des 90 prochains jours</h3><label class="inline"><input type="checkbox" id="cal-alsace" ${alsace ? 'checked' : ''}> Alsace-Moselle</label></div>
     <p class="note">Dates calculées pour votre secteur. Préparez le contenu à J-30, la pub à J-14, les posts à J-7 et les horaires de votre fiche Google avant chaque jour férié. Calendrier complet de l’année : <code>node seo/cli.mjs calendrier --secteur ${esc(v.sector)} --sortie rapports-seo</code> (tableur et agenda .ics).</p>
+    <div class="actions"><button class="btn sm" type="button" data-cal-csv>${ARTIFACT && !live.downloads ? 'Copier le calendrier de l’année (tableur)' : 'Télécharger le calendrier de l’année (.csv)'}</button></div>
     <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
 async function autoSuggest(ev) {
@@ -570,8 +705,10 @@ function veillePanel() {
 // Lien vers la page du hashtag sur le réseau : pour juger soi-même sa popularité et sa fraîcheur.
 const TAG_URL = { instagram: (t) => `https://www.instagram.com/explore/tags/${t}/`, tiktok: (t) => `https://www.tiktok.com/tag/${t}`, linkedin: (t) => `https://www.linkedin.com/feed/hashtag/${t}/`, x: (t) => `https://x.com/hashtag/${t}`, facebook: (t) => `https://www.facebook.com/hashtag/${t}`, youtube: (t) => `https://www.youtube.com/hashtag/${t}`, pinterest: (t) => `https://www.pinterest.fr/search/pins/?q=%23${t}`, threads: (t) => `https://www.threads.net/search?q=${t}`, bluesky: (t) => `https://bsky.app/hashtag/${t}` }
 const NIV = { niche: 'niche (moins de 50 000 publications)', moyen: 'moyen (50 000 à 500 000)', large: 'large (plus de 500 000)' }
-const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}</span>` }
+const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
 const CH_COLORS = ['#4338ca', '#0f766e', '#b45309', '#be185d', '#0369a1', '#4d7c0f', '#7e22ce']
+// En-têtes courts et complets pour le tableau Concurrents (avant : « Mesure, » et deux colonnes « Vitesse »).
+const CAT_SHORT = { technique: 'Technique', contenu: 'Contenu', donnees: 'Données', ia: 'IA', social: 'Partage', conformite: 'Mesure et RGPD', local: 'Local', performance: 'Vitesse', decouverte: 'Découverte' }
 function budget() {
   const v = vals(), r = S.report
   const b = planBudget({ sector: v.sector, goal: r?.kind === 'app' ? 'telechargements' : v.goal, monthly: v.monthly, local: v.local, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, targetConversions: store.get('target', 0), searchVolume: store.get('volume', 0), cpcOverride: store.get('cpc', 0) })
@@ -591,7 +728,7 @@ function budget() {
     <label>Votre CPC réel Google (€)<input id="cpc" type="number" min="0" step="any" value="${store.get('cpc', 0) || ''}" placeholder="optionnel (Keyword Planner)"></label>
   </div><p class="note">Hypothèses utilisées : marge ${Math.round(b.assumptions.margin * 100)} %${b.goal === 'leads' ? `, ${Math.round(b.assumptions.closeRate * 100)} % des contacts signent` : ''}. Coût maximal rentable par ${b.unit} : <b>${b.maxCpa ? fmt(b.maxCpa) + ' €' : '— (indiquez la valeur d’un client)'}</b>.${b.roasBreakEven ? ` ROAS d’équilibre : <b>${fmt(b.roasBreakEven, 1)}</b> (1 ÷ marge : en dessous, chaque vente payée par la pub vous coûte de l’argent).` : ''}${b.cpcSource ? ' ' + esc(b.cpcSource) : ''}</p></div>
   <div class="kpis">
-    <div class="kpi"><div class="v">${fmt(b.monthly)} €</div><div class="k">${b.recommendedUsed ? (b.verdict.level === 'non' ? 'budget minimum d’un test' : 'budget de départ conseillé') : 'par mois'} · ${fmt(b.daily)} €/jour</div></div>
+    <div class="kpi"><div class="v">${fmt(b.monthly)} €</div><div class="k">${b.recommendedUsed ? ('minimum pour tester') : 'par mois'} · ${fmt(b.daily)} €/jour</div></div>
     <div class="kpi"><div class="v">≈ ${fmt(b.totals.clicksMid)}</div><div class="k">clics / mois</div></div>
     <div class="kpi"><div class="v">≈ ${fmt(b.totals.mid)}</div><div class="k">${b.unit}s / mois (${rng(b.totals.band)})</div></div>
     <div class="kpi"><div class="v">≈ ${b.totals.cpaMid ? fmt(b.totals.cpaMid) + ' €' : '—'}</div><div class="k">coût par ${b.unit}</div></div>
@@ -636,8 +773,9 @@ function concurrents() {
   const mine = new Set(me.terms), gap = new Map()
   for (const c of comps.filter((x) => x.comparable)) for (const t of c.terms || []) if (!mine.has(t)) gap.set(t, (gap.get(t) || 0) + 1)
   const gapTerms = [...gap].filter(([, n]) => n >= Math.min(2, comps.filter((x) => x.comparable).length)).map(([t]) => t).slice(0, 15)
-  return `<div class="section-head"><div><h2>Concurrents</h2><p>Même grille, mêmes conditions : page d’accueil de chacun (votre exploration multi-pages est exclue de la comparaison).</p></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Site</th><th class="n">Note</th>${cats.map((k) => `<th class="n" title="${esc(R.scores[k].label)}">${esc(R.scores[k].label.split(/[ &]/)[0])}</th>`).join('')}<th class="n">Vitesse</th><th class="n">Mots</th><th>Réseaux</th></tr></thead><tbody>
+  const meRow = all.find((c) => c.me)
+  return `<div class="section-head"><div><h2>Concurrents</h2><p>Même grille, mêmes conditions : la page d’accueil de chacun.${meRow?.global != null && R.global != null && meRow.global !== R.global ? ` <b>Votre note ici (${meRow.global}) porte sur votre seule page d’accueil ; votre note complète, avec toutes les pages lues, est ${R.global} (Synthèse).</b>` : ''}</p></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Site</th><th class="n">Note</th>${cats.map((k) => `<th class="n" title="${esc(R.scores[k].label)}">${esc(CAT_SHORT[k] || R.scores[k].label)}</th>`).join('')}<th class="n" title="Score PageSpeed mobile (Lighthouse)">PageSpeed</th><th class="n">Mots</th><th>Réseaux</th></tr></thead><tbody>
     ${all.map((c) => `<tr class="${c.me ? 'us' : ''}"><td>${esc(c.url)}${c.me || c.comparable ? '' : `<br><span class="note">non comparable : ${esc(c.error || 'page non lue')}</span>`}</td><td class="n"><b style="color:${color(c.global)}">${c.global ?? '—'}</b></td>${cats.map((k) => `<td class="n">${c.me || c.comparable ? c.scores?.[k] ?? '—' : '—'}</td>`).join('')}<td class="n">${c.perf ?? '—'}</td><td class="n">${fmt(c.words)}</td><td class="note">${esc((c.social || []).join(', '))}</td></tr>`).join('')}
   </tbody></table></div>
   <div class="cols" style="margin-top:16px">
@@ -649,8 +787,9 @@ function concurrents() {
 // ───────── Ressources ─────────
 const FEAT = { audit_technique: 'Audit', mots_cles: 'Mots-clés', backlinks: 'Liens', rank_tracking: 'Positions', geo_ia: 'IA', local: 'Local', aso: 'ASO', hashtags_social: 'Social', ads_budget: 'Pub', francais: 'FR' }
 function ressources() {
-  const subs = [['outils', 'Boîte à outils'], ['favori', 'Bouton-favori & CLI'], ['checklists', 'Checklists'], ['guide', 'Guide 2026'], ['glossaire', 'Glossaire'], ['marche', 'Étude de marché']]
+  const subs = [...(ARTIFACT && live.db ? [['direct', 'En direct']] : []), ['outils', 'Boîte à outils'], ['favori', 'Bouton-favori & CLI'], ['checklists', 'Checklists'], ['guide', 'Guide 2026'], ['glossaire', 'Glossaire'], ['marche', 'Panorama des outils SEO']]
   const head = `<div class="section-head"><div><h2>Ressources</h2></div><div class="actions" role="tablist">${subs.map(([k, l]) => `<button class="btn ${S.res === k ? 'primary' : ''}" data-sub="${k}" role="tab" aria-selected="${S.res === k}">${l}</button>`).join('')}</div></div>`
+  if (S.res === 'direct' && live.db) return head + conseilView()
   if (S.res === 'outils') return head + outilsView()
   if (S.res === 'checklists') return head + checklistsView()
   if (S.res === 'guide') return head + `<p class="note">Données de référence vérifiées le ${esc(frDay(bench.generated))}${bench.review_by ? ` · à revoir avant le ${esc(frDay(bench.review_by))}` : ''} (sources citées pour chaque fait).</p><div class="stack">${GUIDE.map((g) => `<div class="card"><h3>${esc(g.title)}</h3><ul class="clean">${g.body.map((b) => `<li>• ${gloss(esc(b))}</li>`).join('')}</ul></div>`).join('')}<details class="card fold"><summary><h3>Faits sourcés</h3></summary><div class="table-wrap"><table><tbody>${(bench.seo_facts || []).map((f) => `<tr><th>${esc(f.topic)}</th><td>${esc(f.fact)}${f.source ? `<br><a class="src" href="${esc(f.source)}" target="_blank" rel="noopener">source</a>` : ''}</td></tr>`).join('')}</tbody></table></div></details></div>`
@@ -663,7 +802,7 @@ function ressources() {
       <p><a class="btn primary bm" href="${esc(code)}" draggable="true">📌 Auditer avec SEO 360</a></p>
       <ol start="2"><li>Ouvrez votre site, sur la page à auditer.</li><li>Cliquez sur le favori : SEO 360 s’ouvre et lance l’analyse.</li></ol>
       <p class="note">Si rien ne se passe : autorisez les fenêtres pop-up pour votre site. Certains sites très protégés bloquent les favoris : utilisez alors la ligne de commande.</p></div>`}
-    <div class="card"><h3>La ligne de commande (audit le plus complet)</h3><p>Exploration de tout le site, redirections, en-têtes, encodages, concurrents. Node 18 ou plus, aucune installation.</p>
+    <div class="card"><h3>La ligne de commande (audit le plus complet)</h3><p>Exploration de tout le site, redirections, en-têtes, encodages, concurrents. Il faut Node 18 ou plus et une copie du dossier seo/ (aucune dépendance à installer).</p>
       <div class="code"><pre>node seo/cli.mjs https://www.votre-site.fr \\
   --secteur ${esc(vals().sector)} --ville "${esc(vals().city || 'Lyon')}" --crawl 30 \\
   --concurrents concurrent1.fr,concurrent2.fr</pre><button class="btn sm" data-copy="">Copier</button></div>
@@ -716,11 +855,13 @@ const KEY = /^[a-z][a-z0-9_-]{0,30}$/
 const keyed = (o, fn) => Object.fromEntries(Object.entries(o || {}).filter(([k]) => KEY.test(k)).map(([k, v]) => [k, fn(v)]))
 const n100 = (v) => (v == null || v === '' ? null : Number.isFinite(+v) ? Math.max(0, Math.min(100, Math.round(+v))) : null)
 const str = (v, max = 2000) => (v == null ? '' : String(v).slice(0, max))
-function sanitizeReport(r) {
+const PROVENANCE = { import: 'Rapport importé : note non revérifiée par SEO 360', partage: 'Rapport partagé : note non revérifiée par SEO 360', claude: 'Rapport envoyé par Claude' }
+const numOr = (v, min, max) => (v == null || v === '' || !Number.isFinite(+v) ? null : Math.max(min, Math.min(max, +v)))
+function sanitizeReport(r, provenance = null) {
   if (!r || typeof r !== 'object' || typeof r.target !== 'string' || !('result' in r)) throw new Error('format')
   const R = r.result
   const fnd = (f) => ({ cat: str(f.cat, 40), sev: SEVS.has(f.sev) ? f.sev : 'info', id: str(f.id, 80), title: str(f.title, 300), detail: str(f.detail, 1500), fix: str(f.fix, 1500), impact: Math.max(0, Math.min(5, +f.impact || 0)), effort: Math.max(1, Math.min(5, +f.effort || 1)), code: str(f.code, 6000), scope: f.scope === 'site' ? 'site' : undefined })
-  const out = { ...r, target: str(r.target, 500), kind: ['site', 'app', 'github'].includes(r.kind) ? r.kind : 'site', generatedAt: isNaN(Date.parse(r.generatedAt)) ? new Date().toISOString() : r.generatedAt, input: { ...(r.input || {}), sector: SECTORS.some((x) => x.id === r.input?.sector) ? r.input.sector : 'autre' } }
+  const out = { ...r, target: str(r.target, 500), kind: ['site', 'app', 'github'].includes(r.kind) ? r.kind : 'site', generatedAt: isNaN(Date.parse(r.generatedAt)) ? new Date().toISOString() : r.generatedAt, input: { ...(r.input || {}), sector: SECTORS.some((x) => x.id === r.input?.sector) ? r.input.sector : 'autre', lang: ['fr', 'en', 'both'].includes(r.input?.lang) ? r.input.lang : 'fr', goal: GOALS[r.input?.goal] ? r.input.goal : 'leads', city: str(r.input?.city, 80), keyword: str(r.input?.keyword, 160), brand: str(r.input?.brand, 80), monthly: numOr(r.input?.monthly, 0, 1e7), avgValue: numOr(r.input?.avgValue, 0, 1e8), margin: numOr(r.input?.margin, 0.01, 1), closeRate: numOr(r.input?.closeRate, 0.01, 1), competitors: Array.isArray(r.input?.competitors) ? r.input.competitors.slice(0, 5).map((x) => str(x, 300)) : [] }, provenance: PROVENANCE[provenance] ? provenance : null }
   if (R && typeof R === 'object') {
     out.result = {
       ...R, global: n100(R.global), pageGlobal: n100(R.pageGlobal), grade: /^[A-E]$/.test(R.grade) ? R.grade : null, coverage: Math.max(0, Math.min(1, +R.coverage || 0)), incomplete: R.incomplete ? str(R.incomplete, 200) : null,
@@ -760,21 +901,39 @@ $('#f-import').addEventListener('change', async (e) => {
     const data = JSON.parse(await f.text())
     if (data?.type === 'seo360-veille') { S.veille = sanitizeVeille(data); store.set('veille', S.veille); progress(`Veille importée : ${S.veille.sujet} (${S.veille.total} publications)`, 'ok'); go('visibilite'); return }
     if (data?.type === 'seo360-bm') { if (!validateBundle(data)) throw new Error('format'); form.elements.url.value = data.url; updateKind(); run({ bundle: data }); return }
-    const rep = sanitizeReport(data)
+    const rep = sanitizeReport(data, 'import')
     if (data.veille?.type === 'seo360-veille') { S.veille = sanitizeVeille(data.veille); store.set('veille', S.veille) }
     S.report = rep; S.shared = false; refreshDerived(); syncForm(rep); remember(rep); collapseHero(true); progress(`Rapport importé : ${rep.target}`, 'ok'); go('synthese')
   } catch { progress('Fichier JSON invalide : importez un rapport produit par SEO 360 (CLI ou bouton JSON).', 'err') }
 })
+// Données de référence périmées : avertissement visible en bas de page
+if (staleNote()) { const w = document.createElement('p'); w.className = 'demo-note'; w.textContent = staleNote(); document.querySelector('footer.foot')?.prepend(w) }
 if (ARTIFACT) {
   const n = document.createElement('p')
-  n.className = 'cap'; n.id = 'artifact-note'; n.setAttribute('role', 'note')
-  n.textContent = 'Version de démonstration : tout fonctionne sauf l’analyse en direct d’un site (bloquée dans cette page). Ouvrez « Voir un exemple », ou importez le .json d’un audit fait avec la ligne de commande.'
+  n.className = 'demo-note'; n.id = 'artifact-note'; n.setAttribute('role', 'note')
+  n.textContent = 'Dans cette page, SEO 360 ne peut pas lire un site lui-même. Trois façons d’avoir votre audit : demandez-le à Claude dans la conversation (« audite mon-site.fr ») et il apparaît ici, collez le code de votre page dans « Plus d’options », ou ouvrez l’exemple.'
   $('#hero .hero-full')?.prepend(n)
+  const ex = document.createElement('button')
+  ex.type = 'button'; ex.className = 'btn primary'; ex.dataset.exemple = ''; ex.textContent = 'Voir un exemple de rapport'
+  $('#go').before(ex); $('#go').classList.remove('primary'); $('#go').textContent = 'Analyser le code collé'
+  for (const name of ['proxy', 'proxyUrl', 'psiKey', 'githubToken', 'crawl']) form.elements[name]?.closest('label')?.setAttribute('hidden', '')
+  $('#hero .hint')?.setAttribute('hidden', '')
+  // Capacités de la page claude.ai : Claude en direct, synchronisation, téléchargements (absentes ailleurs)
+  initLive({
+    onStatus: (st) => { S.live.status = st; if (S.tab === 'ressources' || !S.report) render() },
+    onReports: (list, added) => {
+      const fresh = S.live.first ? added.map((id) => list.find((d) => d.id === id)).filter(Boolean) : []
+      S.live.reports = list; S.live.first = true
+      for (const x of fresh) toast(`Nouveau rapport${x.source === 'claude' ? ' envoyé par Claude' : ''} : ${x.target}`)
+      if (S.tab === 'ressources' || !S.report) render()
+    },
+    onConseil: (list) => { S.live.conseil = list; if (S.tab === 'ressources' && S.res === 'direct') render() },
+  }).then(() => { if (live.sample || live.db || live.downloads) { n.textContent = `Cette page ne peut pas lire un site elle-même. Le plus simple : écrivez « audite mon-site.fr » à Claude dans la conversation, le rapport complet apparaît ici${live.db ? ' et se synchronise sur vos appareils' : ''}. Vous pouvez aussi coller le code de votre page dans « Plus d’options »${live.sample ? ', puis demander à Claude, ici même, un plan ou un correctif rédigé' : ''}.`; render() } })
 }
 ;(async () => {
   const h = location.hash
   if (h.startsWith('#r=')) {
-    try { S.report = sanitizeReport(await decodeReport(h.slice(3))); S.shared = true; refreshDerived(); syncForm(S.report); collapseHero(true); history.replaceState(null, '', '#synthese'); progress('Rapport partagé (lecture seule). Relancez une analyse pour l’actualiser.', 'ok') } catch (err) { progress('Lien de rapport illisible : ' + err.message, 'err') }
+    try { S.report = sanitizeReport(await decodeReport(h.slice(3)), 'partage'); S.shared = true; refreshDerived(); syncForm(S.report); collapseHero(true); history.replaceState(null, '', '#synthese'); progress('Rapport partagé (lecture seule). Relancez une analyse pour l’actualiser.', 'ok') } catch (err) { progress('Lien de rapport illisible : ' + err.message, 'err') }
   } else if (h === '#bm') {
     progress('En attente des données envoyées par le bouton-favori…')
     history.replaceState(null, '', '#synthese')

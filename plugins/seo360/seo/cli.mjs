@@ -49,7 +49,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --ville <ville>       ville (SEO local + hashtags locaux)
   --marque <nom>        nom de marque
   --objectif <id>       ${Object.keys(GOALS).join(', ')}
-  --budget <€/mois>     budget publicitaire mensuel (vide = budget de départ conseillé)
+  --budget <€/mois>     budget publicitaire mensuel (vide = minimum pour tester)
   --valeur <€>          panier moyen / valeur d'un client (ROAS)
   --objectif-conv <n>   conversions visées par mois (budget nécessaire)
   --marge <%>           votre marge (défaut selon l'objectif)
@@ -136,7 +136,8 @@ log(`\n🔎 SEO 360 — ${target} (${detectKind(target)})`)
 const report = await analyze(target, { ...common, input, crawl: +opt('crawl', 15), onProgress: (m) => log('  · ' + m) })
 if (report.kind === 'site' && (input.keyword || report.keywords?.base)) {
   log('  · Suggestions Google…')
-  report.suggestions = await googleSuggest(input.keyword || report.keywords.base, { fetchImpl: fetch }).catch(() => [])
+  report.suggestions = await googleSuggest(input.keyword || report.keywords.base, { fetchImpl: fetch }).catch((e) => { report.suggestionsError = String(e?.message || e).slice(0, 120); return [] })
+  if (report.suggestionsError) log('  ⚠ Suggestions Google indisponibles : les idées de mots-clés ci-dessous sont des gabarits, sans preuve de demande.')
 }
 const comps = String(opt('concurrents', '') || '').split(',').map((s) => s.trim()).filter(Boolean)
 if (comps.length) {

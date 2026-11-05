@@ -59,8 +59,7 @@ export function recommendTools(report = {}) {
     add('bing-places', 'Être trouvé dans Bing Maps et Copilot.')
     add('guest-suite', 'Si vous voulez industrialiser la collecte d’avis (outil français).')
   }
-  if (nets.has('instagram') || nets.has('facebook')) add('meta-business', 'Instagram et Facebook sont prioritaires pour votre secteur.')
-  if (nets.has('tiktok')) add('tiktok-business', 'TikTok est prioritaire pour votre secteur.')
+  // Les suites Meta et TikTok installent surtout le pixel publicitaire : proposées seulement si la pub est envisagée (bloc « ads »).
   if (nets.has('linkedin')) add('linkedin-insight', 'LinkedIn est prioritaire pour votre secteur.')
   if (nets.has('pinterest')) add('pinterest-business', 'Pinterest apporte un trafic durable dans votre secteur.')
   if (nets.has('youtube')) add('youtube-studio', 'YouTube est prioritaire pour votre secteur, et les IA le citent souvent.')
@@ -95,12 +94,13 @@ export function shortPrice(t) {
   const p = String(t.prix || '')
   if (/^\s*sur devis/i.test(p)) return 'Sur devis'
   if (t.gratuit && (!p || /^gratuit/i.test(p))) return /payant|pro|premium|starter|plus|360|€|\$|£/i.test(p.replace(/^gratuit\s*/i, '')) ? 'Gratuit + options payantes' : 'Gratuit'
-  if (t.gratuit) return 'Offre gratuite'
+  // Outil payant qui a une offre gratuite limitée : le prix d'entrée d'abord (sinon « Offre gratuite » au milieu des outils payants).
+  if (t.gratuit) { const m = p.match(/\d[\d\s.,]*\s?(€|\$|£)(\s?HT)?(\s?(par |\/)\s?[a-zé]+)?/i); return m ? `Dès ${m[0].replace(/\s+/g, ' ').trim()} (offre gratuite limitée)` : 'Offre gratuite limitée' }
   const m = p.match(/(à partir de |dès )?\d[\d\s.,]*\s?(€|\$|£)(\s?HT)?(\s?(par |\/)\s?[a-zé]+)?(\/[a-zé]+)?/i)
   return m ? m[0].replace(/\s+/g, ' ').trim() : /devis/i.test(p) ? 'Sur devis' : 'Payant'
 }
 export function toolsMarkdown(rec, { guides = true } = {}) {
-  const L = ['## Outils recommandés et guides d’installation', '', `Choisis d’après votre audit, votre secteur et vos réseaux. Prix d’entrée indicatifs, vérifiés le ${new Date(rec.verifie + 'T12:00:00Z').toLocaleDateString('fr-FR')} (hors taxes sauf mention) : à reconfirmer chez l’éditeur.`, '']
+  const L = ['## Outils recommandés et guides d’installation', '', `Sélection faite d’après votre audit, votre secteur et vos réseaux. Prix d’entrée indicatifs, vérifiés le ${new Date(rec.verifie + 'T12:00:00Z').toLocaleDateString('fr-FR')} (hors taxes sauf mention) : à reconfirmer chez l’éditeur.`, '']
   const block = (t, withGuide) => {
     const lines = [`- **[${t.nom}](${t.url})** — ${price(t)}`, `  ${t.raisons.join(' ') || t.pourquoi}`]
     if (t.limites_gratuit && withGuide) lines.push(`  Offre gratuite : ${t.limites_gratuit}`)

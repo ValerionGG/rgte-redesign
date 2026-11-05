@@ -23,7 +23,8 @@ export function rewrite(md) {
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => { const p = join(dir, f); return statSync(p).isDirectory() ? walk(p) : [p] })
 const ENGINE = () => [
-  ...['cli.mjs', 'veille-cli.mjs', 'gsc-cli.mjs', 'calendrier-cli.mjs', 'budget-cli.mjs', 'hashtags-cli.mjs'].map((f) => join(ROOT, 'seo', f)),
+  // Toutes les commandes : cli.mjs et chaque sous-commande *-cli.mjs (une liste écrite à la main avait oublié outils-cli.mjs).
+  ...readdirSync(join(ROOT, 'seo')).filter((f) => f === 'cli.mjs' || /-cli\.mjs$/.test(f)).sort().map((f) => join(ROOT, 'seo', f)),
   ...walk(join(ROOT, 'seo/engine')), ...walk(join(ROOT, 'seo/data')).filter((f) => !/sync\.mjs$/.test(f)),
 ]
 
@@ -53,11 +54,14 @@ Pack de ${skills.length} skills en français pour les TPE, PME, artisans, commer
 
 ## Installation
 
+Deux commandes dans Claude Code (testées le 5 novembre 2026) :
+
 \`\`\`
-/plugin install seo360 --marketplace valeriongg/rgte-redesign
+/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d
+/plugin install seo360@seo360-fr
 \`\`\`
 
-Ou en deux temps : \`/plugin marketplace add valeriongg/rgte-redesign\`, puis \`/plugin install seo360@seo360-fr\`. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
+Le \`#…\` désigne la branche de travail : une fois la branche fusionnée dans \`main\`, \`/plugin marketplace add ValerionGG/rgte-redesign\` suffit. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
 
 ## Premier usage
 
@@ -69,7 +73,7 @@ ${skills.map((s) => `- **${s}** — ${desc(s)}`).join('\n')}
 
 ## Commandes embarquées
 
-Dans le plugin, les skills appellent \`node "\${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"\` : audit (\`<url>\`, \`--avant\` après une refonte), \`gsc\` (export Search Console), \`veille\` (Agent Reach), \`calendrier\`, \`budget\`, \`hashtags\`. L'interface web est en ligne : ${PAGES}
+Dans le plugin, les skills appellent \`node "\${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"\` : audit (\`<url>\`, \`--avant\` après une refonte), \`gsc\` (export Search Console), \`veille\` (Agent Reach), \`calendrier\`, \`budget\`, \`hashtags\`. L'interface web sera en ligne à ${PAGES} une fois la branche fusionnée dans \`main\`
 
 ## Données et confidentialité
 

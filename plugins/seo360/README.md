@@ -4,11 +4,14 @@ Pack de 21 skills en français pour les TPE, PME, artisans, commerces et freelan
 
 ## Installation
 
+Deux commandes dans Claude Code (testées le 5 novembre 2026) :
+
 ```
-/plugin install seo360 --marketplace valeriongg/rgte-redesign
+/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d
+/plugin install seo360@seo360-fr
 ```
 
-Ou en deux temps : `/plugin marketplace add valeriongg/rgte-redesign`, puis `/plugin install seo360@seo360-fr`. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
+Le `#…` désigne la branche de travail : une fois la branche fusionnée dans `main`, `/plugin marketplace add ValerionGG/rgte-redesign` suffit. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
 
 ## Premier usage
 
@@ -31,7 +34,7 @@ Dites « voici mon entreprise » : le skill `contexte-entreprise` crée `.claude
 - **github-seo** — Référencement d'un dépôt GitHub : description, topics, README, image d'aperçu, GitHub Pages, licence, SECURITY.md, CITATION.cff, releases, diffusion (listes awesome, Show HN, Reddit) et mesure (requêtes suivies, trafic a
 - **hashtags-reseaux** — Hashtags et légendes par réseau (Instagram, TikTok, LinkedIn, YouTube, X, Facebook, Pinterest, Threads, Bluesky, Snapchat) selon le secteur, la ville et la marque, avec les règles 2026 (5 au maximum sur Instagram), un ni
 - **netlinking-mentions-locales** — Liens et mentions gratuits et propres : audit de l'export « Liens » de Search Console (sites référents, ancres, liens perdus), sources françaises (annuaires de qualité, CCI, CMA, fédérations, fournisseurs, presse locale,
-- **plan-croissance-360** — Plan de croissance complet à partir d'un lien (site, application, profil Instagram, TikTok, LinkedIn ou YouTube, dépôt GitHub) : audit mesuré, toutes les améliorations gratuites et payantes par canal (Google, local, IA, 
+- **plan-croissance-360** — Plan de croissance complet à partir d'un lien (site, application, dépôt GitHub, ou profil Instagram, TikTok, LinkedIn, YouTube avec vos statistiques exportées) : audit mesuré du site ou de l'app, toutes les améliorations
 - **seo-360** — Point d'entrée du pack : étude SEO complète d'un site, d'une application ou d'un dépôt GitHub. Verdict d'abord, corrections (technique, contenu, vitesse, IA, local, RGPD) avec correctifs prêts à coller et niveau de confi
 - **seo-audit-technique** — Audit SEO technique approfondi (indexation, robots.txt, sitemap, canonical, hreflang, redirections, Core Web Vitals, rendu JavaScript, données structurées) avec correctifs en code et recettes par CMS ; mode refonte et mi
 - **seo-local** — SEO local et fiche Google Business Profile des commerces, artisans, restaurants et cabinets : catégories, photos, services, NAP, pages ville, LocalBusiness, annuaires, Apple Plans, Bing Places, entreprises sans vitrine, 
@@ -40,7 +43,7 @@ Dites « voici mon entreprise » : le skill `contexte-entreprise` crée `.claude
 
 ## Commandes embarquées
 
-Dans le plugin, les skills appellent `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"` : audit (`<url>`, `--avant` après une refonte), `gsc` (export Search Console), `veille` (Agent Reach), `calendrier`, `budget`, `hashtags`. L'interface web est en ligne : https://valeriongg.github.io/rgte-redesign/seo/
+Dans le plugin, les skills appellent `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"` : audit (`<url>`, `--avant` après une refonte), `gsc` (export Search Console), `veille` (Agent Reach), `calendrier`, `budget`, `hashtags`. L'interface web sera en ligne à https://valeriongg.github.io/rgte-redesign/seo/ une fois la branche fusionnée dans `main`
 
 ## Données et confidentialité
 

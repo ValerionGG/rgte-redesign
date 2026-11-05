@@ -220,8 +220,9 @@ test('mots-clés : pas de doublons de ville ni de modificateur', () => {
 // ───────── Budget ─────────
 test('budget : verdict, minimum par canal, budget conseillé, campagnes App, CPC réel, plafond de demande', () => {
   const tot = (b) => b.channels.reduce((s, c) => s + c.budget, 0)
-  const rgte = planBudget({ sector: 'equipement-pro', goal: 'leads', monthly: 1000, avgValue: 12000 })
+  const rgte = planBudget({ sector: 'equipement-pro', goal: 'leads', monthly: 1000, avgValue: 12000, margin: 0.4, closeRate: 0.1 })
   assert.equal(rgte.verdict.level, 'ok'); assert.equal(tot(rgte), 1000)
+  assert.equal(planBudget({ sector: 'equipement-pro', goal: 'leads', monthly: 1000, avgValue: 12000 }).verdict.level, 'test', 'marge supposée : pas de « Rentable » ferme')
   assert.ok(!rgte.channels.some((c) => c.id === 'linkedin'), 'LinkedIn écarté sous 1 500 €/mois')
   const pat = planBudget({ sector: 'boulangerie', goal: 'leads', avgValue: 45 })
   assert.ok(pat.recommendedUsed && pat.monthly > 0); assert.equal(pat.verdict.level, 'non')
@@ -495,4 +496,71 @@ test('veille : pause entre deux recherches sur une même plateforme, aucune entr
 })
 test('topTerms ignore les mots vides', () => {
   assert.equal(topTerms('La vitrine réfrigérée et la vitrine réfrigérée pour la pâtisserie de la ville').phrases[0].term, 'vitrine réfrigérée')
+})
+
+// ───────── Conseil v3 : chaque faille prouvée par un audit a son test ─────────
+test('plugin : chaque sous-commande se charge depuis la copie du plugin', async () => {
+  const { spawnSync } = await import('node:child_process')
+  const cli = new URL('../../plugins/seo360/seo/cli.mjs', import.meta.url).pathname
+  for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils']) {
+    const r = spawnSync(process.execPath, [cli, sub, '--aide'], { encoding: 'utf8', timeout: 20000, env: { ...process.env, NO_PROXY: '127.0.0.1' } })
+    assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module/.test(r.stdout + r.stderr), `${sub} : module manquant dans le plugin`)
+    assert.ok((r.stdout + r.stderr).trim().length > 20, `${sub} : aucune sortie`)
+  }
+})
+test('export Markdown : un seul titre de niveau 1, blocs de code fermés et indentés', async () => {
+  const E = (await import('../data/exemple.js')).default
+  const md = toMarkdown(E)
+  let inCode = false, h1 = 0
+  for (const l of md.split('\n')) {
+    if (/^\s*```/.test(l)) { inCode = !inCode; continue }
+    if (!inCode && /^# /.test(l)) h1++
+  }
+  assert.equal(inCode, false, 'bloc de code non fermé')
+  assert.equal(h1, 1, `${h1} titres de niveau 1 (du code sort de ses blocs)`)
+})
+test('budget : jamais de liens achetés, PMax gardé en e-commerce, hypothèses affichées', async () => {
+  const { planBudget } = await import('../engine/ads.js')
+  const seo = planBudget({ sector: 'boulangerie' }).seo
+  assert.ok(!seo.items.some((i) => /€ par lien/.test(i.cost)), 'prix par lien acheté')
+  const e = planBudget({ sector: 'ecommerce', goal: 'ventes', avgValue: 60 })
+  assert.ok(e.channels.some((c) => c.id === 'google_pmax'), 'PMax écarté du budget e-commerce')
+  assert.ok(/Hypothèses par défaut/.test(e.verdict.text), 'marge supposée non affichée')
+  assert.notEqual(planBudget({ sector: 'boulangerie', avgValue: 400 }).verdict.level, 'ok', 'verdict « Rentable » sur une marge supposée')
+  assert.ok(!/conseillé/.test(planBudget({ sector: 'boulangerie' }).verdict.text), 'budget « conseillé » sans valeur client')
+})
+test('pièges : tarteaucitron, GTM seul, microdata, artisan sans vitrine, nosnippet', async () => {
+  const { preSpendChecks } = await import('../engine/ads.js')
+  const tac = await run(site(GOOD.replace('</head>', `<script src="/tarteaucitron/tarteaucitron.js"></script><script>tarteaucitron.init({});tarteaucitron.user.gtagUa='G-AB12CD34EF';(tarteaucitron.job=tarteaucitron.job||[]).push('gtag');</script></head>`).replace(/<script defer data-domain[^>]*><\/script>/, '')))
+  assert.ok(!tac.result.issues.some((i) => i.id === 'analytics'), 'GA4 posé par tarteaucitron non reconnu')
+  const gtm = await run(site(GOOD.replace('</head>', `<script>(function(w,d,s,l,i){})(window,document,'script','dataLayer','GTM-ABC1234');</script></head>`).replace(/<script defer data-domain[^>]*><\/script>/, '')))
+  assert.equal(preSpendChecks(gtm, { goal: 'leads' }).checks.find((c) => c.id === 'consent').status, '?', 'GTM seul jugé sans consentement')
+  const micro = await run(site(GOOD.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '').replace('<main>', '<main itemscope itemtype="https://schema.org/Bakery">')))
+  assert.ok(!micro.result.issues.some((i) => i.id === 'localbusiness'), 'Bakery en microdata ignoré')
+  const sabLd = `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Plumber","name":"Plomberie Test","telephone":"+33 6 00 00 00 00","areaServed":[{"@type":"City","name":"Lyon"},{"@type":"City","name":"Villeurbanne"}]}</script>`
+  const sab = await run(site(GOOD.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, sabLd).replace(/<address>[\s\S]*?<\/address>/, '<p><a href="tel:+33600000000">06 00 00 00 00</a></p>')), { sector: 'btp' })
+  assert.ok(!sab.result.issues.some((i) => i.id === 'nap'), 'artisan sans vitrine : adresse exigée à tort')
+  assert.ok(!sab.result.issues.some((i) => i.id === 'schema-sector'), 'Plumber, sous-type précis, jugé absent')
+  const snip = await run(site(GOOD.replace('content="index, follow, max-image-preview:large"', 'content="index, follow, nosnippet"')))
+  assert.ok(snip.result.issues.some((i) => i.id === 'nosnippet' && i.sev === 'critique'), 'nosnippet non détecté')
+})
+test('robustesse : JSON-LD sur 5 000 niveaux, robots.txt non lu, ZIP piégé', async () => {
+  const deep = '{"@type":"Thing","a":'.repeat(5000) + '1' + '}'.repeat(5000)
+  const r = await run(site(GOOD.replace('</head>', `<script type="application/ld+json">${deep}</script></head>`)))
+  assert.ok(r.result.issues.some((i) => i.id === 'jsonld-error'), 'bloc trop imbriqué non signalé')
+  const pasted = await analyze(O + '/', { fetcher: async (u) => (u === O + '/' ? { status: 200, body: GOOD, headers: {} } : { status: 0 }), psi: false, source: 'proxy', input: { sector: 'boulangerie', city: 'Lyon' } })
+  assert.ok(pasted.result.global <= 79 && pasted.result.caps.some((c) => /robots\.txt/.test(c)), `robots.txt non lu : note ${pasted.result.global} sans plafond`)
+  const { zip } = await import('./fixtures/make-gsc-fixtures.mjs')
+  const { readGscFiles } = await import('../engine/gsc.js')
+  const bomb = zip({ 'Requêtes.csv': 'Requête,Clics,Impressions,CTR,Position\n' + 'x,1,1,"1 %",1\n'.repeat(3_000_000) })
+  bomb.writeUInt32LE(1024, bomb.length - 22 - 46 - Buffer.byteLength('Requêtes.csv') + 24) // taille annoncée : 1 Ko (mensonge)
+  await assert.rejects(readGscFiles(new Uint8Array(bomb)), /trop gros/)
+})
+test('données datées : alerte après la date de revérification, profils sociaux reconnus', async () => {
+  const { staleNote } = await import('../engine/report.js')
+  assert.equal(staleNote(new Date('2026-11-06')), null)
+  assert.match(staleNote(new Date('2030-01-01')), /à revérifier/)
+  const { socialProfile } = await import('../engine/index.js')
+  assert.deepEqual(socialProfile('https://www.tiktok.com/@boulangerie.lyon'), { network: 'TikTok', handle: 'boulangerie.lyon' })
+  assert.equal(socialProfile('https://www.maison-exemple.fr/'), null)
 })

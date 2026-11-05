@@ -23,7 +23,7 @@ async function pipe(bytes, stream) {
 export function slimForShare(r) {
   const R = r.result
   return {
-    v: 2, target: r.target, kind: r.kind, generatedAt: r.generatedAt, input: { ...r.input, githubToken: undefined, psiKey: undefined },
+    v: 2, target: r.target, kind: r.kind, generatedAt: r.generatedAt, input: { ...r.input, githubToken: undefined, psiKey: undefined, avgValue: undefined, margin: undefined, closeRate: undefined, monthly: undefined }, // pas de données commerciales dans un lien partagé
     result: R && {
       global: R.global, grade: R.grade, coverage: R.coverage, incomplete: R.incomplete, caps: R.caps, scores: R.scores, pageScores: R.pageScores, counts: R.counts,
       issues: R.issues.map(({ cat, sev, id, title, detail, fix, impact, effort, code, scope }) => ({ cat, sev, id, title, detail: (detail || '').slice(0, 400), fix, impact, effort, code: (code || '').slice(0, 1500), scope })),

@@ -8,9 +8,13 @@ const OWNER_BY_ID = {
   'title': 'Vous ou webmaster', 'title-long': 'Vous ou webmaster', 'title-short': 'Vous ou webmaster', description: 'Vous ou webmaster',
   'description-short': 'Vous ou webmaster', 'description-long': 'Vous ou webmaster', 'dup-title': 'Vous ou webmaster', 'dup-desc': 'Vous ou webmaster',
   alt: 'Vous ou webmaster', 'img-names': 'Vous', anchors: 'Vous', 'internal-links': 'Vous', legal: 'Vous', privacy: 'Vous', cgv: 'Vous',
-  gbp: 'Vous', 'gbp-link': 'Vous', nap: 'Vous ou webmaster', bing: 'Vous', 'robots-ai-train': 'Vous',
+  gbp: 'Vous', 'gbp-link': 'Vous', nap: 'Vous ou webmaster', 'nap-sab': 'Vous', bing: 'Vous',
+  // robots.txt, balises et données structurées : il faut l'accès aux fichiers ou au thème du site
+  'robots-ai-train': 'Webmaster', 'robots-ai-user': 'Webmaster', 'robots-ai-search': 'Webmaster', 'content-signal': 'Webmaster', llms: 'Webmaster', nosnippet: 'Webmaster', 'data-nosnippet': 'Webmaster',
+  localbusiness: 'Webmaster', hours: 'Webmaster', 'schema-none': 'Webmaster', 'schema-sector': 'Webmaster', 'schema-org': 'Webmaster', cmp: 'Webmaster', 'consent-mode': 'Webmaster',
 }
 const OWNER_BY_CAT = { technique: 'Webmaster', performance: 'Webmaster', donnees: 'Webmaster', conformite: 'Webmaster', contenu: 'Vous', social: 'Webmaster', ia: 'Vous', local: 'Vous', decouverte: 'Vous', readme: 'Vous', confiance: 'Vous', activite: 'Vous', metadonnees: 'Vous', visuels: 'Vous', avis: 'Vous', fraicheur: 'Développeur' }
+const LEGAL = new Set(['cmp', 'legal', 'privacy', 'cgv', 'mentions', 'consent'])
 export const ownerOf = (i) => OWNER_BY_ID[i.id] || OWNER_BY_CAT[i.cat] || 'Webmaster'
 export const timeOf = (effort) => ['15 min', '15 min', '1 h', '½ journée', '2 à 5 jours', 'projet'][effort] || '1 h'
 const gain = (i) => i.impact * 3 + (6 - i.effort) * 2
@@ -22,13 +26,15 @@ export function actionPlan(result, { local = false, hasAds = false, kind = 'site
   const take = (list, n) => { const out = list.filter((i) => !used.has(i)).slice(0, n); out.forEach((i) => used.add(i)); return out }
   const byGain = (a, b) => gain(b) - gain(a)
   const critiques = take(issues.filter((i) => i.sev === 'critique').sort(byGain), 10)
+  // Risque juridique (cookies déposés sans consentement, mentions légales) : avant les gains de confort.
+  const legal = take(issues.filter((i) => LEGAL.has(i.id)).sort(byGain), 3)
   const quick = take(issues.filter((i) => i.effort <= 2 && i.impact >= 3).sort(byGain), Math.max(0, 7 - critiques.length))
   const m1 = take(issues.filter((i) => i.sev === 'important').sort(byGain), 12)
   const m2 = take(issues.filter((i) => ['technique', 'contenu', 'performance', 'donnees', 'local', 'decouverte', 'readme', 'metadonnees'].includes(i.cat)).sort(byGain), 12)
   const m3 = take(issues.slice().sort(byGain), Infinity)
   const ex = (step, who, title) => ({ id: `x:${step}:${slug(title)}`, title, who, time: '', extra: true })
   const steps = [
-    { id: 'semaine', title: 'Cette semaine', why: 'Les points bloquants, puis les corrections de moins d’une heure à fort effet.', items: [...critiques, ...quick], extra: [
+    { id: 'semaine', title: 'Cette semaine', why: 'Les points bloquants et les risques juridiques, puis les corrections de moins d’une heure à fort effet.', items: [...critiques, ...legal, ...quick], extra: [
       local ? ex('semaine', 'Vous', 'Fiche Google Business Profile : catégorie principale exacte, horaires, 5 photos réelles, lien vers le site') : null,
       kind === 'site' ? ex('semaine', 'Vous', 'Créer Google Search Console et Bing Webmaster Tools, y déclarer le sitemap') : null,
     ].filter(Boolean) },
@@ -49,7 +55,7 @@ export function actionPlan(result, { local = false, hasAds = false, kind = 'site
     ] },
   ]
   // Les 3 actions de la semaine : critiques, puis la fiche Google (activité locale), puis les gains rapides
-  const week = [...critiques, ...(local ? steps[0].extra.slice(0, 1) : []), ...quick, ...steps[0].extra, ...m1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3)
+  const week = [...critiques, ...legal, ...(local ? steps[0].extra.slice(0, 1) : []), ...quick, ...steps[0].extra, ...m1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3)
   return { steps, week, kpis: kpis(result, local) }
 }
 

@@ -46,7 +46,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     og: {}, twitter: {}, headings: [], images: [], links: [], scripts: [], jsonLd: [], jsonLdErrors: [], microdata: false,
     iframes: [], forms: 0, inputs: [], buttons: [], videos: 0, text: '', wordCount: 0, inHeadBlocking: 0, amp: null,
     generator: null, themeColor: null, verification: [], appleApp: null, googlePlayApp: null, inlineStyleBytes: 0,
-    deprecated: [], base: null, labelsFor: [], times: 0, authorMeta: null, microdataTypes: [], paragraphs: [], iframesSrc: [], hasMainLandmark: false, hasNav: false, rssFeeds: [],
+    deprecated: [], base: null, labelsFor: [], times: 0, authorMeta: null, microdataTypes: [], dataNosnippet: 0, areaServed: false, addressSeen: false, paragraphs: [], iframesSrc: [], hasMainLandmark: false, hasNav: false, rssFeeds: [],
   }
   const stack = [] // éléments capturant du texte : {tag, text}
   const textParts = []
@@ -175,6 +175,9 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
       case 'nav': p.hasNav = true; break
       case 'font': case 'center': case 'marquee': case 'blink': case 'frame': case 'frameset': p.deprecated.push(tag); break
     }
+    if (a['data-nosnippet'] !== undefined) p.dataNosnippet++
+    if (a.itemprop === 'areaServed') p.areaServed = true
+    if (a.itemprop === 'address' || a.itemprop === 'streetAddress') p.addressSeen = true
     if (a.itemscope !== undefined && a.itemtype) { p.microdata = true; p.microdataTypes.push(...a.itemtype.split(/\s+/).filter(Boolean).map((t) => t.replace(/^https?:\/\/schema\.org\//i, ''))) }
     if (a.style) p.inlineStyleBytes += a.style.length
   }
@@ -183,7 +186,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     if (tag === 'script') {
       const type = (a.type || '').toLowerCase()
       if (type === 'application/ld+json') {
-        try { const j = JSON.parse(content.trim().replace(/^<!\[CDATA\[|\]\]>$/g, '')); p.jsonLd.push(j) }
+        try { const j = JSON.parse(content.trim().replace(/^<!\[CDATA\[|\]\]>$/g, '')); if (depthOver(j, 64)) p.jsonLdErrors.push('bloc ignoré : plus de 64 niveaux d’imbrication'); else p.jsonLd.push(j) }
         catch (e) { p.jsonLdErrors.push(String(e.message || e).slice(0, 120)) }
         return
       }
@@ -227,7 +230,19 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
   return p
 }
 
-// Recherche récursive des types schema.org dans le JSON-LD
+// Profondeur d'un objet JSON, mesurée sans récursion (une page piège peut imbriquer des milliers de niveaux).
+export function depthOver(v, max) {
+  const stack = [[v, 0]]
+  let n = 0
+  while (stack.length) {
+    const [x, d] = stack.pop()
+    if (d > max || ++n > 200000) return true
+    if (x && typeof x === 'object') for (const k in x) if (x[k] && typeof x[k] === 'object') stack.push([x[k], d + 1])
+  }
+  return false
+}
+
+// Recherche des types schema.org dans le JSON-LD (blocs déjà limités à 64 niveaux par depthOver)
 export function schemaTypes(jsonLd) {
   const out = []
   const walk = (n) => {

@@ -35,10 +35,10 @@
     <div class="current" id="current"></div>
     <div class="hero-full">
       <h1>Votre site, votre app ou votre dépôt GitHub.<br><span>Vos 3 actions de la semaine, prêtes à appliquer.</span></h1>
-      <p class="lede">Diagnostic honnête (technique, contenu, vitesse réelle, visibilité dans les IA, SEO local), correctifs prêts à coller, budget publicitaire rentable, hashtags par réseau et preuve de vos progrès d’un audit à l’autre. Gratuit, sans compte : tout reste dans votre navigateur.</p>
+      <p class="lede">Diagnostic honnête (technique, contenu, vitesse réelle, visibilité dans les IA, SEO local), correctifs prêts à coller, budget publicitaire rentable, hashtags par réseau et preuve de vos progrès d’un audit à l’autre. Gratuit et sans compte. Vos réglages restent dans votre navigateur ; pour lire votre page, l’adresse passe par un service de lecture (détails en bas de page).</p>
       <form id="form" class="card form" autocomplete="on" novalidate>
+        <label for="f-url" class="visible-label">Adresse à analyser</label>
         <div class="target">
-          <label for="f-url" class="sr">Adresse à analyser</label>
           <input id="f-url" name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="votre-site.fr · lien App Store / Google Play · owner/repo">
           <span class="kind" id="kind" aria-live="polite">Site web</span>
         </div>
@@ -59,7 +59,8 @@
             <label>Votre marge (%)<input name="margin" type="number" min="1" max="100" step="any" placeholder="ex. 40"></label>
             <label>Contacts qui deviennent clients (%)<input name="closeRate" type="number" min="1" max="100" step="any" placeholder="ex. 20"></label>
             <label class="span2">Concurrents (une adresse par ligne, 5 au plus)<textarea name="competitors" rows="3" placeholder="concurrent1.fr&#10;concurrent2.com"></textarea></label>
-            <label class="span2">Coller le code source de la page (optionnel)<textarea name="html" rows="3" placeholder="Sur votre page : clic droit → Afficher le code source → tout sélectionner → copier"></textarea></label>
+            <label class="span2">Coller le code source de la page (optionnel)<textarea name="html" rows="3" placeholder="Sur ordinateur : clic droit sur votre page → Afficher le code source → tout sélectionner → copier"></textarea></label>
+            <label class="span2">Coller votre robots.txt (optionnel, avec le code collé)<textarea name="robotsTxt" rows="2" placeholder="Ouvrez votre-site.fr/robots.txt, copiez tout, collez ici : la note ne sera plus provisoire"></textarea></label>
             <label>Lecture de la page<select name="proxy" id="f-proxy">
               <option value="allorigins">Automatique (proxys publics)</option>
               <option value="custom">Mon proxy (Cloudflare Worker)</option>
@@ -84,8 +85,8 @@
 <div id="print" aria-hidden="true"></div>
 
 <footer class="foot">
-  <p>SEO 360 — open-source. Données de marché et benchmarks : recherche du 3 novembre 2026 (sources dans Ressources). Les budgets sont des ordres de grandeur à recaler sur vos comptes.</p>
-  <p>Rien n’est envoyé à nos serveurs : l’analyse tourne dans votre navigateur (PageSpeed Insights de Google et, si vous le choisissez, un proxy pour lire la page).</p>
+  <p>SEO 360. Données de marché et benchmarks : recherche du 3 novembre 2026 (sources dans Ressources). Les budgets sont des ordres de grandeur à recaler sur vos comptes.</p>
+  <p>Confidentialité : SEO 360 n’a pas de serveur. Pour lire votre page, son adresse passe par un proxy public (AllOrigins, puis CodeTabs) ou par votre propre proxy, et par PageSpeed Insights de Google ; le mot-clé part vers les suggestions de Google. Avec « Lecture de la page : Aucune », seul le code que vous collez est analysé. Un lien de partage ne contient ni votre marge, ni votre budget, ni vos clés.</p>
 </footer>
 <script type="module" src="app.js"></script>
 </body>

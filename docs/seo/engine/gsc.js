@@ -187,6 +187,9 @@ export function splitBrand(rows, terms) {
 }
 
 // Les meilleures opportunités, chiffrées en clics par mois. Les requêtes de marque sont écartées si on les connaît.
+// Courbe de clics réduite d'un tiers : avec une réponse IA en haut de page, le 1er résultat perd environ 35 % de clics
+// (étude Ahrefs, avril 2025). Les gains annoncés restent des ordres de grandeur.
+const AIO = 0.65
 export function opportunities(parsed, { months = 3, min = 30, limit = 15, brand = [] } = {}) {
   if (!parsed?.rows) return []
   const out = []
@@ -195,14 +198,18 @@ export function opportunities(parsed, { months = 3, min = 30, limit = 15, brand 
     const imp = d.impressions / months
     if (imp < min / months) continue
     if (d.position > 3.5 && d.position <= 20) {
-      const gain = imp * Math.max(0, ctrAt(3) - d.ctr)
+      const gain = imp * Math.max(0, ctrAt(3) * AIO - d.ctr)
       out.push({ ...d, prev: undefined, type: 'remonter', gain, action: d.position <= 10 ? 'Page 1 mais sous le pli : renforcez le titre, le contenu sur cette requête et 2–3 liens internes vers la page. Une modification à la fois, puis attendez 3 à 4 semaines.' : 'Page 2 : enrichissez la page qui se positionne (ou créez une page dédiée) et ajoutez des liens internes.' })
+    } else if (d.position <= 3.5 && d.ctr < ctrAt(Math.round(d.position)) * 0.3 && imp >= 50) {
+      // Très bien classée mais presque pas cliquée : une réponse IA, un pack local ou des annonces occupent
+      // probablement le haut de page. Réécrire le titre ne rendra pas ces clics : pas de gain chiffré.
+      out.push({ ...d, prev: undefined, type: 'serp', gain: 0, gainUnknown: true, action: 'Bien classée mais presque pas cliquée : une réponse IA, un pack local ou des annonces occupent sans doute le haut de la page. Regardez la page de résultats avant de toucher au titre ; visez plutôt d’être cité dans la réponse IA ou de figurer dans le pack local.' })
     } else if (d.position <= 3.5 && d.ctr < ctrAt(Math.round(d.position)) * 0.6 && imp >= 50) {
-      const gain = imp * (ctrAt(Math.round(d.position)) * 0.8 - d.ctr)
+      const gain = imp * Math.max(0, ctrAt(Math.round(d.position)) * 0.8 * AIO - d.ctr)
       out.push({ ...d, prev: undefined, type: 'ctr', gain, action: 'Bien classée mais peu cliquée : réécrivez le titre et la meta description (bénéfice, chiffre, appel à l’action). Vérifiez si une réponse IA ou un encart occupe le haut de page.' })
     }
   }
-  return out.filter((o) => o.gain >= 1).sort((a, b) => b.gain - a.gain).slice(0, limit).map((o) => ({ ...o, gain: Math.round(o.gain) }))
+  return out.filter((o) => o.gain >= 1 || o.gainUnknown).sort((a, b) => b.gain - a.gain).slice(0, limit).map((o) => ({ ...o, gain: Math.round(o.gain) }))
 }
 
 // ───────── Comparaison de deux périodes ─────────
@@ -348,7 +355,7 @@ export function analyzeGsc({ cur, prev = null, brand = '', domain = '' } = {}) {
   if (res.drop) {
     const d = res.drop, ctrOnly = d.posAfter - d.posBefore < 1.5 && (!d.impBefore || 1 - d.impAfter / d.impBefore < 0.15)
     const upd = d.updates.filter((u) => u.type !== 'ia' && u.type !== 'serp')
-    res.actions.push(`Chute de ${Math.round(d.drop * 100)} % des clics à partir du ${frDate(d.date)}${d.updates.length ? ` (pendant ou juste après : ${d.updates.map((u) => u.label).join(', ')})` : ''}. ${d.lecture}${upd.length && ctrOnly ? ' La coïncidence avec la mise à jour ne suffit pas : vos positions n’ont pas bougé.' : ''} Vérifiez d’abord le rapport « Actions manuelles » de Search Console.`)
+    res.actions.push(`Clics par jour en baisse de ${Math.round(d.drop * 100)} % à partir du ${frDate(d.date)} (14 jours après comparés aux 14 jours avant)${d.updates.length ? ` (pendant ou juste après : ${d.updates.map((u) => u.label).join(', ')})` : ''}. ${d.lecture}${upd.length && ctrOnly ? ' La coïncidence avec la mise à jour ne suffit pas : vos positions n’ont pas bougé.' : ''} Vérifiez d’abord le rapport « Actions manuelles » de Search Console.`)
   }
   const lost = res.compare?.pages?.perdants?.length ? res.compare.pages.perdants : res.compare?.requetes?.perdants || []
   if (lost.length) {
@@ -356,7 +363,7 @@ export function analyzeGsc({ cur, prev = null, brand = '', domain = '' } = {}) {
     res.actions.push(`Plus grosses pertes : ${L.map((l) => `${l.key} (${l.delta} clics)`).join(' ; ')}. Commencez par ces pages : ${L[0].cause}`)
   }
   if (res.opportunities.length) res.actions.push(`${res.opportunities.length} requêtes déjà proches du haut de page : ≈ +${res.opportunities.reduce((s, o) => s + o.gain, 0)} clics/mois possibles. Traitez d’abord « ${res.opportunities[0].key} ».`)
-  if (res.brand?.share >= 0.7) res.actions.push('Créez ou renforcez une page par service et par ville desservie : votre trafic hors marque est trop faible.')
+  if (res.brand?.share >= 0.7) res.actions.push('Créez ou renforcez une page par service, et une page par ville seulement là où vous intervenez vraiment, avec un contenu propre à chacune (photos, chantiers, avis) : votre trafic hors marque est trop faible. Des pages copiées en changeant le nom de la ville sont des pages satellites, que Google sanctionne.')
   if (res.liens?.alerts?.length) res.actions.push(...res.liens.alerts)
   if (res.hidden) res.warnings.push(`Search Console masque ${Math.round(res.hidden * 100)} % des clics (requêtes rares, anonymisées) : les tableaux par requête sont incomplets, les totaux viennent de la courbe quotidienne.`)
   if (cur?.inconnus?.length) res.warnings.push(`Fichier(s) non reconnu(s) : ${cur.inconnus.join(', ')}.`)
@@ -380,7 +387,7 @@ export function gscMarkdown(a, { titre = 'Search Console' } = {}) {
     }
   }
   if (a.drop) L.push('## Chute détectée', '', `- À partir du ${frDate(a.drop.date)} : ${fr(a.drop.before, 1)} → ${fr(a.drop.after, 1)} clics/jour (−${Math.round(a.drop.drop * 100)} %)`, `- Mises à jour Google proches : ${a.drop.updates.length ? a.drop.updates.map((u) => `${u.label} (${frDate(u.start)} → ${frDate(u.end)})`).join(' ; ') : 'aucune connue'}`, `- ${a.drop.lecture}`, '')
-  if (a.opportunities.length) L.push('## Opportunités (requêtes déjà proches du haut de page)', '', '| Requête | Position | Impressions | CTR | Gain ≈ clics/mois |', '|---|---:|---:|---:|---:|', ...a.opportunities.map((o) => `| ${o.key} | ${fr(o.position, 1)} | ${fr(o.impressions)} | ${fr(o.ctr * 100, 1)} % | +${o.gain} |`), '')
+  if (a.opportunities.length) L.push('## Opportunités (requêtes déjà proches du haut de page)', '', '| Requête | Position | Impressions | CTR | Gain ≈ clics/mois |', '|---|---:|---:|---:|---:|', ...a.opportunities.map((o) => `| ${o.key} | ${fr(o.position, 1)} | ${fr(o.impressions)} | ${fr(o.ctr * 100, 1)} % | ${o.gainUnknown ? 'non chiffrable : vérifiez la page de résultats' : '+' + o.gain} |`), '')
   if (a.appareils) L.push('## Appareils', '', ...a.appareils.map((r) => `- ${r.key} : ${Math.round(r.part * 100)} % des clics, position ${fr(r.position, 1)}`), '')
   if (a.liens) L.push('## Liens', '', `- ${a.liens.nbSites} site(s) référent(s)${a.liens.fromLatest ? ' (d’après l’export des derniers liens)' : ''}`, ...a.liens.sites.slice(0, 10).map((s) => `  - ${s.key} : ${fr(s.links)} lien(s)`), ...(a.liens.totalAncres ? [`- Ancres : marque ${a.liens.kinds.marque}, adresse ${a.liens.kinds.url}, génériques ${a.liens.kinds.generique}, mots-clés ${a.liens.kinds.mots}`] : []), ...a.liens.alerts.map((x) => `- ⚠ ${x}`), '')
   if (a.warnings.length) L.push('## Limites', '', ...a.warnings.map((w) => `- ${w}`), '')
@@ -401,6 +408,24 @@ export async function readGscFile(buf) {
   if (!pick) throw new Error('Aucun fichier CSV dans le ZIP.')
   return pick
 }
+// Décompression bornée : la taille annoncée dans le ZIP peut mentir (« bombe ZIP ») ; on compte les octets réels.
+const ZIP_FILE_MAX = 30 * 1024 * 1024, ZIP_TOTAL_MAX = 60 * 1024 * 1024
+async function inflateLimited(data, limit) {
+  const reader = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader()
+  const chunks = []
+  let size = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    size += value.byteLength
+    if (size > limit) { await reader.cancel().catch(() => {}); throw new Error('Fichier trop gros une fois décompressé (plus de 30 Mo) : exportez une période plus courte.') }
+    chunks.push(value)
+  }
+  const out = new Uint8Array(size)
+  let o = 0
+  for (const c of chunks) { out.set(c, o); o += c.byteLength }
+  return out
+}
 async function unzipAll(u8) {
   const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength)
   let eocd = -1
@@ -409,6 +434,7 @@ async function unzipAll(u8) {
   const count = Math.min(dv.getUint16(eocd + 10, true), 64)
   let p = dv.getUint32(eocd + 16, true)
   const out = []
+  let total = 0
   for (let n = 0; n < count && p + 46 <= u8.length && dv.getUint32(p, true) === 0x02014b50; n++) {
     const nameLen = dv.getUint16(p + 28, true)
     const e = { method: dv.getUint16(p + 10, true), csize: dv.getUint32(p + 20, true), usize: dv.getUint32(p + 24, true), local: dv.getUint32(p + 42, true), name: new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nameLen)) }
@@ -417,7 +443,9 @@ async function unzipAll(u8) {
     if (e.method !== 0 && e.method !== 8) throw new Error('Compression ZIP non prise en charge.')
     const start = e.local + 30 + dv.getUint16(e.local + 26, true) + dv.getUint16(e.local + 28, true)
     const data = u8.subarray(start, start + e.csize)
-    const raw = e.method === 0 ? data : new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer())
+    if (e.method === 0 && data.length > ZIP_FILE_MAX) throw new Error('Fichier trop gros (plus de 30 Mo) : exportez une période plus courte.')
+    const raw = e.method === 0 ? data : await inflateLimited(data, Math.min(ZIP_FILE_MAX, ZIP_TOTAL_MAX - total))
+    total += raw.length
     out.push({ name: e.name.split('/').pop(), text: new TextDecoder('utf-8').decode(raw) })
   }
   if (!out.length) throw new Error('Aucun fichier CSV dans le ZIP.')

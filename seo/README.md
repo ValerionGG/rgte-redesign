@@ -2,9 +2,9 @@
 
 Entrez **un site, une application (App Store / Google Play) ou un dépôt GitHub** : SEO 360 liste tout ce qu’il faut corriger, par priorité, avec le correctif. Il donne aussi le plan d’action, les mots-clés, les hashtags par réseau, le budget publicitaire et un benchmark de vos concurrents.
 
-- **Interface web** : `seo/index.html`, publiée sur https://valeriongg.github.io/rgte-redesign/seo/
+- **Interface web** : `seo/index.html`, publiée sur https://valeriongg.github.io/rgte-redesign/seo/ dès que la branche est fusionnée dans `main` (GitHub Pages publie `main`). En attendant : `python3 -m http.server --directory docs` puis http://localhost:8000/seo/, ou la page claude.ai privée en mode démonstration.
 - **CLI** (audit complet : en-têtes, redirections, crawl) : `node seo/cli.mjs <cible>`
-- **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`
+- **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin : `/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d`, puis `/plugin install seo360@seo360-fr`
 - **Étude concurrentielle & benchmark** : [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md)
 
 Aucune dépendance : Node ≥ 18 et un navigateur récent suffisent.
@@ -191,7 +191,7 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 
 **Packs complémentaires** (claude-seo, claude-ads, instagram-skills, linkedin-skills, ScrapeCreators, sélection de marketingskills…) : relus commit par commit, avec leur coût en jetons et la commande d'installation, dans [`plan-croissance-360/references/packs-complementaires.md`](../.claude/skills/plan-croissance-360/references/packs-complementaires.md). Installez peu mais juste : chaque skill coûte des jetons à chaque échange.
 
-**Dans un autre projet**, installez le plugin : `/plugin install seo360 --marketplace valeriongg/rgte-redesign`. Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Sur claude.ai, chaque dossier de skill zippé peut s’importer.
+**Dans un autre projet**, installez le plugin : `/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d`, puis `/plugin install seo360@seo360-fr` (après fusion dans `main`, le `#…` n’est plus nécessaire). Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Sur claude.ai, chaque dossier de skill zippé peut s’importer.
 
 ## Structure
 

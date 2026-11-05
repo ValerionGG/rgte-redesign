@@ -27,10 +27,11 @@ export const SEVERITY = {
 const GENERIC_ANCHORS = /^(cliquez ici|cliquer ici|ici|en savoir plus|lire la suite|voir plus|plus|suite|lien|click here|here|read more|learn more|more|découvrir|voir|>|»|→)$/i
 
 const TRACKERS = [
-  ['Google Analytics 4', /gtag\(|googletagmanager\.com\/gtag|google-analytics\.com/],
+  // tarteaucitron charge GA4 et les pixels sans balise visible : on lit aussi sa configuration (gtagUa, job.push('gtag')…).
+  ['Google Analytics 4', /gtag\(|googletagmanager\.com\/gtag|google-analytics\.com|tarteaucitron\.user\.(gtagUa|analyticsUa)|\.push\(\s*['"](gtag|analytics|gajs)['"]\s*\)|['"]G-[A-Z0-9]{6,12}['"]/],
   ['Google Tag Manager', /googletagmanager\.com\/gtm\.js|GTM-[A-Z0-9]{4,}/],
   ['Matomo', /matomo|piwik/i], ['Plausible', /plausible\.io/], ['Fathom', /usefathom/], ['Microsoft Clarity', /clarity\.ms/],
-  ['Hotjar', /hotjar/], ['Pixel Meta', /connect\.facebook\.net|fbq\(/], ['Pixel TikTok', /analytics\.tiktok\.com|ttq\./],
+  ['Hotjar', /hotjar/], ['Pixel Meta', /connect\.facebook\.net|fbq\(|tarteaucitron\.user\.facebookpixelId|\.push\(\s*['"]facebookpixel['"]\s*\)/], ['Pixel TikTok', /analytics\.tiktok\.com|ttq\.|\.push\(\s*['"]tiktok['"]\s*\)/],
   ['LinkedIn Insight', /snap\.licdn\.com|_linkedin_partner_id/], ['Pinterest Tag', /pintrk|s\.pinimg\.com\/ct/],
   ['Snap Pixel', /sc-static\.net\/scevent/], ['Google Ads', /googleadservices|AW-\d{6,}/], ['Microsoft UET', /bat\.bing\.com/],
   ['AT Internet / Piano', /xiti|piano\.io|atinternet/],
@@ -38,7 +39,7 @@ const TRACKERS = [
 const CMPS = [
   ['Axeptio', /axeptio/i], ['Didomi', /didomi/i], ['Cookiebot', /cookiebot/i], ['OneTrust', /onetrust|optanon/i],
   ['tarteaucitron', /tarteaucitron/i], ['Complianz', /complianz/i], ['CookieYes', /cookieyes/i], ['Iubenda', /iubenda/i],
-  ['Usercentrics', /usercentrics/i], ['Sirdata', /sirdata/i], ['Quantcast Choice', /quantcast/i], ['Consent Mode Google', /gtag\(\s*['"]consent['"]/],
+  ['Usercentrics', /usercentrics/i], ['Sirdata', /sirdata/i], ['Quantcast Choice', /quantcast/i], ['Consent Mode Google', /gtag\(\s*['"]consent['"]|googleConsentMode['"]?\s*:\s*true/],
 ]
 const SOCIAL = [
   ['instagram', /instagram\.com\//], ['facebook', /facebook\.com\/(?!sharer|dialog|plugins|tr\b)/], ['linkedin', /linkedin\.com\/(company|in|school)\//],
@@ -92,6 +93,9 @@ export function audit(ctx) {
     const tokens = new Set(robotsMeta.split(/[\s,]+/).map((t) => t.replace(/^[a-z-]+bot:\s*/, '')).filter(Boolean))
     const noindex = tokens.has('noindex') || tokens.has('none'), nofollow = tokens.has('nofollow') || tokens.has('none')
     if (noindex) add('technique', 'critique', 'noindex', 'La page est en « noindex » : Google ne l’indexera pas', `Directive trouvée : ${robotsMeta}`, 'Retirez « noindex » de la balise meta robots / de l’en-tête X-Robots-Tag si la page doit être trouvée.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
+    const snippetOff = tokens.has('nosnippet') || /max-snippet\s*:\s*0(?![0-9])/.test(robotsMeta)
+    if (snippetOff && !noindex) add('ia', 'critique', 'nosnippet', 'Extraits interdits : la page ne peut pas servir de source aux réponses IA de Google', `Directive trouvée : ${robotsMeta}. « nosnippet » ou « max-snippet:0 » retire la page des AI Overviews et d’AI Mode, et supprime aussi son extrait dans les résultats classiques.`, 'Retirez « nosnippet » ou « max-snippet:0 ». Pour protéger un seul passage, mettez-lui l’attribut data-nosnippet.', { effort: 1, code: '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">' })
+    else if (p.dataNosnippet) add('ia', 'info', 'data-nosnippet', `${p.dataNosnippet} passage(s) exclu(s) des extraits (data-nosnippet)`, 'Ces passages ne peuvent être repris ni dans les extraits ni dans les réponses IA de Google.', 'Vérifiez que c’est voulu : ne protégez que les passages sensibles.', { effort: 1 })
     if (nofollow) add('technique', 'important', 'nofollow', 'Les liens de la page sont en « nofollow »', robotsMeta, 'Retirez « nofollow » pour que Google suive vos liens internes.', { effort: 1 })
     if (/max-image-preview:large/.test(robotsMeta) === false && !noindex) add('technique', 'faible', 'max-image-preview', 'Aperçus d’image en grand non autorisés (Discover)', 'Sans « max-image-preview:large », vos images apparaissent en petit dans Google Discover.', 'Ajoutez la directive dans la meta robots.', { effort: 1, code: '<meta name="robots" content="index, follow, max-image-preview:large">' })
 
@@ -128,7 +132,7 @@ export function audit(ctx) {
     else if (t > 800) add('performance', 'moyen', 'ttfb', `Temps de réponse moyen : ${Math.round(t)} ms`, 'Objectif : moins de 800 ms (idéalement < 200 ms avec cache).', 'Cache serveur + CDN.', { effort: 3, value: Math.round(t) })
     if (Object.keys(h).length) {
       if (!h['content-encoding']) add('performance', 'moyen', 'compression', 'Pas de compression gzip/brotli détectée', '', 'Activez Brotli (ou gzip) sur le serveur ou le CDN : −60 à −80 % sur le HTML/CSS/JS.', { effort: 1 })
-      if (!h['strict-transport-security'] && U?.protocol === 'https:') add('conformite', 'faible', 'hsts', 'En-tête HSTS absent', '', 'Ajoutez Strict-Transport-Security: max-age=31536000; includeSubDomains', { effort: 1 })
+      if (!h['strict-transport-security'] && U?.protocol === 'https:') add('conformite', 'faible', 'hsts', 'En-tête HSTS absent', '', 'Ajoutez Strict-Transport-Security par paliers : 5 minutes, puis une semaine, puis un an. N’ajoutez includeSubDomains que si tous vos sous-domaines sont en HTTPS.', { effort: 1 })
       if (!h['x-content-type-options']) add('conformite', 'faible', 'nosniff', 'En-tête X-Content-Type-Options absent', '', 'Ajoutez X-Content-Type-Options: nosniff', { effort: 1 })
       if (/no-store|no-cache|max-age=0/.test(h['cache-control'] || '') === false && !h['cache-control']) add('performance', 'faible', 'cache', 'Pas d’en-tête Cache-Control sur la page', '', 'Définissez une politique de cache (HTML court, ressources statiques 1 an avec empreinte).', { effort: 2 })
     }
@@ -150,7 +154,7 @@ export function audit(ctx) {
       const blockedSearch = meta.bots.filter((b) => b.kind === 'ia-recherche' && !b.allowed)
       if (blockedSearch.length) add('ia', 'important', 'robots-ai-search', `Robots de recherche IA bloqués : ${blockedSearch.map((b) => b.ua).join(', ')}`, 'Ces robots servent à citer votre site dans les réponses (ChatGPT, Perplexity, Claude). Les bloquer = disparaître de ces réponses.', 'Autorisez au minimum OAI-SearchBot, PerplexityBot et Claude-SearchBot.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       const blockedUser = meta.bots.filter((b) => b.kind === 'ia-utilisateur' && !b.allowed)
-      if (blockedUser.length) add('ia', 'moyen', 'robots-ai-user', `Lecture à la demande bloquée : ${blockedUser.map((b) => b.ua).join(', ')}`, 'Ces agents lisent votre page quand un utilisateur pose une question à ChatGPT, Claude, Perplexity ou Le Chat (et la cite). Les bloquer empêche de répondre avec vos informations.', 'Autorisez ChatGPT-User, Claude-User, Perplexity-User et MistralAI-User.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      if (blockedUser.length) add('ia', 'moyen', 'robots-ai-user', `Lecture à la demande bloquée : ${blockedUser.map((b) => b.ua).join(', ')}`, 'Ces agents lisent votre page quand quelqu’un pose une question à ChatGPT, Claude, Perplexity ou Le Chat, et la citent. Les bloquer vous retire de ces réponses. OpenAI précise que robots.txt peut ne pas s’appliquer à ChatGPT-User, lecture déclenchée par l’utilisateur : la règle sert surtout aux autres agents.', 'Autorisez ChatGPT-User, Claude-User, Perplexity-User et MistralAI-User.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       const blockedTrain = meta.bots.filter((b) => b.kind === 'ia-entrainement' && !b.allowed)
       if (blockedTrain.length) add('ia', 'info', 'robots-ai-train', `Robots d’entraînement IA bloqués : ${blockedTrain.map((b) => b.ua).join(', ')}`, `Choix éditorial légitime : sans effet sur la recherche Google${blockedTrain.some((b) => b.ua === 'Google-Extended') ? ' ni sur AI Overviews (Google-Extended ne règle que Gemini)' : ''}, mais moins de présence dans les connaissances « de base » des modèles. Pour de grands éditeurs, bloquer les robots IA a coûté environ 7 % de trafic (étude révisée, ppc.land 2026) et 70,6 % des sites bloquants restent cités.`, '', { effort: 1 })
       if (parsed.signal && Object.keys(parsed.signal).length) {
@@ -281,14 +285,17 @@ export function audit(ctx) {
   // ───────────────────────── Données structurées ─────────────────────────
   if (p) {
     const types = schemaTypes(p.jsonLd)
-    meta.schemaTypes = [...new Set(types.map((t) => t.type))]
+    // JSON-LD et microdata : un type déclaré en microdata (itemtype) compte autant qu'en JSON-LD.
+    meta.schemaTypes = [...new Set([...types.map((t) => t.type), ...(p.microdataTypes || [])])]
     if (p.jsonLdErrors.length) add('donnees', 'important', 'jsonld-error', `${p.jsonLdErrors.length} bloc(s) JSON-LD invalide(s)`, p.jsonLdErrors.join(' ; '), 'Corrigez la syntaxe JSON (virgules, guillemets) et testez sur search.google.com/test/rich-results.', { effort: 1 })
     if (!types.length && !p.microdata) add('donnees', 'important', 'schema-none', 'Aucune donnée structurée', 'Les données structurées décrivent votre entreprise, vos produits, vos avis : résultats enrichis + compréhension par les IA.', `Ajoutez au minimum ${sector.schema.slice(0, 2).join(' + ')} en JSON-LD.`, { effort: 2, code: schemaTemplate(sector, input, origin) })
     else {
       add('donnees', 'ok', 'schema', `Types schema.org : ${meta.schemaTypes.join(', ') || 'microdata'}`)
       const flat = meta.schemaTypes.join(',').toLowerCase()
       const wanted = sector.schema.filter((t) => !flat.includes(t.toLowerCase()))
-      if (wanted.length === sector.schema.length) add('donnees', 'moyen', 'schema-sector', `Types conseillés pour votre secteur absents : ${wanted.join(', ')}`, '', 'Ajoutez le type le plus précis possible (ex. Bakery plutôt que LocalBusiness).', { effort: 2, code: schemaTemplate(sector, input, origin) })
+      // Un sous-type plus précis de LocalBusiness (Plumber, Bakery…) vaut mieux que le type générique du secteur.
+      const preciseLocal = flat.split(',').some((x) => LOCAL_TYPES.has(x.trim())) && sector.schema.some((t) => LOCAL_TYPES.has(t.toLowerCase()))
+      if (wanted.length === sector.schema.length && !preciseLocal) add('donnees', 'moyen', 'schema-sector', `Types conseillés pour votre secteur absents : ${wanted.join(', ')}`, '', 'Ajoutez le type le plus précis possible (ex. Bakery plutôt que LocalBusiness).', { effort: 2, code: schemaTemplate(sector, input, origin) })
       if (!meta.schemaTypes.some((t) => t.toLowerCase().split(',').some((x) => ORG_TYPES.has(x) || LOCAL_TYPES.has(x)))) add('donnees', 'faible', 'schema-org', 'Pas de schéma Organization / LocalBusiness', 'C’est lui qui relie votre site à votre fiche Google et à vos réseaux (sameAs).', 'Ajoutez Organization avec name, url, logo, sameAs.', { effort: 1, code: schemaTemplate(sector, input, origin) })
       for (const t of types) checkSchemaProps(t, add)
       const hasSameAs = types.some((t) => t.node.sameAs)
@@ -355,8 +362,12 @@ export function audit(ctx) {
     const tel = p.links.some((l) => /^tel:/.test(l.raw || ''))
     const phoneText = PHONE_RE.test(p.text)
     if (!tel) add('local', phoneText ? 'faible' : 'important', 'tel', phoneText ? 'Numéro présent mais non cliquable' : 'Pas de numéro de téléphone', 'Sur mobile, l’appel en un clic est la première conversion locale.', 'Ajoutez <a href="tel:+33…">.', { effort: 1 })
-    const address = /\b\d{5}\b/.test(p.text) || /postaladdress|address/.test(JSON.stringify(p.jsonLd).toLowerCase())
-    if (!address) add('local', 'important', 'nap', 'Adresse (NAP) introuvable dans la page', 'Nom, adresse, téléphone doivent être identiques partout (site, fiche Google, annuaires).', 'Affichez l’adresse complète dans le pied de page et dans le schéma LocalBusiness.', { effort: 1 })
+    const ldText = JSON.stringify(p.jsonLd).toLowerCase()
+    const address = /\b\d{5}\b/.test(p.text) || /postaladdress|address/.test(ldText) || p.addressSeen
+    // Entreprise sans vitrine (artisan, service à domicile) : Google demande de masquer l'adresse et de déclarer la zone desservie.
+    const serviceArea = /areaserved|servicearea/.test(ldText) || p.areaServed
+    if (!address && serviceArea) add('local', 'info', 'nap-sab', 'Entreprise sans vitrine : zone desservie déclarée, pas d’adresse publique', 'C’est conforme aux règles de Google pour les entreprises qui se déplacent chez le client.', 'Gardez le même nom et le même téléphone partout, et la même zone desservie sur la fiche Google.', { effort: 1 })
+    else if (!address) add('local', 'important', 'nap', 'Adresse (NAP) introuvable dans la page', 'Nom, adresse, téléphone doivent être identiques partout (site, fiche Google, annuaires).', 'Affichez l’adresse complète dans le pied de page et dans le schéma LocalBusiness.', { effort: 1 })
     if (!meta.schemaTypes.some((t) => t.toLowerCase().split(',').some((x) => LOCAL_TYPES.has(x)))) add('local', 'important', 'localbusiness', 'Pas de schéma LocalBusiness', '', 'Ajoutez LocalBusiness (type précis) avec adresse, téléphone, horaires, géo.', { effort: 1, code: schemaTemplate(sector, input, origin) })
     else if (!/openinghours/i.test(JSON.stringify(p.jsonLd))) add('local', 'faible', 'hours', 'Horaires non structurés', '', 'Ajoutez openingHoursSpecification au schéma.', { effort: 1 })
     if (!p.links.some((l) => /google\.[a-z.]+\/maps|maps\.app\.goo\.gl|g\.page|goo\.gl\/maps/.test(l.href || '')) && !p.iframes.some((s) => /google\.[a-z.]+\/maps/.test(s))) add('local', 'moyen', 'gbp-link', 'Pas de lien vers votre fiche Google / Maps', '', 'Liez votre fiche Google Business Profile (itinéraire, avis).', { effort: 1 })
@@ -470,6 +481,9 @@ function finalize(F, meta, ctx, local) {
   const caps = []
   if (ids.has('noindex')) caps.push([30, 'la page est en noindex : Google ne l’affichera pas'])
   if (ids.has('robots-all') || ids.has('robots-block')) caps.push([30, 'robots.txt bloque Google'])
+  // robots.txt non lu (code collé, proxy en échec) : un « Disallow: / » reste possible, la note ne peut pas être définitive.
+  const robotsUnread = !!p && !ctx.robots?.status
+  if (robotsUnread) caps.push([79, 'robots.txt n’a pas été lu : un blocage de Google reste possible (collez-le ou lancez la CLI)'])
   if (ids.has('canonical-host')) caps.push([40, 'la canonical renvoie vers un autre domaine'])
   if (F.some((f) => f.id === 'js-render' && f.sev === 'critique')) caps.push([40, 'le contenu n’existe qu’après JavaScript'])
   else if (p && p.wordCount < 150) caps.push([60, `la page ne contient que ${p.wordCount} mots`])
@@ -482,7 +496,7 @@ function finalize(F, meta, ctx, local) {
       let score = measured[k] ? Math.max(0, Math.min(100, Math.round(100 - pen))) : null
       if (k === 'performance' && psiOk) score = Math.round(score * 0.5 + ctx.psi.scores.performance * 0.5)
       if (k === 'contenu' && score != null && p && p.wordCount < 150) score = Math.min(score, 40)
-      scores[k] = { label: c.label, score, measured: measured[k], issues: items.filter((f) => SEVERITY[f.sev].penalty > 0).length, estimated: k === 'performance' && !psiOk && measured[k] }
+      scores[k] = { label: c.label, score, measured: measured[k], issues: items.filter((f) => SEVERITY[f.sev].penalty > 0).length, estimated: measured[k] && ((k === 'performance' && !psiOk) || (k === 'technique' && robotsUnread)) }
     }
     const keys = Object.keys(scores)
     const w = (k) => CATEGORIES[k].weight * (scores[k].estimated ? 0.5 : 1)
@@ -496,7 +510,7 @@ function finalize(F, meta, ctx, local) {
   }
   const all = scoreOf(F), page = scoreOf(F.filter((f) => f.scope !== 'site'))
   let incomplete = null
-  if (!p) incomplete = ctx.blocked ? `le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection'})` : ctx.fetch?.status >= 400 ? `la page répond ${ctx.fetch.status}` : ctx.fetch?.source === 'psi' ? (ctx.psi?.scores ? 'seule la vitesse a été mesurée (page non lue)' : 'rien n’a pu être mesuré : page non lue et PageSpeed indisponible') : 'la page n’a pas pu être lue'
+  if (!p) incomplete = ctx.social ? `c’est un profil ${ctx.social.network} (@${ctx.social.handle}) : la plateforme ne laisse pas lire un compte sans connexion. Exportez vos statistiques depuis l’application (ou envoyez-les à Claude) ; les hashtags, le calendrier et le plan de contenus restent valables` : ctx.blocked ? `le site a refusé l’accès au robot d’audit (${ctx.blocked.status || 'protection'})` : ctx.fetch?.status >= 400 ? `la page répond ${ctx.fetch.status}` : ctx.fetch?.source === 'psi' ? (ctx.psi?.scores ? 'seule la vitesse a été mesurée (page non lue)' : 'rien n’a pu être mesuré : page non lue et PageSpeed indisponible') : 'la page n’a pas pu être lue'
   else if (all.coverage < 0.6) incomplete = 'trop peu de contrôles ont pu être faits'
   const global = incomplete ? null : all.global
   const issues = F.filter((f) => SEVERITY[f.sev].penalty > 0)

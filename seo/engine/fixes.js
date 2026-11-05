@@ -4,11 +4,15 @@
 import { sectorById } from '../data/sectors.js'
 import { ROBOTS_TEMPLATE } from './robots.js'
 
+// Mots qui ne peuvent pas finir une phrase coupée (« au beurre AOP, à… » → « au beurre AOP… »).
+const DANGLING = /\s+(?:à|au|aux|de|des|du|d[’']|en|et|ou|le|la|les|l[’']|un|une|pour|par|avec|sur|sous|dans|chez|vers|son|sa|ses|leur|leurs|nos|notre|vos|votre|ce|cet|cette|ces|qui|que|dont|plus|très)$/i
 const cut = (s, n) => {
   s = String(s || '').replace(/\s+/g, ' ').trim()
   if (s.length <= n) return s
-  const c = s.slice(0, n + 1)
-  return (c.slice(0, c.lastIndexOf(' ')) || c.slice(0, n)).replace(/[\s,;:–—-]+$/, '') + '…'
+  let c = s.slice(0, n + 1)
+  c = c.slice(0, c.lastIndexOf(' ')) || c.slice(0, n)
+  for (let i = 0; i < 4; i++) { const t = c.replace(/[\s,;:–—-]+$/, '').replace(DANGLING, ''); if (t === c) break; c = t }
+  return c.replace(/[\s,;:–—-]+$/, '') + '…'
 }
 const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s)
 const escAttr = (s) => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
@@ -51,8 +55,9 @@ export function suggestDescription(f) {
   const cta = goal === 'ventes' ? 'Commandez en ligne.' : goal === 'telechargements' ? 'Téléchargez l’application.' : f.sector.local || f.input.local ? (f.phone ? `Appelez le ${f.phone}.` : 'Demandez votre devis gratuit.') : 'Demandez une démo ou un devis.'
   // Coupe de préférence à la fin d'une phrase
   let intro = text ? cut(text, 150 - cta.length - 1) : ''
-  const end = intro.lastIndexOf('. ')
+  const end = intro.lastIndexOf('. '), comma = intro.lastIndexOf(', ')
   if (end >= 60) intro = intro.slice(0, end + 1)
+  else if (/…$/.test(intro) && comma >= 60) intro = intro.slice(0, comma) + '.'
   let base = text ? intro : `${cap(f.keyword || f.h1 || f.sector.keywords[0])}${f.city ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
   // Le mot-clé principal doit figurer dans la description (c'est un contrôle de l'audit)
   if (f.keyword && !norm(base).includes(norm(f.keyword))) {
@@ -77,9 +82,9 @@ export function jsonLd(f, { local } = {}) {
 }
 
 const SERVER = {
-  https: { apache: 'RewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]', nginx: 'server {\n  listen 80;\n  server_name exemple.fr www.exemple.fr;\n  return 301 https://$host$request_uri;\n}' },
+  https: { apache: 'RewriteEngine On\n# Derrière Cloudflare ou un autre proxy, la 2e condition évite une boucle de redirection.\n# Sur Cloudflare, réglez aussi SSL/TLS sur « Full (strict) » plutôt que « Flexible ».\nRewriteCond %{HTTPS} off\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]', nginx: 'server {\n  listen 80;\n  server_name exemple.fr www.exemple.fr;\n  return 301 https://$host$request_uri;\n}\n# Derrière Cloudflare : SSL/TLS en « Full (strict) », pas « Flexible », sinon la redirection boucle.' },
   www: { apache: '# Exemple : forcer la version sans www\nRewriteEngine On\nRewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]\nRewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]', nginx: 'server {\n  server_name www.exemple.fr;\n  return 301 https://exemple.fr$request_uri;\n}' },
-  hsts: { apache: 'Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"', nginx: 'add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;' },
+  hsts: { apache: '# Par paliers : une erreur bloque le site pour toute la durée choisie.\n# 1) Une semaine à 5 minutes, sans sous-domaines :\nHeader always set Strict-Transport-Security "max-age=300"\n# 2) Puis une semaine : max-age=604800, puis un mois : max-age=2592000\n# 3) Un an, avec includeSubDomains seulement si TOUS vos sous-domaines sont en HTTPS :\n# Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"', nginx: '# Par paliers : une erreur bloque le site pour toute la durée choisie.\n# 1) Une semaine à 5 minutes, sans sous-domaines :\nadd_header Strict-Transport-Security "max-age=300" always;\n# 2) Puis max-age=604800 (une semaine), puis 2592000 (un mois)\n# 3) Un an, avec includeSubDomains seulement si tous vos sous-domaines sont en HTTPS :\n# add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;' },
   nosniff: { apache: 'Header always set X-Content-Type-Options "nosniff"', nginx: 'add_header X-Content-Type-Options "nosniff" always;' },
   compression: { apache: '<IfModule mod_deflate.c>\n  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml\n</IfModule>', nginx: 'gzip on;\ngzip_types text/css application/javascript application/json image/svg+xml;\n# brotli on; (si le module est installé)' },
   cache: { apache: '<IfModule mod_expires.c>\n  ExpiresActive On\n  ExpiresByType text/css "access plus 1 year"\n  ExpiresByType application/javascript "access plus 1 year"\n  ExpiresByType image/webp "access plus 1 year"\n  ExpiresByType text/html "access plus 0 seconds"\n</IfModule>', nginx: 'location ~* \\.(css|js|webp|avif|png|jpe?g|svg|woff2)$ {\n  expires 1y;\n  add_header Cache-Control "public, immutable";\n}' },
@@ -218,4 +223,21 @@ export function intlPhone(p) {
   const d = String(p).replace(/[^\d+]/g, '').replace(/^\+330/, '+33').replace(/^0(\d{9})$/, '+33$1')
   const m = d.match(/^\+33(\d)(\d{2})(\d{2})(\d{2})(\d{2})$/)
   return m ? `+33 ${m.slice(1).join(' ')}` : p
+}
+
+// Où appliquer un correctif selon l'outil de site détecté (les menus peuvent varier d'une version à l'autre).
+const KIND_OF = (id) => /^robots|content-signal/.test(id) ? 'robots' : /^(title|description|dup-title|dup-desc)/.test(id) ? 'meta' : /^(noindex|nofollow|nosnippet|max-image-preview|canonical|localbusiness|hours|schema|jsonld|og|twitter)/.test(id) ? 'head' : null
+const WHERE = {
+  WordPress: { robots: 'Yoast SEO → Outils → Éditeur de fichiers (ou Rank Math → Réglages généraux → Modifier robots.txt).', meta: 'Dans l’éditeur de la page, bloc Yoast SEO ou Rank Math : « Titre SEO » et « Méta description ».', head: 'Réglages de Yoast ou Rank Math (balises robots, schéma) ; pour du code libre dans <head>, une extension comme WPCode.' },
+  Wix: { robots: 'Tableau de bord → Marketing et SEO → Outils SEO → Éditeur de robots.txt.', meta: 'Menu des pages → … de la page → Paramètres SEO → SEO de base.', head: 'Paramètres SEO de la page → Avancé (balises et données structurées), ou Paramètres → Code personnalisé → Head.' },
+  Shopify: { robots: 'Boutique en ligne → Thèmes → … → Modifier le code → ajouter le modèle robots.txt.liquid.', meta: 'Page ou produit → « Aperçu du référencement sur les moteurs de recherche » → Modifier.', head: 'Boutique en ligne → Thèmes → … → Modifier le code → theme.liquid, avant </head>.' },
+  Squarespace: { robots: 'Le fichier n’est pas modifiable : Paramètres → Robots d’exploration pour bloquer ou autoriser les robots IA.', meta: 'Paramètres de la page → SEO.', head: 'Paramètres → Avancé → Injection de code → En-tête (selon votre forfait).' },
+  Webflow: { robots: 'Paramètres du site → SEO → Indexation → robots.txt.', meta: 'Paramètres de la page → SEO Settings.', head: 'Paramètres de la page → Custom code → Inside <head> tag.' },
+  PrestaShop: { robots: 'Paramètres de la boutique → Trafic et SEO → Générer le fichier robots.txt, puis ajustez-le par FTP.', meta: 'Fiche de la page ou du produit → onglet SEO.', head: 'Modèle du thème (head.tpl) ou un module d’insertion de code.' },
+}
+export function whereToApply(id, cms = []) {
+  const k = KIND_OF(String(id || '')), name = (cms || []).find((c) => WHERE[c === 'WooCommerce' ? 'WordPress' : c])
+  if (!k || !name) return null
+  const n = name === 'WooCommerce' ? 'WordPress' : name
+  return { cms: n, text: WHERE[n][k] }
 }

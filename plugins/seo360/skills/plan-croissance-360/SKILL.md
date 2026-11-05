@@ -1,6 +1,6 @@
 ---
 name: plan-croissance-360
-description: Plan de croissance complet à partir d'un lien (site, application, profil Instagram, TikTok, LinkedIn ou YouTube, dépôt GitHub) : audit mesuré, toutes les améliorations gratuites et payantes par canal (Google, local, IA, pub, réseaux, e-mail, conversion), outils recommandés avec prix et guides d'installation, plan 90 jours, budget, indicateurs. À utiliser pour « voici mon site, dis-moi tout », « plan complet », « premier sur Google et percer sur TikTok », « toutes les améliorations possibles », « quels outils installer ». Audit SEO seul → seo-360.
+description: Plan de croissance complet à partir d'un lien (site, application, dépôt GitHub, ou profil Instagram, TikTok, LinkedIn, YouTube avec vos statistiques exportées) : audit mesuré du site ou de l'app, toutes les améliorations gratuites et payantes par canal (Google, local, IA, pub, réseaux, e-mail, conversion), outils recommandés avec prix et guides d'installation, plan 90 jours, budget, indicateurs. À utiliser pour « voici mon site, dis-moi tout », « plan complet », « premier sur Google et percer sur TikTok », « toutes les améliorations possibles », « quels outils installer ». Audit SEO seul → seo-360.
 metadata:
   version: "1.0"
 ---
@@ -75,7 +75,7 @@ Si des packs complémentaires sont installés dans la session (claude-seo, claud
    - cette semaine, puis ce mois-ci : guides d'installation inclus ;
    - recommandés, puis payants ;
    - budget outils par mois.
-5. **Plan 90 jours** : semaines 1-2, semaines 3-4, mois 2, mois 3, canal par canal, avec les temps forts de la période.
+5. **Plan 90 jours**, découpé comme la plateforme et le skill `seo-360` : cette semaine, dans les 30 jours, dans les 60 jours, dans les 90 jours ; canal par canal, avec les temps forts de la période.
 6. **Réseaux prioritaires du secteur** : pour chacun, l'objectif, le rythme tenable, 3 formats, 5 idées de publications, les hashtags avec leur niveau, le meilleur moment et l'indicateur suivi.
 7. **Publicité** : verdict, budget de départ, répartition, contrôle avant dépense.
 8. **Indicateurs et revue** : ce qui se mesure chaque semaine et chaque mois, et la date de la prochaine revue (relancer l'audit avec `--avant`).

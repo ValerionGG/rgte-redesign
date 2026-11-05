@@ -1,4 +1,4 @@
-// Budget publicitaire : verdict de rentabilité, budget conseillé, répartition par canal (minimum viable
+// Budget publicitaire : verdict de rentabilité, minimum pour tester, répartition par canal (minimum viable
 // respecté), estimation centrale ±35 %, plafond de demande, apprentissage, montée en charge.
 // Sources : data/research/benchmarks.js (WordStream/LocaliQ 2026 US + fourchettes FR/UE). Ordres de grandeur.
 import research from '../data/research/benchmarks.js'
@@ -67,6 +67,9 @@ function ranges(id, bench, goal) {
   let cpc = p.cpc_eur?.[0] != null ? [...p.cpc_eur] : [0.5, 2]
   let cvr = p.cvr?.[0] != null ? [...p.cvr] : [0.01, 0.04]
   if (id === 'google_search') { cpc = bench.cpcFR; cvr = [bench.cvr * 0.6, bench.cvr * 1.1] }
+  // Achats en ligne sur Meta : la fourchette générale (2 à 9 %) mesure surtout des contacts. Médiane achats e-commerce ≈ 1,5 %
+  // (données Triple Whale août 2025-juillet 2026, citées par des sources secondaires).
+  if (id === 'meta' && goal === 'ventes') cvr = [0.01, 0.025]
   if (id === 'microsoft') cpc = [bench.cpcFR[0] * 0.6, bench.cpcFR[1] * 0.75]
   if (goal === 'trafic') cvr = [1, 1]
   return { cpc, cvr, cpm: p.cpm_eur?.[0] != null ? p.cpm_eur : null, p }
@@ -79,6 +82,8 @@ export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = nu
   const assumptions = {
     margin: margin ?? (goal === 'ventes' ? 0.3 : goal === 'telechargements' ? 1 : b2b ? 0.4 : 0.5),
     closeRate: goal === 'leads' ? closeRate ?? (b2b ? 0.1 : 0.25) : 1,
+    // Valeurs supposées (non saisies) : affichées à côté du verdict, et jamais de « Rentable » franc sur une marge supposée.
+    defaults: [margin == null && goal !== 'telechargements' ? 'margin' : null, goal === 'leads' && closeRate == null ? 'closeRate' : null].filter(Boolean),
   }
   const maxCpa = avgValue > 0 && ['leads', 'ventes', 'telechargements'].includes(goal) ? avgValue * assumptions.margin * assumptions.closeRate : null
   const key = goal === 'leads' ? (b2b ? 'leads_b2b' : 'leads_local') : goal === 'notoriete' && b2b ? 'notoriete_b2b' : goal
@@ -97,19 +102,27 @@ export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = nu
   const recommendedUsed = monthly == null || monthly === '' || !(+monthly > 0)
   monthly = recommendedUsed ? recommended : +monthly
 
-  // Répartition : on retire les canaux qui n'atteindraient pas leur minimum, puis on répartit à nouveau
+  // Répartition : le canal principal reçoit au moins son minimum viable (sinon une répartition proportionnelle
+  // pouvait l'écarter, par exemple PMax en e-commerce) ; les autres se partagent le reste selon le mix, et
+  // ceux qui n'atteignent pas leur minimum sont retirés (le moins prioritaire d'abord) : un petit budget reste concentré.
+  const allocate = (act) => {
+    const [top, ...others] = act
+    const totO = others.reduce((s, id) => s + mix[id], 0)
+    let topB = (monthly * mix[top]) / (totO + mix[top])
+    if (topB < minOf(top)) topB = Math.min(monthly, minOf(top))
+    return Object.fromEntries([[top, topB], ...others.map((id) => [id, totO ? ((monthly - topB) * mix[id]) / totO : 0])])
+  }
   let active = ordered.slice()
   for (;;) {
-    const tot = active.reduce((s, id) => s + mix[id], 0)
-    const alloc = Object.fromEntries(active.map((id) => [id, (monthly * mix[id]) / tot]))
-    const under = active.filter((id) => alloc[id] < minOf(id))
-    if (!under.length || active.length === 1) break
-    active = active.filter((id) => id !== under.sort((a, b) => mix[a] - mix[b])[0])
+    const alloc = allocate(active)
+    const under = active.slice(1).filter((id) => alloc[id] < minOf(id))
+    if (!under.length) break
+    active = active.filter((id) => id !== under.sort((x, y) => mix[x] - mix[y])[0])
   }
-  const tot = active.reduce((s, id) => s + mix[id], 0)
+  const alloc = allocate(active)
   let rest = monthly
   const channels = active.map((id, i) => {
-    const budget = i === active.length - 1 ? rest : Math.round((monthly * mix[id]) / tot)
+    const budget = i === active.length - 1 ? rest : Math.round(alloc[id])
     rest -= budget
     return estimate(id, budget, info[id], goal, unit, bench, searchVolume, minOf(id))
   })
@@ -124,6 +137,9 @@ export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = nu
     assumptions, maxCpa, totals, roasBreakEven: goal === 'ventes' && assumptions.margin > 0 ? 1 / assumptions.margin : null, cpcSource: cpcOverride > 0 ? `CPC Google : votre valeur (${cpcOverride} €).` : 'CPC Google : estimé d’après des médianes américaines ajustées pour la France ; saisissez votre CPC réel (Keyword Planner) pour un calcul fiable.', dropped: ordered.filter((id) => !active.includes(id)).map((id) => CHANNELS[id].short),
     warnings: channels.flatMap((c) => c.warnings), rampUp: rampUp(monthly, channels), seo: seoBudget(sector, local),
   }
+  // Garde-fou : un ROAS implicite très au-dessus des médianes observées signale des hypothèses trop optimistes.
+  const roasImplied = goal === 'ventes' && avgValue > 0 && cpaMid ? avgValue / cpaMid : null
+  if (roasImplied > 4) out.warnings.push(`ROAS implicite de ${roasImplied.toFixed(1).replace('.', ',')} : bien au-dessus des médianes observées (≈ 1,9 sur Meta en 2025, données Triple Whale citées par des sources secondaires). Prévoyez moins de ventes au départ.`)
   out.verdict = verdict(out)
   if (targetConversions > 0 && cpaMid) {
     const need = targetConversions * cpaMid
@@ -164,13 +180,15 @@ export function preSpendChecks(report, budget = report?.budget) {
   const site = report?.kind === 'site' && !!report?.ctx?.page, tr = m.trackers || [], cmp = m.cmp || []
   const goal = budget?.goal || report?.input?.goal
   const conv = tr.includes('Google Ads') ? '✓' : !site ? '?' : tr.some((t) => /Analytics|Tag Manager|Matomo|Piano/.test(t)) ? '?' : '✗'
-  const consent = !site ? '?' : cmp.includes('Consent Mode Google') ? '✓' : cmp.length ? '?' : tr.some((t) => /Ads|Pixel|Analytics|Insight|UET|Tag/.test(t)) ? '✗' : '?'
+  // GTM seul : le bandeau et le Consent Mode peuvent être réglés dans GTM, invisibles dans le code de la page → « ? », pas « ✗ ».
+  const gtmOnly = tr.includes('Google Tag Manager') && !tr.some((t) => t !== 'Google Tag Manager' && /Ads|Pixel|Analytics|Insight|UET|Tag/.test(t))
+  const consent = !site ? '?' : cmp.includes('Consent Mode Google') ? '✓' : cmp.length || gtmOnly ? '?' : tr.some((t) => /Ads|Pixel|Analytics|Insight|UET|Tag/.test(t)) ? '✗' : '?'
   const perf = psi?.scores?.performance, lcp = psi?.field?.LCP
   const mobile = perf == null && !lcp ? '?' : (perf == null || perf >= 50) && !(lcp > 4000) ? '✓' : '✗'
   const contact = !site || goal === 'ventes' || goal === 'telechargements' ? '?' : m.telLink || m.forms > 0 ? '✓' : '✗'
   const checks = [
     { id: 'conversion', label: 'Conversion suivie', short: 'la mesure des conversions', status: conv, detail: conv === '✓' ? 'Balise Google Ads détectée : vérifiez que l’action de conversion (appel, formulaire, achat) est « principale ».' : conv === '?' ? 'Déclarez vos contacts ou achats comme événements clés dans GA4 et importez-les dans Google Ads (ou ajoutez la balise de conversion).' : 'Aucune mesure détectée : sans conversion suivie, l’algorithme optimise à l’aveugle et vous ne saurez pas ce que rapporte la pub.' },
-    { id: 'consent', label: 'Consent Mode v2', short: 'le Consent Mode v2', status: consent, detail: consent === '✓' ? 'Consent Mode détecté.' : consent === '✗' ? 'Traceurs sans gestion du consentement : obligatoire (CNIL) et indispensable pour que Google Ads modélise les conversions.' : 'Vérifiez dans votre bandeau cookies que le Consent Mode v2 de Google est activé.' },
+    { id: 'consent', label: 'Consent Mode v2', short: 'le Consent Mode v2', status: consent, detail: consent === '✓' ? 'Consent Mode détecté.' : consent === '✗' ? 'Traceurs sans gestion du consentement : obligatoire (CNIL) et indispensable pour que Google Ads modélise les conversions.' : gtmOnly ? 'Google Tag Manager détecté : le bandeau cookies et le Consent Mode v2 peuvent y être réglés, invisibles dans le code de la page. Vérifiez dans GTM (mode Aperçu) ou avec Tag Assistant que le consentement par défaut est « refusé » avant le choix du visiteur.' : 'Vérifiez dans votre bandeau cookies que le Consent Mode v2 de Google est activé.' },
     { id: 'mobile', label: 'Vitesse mobile', short: 'la vitesse sur mobile', status: mobile, detail: mobile === '?' ? 'Vitesse non mesurée : lancez l’audit avec PageSpeed.' : mobile === '✓' ? `Score mobile ${perf ?? '—'}${lcp ? `, LCP réel ${(lcp / 1000).toFixed(1).replace('.', ',')} s` : ''}.` : `Page lente sur mobile (score ${perf ?? '—'}${lcp ? `, LCP ${(lcp / 1000).toFixed(1).replace('.', ',')} s` : ''}) : chaque clic payé risque d’être perdu avant l’affichage.` },
     { id: 'contact', label: 'Téléphone et formulaire', short: 'le téléphone cliquable ou le formulaire', status: contact, detail: contact === '✓' ? `${m.telLink ? 'Téléphone cliquable' : ''}${m.telLink && m.forms ? ' et ' : ''}${m.forms ? 'formulaire' : ''} détecté(s) sur la page.` : contact === '✗' ? 'Ni téléphone cliquable ni formulaire sur la page : ajoutez un lien « tel: » et un formulaire court avant d’acheter des clics.' : goal === 'ventes' ? 'Testez un achat complet sur mobile (fiche produit → panier → paiement).' : 'À vérifier sur la page de destination de vos annonces.' },
     { id: 'prix', label: 'Prix identiques à l’annonce', status: '?', detail: 'À vérifier vous-même : même offre, même prix, même promesse dans l’annonce et sur la page (sinon clics perdus, et risque de pratique trompeuse).' },
@@ -179,7 +197,7 @@ export function preSpendChecks(report, budget = report?.budget) {
   const missing = checks.filter((c) => c.status === '✗')
   return {
     checks, blocked: missing.length > 0,
-    message: missing.length ? `Verdict suspendu : corrigez d’abord ${missing.map((c) => c.short || c.label).join(', ').replace(/, ([^,]*)$/, ' et $1')}.` : checks.some((c) => c.status === '?') ? 'Rien de bloquant détecté : vérifiez les points « ? » avant de lancer.' : 'Tout est prêt pour mesurer la rentabilité.',
+    message: missing.length ? `Verdict suspendu : corrigez d’abord ${missing.map((c) => c.short || c.label).join(', ').replace(/, ([^,]*)$/, ' et $1')}.` : !site ? 'Rien n’a pu être vérifié sans lire votre site : lancez d’abord l’audit de votre page, puis revenez au budget.' : checks.some((c) => c.status === '?') ? `Rien de bloquant parmi les points vérifiés ; ${checks.filter((c) => c.status === '?').length} point(s) « ? » restent à vérifier avant de lancer.` : 'Tout est prêt pour mesurer la rentabilité.',
   }
 }
 
@@ -189,13 +207,16 @@ function verdict(b) {
   if (b.goal === 'notoriete') return { level: 'inconnu', text: `Objectif notoriété : ≈ ${b.totals.impressions.toLocaleString('fr-FR')} affichages par mois pour ${euro(b.monthly)}.`, detail: 'Jugez au coût pour 1 000 vues et à la hausse des recherches de votre marque (Search Console), pas aux ventes immédiates.' }
   if (!b.totals.mid) return { level: 'inconnu', text: 'Pas d’estimation chiffrée possible pour ces canaux : mesurez le coût réel dès la première semaine.', detail: '' }
   if (b.goal === 'trafic') return { level: 'inconnu', text: `${base.replace(/chacun$/, 'la visite')}.`, detail: 'Pour juger la rentabilité, suivez les contacts ou ventes générés par ces visites (GA4).' }
-  if (!b.maxCpa) return { level: 'inconnu', text: `${b.recommendedUsed ? `Budget de départ conseillé : ${euro(b.monthly)} par mois. ` : ''}${base[0].toUpperCase() + base.slice(1)}.`, detail: `Indiquez la valeur d’un client (et votre marge) pour savoir si c’est rentable.` }
+  if (!b.maxCpa) return { level: 'inconnu', text: `${b.recommendedUsed ? `Minimum pour tester : ${euro(b.monthly)} par mois (ce n’est pas un budget rentable calculé). ` : ''}${base[0].toUpperCase() + base.slice(1)}.`, detail: `Indiquez la valeur d’un client (et votre marge) pour savoir si c’est rentable.` }
   const r = b.totals.cpaMid / b.maxCpa
-  const start = b.recommendedUsed ? `Budget de départ conseillé : ${euro(b.monthly)} par mois. ` : ''
-  if (r <= 0.8) return { level: 'ok', text: `${start}Rentable : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.`, detail: `Augmentez par paliers de 15–20 % tant que le coût réel reste sous ${euro(b.maxCpa)} par ${u}.` }
-  if (r <= 1.25) return { level: 'test', text: `${start}À tester prudemment : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.`, detail: `Test de 6 semaines plafonné à ${euro(b.monthly * 1.5)} ; arrêtez un canal si son coût dépasse ${euro(b.maxCpa)} par ${u} après 50 clics.` }
+  const start = b.recommendedUsed ? `Minimum pour tester : ${euro(b.monthly)} par mois. ` : ''
+  const pct = (x) => `${Math.round(x * 100)} %`
+  const hyp = b.assumptions.defaults?.length ? ` Hypothèses par défaut, à remplacer par vos chiffres : ${[b.assumptions.defaults.includes('margin') ? `marge de ${pct(b.assumptions.margin)}` : '', b.assumptions.defaults.includes('closeRate') ? `${pct(b.assumptions.closeRate)} des contacts deviennent clients` : ''].filter(Boolean).join(', ')}.` : ''
+  if (r <= 0.8 && b.assumptions.defaults?.includes('margin')) return { level: 'test', text: `${start}Probablement rentable, à confirmer : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.${hyp}`, detail: `Indiquez votre vraie marge pour un verdict ferme. En attendant, test de 6 semaines plafonné à ${euro(b.monthly * 1.5)}.` }
+  if (r <= 0.8) return { level: 'ok', text: `${start}Rentable : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.${hyp}`, detail: `Augmentez par paliers de 15–20 % tant que le coût réel reste sous ${euro(b.maxCpa)} par ${u}.` }
+  if (r <= 1.25) return { level: 'test', text: `${start}À tester prudemment : ${base}, pour ≈ ${euro(b.maxCpa)} de marge par ${u}.${hyp}`, detail: `Test de 6 semaines plafonné à ${euro(b.monthly * 1.5)} ; arrêtez un canal si son coût dépasse ${euro(b.maxCpa)} par ${u} après 50 clics.` }
   const why = { leads: b.local ? 'Priorité au gratuit : fiche Google, avis, SEO local et conversion du site (appel en un clic, devis simple). Ou ciblez des prestations de plus forte valeur.' : 'Priorité au SEO et au contenu ; resserrez les mots-clés sur les demandes les plus qualifiées ou ciblez des contrats de plus forte valeur.', ventes: 'Travaillez d’abord le panier moyen, le taux de conversion du site et le SEO ; testez ensuite de petits budgets sur vos meilleurs produits.', telechargements: 'Priorité à l’ASO (titre, captures, avis) et au bouche-à-oreille ; augmentez la valeur par utilisateur (abonnement, achats intégrés) avant d’acheter des installations.' }
-  return { level: 'non', text: `Pas rentable aujourd’hui : ≈ ${euro(b.totals.cpaMid)} par ${u} pour ≈ ${euro(b.maxCpa)} de marge.`, detail: why[b.goal] || why.leads }
+  return { level: 'non', text: `Pas rentable aujourd’hui : ≈ ${euro(b.totals.cpaMid)} par ${u} pour ≈ ${euro(b.maxCpa)} de marge.${hyp}`, detail: why[b.goal] || why.leads }
 }
 
 function rampUp(monthly, channels) {
@@ -232,7 +253,7 @@ function seoBudget(sector, local) {
       { item: 'Corrections techniques (onglet À faire)', cost: 'souvent 0 € en interne, sinon 500 à 3 000 € une fois' },
       { item: 'Contenu : 2 à 4 pages ou articles par mois', cost: '150 à 500 € par contenu expert (rédacteur spécialisé)' },
       { item: 'Fiche Google + avis clients', cost: '0 € — 1 h par semaine' },
-      { item: 'Liens depuis des sites du même domaine', cost: '80 à 400 € par lien de qualité, 2 à 5 par mois si la concurrence est forte' },
+      { item: 'Liens et mentions gagnés : fournisseurs, partenaires, fédération, presse locale, annuaires de qualité', cost: '0 € à payer, 2 à 4 h par mois. On n’achète pas de liens (règles anti-spam de Google) ; un article sponsorisé porte rel="sponsored"' },
       { item: 'Outils', cost: 'Search Console et Bing Webmaster (0 €) ; suite SEO 30 à 140 €/mois si besoin' },
     ],
     rules: research.budget_rules || [],

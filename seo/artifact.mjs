@@ -22,7 +22,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if (!out) { console.error('Usage : node seo/artifact.mjs <dossier de sortie>'); process.exit(1) }
   rmSync(out, { recursive: true, force: true }); mkdirSync(out, { recursive: true })
   writeFileSync(join(out, 'index.html'), artifactHtml(readFileSync(join(SEO, 'index.html'), 'utf8')))
-  const files = ['app.css', 'app.js', ...walk(join(SEO, 'engine')).map((f) => relative(SEO, f)), ...walk(join(SEO, 'data')).filter((f) => f.endsWith('.js')).map((f) => relative(SEO, f))]
+  const files = ['app.css', 'app.js', 'live.js', ...walk(join(SEO, 'engine')).map((f) => relative(SEO, f)), ...walk(join(SEO, 'data')).filter((f) => f.endsWith('.js')).map((f) => relative(SEO, f))]
   for (const f of files) { mkdirSync(dirname(join(out, f)), { recursive: true }); copyFileSync(join(SEO, f), join(out, f)) }
   writeFileSync(join(out, 'files.json'), JSON.stringify(Object.fromEntries(files.map((f) => [f, join(out, f)])), null, 1))
   console.log(`✓ ${files.length + 1} fichiers dans ${out}`)
