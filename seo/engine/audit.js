@@ -1,7 +1,7 @@
 // Moteur d'audit : à partir du contexte collecté (page, en-têtes, robots, sitemap, crawl, PageSpeed),
 // produit des constats classés (critique → faible), des scores par catégorie et un score global.
 import { schemaTypes, topTerms } from './html.js'
-import { parseRobots, botMatrix, ROBOTS_TEMPLATE } from './robots.js'
+import { parseRobots, botMatrix, ROBOTS_TEMPLATE, mergeRobots } from './robots.js'
 import { scoreBlocks, citabilityTemplate } from './citability.js'
 import { sectorById } from '../data/sectors.js'
 
@@ -151,10 +151,9 @@ export function audit(ctx) {
       else if (!g.allowed) add('technique', 'critique', 'robots-block', 'robots.txt bloque Googlebot sur cette page', '', 'Retirez la règle Disallow concernée.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       else if (starAll) add('technique', 'important', 'robots-star', 'robots.txt bloque tous les robots sauf Google', 'Bing (qui alimente ChatGPT Search et Copilot), Apple et les robots IA ne peuvent pas explorer le site.', 'Ouvrez au moins Bingbot, Applebot et les robots de recherche IA, ou retirez « Disallow: / » du groupe « * ».', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
       if (!bing.allowed) add('ia', 'important', 'robots-bing', 'robots.txt bloque Bingbot', 'Bing alimente ChatGPT Search, Copilot et DuckDuckGo.', 'Autorisez Bingbot.', { effort: 1 })
-      const blockedSearch = meta.bots.filter((b) => b.kind === 'ia-recherche' && !b.allowed)
-      if (blockedSearch.length) add('ia', 'important', 'robots-ai-search', `Robots de recherche IA bloqués : ${blockedSearch.map((b) => b.ua).join(', ')}`, 'Ces robots servent à citer votre site dans les réponses (ChatGPT, Perplexity, Claude). Les bloquer = disparaître de ces réponses.', 'Autorisez au minimum OAI-SearchBot, PerplexityBot et Claude-SearchBot.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
-      const blockedUser = meta.bots.filter((b) => b.kind === 'ia-utilisateur' && !b.allowed)
-      if (blockedUser.length) add('ia', 'moyen', 'robots-ai-user', `Lecture à la demande bloquée : ${blockedUser.map((b) => b.ua).join(', ')}`, 'Ces agents lisent votre page quand quelqu’un pose une question à ChatGPT, Claude, Perplexity ou Le Chat, et la citent. Les bloquer vous retire de ces réponses. OpenAI précise que robots.txt peut ne pas s’appliquer à ChatGPT-User, lecture déclenchée par l’utilisateur : la règle sert surtout aux autres agents.', 'Autorisez ChatGPT-User, Claude-User, Perplexity-User et MistralAI-User.', { effort: 1, code: ROBOTS_TEMPLATE(origin) })
+      const blockedSearch = meta.bots.filter((b) => b.kind === 'ia-recherche' && !b.allowed), blockedUser = meta.bots.filter((b) => b.kind === 'ia-utilisateur' && !b.allowed)
+      if (blockedSearch.length) add('ia', 'important', 'robots-ai-search', `Robots de recherche IA bloqués : ${blockedSearch.map((b) => b.ua).join(', ')}`, 'Ces robots servent à citer votre site dans les réponses (ChatGPT, Perplexity, Claude). Les bloquer = disparaître de ces réponses.', 'Autorisez au minimum OAI-SearchBot, PerplexityBot et Claude-SearchBot.', { effort: 1, code: mergeRobots(ctx.robots.body, origin, [...blockedSearch, ...blockedUser].map((b) => b.ua)) })
+      if (blockedUser.length) add('ia', 'moyen', 'robots-ai-user', `Lecture à la demande bloquée : ${blockedUser.map((b) => b.ua).join(', ')}`, 'Ces agents lisent votre page quand quelqu’un pose une question à ChatGPT, Claude, Perplexity ou Le Chat, et la citent. Les bloquer vous retire de ces réponses. OpenAI précise que robots.txt peut ne pas s’appliquer à ChatGPT-User, lecture déclenchée par l’utilisateur : la règle sert surtout aux autres agents.', 'Autorisez ChatGPT-User, Claude-User, Perplexity-User et MistralAI-User.', { effort: 1, code: mergeRobots(ctx.robots.body, origin, [...blockedSearch, ...blockedUser].map((b) => b.ua)) })
       const blockedTrain = meta.bots.filter((b) => b.kind === 'ia-entrainement' && !b.allowed)
       if (blockedTrain.length) add('ia', 'info', 'robots-ai-train', `Robots d’entraînement IA bloqués : ${blockedTrain.map((b) => b.ua).join(', ')}`, `Choix éditorial légitime : sans effet sur la recherche Google${blockedTrain.some((b) => b.ua === 'Google-Extended') ? ' ni sur AI Overviews (Google-Extended ne règle que Gemini)' : ''}, mais moins de présence dans les connaissances « de base » des modèles. Pour de grands éditeurs, bloquer les robots IA a coûté environ 7 % de trafic (étude révisée, ppc.land 2026) et 70,6 % des sites bloquants restent cités.`, '', { effort: 1 })
       if (parsed.signal && Object.keys(parsed.signal).length) {
@@ -540,8 +539,10 @@ const REQUIRED = {
 function checkSchemaProps(t, add) {
   const key = t.type.toLowerCase().split(',')[0]
   const isLocal = LOCAL_TYPES.has(key)
-  const req = REQUIRED[key] || (isLocal ? REQUIRED.localbusiness : null)
+  let req = REQUIRED[key] || (isLocal ? REQUIRED.localbusiness : null)
   if (!req) return
+  // Entreprise sans vitrine : zone desservie déclarée, l'adresse n'est pas exigée (règle Google pour ces entreprises)
+  if (isLocal && (t.node.areaServed || t.node.serviceArea)) req = req.filter((r) => r !== 'address')
   const miss = req.filter((r) => Array.isArray(r) ? !r.some((x) => t.node[x]) : !t.node[r]).map((r) => [].concat(r).join(' ou '))
   if (miss.length) add('donnees', 'moyen', `schema-${key}`, `Schéma ${t.type} incomplet : ${miss.join(', ')}`, '', 'Complétez les propriétés requises/recommandées par Google.', { effort: 1 })
 }
@@ -652,4 +653,4 @@ const REGIONS = new Set('ad ae af ag ai al am ao aq ar as at au aw ax az ba bb b
 
 // Types schema.org : sous-types de LocalBusiness (et lieux physiques) / organisations
 export const LOCAL_TYPES = new Set(`localbusiness store restaurant bakery cafeorcoffeeshop barorpub brewery winery distillery fastfoodrestaurant icecreamshop foodestablishment beautysalon hairsalon nailsalon dayspa tattooparlor healthandbeautybusiness dentist physician medicalclinic medicalbusiness optician pharmacy veterinarycare realestateagent homeandconstructionbusiness generalcontractor plumber electrician roofingcontractor hvacbusiness housepainter locksmith movingcompany autorepair autodealer autobodyshop autopartsstore autorental automotivebusiness autowash gasstation motorcycledealer motorcyclerepair legalservice attorney notary accountingservice financialservice insuranceagency bankorcreditunion lodgingbusiness hotel motel bedandbreakfast hostel campground resort vacationrental sportsactivitylocation exercisegym healthclub golfcourse sportsclub bowlingalley skiresort stadiumorarena publicswimmingpool entertainmentbusiness nightclub movietheater amusementpark artgallery casino comedyclub professionalservice travelagency childcare drycleaningorlaundry employmentagency emergencyservice library recyclingcenter selfstorage shoppingcenter touristinformationcenter animalshelter archiveorganization governmentoffice internetcafe radiostation televisionstation petstore jewelrystore furniturestore clothingstore florist grocerystore hardwarestore homegoodsstore bookstore bikestore shoestore sportinggoodsstore toystore electronicsstore liquorstore mobilephonestore musicstore officeequipmentstore outletstore pawnshop computerstore conveniencestore departmentstore gardenstore hobbyshop tirestore wholesalestore`.split(/\s+/))
-const ORG_TYPES = new Set('organization corporation onlinestore onlinebusiness ngo educationalorganization medicalorganization sportsorganization performinggroup musicgroup newsmediaorganization researchorganization airline consortium cooperative fundingscheme governmentorganization librarysystem politicalparty project workersunion person brand'.split(' '))
+export const ORG_TYPES = new Set('organization corporation onlinestore onlinebusiness ngo educationalorganization medicalorganization sportsorganization performinggroup musicgroup newsmediaorganization researchorganization airline consortium cooperative fundingscheme governmentorganization librarysystem politicalparty project workersunion person brand'.split(' '))

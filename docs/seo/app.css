@@ -1,3 +1,4 @@
+[hidden] { display: none !important; }
 /* SEO 360 — jetons de couleur contrôlés WCAG 2.2 AA (texte ≥ 4,5:1 sur leur fond) */
 :root {
   --bg: #f6f7fb; --surface: #ffffff; --surface-2: #f0f2f8; --line: #dfe3ec; --text: #141827; --muted: #4f586c;
@@ -281,7 +282,11 @@ input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
 .htag .lvl { font-family: var(--font); font-size: .72rem; color: var(--muted); margin-left: 4px; }
 label.visible-label { display: block; font-weight: 700; margin: 0 0 6px; }
 @media (max-width: 560px) {
-  .tabs { flex-wrap: wrap; -webkit-mask-image: none; mask-image: none; padding-right: 0; overflow: visible; }
+  /* Une seule ligne d'onglets qui défile (un en-tête collant sur 3 lignes masquait les titres), barre de défilement visible */
+  .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-mask-image: none; mask-image: none; padding-right: 0; scrollbar-width: thin; }
+  .brand span { display: none; }
+  .hero h1 { font-size: 1.3rem; margin-top: 4px; }
+  .hero .lede { font-size: .92rem; }
   .export-menu[open] > .menu { right: auto; left: 0; }
 }
 .demo-note { background: var(--info-bg); color: var(--text); border-left: 4px solid var(--info); padding: 10px 14px; border-radius: 10px; font-weight: 500; }

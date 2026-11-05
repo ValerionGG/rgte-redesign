@@ -1,13 +1,13 @@
 // Budget publicitaire en ligne de commande, sans audit de site.
 // node seo/cli.mjs budget --secteur <id> [--objectif leads|ventes|notoriete|trafic|telechargements] [--budget €/mois]
 //      [--valeur €] [--marge %] [--signature %] [--objectif-conv n] [--cpc €] [--volume n] [--local|--national] [--json]
-import { planBudget, preSpendChecks, GOALS } from './engine/ads.js'
+import { planBudget, preSpendChecks, GOALS, defaultGoal } from './engine/ads.js'
 import { budgetSection } from './engine/report.js'
 import { SECTORS } from './data/sectors.js'
 
 export function main(args) {
   const opt = (n, d) => { const i = args.indexOf('--' + n); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : d }
-  const sector = opt('secteur', 'autre'), goal = opt('objectif', 'leads')
+  const sector = opt('secteur', 'autre'), goal = opt('objectif', null) || defaultGoal(sector)
   if (!SECTORS.some((s) => s.id === sector)) { console.error(`Secteur inconnu : ${sector}. Valeurs : ${SECTORS.map((s) => s.id).join(', ')}`); process.exitCode = 1; return }
   if (!GOALS[goal]) { console.error(`Objectif inconnu : ${goal}. Valeurs : ${Object.keys(GOALS).join(', ')}`); process.exitCode = 1; return }
   const num = (n) => { const v = opt(n, null); return v == null || v === true ? null : +v }

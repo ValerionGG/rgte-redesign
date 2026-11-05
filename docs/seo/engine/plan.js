@@ -20,7 +20,35 @@ export const timeOf = (effort) => ['15 min', '15 min', '1 h', '½ journée', '2 
 const gain = (i) => i.impact * 3 + (6 - i.effort) * 2
 const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').slice(0, 40)
 
-export function actionPlan(result, { local = false, hasAds = false, kind = 'site' } = {}) {
+// Lien de profil social (Instagram, TikTok…) : le compte n'est pas lisible, le plan porte sur ce que le dirigeant peut faire lui-même.
+function socialPlan({ network, handle }, { hasAds }) {
+  const ex = (step, who, time, title) => ({ id: `x:${step}:${slug(title)}`, title, who, time, extra: true })
+  const steps = [
+    { id: 'semaine', title: 'Cette semaine', why: `Votre profil ${network} (@${handle}) : ce qui se règle en une semaine.`, items: [], extra: [
+      ex('semaine', 'Vous', '15 min', 'Bio : dire en une phrase quoi, où et pour qui, avec un lien vers votre page de commande, de réservation ou de contact'),
+      ex('semaine', 'Vous', '15 min', 'Exporter les statistiques des 90 derniers jours (Meta Business Suite, TikTok Studio, LinkedIn ou YouTube Studio) et les envoyer à Claude pour un diagnostic chiffré'),
+      ex('semaine', 'Vous', '½ journée', 'Publier 3 vidéos courtes : une coulisse, un produit ou service, une réponse à une question de client ; 3 à 5 hashtags de niche (onglet Mots-clés & réseaux). Scripts prêts à filmer : demandez-les à Claude (skill contenus-reseaux-video)'),
+    ] },
+    { id: 'j30', title: 'Dans les 30 jours', why: 'Un rythme tenable et un profil relié à votre site.', items: [], extra: [
+      ex('j30', 'Vous', '2 h par semaine', 'Tenir 3 publications par semaine pendant 4 semaines, calées sur les temps forts du calendrier (onglet Mots-clés & réseaux)'),
+      ex('j30', 'Vous ou webmaster', '15 min', 'Relier le profil et le site : lien du profil vers le site, et lien du site (pied de page) vers le profil'),
+      ex('j30', 'Vous', '10 min par jour', 'Répondre à chaque commentaire et message sous 24 h'),
+    ] },
+    { id: 'j60', title: 'Dans les 60 jours', why: 'Garder ce qui marche, arrêter le reste.', items: [], extra: [
+      ex('j60', 'Vous', '1 h', 'Garder les 3 formats qui ont le plus de partages et d’enregistrements, arrêter les autres'),
+      ex('j60', 'Vous', '½ journée', 'Une collaboration locale par mois : commerce voisin, fournisseur ou client fidèle'),
+      ...(hasAds ? [ex('j60', 'Vous', '15 min', 'Booster les 2 meilleures publications (5 à 10 € par jour, 7 jours), seulement si un contact ou une vente est mesuré')] : []),
+    ] },
+    { id: 'j90', title: 'Dans les 90 jours', why: 'Mesurer et étendre.', items: [], extra: [
+      ex('j90', 'Vous', '30 min', 'Comparer avec l’export du jour 0 : abonnés, portée hors abonnés, clics vers le site, messages reçus'),
+      ex('j90', 'Vous', '5 min', 'Relancer SEO 360 avec l’adresse de votre site, s’il existe, pour le référencement Google et la fiche Google'),
+    ] },
+  ]
+  const kpis = [['Abonnés', 'à relever'], ['Portée hors abonnés (moyenne par publication)', 'à relever'], ['Clics vers le site', 'à relever'], ['Messages et demandes reçus', 'à relever']].map(([kpi, now]) => ({ kpi, now, target: 'en hausse sur 90 jours' }))
+  return { steps, week: steps[0].extra.slice(0, 3), kpis, social: true }
+}
+export function actionPlan(result, { local = false, hasAds = false, kind = 'site', social = null } = {}) {
+  if (social) return socialPlan(social, { hasAds })
   const issues = (result?.issues || []).map((i) => ({ ...i, who: ownerOf(i), time: timeOf(i.effort) }))
   const used = new Set()
   const take = (list, n) => { const out = list.filter((i) => !used.has(i)).slice(0, n); out.forEach((i) => used.add(i)); return out }

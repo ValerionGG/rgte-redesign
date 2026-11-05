@@ -1,11 +1,11 @@
 // Orchestration : une URL (site), un lien d'app ou un dépôt GitHub → rapport complet.
 import { collect } from './collect.js'
-import { audit, CATEGORIES, SEVERITY } from './audit.js'
+import { audit, CATEGORIES, SEVERITY, LOCAL_TYPES, ORG_TYPES } from './audit.js'
 import { runPSI } from './psi.js'
 import { actionPlan } from './plan.js'
 import { generateHashtags } from './hashtags.js'
 import { keywordIdeas } from './keywords.js'
-import { planBudget, preSpendChecks, GOALS } from './ads.js'
+import { planBudget, preSpendChecks, GOALS, defaultGoal } from './ads.js'
 import { fetchRepo, auditRepo, parseRepo, GH_CATS } from './github.js'
 import { parseStoreUrl, lookupIOS, auditIOS, auditPlayHtml, ASO_CATS } from './appstore.js'
 import { sectorById } from '../data/sectors.js'
@@ -44,7 +44,8 @@ export function detectKind(u) {
 }
 
 export async function analyze(target, o = {}) {
-  const input = { sector: 'autre', goal: 'leads', monthly: null, lang: 'fr', ...o.input }
+  const input = { sector: 'autre', monthly: null, lang: 'fr', ...o.input }
+  input.goal ||= defaultGoal(input.sector)
   const kind = o.kind || detectKind(target)
   const sector = sectorById(input.sector)
   const local = input.local ?? sector.local
@@ -88,13 +89,22 @@ export async function analyze(target, o = {}) {
   report.keywords = keywordIdeas({ seed: input.keyword || terms[0] || '', sector: input.sector, city: input.city, local })
   report.budget = planBudget({ sector: input.sector, goal: kind === 'app' ? 'telechargements' : input.goal, monthly: input.monthly == null || input.monthly === '' ? null : +input.monthly, local, avgValue: +input.avgValue || 0, margin: input.margin, closeRate: input.closeRate, targetConversions: +input.targetConversions || 0 })
   report.budget.checks = preSpendChecks(report)
-  report.plan = actionPlan(report.result, { local, hasAds: +input.monthly > 0, kind })
+  report.plan = actionPlan(report.result, { local, hasAds: +input.monthly > 0, kind, social: report.social })
   return report
 }
 
 const normalize = (u) => (/^https?:/i.test(u) ? u : 'https://' + String(u).trim())
 
 // On ne garde pas le HTML brut dans le rapport (poids), seulement les éléments utiles.
+// Nœud JSON-LD principal (LocalBusiness ou Organization) : le correctif le complète au lieu de le remplacer.
+function mainSchema(list) {
+  const nodes = (list || []).flatMap((n) => (Array.isArray(n) ? n : [n])).flatMap((n) => (n && n['@graph'] ? n['@graph'] : [n]))
+  const isMain = (n) => n && typeof n === 'object' && [].concat(n['@type'] || []).some((t) => LOCAL_TYPES.has(String(t).toLowerCase()) || ORG_TYPES.has(String(t).toLowerCase()))
+  const hit = nodes.find((n) => isMain(n) && [].concat(n['@type']).some((t) => LOCAL_TYPES.has(String(t).toLowerCase()))) || nodes.find(isMain)
+  if (!hit) return null
+  const { '@context': _, ...rest } = hit
+  return JSON.stringify(rest).length <= 6000 ? rest : null
+}
 export function slim(ctx) {
   const p = ctx.page
   return {
@@ -104,7 +114,7 @@ export function slim(ctx) {
     page: p && {
       title: p.title, metaDescription: p.metaDescription, lang: p.lang, canonical: p.canonical, h: p.headings.slice(0, 40), wordCount: p.wordCount,
       images: p.images.length, imagesNoAlt: p.images.filter((i) => i.alt === null).length, links: p.links.length, og: p.og, twitter: p.twitter,
-      jsonLdCount: p.jsonLd.length, htmlKb: Math.round(p.htmlBytes / 1024), scripts: p.scripts.length, hreflang: p.hreflang,
+      jsonLdCount: p.jsonLd.length, mainSchema: mainSchema(p.jsonLd), htmlKb: Math.round(p.htmlBytes / 1024), scripts: p.scripts.length, hreflang: p.hreflang,
       intro: p.paragraphs.find((t) => t.length >= 60 && !/cookie|javascript/i.test(t)) || '', icons: p.icons,
       firstImage: p.images.find((i) => i.src && !/1x1|pixel|logo|icon|\.svg/i.test(i.src))?.src || '',
       imagesSample: p.images.filter((i) => i.src).slice(0, 6).map((i) => i.src), noAltSample: p.images.filter((i) => i.src && i.alt === null && !i.decorative).slice(0, 8).map((i) => i.src),

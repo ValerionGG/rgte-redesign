@@ -4,7 +4,7 @@
 import { analyze, competitorSummary, detectKind, SEVERITY, GOALS } from './engine/index.js'
 import { toMarkdown, staleNote } from './engine/report.js'
 import { generateHashtags } from './engine/hashtags.js'
-import { planBudget, preSpendChecks } from './engine/ads.js'
+import { planBudget, preSpendChecks, defaultGoal } from './engine/ads.js'
 import { keywordIdeas, googleSuggest, classify, INTENTS } from './engine/keywords.js'
 import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
@@ -51,6 +51,10 @@ const S = { ai: {}, live: { reports: [], conseil: [], status: 'off', first: fals
 const form = $('#form')
 $('#f-sector').innerHTML = `<option value="">Choisissez votre secteur…</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
 $('#f-goal').innerHTML = Object.entries(GOALS).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')
+// Objectif par défaut selon le secteur (une boutique en ligne vend), tant que l'utilisateur ne l'a pas choisi lui-même
+let goalTouched = false
+$('#f-goal').addEventListener('change', () => { goalTouched = true })
+$('#f-sector').addEventListener('change', () => { if (!goalTouched) $('#f-goal').value = defaultGoal($('#f-sector').value) })
 for (const [k, v] of Object.entries(store.get('form', {}))) { const el = form.elements[k]; if (el && el.type !== 'file' && !['html', 'robotsTxt', 'psiKey', 'githubToken'].includes(k)) el.value = v }
 form.elements.psiKey.value = sess.get('psiKey'); form.elements.githubToken.value = sess.get('githubToken')
 const vals = () => {
@@ -84,7 +88,7 @@ function refreshDerived() {
   r.keywords = keywordIdeas({ seed: v.keyword || terms[0] || '', sector: v.sector, city: v.city, local: v.local })
   r.budget = planBudget({ sector: v.sector, goal: r.kind === 'app' ? 'telechargements' : v.goal, monthly: v.monthly, local: v.local, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, targetConversions: store.get('target', 0), searchVolume: store.get('volume', 0), cpcOverride: store.get('cpc', 0) })
   r.budget.checks = preSpendChecks(r)
-  r.plan = actionPlan(r.result, { local: v.local ?? sectorById(v.sector).local, hasAds: !!v.monthly, kind: r.kind })
+  r.plan = actionPlan(r.result, { local: v.local ?? sectorById(v.sector).local, hasAds: !!v.monthly, kind: r.kind, social: r.social || null })
   S.fixes = r.result ? buildFixes(r) : {}
 }
 
@@ -167,7 +171,8 @@ async function run({ bundle } = {}) {
   if (!form.elements.sector.value && !bundle) { progress('Choisissez votre secteur : il sert aux mots-clés, hashtags et budgets.', 'err'); fieldError(form.elements.sector, 'Choisissez votre secteur : il sert aux mots-clés, aux hashtags et au budget.'); return }
   if (ARTIFACT && !bundle && !(v.html || '').trim()) { progress(ARTIFACT_MSG, 'err'); return }
   const kind = bundle ? 'site' : detectKind(target)
-  const pasted = !bundle && v.html?.trim() ? { url: target, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
+  const pastedUrl = /^https?:\/\//i.test(target) ? target : 'https://' + target.replace(/^\/+/, '')
+  const pasted = !bundle && v.html?.trim() ? { url: pastedUrl, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
   const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted)
   const canRead = bundle || pasted || kind !== 'site' || v.proxy !== 'none'
   const input = inputOf(v)
@@ -178,7 +183,7 @@ async function run({ bundle } = {}) {
   try {
     const comps = kind === 'site' && !bundle ? (v.competitors || '').split(/\s*[\n,;]\s*/).map((s) => s.trim()).filter(Boolean).slice(0, 5) : []
     const source = bundle ? 'bookmarklet' : pasted ? 'paste' : v.proxy === 'custom' ? 'worker' : 'proxy'
-    const common = { fetcher: canRead ? fetcher : null, noFetch: !canRead, source, psiKey: v.psiKey, githubToken: v.githubToken, input, onProgress: (m) => { step = m } }
+    const common = { fetcher: canRead ? fetcher : null, noFetch: !canRead, source, psiKey: v.psiKey, githubToken: v.githubToken, input, onProgress: (m) => { step = m }, ...(ARTIFACT ? { psi: false } : {}) }
     if (bundle?.rendered) common.rendered = { wordCount: extract(bundle.rendered, bundle.url).wordCount }
     const job = Promise.all([
       analyze(target, { ...common, kind, crawl: bundle ? bundle.pages.length + 1 : pasted || v.proxy === 'none' ? 0 : v.crawl }),
@@ -286,6 +291,7 @@ document.addEventListener('click', (e) => {
   const g = t.closest('[data-go]'); if (g) { e.preventDefault(); go(g.dataset.go) }
   const rs = t.closest('[data-res]'); if (rs) { e.preventDefault(); S.res = rs.dataset.res; go('ressources') }
   if (t.closest('.export-menu .menu .btn')) t.closest('details.export-menu')?.removeAttribute('open')
+  if (t.closest('[data-edit-goal]')) { collapseHero(false); $('details.more').open = true; form.elements.goal.focus(); form.elements.goal.scrollIntoView({ block: 'center' }) }
   if (t.closest('[data-send-self]')) {
     const url = location.href.split('#')[0], title = 'SEO 360 : finir mon audit sur ordinateur'
     if (navigator.share) navigator.share({ title, url }).catch(() => {})
@@ -715,7 +721,7 @@ function budget() {
   const ind = bench.google_ads_by_industry || []
   const ck = r ? preSpendChecks(r, b) : null
   const susp = ck?.blocked && ['ok', 'test'].includes(b.verdict.level)
-  return `<div class="section-head"><div><h2>Budget publicitaire</h2><p>${esc(b.sector)} · ${esc(b.goalLabel)} · ${b.local ? 'zone locale' : 'national'}</p></div></div>
+  return `<div class="section-head"><div><h2>Budget publicitaire</h2><p>${esc(b.sector)} · objectif : <b>${esc(b.goalLabel)}</b> <button class="linkish" type="button" data-edit-goal>changer</button> · ${b.local ? 'zone locale' : 'national'}</p></div></div>
   <div class="card verdict-card v-${susp ? 'inconnu' : b.verdict.level}"><p class="verdict">${susp ? 'Sur le papier : ' : ''}${esc(b.verdict.text)}</p>${susp ? `<p><b>${esc(ck.message)}</b></p>` : ''}${b.verdict.detail ? `<p class="note">${esc(b.verdict.detail)}</p>` : ''}</div>
   ${ck ? `<div class="card" style="margin-top:14px"><h3>Contrôle avant dépense</h3><p class="note">${esc(ck.message)}</p><ul class="clean checks">${ck.checks.map((c) => `<li><span class="chip ${c.status === '✓' ? 'sev-ok' : c.status === '✗' ? 'sev-critique' : 'tag'}" aria-label="${c.status === '✓' ? 'vérifié' : c.status === '✗' ? 'manquant' : 'à vérifier'}">${c.status}</span> <b>${esc(c.label)}</b> — <span class="note">${esc(c.detail)}</span></li>`).join('')}</ul></div>` : ''}
   <div class="card" style="margin-top:14px"><h3>Vos chiffres</h3><div class="grid">
@@ -914,7 +920,7 @@ if (staleNote()) { const w = document.createElement('p'); w.className = 'demo-no
 if (ARTIFACT) {
   const n = document.createElement('p')
   n.className = 'demo-note'; n.id = 'artifact-note'; n.setAttribute('role', 'note')
-  n.textContent = 'Dans cette page, SEO 360 ne peut pas lire un site lui-même. Trois façons d’avoir votre audit : demandez-le à Claude dans la conversation (« audite mon-site.fr ») et il apparaît ici, collez le code de votre page dans « Plus d’options », ou ouvrez l’exemple.'
+  n.textContent = 'Dans cette page, SEO 360 ne peut pas lire un site lui-même. Pour avoir votre audit : collez le code de votre page dans « Plus d’options », ou demandez-le à Claude dans la conversation (« audite mon-site.fr »), ou ouvrez l’exemple.'
   $('#hero .hero-full')?.prepend(n)
   const ex = document.createElement('button')
   ex.type = 'button'; ex.className = 'btn primary'; ex.dataset.exemple = ''; ex.textContent = 'Voir un exemple de rapport'

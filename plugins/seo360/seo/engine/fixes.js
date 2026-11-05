@@ -2,7 +2,7 @@
 // réseaux détectés…) et non de gabarits à trous. Ce qui n'est pas connu est omis plutôt qu'inventé.
 // Chaque correctif : { label, lang: 'html'|'text'|'json'|'apache'|'nginx', value, note? }
 import { sectorById } from '../data/sectors.js'
-import { ROBOTS_TEMPLATE } from './robots.js'
+import { ROBOTS_TEMPLATE, mergeRobots } from './robots.js'
 
 // Mots qui ne peuvent pas finir une phrase coupée (« au beurre AOP, à… » → « au beurre AOP… »).
 const DANGLING = /\s+(?:à|au|aux|de|des|du|d[’']|en|et|ou|le|la|les|l[’']|un|une|pour|par|avec|sur|sous|dans|chez|vers|son|sa|ses|leur|leurs|nos|notre|vos|votre|ce|cet|cette|ces|qui|que|dont|plus|très)$/i
@@ -58,7 +58,8 @@ export function suggestDescription(f) {
   const end = intro.lastIndexOf('. '), comma = intro.lastIndexOf(', ')
   if (end >= 60) intro = intro.slice(0, end + 1)
   else if (/…$/.test(intro) && comma >= 60) intro = intro.slice(0, comma) + '.'
-  let base = text ? intro : `${cap(f.keyword || f.h1 || f.sector.keywords[0])}${f.city ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
+  const subj = cap(f.keyword || f.h1 || f.sector.keywords[0])
+  let base = text ? intro : `${subj}${f.city && !norm(subj).includes(norm(f.city)) ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
   // Le mot-clé principal doit figurer dans la description (c'est un contrôle de l'audit)
   if (f.keyword && !norm(base).includes(norm(f.keyword))) {
     const head = `${cap(f.keyword)} : `
@@ -67,17 +68,20 @@ export function suggestDescription(f) {
   return `${base.replace(/…$/, '.')} ${cta}`.replace(/\.\./g, '.').trim()
 }
 
+// Part du balisage déjà présent (type précis, zone desservie, horaires…) et ne complète que ce qui manque.
 export function jsonLd(f, { local } = {}) {
   const type = f.sector.schema.find((t) => t !== 'Product' && t !== 'Offer' && t !== 'FAQPage') || 'Organization'
-  const o = { '@context': 'https://schema.org', '@type': local ? type : (type === 'LocalBusiness' ? 'Organization' : type) }
-  if (f.brand) o.name = f.brand
-  o.url = f.origin + '/'
+  const base = f.page?.mainSchema && typeof f.page.mainSchema === 'object' ? f.page.mainSchema : null
+  const o = base ? { '@context': 'https://schema.org', ...base } : { '@context': 'https://schema.org', '@type': local ? type : (type === 'LocalBusiness' ? 'Organization' : type) }
+  const sab = !!(o.areaServed || o.serviceArea)
+  if (f.brand && !o.name) o.name = f.brand
+  if (!o.url) o.url = f.origin + '/'
   const logo = f.page.icons?.find?.((i) => /apple-touch|192|512/.test(i.sizes + i.rel))?.href
-  if (logo) o.logo = logo
-  if (f.image) o.image = f.image
-  if (f.phone) o.telephone = intlPhone(f.phone)
-  if (local && f.address) o.address = { '@type': 'PostalAddress', ...(f.address.street ? { streetAddress: f.address.street } : {}), postalCode: f.address.postalCode, addressLocality: f.address.locality, addressCountry: 'FR' }
-  if (f.sameAs.length) o.sameAs = f.sameAs
+  if (logo && !o.logo) o.logo = logo
+  if (f.image && !o.image) o.image = f.image
+  if (f.phone && !o.telephone) o.telephone = intlPhone(f.phone)
+  if (local && f.address && !o.address && !sab) o.address = { '@type': 'PostalAddress', ...(f.address.street ? { streetAddress: f.address.street } : {}), postalCode: f.address.postalCode, addressLocality: f.address.locality, addressCountry: 'FR' }
+  if (f.sameAs.length) o.sameAs = [...new Set([...[].concat(o.sameAs || []), ...f.sameAs])]
   return `<script type="application/ld+json">\n${JSON.stringify(o, null, 2)}\n</script>`
 }
 
@@ -118,7 +122,8 @@ export function buildFixes(report) {
   put('favicon', { label: 'Icônes', lang: 'html', value: '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n<link rel="icon" href="/favicon-48.png" sizes="48x48">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">' })
   put('apple-icon', { label: 'Icône iOS', lang: 'html', value: '<link rel="apple-touch-icon" href="/apple-touch-icon.png">', note: 'PNG 180 × 180 px.' })
   const ld = jsonLd(f, { local })
-  for (const id of ['schema-none', 'schema-sector', 'schema-org', 'localbusiness', 'sameas']) put(id, { label: 'Données structurées (avec ce qui a été détecté sur la page)', lang: 'html', value: ld, note: 'Ajoutez les horaires (openingHoursSpecification) et l’adresse exacte si absents. Testez sur search.google.com/test/rich-results.' })
+  const ldBase = !!f.page?.mainSchema, ldHours = /openingHoursSpecification/.test(ld)
+  for (const id of ['schema-none', 'schema-sector', 'schema-org', 'localbusiness', 'sameas']) put(id, { label: ldBase ? 'Données structurées : votre balisage, complété (rien n’est retiré)' : 'Données structurées (avec ce qui a été détecté sur la page)', lang: 'html', value: ld, note: ldHours ? 'Remplacez le bloc existant par celui-ci, puis testez-le sur search.google.com/test/rich-results.' : 'Ajoutez les horaires (openingHoursSpecification) et l’adresse exacte si absents. Testez sur search.google.com/test/rich-results.' })
   put('hours', { label: 'Horaires structurés (à ajouter dans le JSON-LD)', lang: 'json', value: JSON.stringify({ openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' }] }, null, 2), note: 'Adaptez les jours et heures.' })
   try {
     const parts = new URL(f.url).pathname.split('/').filter(Boolean)
@@ -130,8 +135,13 @@ export function buildFixes(report) {
   put('gbp-link', { label: 'Lien vers la fiche Google', lang: 'html', value: '<a href="https://maps.app.goo.gl/VOTRE-LIEN" rel="noopener">Itinéraire et avis Google</a>', note: 'Lien « Partager » de votre fiche Google Maps.' })
   const socials = f.sameAs
   put('social-links', { label: 'Liens vers vos réseaux (pied de page)', lang: 'html', value: (socials.length ? socials : ['https://www.instagram.com/votre-compte', 'https://www.linkedin.com/company/votre-entreprise']).map((u) => `<a href="${escAttr(u)}" aria-label="${escAttr(netName(u))} de ${escAttr(f.brand || 'notre entreprise')}" rel="me noopener">…icône…</a>`).join('\n') })
-  put('robots-ai-search', { label: 'robots.txt (base à adapter)', lang: 'text', value: robotsTxt(f.origin) })
-  for (const id of ['robots-block', 'robots-all', 'robots-bing', 'robots-missing', 'robots-sitemap', 'robots-assets']) put(id, out['robots-ai-search'])
+  // robots.txt : on part du fichier lu (règles conservées) ; le modèle de base ne sert que sans fichier ou pour un blocage total
+  const rbody = report.ctx?.robots?.body || '', bots = R.meta?.bots || []
+  const blockedAI = bots.filter((b) => !b.allowed && (b.kind === 'ia-recherche' || b.kind === 'ia-utilisateur')).map((b) => b.ua)
+  const merged = (list) => ({ label: rbody ? 'Votre robots.txt corrigé (vos autres règles sont conservées)' : 'robots.txt (base à adapter)', lang: 'text', value: mergeRobots(rbody, f.origin, list) })
+  put('robots-ai-search', merged(blockedAI)); put('robots-ai-user', merged(blockedAI))
+  put('robots-bing', merged(['Bingbot'])); put('robots-sitemap', merged([]))
+  for (const id of ['robots-block', 'robots-all', 'robots-missing', 'robots-assets']) put(id, { label: 'robots.txt (base à adapter : reprenez-y vos règles utiles, par exemple /admin)', lang: 'text', value: robotsTxt(f.origin) })
   put('llms', { label: '/llms.txt', lang: 'text', value: llmsTxt(f, report) })
   const urls = (report.ctx?.crawl?.pages || []).filter((x) => x.status === 200).map((x) => x.url)
   put('sitemap', { label: 'sitemap.xml (pages explorées)', lang: 'html', value: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${(urls.length ? urls : [f.origin + '/']).slice(0, 50).map((u) => `  <url><loc>${escAttr(u)}</loc><lastmod>${new Date().toISOString().slice(0, 10)}</lastmod></url>`).join('\n')}\n</urlset>`, note: 'Mieux : activez le sitemap automatique de votre CMS (WordPress : Yoast / Rank Math ; Shopify et Wix : natif).' })
@@ -170,7 +180,9 @@ export function buildFixes(report) {
     const uniq = pages.slice(0, 15).map((x) => { const subj = cap(x.h1 || decodeURIComponentSafe(new URL(x.url).pathname.split('/').filter(Boolean).pop() || 'Accueil').replace(/[-_]/g, ' ')); return `${x.url}\n  <title>${escAttr(cut(subj + (f.brand && !norm(subj).includes(norm(f.brand)) ? ' | ' + f.brand : ''), 60))}</title>` }).join('\n')
     for (const id of ['dup-title', 'dup-desc', 'crawl-desc', 'crawl-h1']) put(id, { label: 'Un titre unique par page (à partir de leur H1)', lang: 'text', value: uniq, note: 'Écrivez ensuite une meta description propre à chaque page.' })
   }
-  const outline = `<h1>${escAttr(cap(f.keyword || f.h1 || f.sector.keywords[0]))}${f.city ? ' à ' + escAttr(f.city) : ''}</h1>\n<p>[Réponse directe en 2 phrases : ce que vous proposez, pour qui, votre preuve chiffrée.]</p>\n<h2>Nos ${escAttr(f.sector.keywords[0])}s : ce qui nous distingue</h2>\n<h2>Combien ça coûte ?</h2>\n<h2>Comment se passe une commande / un devis ?</h2>\n<h2>Nos réalisations (photos, avis clients)</h2>\n<h2>Questions fréquentes</h2>`
+  const h1Subj = cap(f.keyword || f.h1 || f.sector.keywords[0])
+  // La ville n'est ajoutée que si le sujet ne la contient pas déjà (sinon « à Lyon à Lyon »)
+  const outline = `<h1>${escAttr(h1Subj)}${f.city && !norm(h1Subj).includes(norm(f.city)) ? ' à ' + escAttr(f.city) : ''}</h1>\n<p>[Réponse directe en 2 phrases : ce que vous proposez, pour qui, votre preuve chiffrée.]</p>\n<h2>Nos ${escAttr(f.sector.keywords[0])}s : ce qui nous distingue</h2>\n<h2>Combien ça coûte ?</h2>\n<h2>Comment se passe une commande / un devis ?</h2>\n<h2>Nos réalisations (photos, avis clients)</h2>\n<h2>Questions fréquentes</h2>`
   for (const id of ['thin', 'crawl-thin', 'h2']) put(id, { label: 'Plan de page à rédiger (500 mots utiles minimum)', lang: 'html', value: outline })
   put('heading-order', { label: 'Hiérarchie des titres', lang: 'html', value: '<h1>Sujet de la page</h1>\n  <h2>Partie</h2>\n    <h3>Sous-partie</h3>\n  <h2>Partie suivante</h2>', note: 'Ne sautez pas de niveau (H2 → H4) ; le style visuel se règle en CSS.' })
   const imgs = report.ctx?.page?.imagesSample || []

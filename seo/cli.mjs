@@ -13,7 +13,7 @@ import { googleSuggest } from './engine/keywords.js'
 import { decodeBody } from './engine/decode.js'
 import { blockedReason } from './engine/collect.js'
 import { SECTORS } from './data/sectors.js'
-import { GOALS } from './engine/ads.js'
+import { GOALS, defaultGoal } from './engine/ads.js'
 
 // Par défaut, un agent de navigateur : beaucoup de pare-feu refusent les robots inconnus (on le détecte et le signale).
 const UAS = {
@@ -121,7 +121,7 @@ async function fetchAs(url, UA, { noFollow = false } = {}) {
 
 const input = {
   sector: opt('secteur', 'autre'), keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',
-  goal: opt('objectif', 'leads'), monthly: opt('budget', null) == null ? null : +opt('budget'), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
+  goal: opt('objectif', null) || defaultGoal(opt('secteur', 'autre')), monthly: opt('budget', null) == null ? null : +opt('budget'), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
   margin: opt('marge', null) == null ? null : +opt('marge') / 100, closeRate: opt('signature', null) == null ? null : +opt('signature') / 100,
 }
 if (opt('local')) input.local = true
@@ -195,6 +195,8 @@ if (R) {
   for (const s of Object.values(R.scores)) log(`  ${s.score == null ? '  —' : String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
   if (report.plan?.week?.length) { log('\nVos 3 actions cette semaine :'); for (const i of report.plan.week) log(`  • ${i.title} (${i.who}${i.time ? ', ' + i.time : ''})`) }
   if (report.drift) log(`\nDérive après refonte : ${report.drift.verdict}${report.drift.items.length ? '\n' + report.drift.items.filter((i) => i.level !== 'info').slice(0, 8).map((i) => `  [${i.level}] ${i.rule} — ${i.url}`).join('\n') : ''}`)
+  const df = report.drift
+  if (df && (df.fixed?.length || df.added?.length)) log(`${df.note ? df.note + ' ' : ''}Corrigés et vérifiés : ${df.fixed.length}${df.fixed.length ? ' (' + df.fixed.slice(0, 5).map((x) => x.title).join(' ; ') + ')' : ''} · nouveaux : ${df.added.length}${df.added.length ? ' (' + df.added.slice(0, 3).map((x) => x.title).join(' ; ') + ')' : ''}`)
   if (report.budget?.verdict) log(`\nPublicité : ${report.budget.verdict.text}${report.budget.checks?.blocked ? `\n  ⚠️  ${report.budget.checks.message}` : ''}`)
 }
 log(`\n📄 Rapport : ${join(out, slug + '.md')}\n🧾 Données : ${join(out, slug + '.json')} (importable dans l’interface web)`)

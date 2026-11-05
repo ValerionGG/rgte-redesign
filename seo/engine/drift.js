@@ -61,8 +61,13 @@ export function compareReports(before, after) {
   const counts = { critique: 0, alerte: 0, info: 0 }
   for (const i of items) counts[i.level]++
   const gb = before?.result?.global, ga = after?.result?.global
+  // Boucle « corriger puis revérifier » : constats disparus (corrigés et vérifiés) et constats nouveaux, comme dans l'interface
+  const titleOf = (rep) => new Map((rep?.result?.issues || []).map((i) => [i.id, i.title]))
+  const tb = titleOf(before), ta = titleOf(after)
+  const fixed = [...tb].filter(([id]) => !ta.has(id)).map(([id, title]) => ({ id, title }))
+  const added = [...ta].filter(([id]) => !tb.has(id)).map(([id, title]) => ({ id, title }))
   return {
-    avant: before?.generatedAt || '', apres: after?.generatedAt || '', pagesCompared: compared, counts, items: items.slice(0, 200),
+    avant: before?.generatedAt || '', apres: after?.generatedAt || '', pagesCompared: compared, counts, items: items.slice(0, 200), fixed, added,
     note: gb != null && ga != null ? `Note ${gb} → ${ga}.` : '',
     verdict: counts.critique ? `${counts.critique} problème(s) critique(s) : à corriger immédiatement (perte de trafic probable).` : counts.alerte ? `${counts.alerte} alerte(s) à corriger cette semaine.` : compared ? 'Aucune dérive importante détectée sur les pages comparées.' : 'Aucune page commune aux deux rapports : comparez deux audits du même site (même URL de départ, crawl activé).',
   }
@@ -70,6 +75,8 @@ export function compareReports(before, after) {
 
 export function driftMarkdown(d) {
   const L = ['## Dérive après refonte', '', `**${d.verdict}** ${d.note}`, '', `${d.pagesCompared} page(s) comparée(s) · ${d.counts.critique} critique(s) · ${d.counts.alerte} alerte(s) · ${d.counts.info} info(s)`, '']
+  if (d.fixed?.length) L.push(`**Corrigés et vérifiés (${d.fixed.length})** : ${d.fixed.map((x) => x.title).join(' · ')}`, '')
+  if (d.added?.length) L.push(`**Nouveaux constats (${d.added.length})** : ${d.added.map((x) => x.title).join(' · ')}`, '')
   if (d.items.length) L.push('| Gravité | Page | Changement | Avant | Après |', '|---|---|---|---|---|', ...d.items.slice(0, 60).map((i) => `| ${i.level} | ${i.url} | ${i.rule} | ${i.avant.replace(/\|/g, '/')} | ${i.apres.replace(/\|/g, '/')} |`), '')
   return L.join('\n')
 }

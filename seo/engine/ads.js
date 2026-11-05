@@ -75,8 +75,12 @@ function ranges(id, bench, goal) {
   return { cpc, cvr, cpm: p.cpm_eur?.[0] != null ? p.cpm_eur : null, p }
 }
 
-export function planBudget({ sector: sid = 'autre', goal = 'leads', monthly = null, b2b, local, avgValue = 0, margin = null, closeRate = null, targetConversions = 0, searchVolume = 0, cpcOverride = 0 } = {}) {
+// Objectif par défaut selon le secteur : une boutique en ligne vend, une application se télécharge, les autres cherchent des contacts.
+const SALES = new Set(['ecommerce', 'ecommerce-mode', 'maison-deco', 'luxe'])
+export const defaultGoal = (sid) => (SALES.has(sid) ? 'ventes' : sid === 'app-mobile' ? 'telechargements' : 'leads')
+export function planBudget({ sector: sid = 'autre', goal = null, monthly = null, b2b, local, avgValue = 0, margin = null, closeRate = null, targetConversions = 0, searchVolume = 0, cpcOverride = 0 } = {}) {
   const sector = sectorById(sid)
+  goal ||= defaultGoal(sid)
   b2b ??= sector.b2b; local ??= sector.local
   const unit = UNIT[goal] || 'conversion'
   const assumptions = {
