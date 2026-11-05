@@ -14,6 +14,7 @@ import { encodeReport, decodeReport, slimForShare } from './engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmarklet.js'
 import { extract } from './engine/html.js'
 import { gloss, GLOSSARY } from './engine/glossary.js'
+import { observedForHashtags } from './engine/veille.js'
 import { SECTORS, sectorById } from './data/sectors.js'
 import EXEMPLE from './data/exemple.js'
 import market from './data/research/competitors.js'
@@ -411,13 +412,14 @@ function visibilite() {
   const k = keywordIdeas({ seed, sector: v.sector, city: v.city, local: v.local })
   const opp = S.gsc ? opportunities(S.gsc) : []
   const extra = store.get('hkw', '')
-  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang })
+  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: observedForHashtags(S.veille) })
   const nets = Object.values(h.networks).sort((a, b) => (h.priority.indexOf(a.id) + 1 || 99) - (h.priority.indexOf(b.id) + 1 || 99))
   return `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.</p></div></div>
   <div class="card"><h3>Vos vraies requêtes Google (Search Console)</h3>
     ${opp.length ? `<p>≈ <b>+${fmt(opp.reduce((s, o) => s + o.gain, 0))} clics/mois</b> possibles (estimation prudente si chaque requête gagne le top 3).</p><div class="table-wrap"><table><thead><tr><th>${S.gsc.kind === 'pages' ? 'Page' : 'Requête'}</th><th class="n">Position</th><th class="n">Impressions</th><th class="n">CTR</th><th class="n">Gain ≈ clics/mois</th><th>Action</th></tr></thead><tbody>${opp.map((o) => `<tr><td>${esc(o.key)}</td><td class="n">${fmt(o.position, 1)}</td><td class="n">${fmt(o.impressions)}</td><td class="n">${fmt(o.ctr * 100, 1)} %</td><td class="n"><b>+${fmt(o.gain)}</b></td><td class="note">${esc(o.action)}</td></tr>`).join('')}</tbody></table></div><p class="note">Courbe de clics prudente (sans résumé IA). Période supposée : 3 mois (export par défaut).</p>`
       : `<p class="note">Search Console → Performances → Exporter → « Télécharger au format CSV », puis importez le fichier .zip tel quel. Rien n’est envoyé : il est lu dans votre navigateur.</p>`}
     <div class="row-inputs"><label>Export Search Console (.zip ou .csv)<input type="file" id="gsc-file" accept=".zip,.csv,text/csv,application/zip"></label>${S.gsc ? '<button class="btn sm" id="gsc-clear" type="button">Retirer les données</button>' : ''}</div></div>
+  ${veillePanel()}
   <div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
     ${S.suggestions.length ? `<p><b>Suggestions Google réelles</b> (ce que les gens tapent) :</p><div class="tags">${S.suggestions.map((s) => `<span class="chip tag" title="${esc(classify(s))}">${esc(s)}</span>`).join('')}</div><button class="btn sm" data-copy="${esc(S.suggestions.join('\n'))}">Copier</button>` : ''}
     <div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>
@@ -432,6 +434,11 @@ function visibilite() {
   <div class="card" style="margin-top:16px"><h3>À ne jamais utiliser</h3><p class="note">Hashtags d’engagement artificiel : signal de spam, portée réduite.</p><div class="tags">${h.banned.map((t) => `<span class="chip sev-critique">#${esc(t)}</span>`).join('')}</div></div>`
 }
 after.visibilite = () => {
+  $('#veille-file')?.addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return
+    try { const d = JSON.parse(await f.text()); if (d?.type !== 'seo360-veille') throw new Error(); S.veille = sanitizeVeille(d); store.set('veille', S.veille); render() } catch { toast('Fichier de veille invalide : utilisez celui produit par « node seo/cli.mjs veille »') }
+  })
+  $('#veille-clear')?.addEventListener('click', () => { S.veille = null; store.del('veille'); render() })
   $('#hkw')?.addEventListener('change', (e) => { store.set('hkw', e.target.value); render() })
   $('#suggest')?.addEventListener('click', autoSuggest)
   $('#gsc-file')?.addEventListener('change', async (e) => {
@@ -449,6 +456,39 @@ async function autoSuggest() {
   S.suggestions = await googleSuggest(seed).catch(() => [])
   if (S.report) S.report.suggestions = S.suggestions
   if (S.tab === 'visibilite') render()
+}
+
+// ───────── Veille sociale (Agent Reach) ─────────
+const httpUrl = (u) => (/^https?:\/\//i.test(u || '') ? u : '')
+function sanitizeVeille(d) {
+  const s = (v, n = 300) => String(v ?? '').slice(0, n), n0 = (v) => (Number.isFinite(+v) ? +v : 0)
+  return {
+    type: 'seo360-veille', sujet: s(d.sujet, 120), marque: s(d.marque, 80), generatedAt: isNaN(Date.parse(d.generatedAt)) ? '' : d.generatedAt, total: n0(d.total),
+    sources: (d.sources || []).slice(0, 30).map((x) => ({ channel: s(x.channel, 30), action: s(x.action, 30), query: s(x.query, 120), ok: !!x.ok, count: n0(x.count), error: x.error ? { code: s(x.error.code, 40), hint: s(x.error.hint || x.error.message, 300) } : null })),
+    questions: (d.questions || []).slice(0, 40).map((q) => ({ question: s(q.question, 200), url: httpUrl(s(q.url, 500)), channel: s(q.channel, 30) })),
+    hashtags: (d.hashtags || []).filter((h) => /^[a-z0-9_]{2,40}$/.test(h.tag)).slice(0, 40).map((h) => ({ tag: h.tag, camel: s(h.camel, 45), count: n0(h.count), channels: (h.channels || []).slice(0, 6).map((c) => s(c, 30)) })),
+    termes: { phrases: (d.termes?.phrases || []).slice(0, 20).map((t) => ({ term: s(t.term, 60), count: n0(t.count) })), words: (d.termes?.words || []).slice(0, 20).map((t) => ({ term: s(t.term, 40), count: n0(t.count) })) },
+    top: (d.top || []).slice(0, 15).map((t) => ({ title: s(t.title, 200), url: httpUrl(s(t.url, 500)), channel: s(t.channel, 30), engagement: n0(t.engagement) })),
+    mentions: (d.mentions || []).slice(0, 20).map((m) => ({ title: s(m.title, 200), url: httpUrl(s(m.url, 500)), channel: s(m.channel, 30) })),
+    recommandations: (d.recommandations || []).slice(0, 10).map((r) => s(r, 400)),
+  }
+}
+const link = (url, text) => (url ? `<a href="${esc(url)}" target="_blank" rel="noopener nofollow">${esc(text)}</a>` : esc(text))
+function veillePanel() {
+  const v = S.veille
+  const howto = `<div class="code"><pre>node seo/cli.mjs veille "${esc(vals().keyword || sectorById(vals().sector).keywords[0])}" --sources reddit,youtube,web${vals().brand ? ` --marque "${esc(vals().brand)}"` : ''}</pre><button class="btn sm" data-copy="">Copier</button></div>`
+  if (!v) return `<div class="card" style="margin-top:16px"><h3>Ce que disent vraiment les internautes (veille Agent Reach)</h3>
+    <p class="note">Avec <a href="https://github.com/Panniantong/Agent-Reach" target="_blank" rel="noopener">Agent Reach</a> installé sur votre ordinateur (gratuit, lecture seule), une commande lit Reddit, YouTube, X, GitHub et le web sur votre sujet : vraies questions des gens, hashtags réellement utilisés, expressions qui reviennent. Importez ensuite le fichier ici : les hashtags observés deviennent prioritaires.</p>${howto}
+    <div class="row-inputs"><label>Fichier de veille (.json)<input type="file" id="veille-file" accept=".json,application/json"></label></div></div>`
+  return `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Veille « ${esc(v.sujet)} » : ${fmt(v.total)} publications lues</h3><button class="btn sm" id="veille-clear" type="button">Retirer</button></div>
+    ${v.recommandations.length ? `<ul class="clean">${v.recommandations.map((r) => `<li>• ${esc(r)}</li>`).join('')}</ul>` : ''}
+    <div class="cols" style="margin-top:12px">
+      <div><h4>Questions des internautes</h4><ul class="clean">${v.questions.slice(0, 12).map((q) => `<li>${link(q.url, q.question)} <span class="note">· ${esc(q.channel)}</span></li>`).join('') || '<li class="note">Aucune question trouvée.</li>'}</ul></div>
+      <div><h4>Hashtags observés (nombre de publications)</h4><div class="tags">${v.hashtags.slice(0, 20).map((h) => `<span class="htag">#${esc(h.camel)} <small style="display:inline">${h.count}</small></span>`).join('') || '<span class="note">Aucun hashtag dans ces publications.</span>'}</div>
+        ${v.termes.phrases.length ? `<h4 style="margin-top:12px">Expressions récurrentes</h4><div class="tags">${v.termes.phrases.slice(0, 12).map((t) => `<span class="chip tag">${esc(t.term)} · ${t.count}</span>`).join('')}</div>` : ''}</div>
+    </div>
+    ${v.top.length ? `<details><summary class="note">Publications qui marchent (${v.top.length})</summary><ul class="clean">${v.top.map((t) => `<li><span class="chip tag">${esc(t.channel)}</span> ${link(t.url, t.title)}</li>`).join('')}</ul></details>` : ''}
+    ${v.sources.some((x) => !x.ok) ? `<p class="note">Sources non lues : ${v.sources.filter((x) => !x.ok).map((x) => `${esc(x.channel)} (${esc(x.error?.code || 'erreur')})`).join(', ')}.</p>` : ''}</div>`
 }
 
 // ───────── Budget ─────────
@@ -638,6 +678,7 @@ $('#f-import').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return
   try {
     const data = JSON.parse(await f.text())
+    if (data?.type === 'seo360-veille') { S.veille = sanitizeVeille(data); store.set('veille', S.veille); progress(`Veille importée : ${S.veille.sujet} (${S.veille.total} publications)`, 'ok'); go('visibilite'); return }
     if (data?.type === 'seo360-bm') { if (!validateBundle(data)) throw new Error('format'); form.elements.url.value = data.url; updateKind(); run({ bundle: data }); return }
     const rep = sanitizeReport(data)
     S.report = rep; S.shared = false; refreshDerived(); syncForm(rep); remember(rep); collapseHero(true); progress(`Rapport importé : ${rep.target}`, 'ok'); go('synthese')
@@ -657,5 +698,6 @@ $('#f-import').addEventListener('change', async (e) => {
     if (last) { S.report = last; refreshDerived(); collapseHero(true) }
   }
   if (S.report) S.gsc = store.get('gsc:' + targetKey(S.report.target), null)
+  S.veille = tryJ(() => { const v = store.get('veille', null); return v ? sanitizeVeille(v) : null }, null)
   render()
 })()

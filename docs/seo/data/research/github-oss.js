@@ -4,6 +4,17 @@ export default {
  "method": "Environ 55 requêtes GitHub Search API (gh api search/repositories, tri par étoiles) sur l'audit, le crawl, la performance, les données structurées, le suivi de positions, les mots-clés, le GEO/llms.txt, l'ASO, les hashtags, la publicité, l'analytics et les skills d'agent, plus les topics seo/seo-tools/aso/llms-txt ; sélection manuelle selon la pertinence et les étoiles. Chiffres relevés le 2026-11-03.",
  "projects": [
   {
+   "name": "Panniantong/Agent-Reach",
+   "url": "https://github.com/Panniantong/Agent-Reach",
+   "stars": 109136,
+   "language": "Python",
+   "license": "MIT",
+   "last_push": "2026-11-05",
+   "category": "social-hashtags",
+   "what": "CLI en lecture seule qui donne aux agents IA l’accès à Reddit, YouTube (sous-titres), X, GitHub, LinkedIn, Instagram, XiaoHongShu et au web, avec une sortie JSON unique et des codes d’erreur normalisés.",
+   "borrow": "Intégré à SEO 360 : commande « veille » (questions réelles, hashtags observés, mentions de marque) et skill veille-sociale ; reprise de ses règles (lecture seule, pas de relance en boucle, connexion faite par l’utilisateur)."
+  },
+  {
    "name": "coreyhaines31/marketingskills",
    "url": "https://github.com/coreyhaines31/marketingskills",
    "stars": 58303,
@@ -567,6 +578,7 @@ export default {
   "Recherche de mots-clés ASO multi-pays fiable sans abonnement coûteux : les outils open-source se limitent souvent à iOS ou au desktop macOS."
  ],
  "top_insights": [
+  "Agent Reach (≈ 109 000 étoiles, MIT) est devenu la brique standard pour donner aux agents l’accès aux réseaux sociaux en lecture : c’est la source de données réelles qui manquait pour les hashtags et la demande (questions Reddit, titres YouTube).",
   "Le centre de gravité a basculé vers les skills et serveurs MCP pour agents IA : marketingskills (58k), claude-seo (26k), geo-seo-claude (11k) et claude-ads (10k) dépassent en étoiles tous les outils SEO classiques sauf Lighthouse.",
   "Le GEO/AEO est la catégorie la plus active : des dizaines de projets poussés en octobre-novembre 2026 (elmo, GEOInflow, geo-optimizer, trackers de visibilité IA), mais tous encore petits ; la place de leader est à prendre.",
   "llms.txt est devenu un standard de fait (spec AnswerDotAI à 2,7k étoiles, générateurs, hubs) : un générateur et validateur doit être gratuit et intégré d'office.",

@@ -47,6 +47,32 @@ Et en plus de l’audit :
 - **Benchmark concurrents** : la même grille appliquée à 5 concurrents au plus, et la liste de ce qu’ils font mieux que vous.
 - **Étude de marché** : 35 outils commerciaux, 50 projets open-source, une SWOT et le positionnement proposé.
 
+## Veille sociale avec Agent Reach
+
+[Agent Reach](https://github.com/Panniantong/Agent-Reach) (MIT, ≈ 109 000 étoiles) donne à un agent IA un accès en lecture seule à Reddit, YouTube, X, GitHub, LinkedIn, Instagram et au web. SEO 360 s’en sert pour mesurer la **demande réelle** :
+
+```bash
+node seo/cli.mjs veille "pâtisserie lyon" --sources reddit,youtube,web --marque "Maison Exemple" --requetes "gâteau anniversaire lyon"
+```
+
+Le rapport contient :
+- les **vraies questions** des internautes, classées par engagement (pour la FAQ et les intertitres) ;
+- les **hashtags réellement utilisés**, avec leur nombre de publications ;
+- les expressions qui reviennent, les publications qui marchent et les mentions de votre marque.
+
+Le `.json` s’importe dans l’onglet Mots-clés & réseaux : les hashtags vus dans au moins 2 publications deviennent prioritaires dans les sélections par réseau.
+
+Les règles d’Agent Reach sont respectées : lecture seule, l’utilisateur se connecte lui-même, et pas de relance en boucle sur « connexion requise » ou « limite atteinte ».
+
+Installation, **depuis GitHub uniquement** (le paquet PyPI homonyme n’est pas ce projet) :
+
+```bash
+uv tool install https://github.com/Panniantong/Agent-Reach/archive/refs/tags/v1.6.0.zip
+agent-reach setup
+```
+
+Le skill `veille-sociale` guide Claude Code de bout en bout.
+
 ## CLI
 
 ```bash
@@ -86,6 +112,7 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 | `benchmark-concurrents` | concurrents, marché, SWOT, positionnement |
 | `aso-application` | App Store / Google Play |
 | `github-seo` | référencement d’un dépôt GitHub |
+| `veille-sociale` | demande réelle via Agent Reach : questions Reddit/YouTube, hashtags observés, mentions |
 
 Pour les utiliser dans un autre projet, copiez le dossier `.claude/skills/<nom>` dans `~/.claude/skills/` (et le dossier `seo/` pour les outils). Sur claude.ai, chaque dossier zippé peut s’importer comme skill.
 

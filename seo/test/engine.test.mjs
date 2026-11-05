@@ -18,6 +18,11 @@ import { parseGsc, opportunities, readGscFile } from '../engine/gsc.js'
 import { encodeReport, decodeReport } from '../engine/share.js'
 import { bookmarkletCode, validateBundle, bundleFetcher } from '../engine/bookmarklet.js'
 import { decodeBody } from '../engine/decode.js'
+import { analyzeVeille, extractHashtags, observedForHashtags, veilleMarkdown } from '../engine/veille.js'
+import { execFileSync, spawnSync } from 'node:child_process'
+import { mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 // ───────── Faux site servi en HTTP local ─────────
 const root = new URL('./fixtures/site/', import.meta.url)
@@ -292,6 +297,38 @@ test('mots-clés : gabarits adaptés au secteur (pas de « devis » ni « entret
   assert.ok(!all.some((k) => /devis|entretien|: idées|questions fréquentes/.test(k)), all.join(' | '))
   const b2b = Object.values(keywordIdeas({ seed: 'vitrine réfrigérée', sector: 'equipement-pro' }).groups).flat().map((x) => x.keyword)
   assert.ok(b2b.some((k) => /devis/.test(k)))
+})
+// ───────── Veille sociale (Agent Reach) ─────────
+test('veille : questions, hashtags observés, mentions, sources bloquées', () => {
+  const v = analyzeVeille([
+    { ok: true, channel: 'reddit', action: 'search', query: 'pâtisserie lyon', items: [
+      { title: 'Quelle est la meilleure pâtisserie à Lyon ?', url: 'https://r/a', text: 'Pour un anniversaire. #PatisserieLyon #lyon', raw: { score: 120, num_comments: 45 } },
+      { title: 'Combien coûte une pièce montée ?', url: 'https://r/b', text: '#patisserielyon #piecemontee', raw: { score: 30 } },
+      { title: 'Super Maison Exemple', url: 'https://r/c', text: 'Maison Exemple, tartes incroyables #patisserielyon', raw: { score: 8 } }] },
+    { ok: false, channel: 'twitter', action: 'search', query: 'pâtisserie lyon', items: [], error: { code: 'NEED_LOGIN', hint: 'agent-reach login twitter' } },
+  ], { sujet: 'pâtisserie lyon', marque: 'Maison Exemple' })
+  assert.equal(v.total, 3)
+  assert.equal(v.questions[0].question, 'Quelle est la meilleure pâtisserie à Lyon ?')
+  assert.equal(v.hashtags[0].tag, 'patisserielyon'); assert.equal(v.hashtags[0].count, 3)
+  assert.equal(v.mentions.length, 1)
+  assert.ok(v.recommandations.some((r) => /NEED_LOGIN/.test(r)))
+  assert.deepEqual(observedForHashtags(v), [{ tag: 'patisserielyon', camel: 'PatisserieLyon' }])
+  assert.deepEqual(extractHashtags('Prix #Tarte et C# ou https://x.fr/#ancre &#39;'), ['tarte'])
+  assert.ok(veilleMarkdown(v).includes('## Questions des internautes'))
+  const h = generateHashtags({ sector: 'boulangerie', keywords: ['pâtisserie'], city: 'Lyon', observed: ['piecemontee'] })
+  assert.ok(h.networks.instagram.tags.some((t) => t.tag === 'piecemontee'), 'hashtag observé repris')
+})
+test('veille en ligne de commande : appelle Agent Reach, s’arrête sur « connexion requise », explique l’installation', () => {
+  const cli = new URL('../cli.mjs', import.meta.url).pathname
+  const stub = new URL('./fixtures/agent-reach/agent-reach.mjs', import.meta.url).pathname
+  const out = mkdtempSync(join(tmpdir(), 'veille-'))
+  execFileSync(process.execPath, [cli, 'veille', 'pâtisserie lyon', '--sources', 'reddit,youtube,twitter', '--marque', 'Maison Exemple', '--agent-reach', stub, '--sortie', out], { stdio: 'pipe' })
+  const v = JSON.parse(readFileSync(join(out, 'veille-patisserie-lyon.json'), 'utf8'))
+  assert.equal(v.type, 'seo360-veille'); assert.ok(v.total >= 4)
+  assert.equal(v.sources.filter((s) => s.channel === 'twitter').length, 1, 'une seule tentative après NEED_LOGIN')
+  assert.ok(v.hashtags.some((h) => h.tag === 'patisserielyon'))
+  const miss = spawnSync(process.execPath, [cli, 'veille', 'x', '--agent-reach', '/chemin/inexistant/agent-reach', '--sortie', out], { encoding: 'utf8' })
+  assert.equal(miss.status, 2); assert.match(miss.stderr, /GitHub UNIQUEMENT/)
 })
 test('topTerms ignore les mots vides', () => {
   assert.equal(topTerms('La vitrine réfrigérée et la vitrine réfrigérée pour la pâtisserie de la ville').phrases[0].term, 'vitrine réfrigérée')

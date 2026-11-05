@@ -34,10 +34,11 @@ Correctifs prêts à coller : `import { buildFixes } from './seo/engine/fixes.js
 2. **Top 10 corrections** : pour chacune *quoi*, *pourquoi (impact business)*, *comment* (code prêt à coller si dispo dans `issue.code`), effort.
 3. **Plan 30/60/90 jours** (depuis `plan.steps`), chaque tâche avec qui (vous / webmaster / hébergeur) et combien de temps.
 4. **Accélérer vite** : les 3 actions de la semaine (`plan.week`) + le verdict publicité (`budget.verdict` : rentable / à tester / pas rentable, avec le coût maximal rentable par client).
-5. **Données réelles** : si l'utilisateur a Search Console, lui faire importer l'export ZIP dans l'interface (onglet Mots-clés & réseaux) : requêtes en positions 4–20 chiffrées en clics gagnables.
-6. **Hashtags** par réseau prioritaire (copier-coller) + 1 modèle de légende.
-7. **Concurrents** : ce qu'ils font mieux, sujets qu'ils traitent et pas vous.
-8. **KPI** et prochaine passe d'audit : l'interface compare deux audits d'une même adresse (points corrigés, nouveaux, évolution de la note).
+5. **Demande réelle** : avec Agent Reach installé, lancer `node seo/cli.mjs veille "<mot-clé>" --sources reddit,youtube,web --marque "<marque>"` (skill `veille-sociale`) pour récupérer les vraies questions et les hashtags observés.
+6. **Données réelles** : si l'utilisateur a Search Console, lui faire importer l'export ZIP dans l'interface (onglet Mots-clés & réseaux) : requêtes en positions 4–20 chiffrées en clics gagnables.
+7. **Hashtags** par réseau prioritaire (copier-coller) + 1 modèle de légende.
+8. **Concurrents** : ce qu'ils font mieux, sujets qu'ils traitent et pas vous.
+9. **KPI** et prochaine passe d'audit : l'interface compare deux audits d'une même adresse (points corrigés, nouveaux, évolution de la note).
 
 ## Règles
 - Ne jamais inventer de volumes de recherche ou de positions : renvoyer vers Search Console / Keyword Planner, ou lancer `googleSuggest` (suggestions réelles, intégré à la CLI).

@@ -23,6 +23,12 @@ const UAS = {
 const MAX_BYTES = 5 * 1024 * 1024
 
 const args = process.argv.slice(2)
+
+// ───────── Sous-commande : veille sociale via Agent Reach ─────────
+if (args[0] === 'veille') {
+  await import('./veille-cli.mjs').then((m) => m.main(args.slice(1)))
+  process.exit(process.exitCode || 0)
+}
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
 const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national'].includes(args[i - 1])))
 
@@ -30,6 +36,7 @@ if (!target || opt(['help', 'aide'])) {
   console.log(`SEO 360 — audit SEO, GEO, ASO, hashtags et budget pub
 
 Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
+        node seo/cli.mjs veille "<sujet>" [--sources reddit,youtube,web] [--marque X]   (veille via Agent Reach)
 
   --secteur <id>        ${SECTORS.map((s) => s.id).join(', ')}
   --mot-cle "<texte>"   mot-clé principal visé

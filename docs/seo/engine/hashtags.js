@@ -43,16 +43,18 @@ export function rulesFor(network) {
   return (research.social_rules || []).find((r) => r.network === network) || null
 }
 
-export function generateHashtags({ sector: sid, keywords = [], city = '', region = '', brand = '', lang = 'fr', terms = [] } = {}) {
+export function generateHashtags({ sector: sid, keywords = [], city = '', region = '', brand = '', lang = 'fr', terms = [], observed = [] } = {}) {
   const sector = sectorById(sid)
   const kw = [...keywords, ...terms].map((k) => String(k).trim()).filter(Boolean)
-  const pools = { marque: [], niche: [], mot: [], local: [], sectoriel: [], large: [] }
+  const pools = { observe: [], marque: [], niche: [], mot: [], local: [], sectoriel: [], large: [] }
   const push = (g, phrase, display) => {
     const t = toTag(phrase)
     if (!t || t.length < 3 || t.length > 30 || BAN.has(t) || /^\d+$/.test(t)) return
     if (Object.values(pools).some((p) => p.some((x) => x.tag === t))) return
     pools[g].push({ tag: t, camel: display || camel(phrase) || t })
   }
+  // Hashtags réellement observés dans des publications (veille Agent Reach) : prioritaires
+  for (const o of observed.slice(0, 15)) push('observe', typeof o === 'string' ? o : o.tag, typeof o === 'string' ? camel(o) || o : o.camel)
   if (brand) { push('marque', brand); push('marque', brand + ' ' + (lang === 'en' ? 'team' : 'officiel')) }
   const langs = lang === 'both' ? ['fr', 'en'] : [lang]
   for (const L of langs) {
@@ -86,8 +88,9 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
     const rules = rulesFor(id)
     const picked = []
     const take = (g, n) => { for (const x of pools[g]) { if (n <= 0) break; if (!picked.includes(x)) { picked.push(x); n-- } } }
+    if (['instagram', 'tiktok', 'youtube', 'x', 'threads', 'bluesky', 'linkedin'].includes(id)) take('observe', id === 'threads' ? 1 : 1)
     for (const [g, n] of Object.entries(net.mix)) take(g, n)
-    for (const g of ['niche', 'mot', 'sectoriel', 'local', 'large', 'marque']) if (picked.length < net.max) take(g, net.max - picked.length)
+    for (const g of ['niche', 'mot', 'observe', 'sectoriel', 'local', 'large', 'marque']) if (picked.length < net.max) take(g, net.max - picked.length)
     out[id] = {
       id, label: net.label, max: net.max, tags: picked.slice(0, net.max),
       reserve: Object.values(pools).flat().filter((x) => !picked.includes(x)).slice(0, 15),
