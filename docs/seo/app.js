@@ -38,6 +38,7 @@ const tryJ = (fn, d) => { try { return fn() } catch { return d } }
 const store = { get: (k, d) => tryJ(() => JSON.parse(localStorage.getItem('seo360:' + k)) ?? d, d), set: (k, v) => tryJ(() => localStorage.setItem('seo360:' + k, JSON.stringify(v))), del: (k) => tryJ(() => localStorage.removeItem('seo360:' + k)) }
 // Clés et jetons : seulement pour la session (l'origine github.io est partagée entre dépôts).
 const sess = { get: (k) => tryJ(() => sessionStorage.getItem('seo360:' + k) || '', ''), set: (k, v) => tryJ(() => sessionStorage.setItem('seo360:' + k, v || '')) }
+const gcolor = (s) => (s == null ? 'var(--line)' : s >= 85 ? 'var(--g-good)' : s >= 70 ? 'var(--g-fair)' : s >= 50 ? 'var(--g-warn)' : 'var(--g-poor)')
 const color = (s) => (s == null ? 'var(--line)' : s >= 85 ? 'var(--ok)' : s >= 70 ? 'var(--accent-2)' : s >= 50 ? 'var(--mid)' : 'var(--crit)')
 const meter = (n, label) => `<span class="meter" role="img" aria-label="${label} ${n} sur 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</span>`
 const KIND = { site: 'Site web', app: 'Application', github: 'Dépôt GitHub' }
@@ -45,11 +46,47 @@ const frDay = (d) => (d ? new Date(d + 'T12:00:00Z').toLocaleDateString('fr-FR')
 const targetKey = (t) => tryJ(() => { const u = new URL(/^https?:/.test(t) ? t : 'https://' + t); return u.host.replace(/^www\./, '') + u.pathname.replace(/\/$/, '') }, String(t))
 
 const TABS = [['synthese', 'Synthèse'], ['afaire', 'À faire'], ['visibilite', 'Mots-clés & réseaux'], ['budget', 'Budget'], ['concurrents', 'Concurrents'], ['ressources', 'Ressources']]
+// Libellés courts (écrans étroits, barre du bas) et icônes au trait, dessinées pour SEO 360
+const TAB_SHORT = { visibilite: 'Réseaux' }
+const ICON = {
+  synthese: '<rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/>',
+  afaire: '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="m8 12.2 2.8 2.8L16.5 9"/>',
+  visibilite: '<path d="M9.5 3.5 7.5 20.5M16.5 3.5l-2 17M4.5 8.5h16M3.5 15.5h16"/>',
+  budget: '<ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>',
+  concurrents: '<circle cx="8.5" cy="8.5" r="3.2"/><circle cx="16.5" cy="9.5" r="2.6"/><path d="M3 19.5c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14.5 14.8c2.6-.4 5.3 1.1 6 4.7"/>',
+  ressources: '<path d="M4.5 5.5c0-1.1.9-2 2-2h11v15h-11a2 2 0 0 0-2 2z"/><path d="M4.5 20.5v-15M8.5 7.5h6"/>',
+  pin: '<path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/>',
+}
+const icon = (k, cls = 'ico') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ''}</svg>`
+
+// ───────── Mon tableau : épingler une action, un outil ou des hashtags (comme une épingle Pinterest) ─────────
+// Gardé sur cet appareil. Le stockage github.io est partagé entre dépôts : tout est revérifié à la lecture.
+const PIN_KIND = { action: ['Action', 'var(--pop)'], outil: ['Outil', 'var(--accent)'], hashtags: ['Hashtags', 'var(--c-social)'] }
+function boardGet() {
+  const b = store.get('board', [])
+  return (Array.isArray(b) ? b : []).filter((x) => x && typeof x.key === 'string' && PIN_KIND[x.kind] && typeof x.title === 'string').slice(0, 40)
+    .map((x) => ({ key: x.key.slice(0, 120), kind: x.kind, title: x.title.slice(0, 200), meta: typeof x.meta === 'string' ? x.meta.slice(0, 120) : '', copy: typeof x.copy === 'string' ? x.copy.slice(0, 600) : '', url: typeof x.url === 'string' && /^https:\/\//.test(x.url) ? x.url.slice(0, 300) : '', go: TABS.some(([id]) => id === x.go) ? x.go : '' }))
+}
+function isPinned(key) { return boardGet().some((x) => x.key === key) }
+function togglePin(item) {
+  const b = boardGet(), i = b.findIndex((x) => x.key === item.key)
+  if (i >= 0) b.splice(i, 1); else b.unshift(item)
+  store.set('board', b.slice(0, 40)); paintBoardBtn()
+  toast(i >= 0 ? 'Retiré de votre tableau' : 'Épinglé dans « Mon tableau »')
+}
+function paintBoardBtn() { const n = boardGet().length, btn = document.getElementById('board-btn'); if (!btn) return; btn.hidden = !n; document.getElementById('board-n').textContent = n || '' }
+function pinBtn(item) { const on = isPinned(item.key); return `<button class="pin-btn" type="button" data-pin="${esc(JSON.stringify(item))}" aria-pressed="${on}">${icon('pin')}${on ? 'Épinglé' : 'Épingler'}</button>` }
+function boardCard() {
+  const b = boardGet()
+  if (!b.length) return ''
+  return `<div class="card board" id="board" style="margin-top:16px"><div class="section-head"><div><h3>Mon tableau</h3><p class="note">${b.length} épingle${b.length > 1 ? 's' : ''}, gardée${b.length > 1 ? 's' : ''} sur cet appareil.</p></div></div>
+    <div class="board-grid">${b.map((x) => { const [lab, col] = PIN_KIND[x.kind]; return `<div class="board-item" style="--c: ${col}"><span class="k">${esc(lab)}</span><b>${esc(x.title)}</b>${x.meta ? `<span class="note">${esc(x.meta)}</span>` : ''}<div class="actions">${x.copy ? `<button class="btn sm" type="button" data-copy="${esc(x.copy)}">Copier</button>` : ''}${x.url ? `<a class="btn sm" href="${esc(x.url)}" target="_blank" rel="noopener">Ouvrir</a>` : ''}${x.go ? `<button class="btn sm" type="button" data-go="${esc(x.go)}">Voir</button>` : ''}<button class="btn sm unpin" type="button" data-pin="${esc(JSON.stringify(x))}" aria-pressed="true">Retirer</button></div></div>` }).join('')}</div></div>`
+}
 const S = { ai: {}, live: { reports: [], conseil: [], status: 'off', first: false }, report: null, fixes: {}, tab: 'synthese', res: 'outils', cat: '', sevs: new Set(['critique', 'important', 'moyen', 'faible']), suggestions: [], gsc: null, mk: 'outils', shared: false, busy: false }
 
 // ───────── Formulaire ─────────
 const form = $('#form')
-$('#f-sector').innerHTML = `<option value="">Choisissez votre secteur…</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
+$('#f-sector').innerHTML = `<option value="">Votre secteur…</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
 $('#f-goal').innerHTML = Object.entries(GOALS).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')
 // Objectif par défaut selon le secteur (une boutique en ligne vend), tant que l'utilisateur ne l'a pas choisi lui-même
 let goalTouched = false
@@ -251,7 +288,7 @@ window.addEventListener('message', (e) => {
 function renderTabs() {
   const R = S.report?.result
   const n = R ? R.issues.filter((i) => ['critique', 'important'].includes(i.sev) && !isDone(i.id)).length : 0
-  $('#tabs').innerHTML = TABS.map(([id, label]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${S.tab === id}" tabindex="${S.tab === id ? 0 : -1}" ${S.tab === id ? 'aria-current="page"' : ''}>${label}${id === 'afaire' && n ? `<span class="count" aria-label="${n} points importants">${n}</span>` : ''}</button>`).join('')
+  $('#tabs').innerHTML = TABS.map(([id, label]) => `<button type="button" role="tab" data-tab="${id}" aria-selected="${S.tab === id}" tabindex="${S.tab === id ? 0 : -1}" ${S.tab === id ? 'aria-current="page"' : ''}>${icon(id)}<span class="lbl-l">${label}</span><span class="lbl-s" aria-hidden="true">${TAB_SHORT[id] || label}</span>${id === 'afaire' && n ? `<span class="count" aria-label="${n} points importants">${n}</span>` : ''}</button>`).join('')
   // Défilement horizontal seul : scrollIntoView déplaçait aussi la page et sautait le lien « Aller au contenu ».
   const tb = $('#tabs'), cur = $(`#tabs [data-tab="${S.tab}"]`)
   if (cur && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = cur.offsetLeft - (tb.clientWidth - cur.offsetWidth) / 2
@@ -290,6 +327,8 @@ document.addEventListener('click', (e) => {
   if (t.closest('[data-edit]')) { collapseHero(false); form.elements.url.focus() }
   const g = t.closest('[data-go]'); if (g) { e.preventDefault(); go(g.dataset.go) }
   const rs = t.closest('[data-res]'); if (rs) { e.preventDefault(); S.res = rs.dataset.res; go('ressources') }
+  const pb = t.closest('[data-pin]')
+  if (pb) { e.preventDefault(); const item = tryJ(() => JSON.parse(pb.dataset.pin), null); if (item?.key && PIN_KIND[item.kind]) { togglePin(item); render() } }
   if (t.closest('.export-menu .menu .btn')) t.closest('details.export-menu')?.removeAttribute('open')
   if (t.closest('[data-edit-goal]')) { collapseHero(false); $('details.more').open = true; form.elements.goal.focus(); form.elements.goal.scrollIntoView({ block: 'center' }) }
   if (t.closest('[data-send-self]')) {
@@ -364,7 +403,7 @@ const stillDetected = (rep, done = doneMap()) => (rep?.result?.issues || []).fil
 // ───────── Synthèse ─────────
 function ring(score, grade) {
   const r = 70, c = 2 * Math.PI * r, off = score == null ? c : c * (1 - score / 100)
-  return `<svg viewBox="0 0 170 170" role="img" aria-label="${score == null ? 'Pas de note : audit incomplet' : `Note ${score} sur 100`}"><circle cx="85" cy="85" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="16"/>${score == null ? '' : `<circle cx="85" cy="85" r="${r}" fill="none" stroke="${color(score)}" stroke-width="16" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 85 85)"/>`}<text x="85" y="92" text-anchor="middle" class="num">${score == null ? '—' : score}</text><text x="85" y="118" text-anchor="middle" class="grade">${score == null ? 'non noté' : `/100 · ${grade}`}</text></svg>`
+  return `<svg viewBox="0 0 170 170" role="img" aria-label="${score == null ? 'Pas de note : audit incomplet' : `Note ${score} sur 100`}"><circle cx="85" cy="85" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="14"/>${score == null ? '' : `<circle class="arc" cx="85" cy="85" r="${r}" fill="none" stroke="${gcolor(score)}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 85 85)"/>`}<text x="85" y="97" text-anchor="middle" class="num">${score == null ? '—' : score}</text><text x="85" y="122" text-anchor="middle" class="grade">${score == null ? 'non noté' : `/100 · ${grade}`}</text></svg>`
 }
 function synthese() {
   const r = S.report
@@ -384,9 +423,10 @@ function synthese() {
     <div class="card ring">${ring(R.global, R.grade)}<p>${R.global == null ? 'Complétez la collecte pour obtenir une note.' : R.global >= 85 ? 'Excellent socle : place à la croissance.' : R.global >= 70 ? 'Bon niveau, quelques freins à lever.' : R.global >= 50 ? 'Des corrections importantes vont débloquer du trafic.' : 'Priorité : corriger les points critiques.'}</p>
       <p class="cover">Part mesurée : <b>${Math.round((R.coverage || 0) * 100)} %</b> <span class="note">(catégories lues, pondérées par leur poids)</span>${R.coverage < 1 ? ` <a href="#" data-go="afaire">(voir ce qui manque)</a>` : ''}</p>${caps}</div>
     <div class="card week"><h3>Vos 3 actions cette semaine</h3>
-      ${week.length ? `<ol class="clean steps">${week.slice(0, 3).map((i) => `<li><div><b>${gloss(esc(i.title))}</b><p class="note">${esc(i.fix || '')}</p><p class="who"><span class="chip tag">${esc(i.who)}</span>${i.time ? ` <span class="chip tag">⏱ ${esc(i.time)}</span>` : ''}${S.fixes[i.id] ? ' <span class="chip ok-soft">correctif prêt</span>' : ''}</p></div></li>`).join('')}</ol>
+      ${week.length ? `<ol class="clean steps">${week.slice(0, 3).map((i) => `<li><div><b>${gloss(esc(i.title))}</b><p class="note">${esc(i.fix || '')}</p><p class="who"><span class="chip tag">${esc(i.who)}</span>${i.time ? ` <span class="chip tag">⏱ ${esc(i.time)}</span>` : ''}${S.fixes[i.id] ? ' <span class="chip ok-soft">correctif prêt</span>' : ''}${pinBtn({ key: 'action:' + i.id, kind: 'action', title: i.title, meta: [i.who, i.time].filter(Boolean).join(' · '), go: 'afaire' })}</p></div></li>`).join('')}</ol>
       <div class="actions"><button class="btn primary" data-go="afaire">Voir les correctifs</button><button class="btn" data-act="mail">Copier le message pour mon prestataire</button></div>` : '<p>Rien d’urgent : place au contenu et à la visibilité.</p>'}</div>
   </div>
+  ${boardCard()}
   <div class="cols" style="margin-top:16px">
     ${c.page ? serpCard(r) : ''}
     ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
@@ -395,7 +435,7 @@ function synthese() {
     <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Clics par jour en baisse de ${Math.round(G.drop.drop * 100)} % depuis le ${esc(frShort(G.drop.date))} <span class="note">(14 jours après comparés aux 14 jours avant, à ne pas confondre avec l’écart entre deux périodes)</span></p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
   </div>
   ${aiConsultant()}
-  <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${color(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
+  <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${gcolor(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
     <div class="chips">${['critique', 'important', 'moyen', 'faible', 'ok'].map((s) => `<span class="chip sev-${s}">${SEVERITY[s].label} · ${R.counts[s]}</span>`).join('')}</div></div>
   ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
   ${r.kind === 'site' && c.page ? `<details class="card fold"><summary><h3>La page en bref, technologies et robots IA</h3></summary>${siteFacts(r)}${m.bots ? `<div class="table-wrap"><table><caption class="sr">Accès des robots</caption><thead><tr><th>Robot</th><th>Usage</th><th>Accès</th></tr></thead><tbody>${m.bots.map((x) => `<tr><td><code>${esc(x.ua)}</code></td><td>${esc(x.owner)}</td><td>${x.allowed ? '<span class="chip sev-ok">autorisé</span>' : '<span class="chip sev-critique">bloqué</span>'}</td></tr>`).join('')}</tbody></table></div>` : ''}</details>` : ''}`
@@ -430,12 +470,12 @@ function metaFacts(m) {
 }
 function intro() {
   const last = store.get('last')
-  return `<div class="cols3 intro">
-    <div class="card"><h3>1. Un diagnostic honnête</h3><p class="note">Technique, contenu, vitesse réelle, visibilité dans les IA, SEO local, RGPD. Pas de note sans mesure.</p></div>
-    <div class="card"><h3>2. Des correctifs prêts à coller</h3><p class="note">Titre, description, données structurées, robots.txt… construits à partir de votre page, avec qui s’en charge et combien de temps.</p></div>
-    <div class="card"><h3>3. Un budget et la preuve du progrès</h3><p class="note">Combien investir en publicité et si c’est rentable ; à chaque nouvel audit : points corrigés et évolution de la note.</p></div>
-  </div>
-  <div class="actions" style="margin-top:16px"><button class="btn" data-exemple>Voir un exemple de rapport</button>${last ? `<button class="btn" id="restore">Rouvrir : ${esc(last.target)}</button>` : ''}<a class="btn" href="#ressources" data-res="favori">Installer le bouton-favori</a></div>
+  const F = [['afaire', 'var(--accent)', 'Un diagnostic honnête', 'Technique, contenu, vitesse réelle, visibilité dans les IA, SEO local, RGPD. Pas de note sans mesure.'],
+    ['ressources', 'var(--pop)', 'Des correctifs prêts à coller', 'Titre, description, données structurées, robots.txt… construits à partir de votre page, avec qui s’en charge, combien de temps et où le faire.'],
+    ['budget', 'var(--c-local)', 'Un budget et la preuve du progrès', 'Combien investir en publicité et si c’est rentable ; à chaque nouvel audit, les points corrigés et l’évolution de la note.']]
+  return `<div class="features">${F.map(([ic, c, h, p]) => `<div class="card feature" style="--c: ${c}"><span class="tile">${icon(ic)}</span><h3>${h}</h3><p class="note">${p}</p></div>`).join('')}</div>
+  <div class="actions" style="margin-top:16px"><button class="btn primary" data-exemple>Voir un exemple de rapport</button>${last ? `<button class="btn" id="restore">Rouvrir : ${esc(last.target)}</button>` : ''}<a class="btn" href="#ressources" data-res="favori">Installer le bouton-favori</a></div>
+  ${boardCard()}
   ${liveReportsCard()}`
 }
 // ───────── En direct (page claude.ai) ─────────
@@ -557,7 +597,8 @@ after.afaire = () => {
   })
 }
 const reportIssueUrl = (i) => `https://github.com/valeriongg/rgte-redesign/issues/new?title=${encodeURIComponent('[SEO 360] Constat à revoir : ' + i.id)}&body=${encodeURIComponent(`Constat : ${i.title}\nIdentifiant : ${i.id}\nCatégorie : ${i.cat}\n\nPourquoi c’est faux (URL de la page si possible) :\n`)}`
-const needReport = (what) => `<div class="card empty"><h2>${what}</h2><p>Lancez une analyse ci-dessus, ou <button class="btn sm" data-exemple>voyez un exemple</button>.</p><p class="note">Sans analyse, vous pouvez déjà utiliser : <a href="#visibilite" data-go="visibilite">Mots-clés & réseaux</a> · <a href="#budget" data-go="budget">Budget</a> · <a href="#ressources" data-go="ressources">Ressources</a></p></div>`
+const EMPTY_ART = `<svg class="art" viewBox="0 0 132 96" aria-hidden="true"><rect x="6" y="10" width="120" height="78" rx="18" fill="var(--surface-2)"/><rect x="20" y="22" width="40" height="30" rx="8" fill="var(--surface)" stroke="var(--line)"/><rect x="66" y="22" width="46" height="18" rx="7" fill="var(--surface)" stroke="var(--line)"/><rect x="66" y="46" width="46" height="30" rx="8" fill="var(--surface)" stroke="var(--line)"/><rect x="20" y="58" width="40" height="18" rx="7" fill="var(--surface)" stroke="var(--line)"/><path d="M40 21s-6-5.6-6-9.8a6 6 0 0 1 12 0c0 4.2-6 9.8-6 9.8z" fill="var(--pop)"/><circle cx="96" cy="60" r="11" fill="none" stroke="var(--accent)" stroke-width="4"/><path d="m104 68 9 9" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/></svg>`
+const needReport = (what) => `<div class="card empty">${EMPTY_ART}<h2>${what}</h2><p>Lancez une analyse ci-dessus, ou <button class="btn sm" data-exemple>voyez un exemple</button>.</p><p class="note">Sans analyse, vous pouvez déjà utiliser : <a href="#visibilite" data-go="visibilite">Mots-clés & réseaux</a> · <a href="#budget" data-go="budget">Budget</a> · <a href="#ressources" data-go="ressources">Ressources</a></p></div>`
 
 // ───────── Mots-clés & réseaux ─────────
 function visibilite() {
@@ -568,23 +609,24 @@ function visibilite() {
   const extra = store.get('hkw', '')
   const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: observedForHashtags(S.veille) })
   const nets = Object.values(h.networks).sort((a, b) => (h.priority.indexOf(a.id) + 1 || 99) - (h.priority.indexOf(b.id) + 1 || 99))
-  return `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.</p></div></div>
-  ${gscPanel()}
-  ${veillePanel()}
-  <div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
+  // Sans données branchées, les épingles (hashtags) passent devant et les imports vides sont repliés en bas de page
+  const hasData = !!(gscAnalysis() || S.veille)
+  const head = `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>${hasData ? 'Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.' : 'Vos hashtags par réseau, vos idées de mots-clés et vos temps forts. Pour vos vraies requêtes Google, branchez Search Console en bas de page.'}</p></div></div>`
+  const kwCard = `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
     ${S.suggestions.length ? `<p><b>Suggestions Google réelles</b> (ce que les gens tapent) :</p><div class="tags">${S.suggestions.map((s) => `<span class="chip tag" title="${esc(classify(s))}">${esc(s)}</span>`).join('')}</div><button class="btn sm" data-copy="${esc(S.suggestions.join('\n'))}">Copier</button>` : ''}
     <div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>
     ${terms ? `<p class="note" style="margin-top:12px"><b>Sujets que Google lit sur votre page :</b> ${esc([...terms.phrases, ...terms.words].slice(0, 12).map((t) => t.term).join(' · '))}</p>` : ''}
-    <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>
-  <div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Bordure verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
+    <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>`
+  const tagsBlock = `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
     <label style="min-width:260px">Mots-clés en plus (séparés par des virgules)<input id="hkw" value="${esc(extra)}" placeholder="ex. vitrine pâtissière"></label></div>
   ${aiOn() && S.report ? `<div class="card"><h3>Idées de publications</h3><p class="note">Claude propose 5 publications pour vos 2 réseaux prioritaires, avec l’accroche, la légende et les hashtags de cette page.</p><div class="actions">${aiBtn('posts', 'Proposer 5 publications')}</div>${aiBox('posts')}</div>` : ''}
-  <div class="cols">${nets.map((n, idx) => `<details class="card net" ${idx < 2 ? 'open' : ''}><summary><h3>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
-    <div class="actions"><button class="btn sm" data-copy="${esc(n.tags.map((t) => '#' + t.camel).join(' '))}">Copier les hashtags</button><button class="btn sm" data-copy="${esc(n.caption)}">Copier un modèle de légende</button></div>
+  <div class="masonry">${nets.map((n, idx) => { const all = n.tags.map((t) => '#' + t.camel).join(' '); return `<details class="card net" style="--net: ${NET_COLOR[n.id] || 'var(--accent)'}" ${idx < 2 ? 'open' : ''}><summary><h3><span class="mono" aria-hidden="true">${esc(n.label[0])}</span>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
+    <div class="actions"><button class="btn sm" data-copy="${esc(all)}">Copier les hashtags</button><button class="btn sm" data-copy="${esc(n.caption)}">Copier un modèle de légende</button>${pinBtn({ key: 'hashtags:' + n.id, kind: 'hashtags', title: `${n.label} : ${all}`, copy: all })}</div>
     ${n.reserve.length ? `<p class="note">À faire tourner d’un post à l’autre :</p><div class="tags">${n.reserve.slice(0, 10).map((t) => `<span class="htag res">#${esc(t.camel)}</span>`).join('')}</div>` : ''}
-    ${n.rules ? `<dl><dt>Limite</dt><dd>${esc(n.rules.hashtag_limit)}</dd><dt>Placement</dt><dd>${esc(n.rules.placement)}</dd><dt>Rythme</dt><dd>${esc(n.rules.posting_frequency)}</dd><dt>Moments</dt><dd>${esc(n.rules.best_times_fr)}</dd><dt>Formats</dt><dd>${esc((n.rules.best_formats || []).join(' · '))}</dd></dl>` : ''}</details>`).join('')}</div>
-  ${calendarPanel(v)}
-  <div class="card" style="margin-top:16px"><h3>À ne jamais utiliser</h3><p class="note">Hashtags d’engagement artificiel : signal de spam, portée réduite.</p><div class="tags">${h.banned.map((t) => `<span class="chip sev-critique">#${esc(t)}</span>`).join('')}</div></div>`
+    ${n.rules ? `<dl><dt>Limite</dt><dd>${esc(n.rules.hashtag_limit)}</dd><dt>Placement</dt><dd>${esc(n.rules.placement)}</dd><dt>Rythme</dt><dd>${esc(n.rules.posting_frequency)}</dd><dt>Moments</dt><dd>${esc(n.rules.best_times_fr)}</dd><dt>Formats</dt><dd>${esc((n.rules.best_formats || []).join(' · '))}</dd></dl>` : ''}</details>` }).join('')}</div>`
+  const plug = `<details class="card fold plug" style="margin-top:16px"><summary><h3>Brancher vos vraies données : Search Console et veille Agent Reach</h3></summary>${gscPanel()}${veillePanel()}</details>`
+  const banned = `<div class="card" style="margin-top:16px"><h3>À ne jamais utiliser</h3><p class="note">Hashtags d’engagement artificiel : signal de spam, portée réduite.</p><div class="tags">${h.banned.map((t) => `<span class="chip sev-critique">#${esc(t)}</span>`).join('')}</div></div>`
+  return hasData ? `${head}${gscPanel()}${veillePanel()}${kwCard}${tagsBlock}${calendarPanel(v)}${banned}` : `${head}${tagsBlock}${kwCard}${calendarPanel(v)}${plug}${banned}`
 }
 after.visibilite = () => {
   $('#veille-file')?.addEventListener('change', async (e) => {
@@ -645,13 +687,21 @@ function outilsView() {
   const v = vals(), r = S.report
   const rec = recommendTools(r || { kind: 'site', input: inputOf(v), result: { issues: [], meta: {} } })
   const price = (t) => t.prix || (t.gratuit ? 'Gratuit (offres payantes : à vérifier)' : 'Prix : à vérifier')
-  const card = (t, guide) => `<details class="card fold tool"><summary><h3>${esc(t.nom)} <span class="chip ${t.gratuit ? 'sev-ok' : 'tag'}">${esc(shortPrice(t))}</span></h3></summary>
-    <p>${esc(t.raisons.join(' ') || t.pourquoi)}</p><p class="note"><b>Prix :</b> ${esc(price(t))}${t.confiance === 'vérifié' ? '' : ' (à vérifier)'}</p>${t.limites_gratuit ? `<p class="note">Offre gratuite : ${esc(t.limites_gratuit)}</p>` : ''}
+  // Couverture façon portfolio : monogramme, catégorie, raison visible ; guide et prix détaillés dans un dépliant
+  const CAT = { reseaux: ['Réseaux', 'var(--c-social)'], mesure: ['Mesure', 'var(--c-technique)'], pub: ['Publicité', 'var(--c-performance)'], technique: ['Technique', 'var(--c-donnees)'], 'mots-cles': ['Mots-clés', 'var(--c-ia)'], contenu: ['Contenu', 'var(--c-contenu)'], conformite: ['Conformité', 'var(--c-conformite)'], conversion: ['Conversion', 'var(--c-local)'], ia: ['IA', 'var(--c-ia)'], local: ['Local', 'var(--c-local)'], avis: ['Avis clients', 'var(--c-performance)'], seo: ['SEO', 'var(--c-technique)'], liens: ['Liens', 'var(--c-donnees)'], concurrents: ['Concurrents', 'var(--c-contenu)'], video: ['Vidéo', 'var(--c-social)'], automatisation: ['Automatisation', 'var(--c-conformite)'] }
+  const catOf = (t) => CAT[(t.besoins || []).find((b) => CAT[b])] || ['Outil', 'var(--accent)']
+  const mono = (n) => String(n).replace(/[^\p{L}\p{N} ]/gu, ' ').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '·'
+  const card = (t, guide, n) => { const [cl, cc] = catOf(t); return `<article class="card tool" style="--c: ${cc}">
+    <div class="tool-cover"><span class="mono" aria-hidden="true">${esc(mono(t.nom))}</span><div><span class="cat">${n ? `Étape ${n} · ` : ''}${esc(cl)}</span><h3>${esc(t.nom)}</h3></div></div>
+    <div class="tool-face"><p>${esc(t.raisons.join(' ') || t.pourquoi)}</p><div class="row"><span class="chip ${t.gratuit ? 'sev-ok' : 'tag'}">${esc(shortPrice(t))}</span>${pinBtn({ key: 'outil:' + t.id, kind: 'outil', title: t.nom, meta: shortPrice(t), url: t.url })}</div></div>
+    <details class="tool-more"><summary>${guide && t.etapes?.length ? `Guide d’installation en ${t.etapes.length} étapes` : 'Prix et liens'}</summary><div class="tool-body">
+    <p class="note"><b>Prix :</b> ${esc(price(t))}${t.confiance === 'vérifié' ? '' : ' (à vérifier)'}</p>${t.limites_gratuit ? `<p class="note">Offre gratuite : ${esc(t.limites_gratuit)}</p>` : ''}
     ${guide && t.etapes?.length ? `<ol class="todo">${t.etapes.map((e) => `<li>${esc(e)}</li>`).join('')}</ol>` : ''}
-    <p class="note"><a href="${esc(t.url)}" target="_blank" rel="noopener">Ouvrir ${esc(t.nom)}</a>${t.doc ? ` · <a href="${esc(t.doc)}" target="_blank" rel="noopener">aide officielle</a>` : ''}${t.source_prix ? ` · <a href="${esc(t.source_prix)}" target="_blank" rel="noopener">prix</a>` : ''}</p></details>`
-  const sec = (title, note, list, guide) => list.length ? `<div class="section-head" style="margin-top:18px"><div><h3>${esc(title)}</h3><p class="note">${esc(note)}</p></div></div><div class="stack">${list.map((t) => card(t, guide)).join('')}</div>` : ''
+    <p class="note"><a href="${esc(t.url)}" target="_blank" rel="noopener">Ouvrir ${esc(t.nom)}</a>${t.doc ? ` · <a href="${esc(t.doc)}" target="_blank" rel="noopener">aide officielle</a>` : ''}${t.source_prix ? ` · <a href="${esc(t.source_prix)}" target="_blank" rel="noopener">prix</a>` : ''}</p></div></details></article>` }
+  // L'ordre compte pour la semaine : grille ligne par ligne et étapes numérotées ; ailleurs, mosaïque libre
+  const sec = (title, note, list, guide, ordered = false) => list.length ? `<div class="section-head" style="margin-top:22px"><div><h3>${esc(title)}</h3>${note ? `<p class="note">${esc(note)}</p>` : ''}</div></div><div class="${ordered ? 'tool-grid' : 'masonry'}">${list.map((t, i) => card(t, guide, ordered ? i + 1 : 0)).join('')}</div>` : ''
   return `<p class="note">${r ? `Sélection faite d’après l’audit de ${esc(r.target)}` : 'Lancez un audit pour une sélection adaptée à votre site ; voici la base pour votre secteur'}. Prix d’entrée vérifiés le ${esc(frDay(rec.verifie))}, hors taxes sauf mention : à reconfirmer chez l’éditeur. Budget : 0 € pour démarrer${rec.couts.recommandeOptionnel ? `, ≈ ${fmt(rec.couts.recommandeOptionnel)} €/mois avec les offres payantes recommandées` : ''}${rec.couts.pro ? `, ≈ ${fmt(rec.couts.pro)} €/mois de plus au niveau pro` : ''}.</p>
-    ${sec('Cette semaine (gratuit, dans cet ordre)', 'Ouvrez chaque outil pour le guide d’installation pas à pas.', rec.essentiel.slice(0, WEEK), true)}
+    ${sec('Cette semaine (gratuit, dans cet ordre)', 'Chaque carte a son guide d’installation pas à pas.', rec.essentiel.slice(0, WEEK), true, true)}
     ${sec('Ce mois-ci (gratuit)', '', rec.essentiel.slice(WEEK), true)}
     ${sec('Recommandés (gratuits ou petit budget)', '', rec.recommande, true)}
     ${sec('Pour aller plus loin (payants)', 'Seulement quand les bases sont en place.', rec.pro, false)}`
@@ -710,6 +760,8 @@ function veillePanel() {
 // ───────── Budget ─────────
 // Lien vers la page du hashtag sur le réseau : pour juger soi-même sa popularité et sa fraîcheur.
 const TAG_URL = { instagram: (t) => `https://www.instagram.com/explore/tags/${t}/`, tiktok: (t) => `https://www.tiktok.com/tag/${t}`, linkedin: (t) => `https://www.linkedin.com/feed/hashtag/${t}/`, x: (t) => `https://x.com/hashtag/${t}`, facebook: (t) => `https://www.facebook.com/hashtag/${t}`, youtube: (t) => `https://www.youtube.com/hashtag/${t}`, pinterest: (t) => `https://www.pinterest.fr/search/pins/?q=%23${t}`, threads: (t) => `https://www.threads.net/search?q=${t}`, bluesky: (t) => `https://bsky.app/hashtag/${t}` }
+// Une teinte par réseau (pas de logo de marque) : le monogramme et la pastille de couleur suffisent à s'y retrouver
+const NET_COLOR = { instagram: 'var(--c-social)', tiktok: 'var(--text)', linkedin: 'var(--c-technique)', youtube: 'var(--pop)', facebook: 'var(--c-technique)', pinterest: 'var(--pop)', x: 'var(--text)', threads: 'var(--text)', bluesky: 'var(--c-ia)', snapchat: 'var(--c-performance)' }
 const NIV = { niche: 'niche (moins de 50 000 publications)', moyen: 'moyen (50 000 à 500 000)', large: 'large (plus de 500 000)' }
 const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
 const CH_COLORS = ['#4338ca', '#0f766e', '#b45309', '#be185d', '#0369a1', '#4d7c0f', '#7e22ce']
@@ -765,7 +817,7 @@ function concurrents() {
   // Sans liste : un lien pour trouver ses concurrents locaux et en ligne (Maps et recherche Google préremplies)
   const q = r ? [sectorById(r.input?.sector).label.split(/[,(/]/)[0].trim(), r.input?.city].filter(Boolean).join(' ') : ''
   const finders = q ? `<p>Pour les trouver : <a href="https://www.google.com/maps/search/${encodeURIComponent(q)}" target="_blank" rel="noopener">vos concurrents sur Google Maps</a> · <a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">sur Google</a>. Gardez les 3 à 5 sites qui apparaissent avant vous, hors annuaires et plateformes.</p>` : ''
-  if (!r?.competitors?.length) return `<div class="card empty"><h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p>${finders}<p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
+  if (!r?.competitors?.length) return `<div class="card empty">${EMPTY_ART}<h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p>${finders}<p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
   const R = r.result
   const base = R.pageScores || Object.fromEntries(Object.entries(R.scores).map(([k, v]) => [k, v.score]))
   const me = { url: r.target + ' (vous)', global: R.pageGlobal ?? R.global, scores: base, perf: r.ctx?.psi?.scores?.performance, lcp: r.ctx?.psi?.field?.LCP, words: r.ctx?.page?.wordCount, schema: R.meta?.schemaTypes?.join(', '), social: Object.keys(R.meta?.social || {}), llms: r.ctx?.llms?.status === 200, terms: R.meta?.terms?.words?.map((t) => t.term) || [], me: true }
@@ -917,6 +969,8 @@ $('#f-import').addEventListener('change', async (e) => {
 })
 // Données de référence périmées : avertissement visible en bas de page
 if (staleNote()) { const w = document.createElement('p'); w.className = 'demo-note'; w.textContent = staleNote(); document.querySelector('footer.foot')?.prepend(w) }
+paintBoardBtn()
+$('#board-btn')?.addEventListener('click', () => { go('synthese'); requestAnimationFrame(() => document.getElementById('board')?.scrollIntoView({ block: 'start' })) })
 if (ARTIFACT) {
   const n = document.createElement('p')
   n.className = 'demo-note'; n.id = 'artifact-note'; n.setAttribute('role', 'note')

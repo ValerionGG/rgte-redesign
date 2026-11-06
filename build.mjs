@@ -84,7 +84,7 @@ ${up(script[0])}
 import('node:fs').then(({ cpSync, rmSync }) => {
   rmSync('docs/seo', { recursive: true, force: true })
   mkdirSync('docs/seo', { recursive: true })
-  for (const f of ['index.html', 'app.css', 'app.js', 'live.js']) copyFileSync(`seo/${f}`, `docs/seo/${f}`)
+  for (const f of ['index.html', 'fonts.css', 'app.css', 'app.js', 'live.js']) copyFileSync(`seo/${f}`, `docs/seo/${f}`)
   for (const d of ['engine', 'data']) cpSync(`seo/${d}`, `docs/seo/${d}`, { recursive: true, filter: (src) => !src.endsWith('.json') && !src.endsWith('sync.mjs') })
   console.log('SEO 360 → docs/seo/')
 })
