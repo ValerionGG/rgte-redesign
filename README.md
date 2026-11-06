@@ -56,3 +56,7 @@ Retour client sur le tour 2 : rendus dessinés « pas beaux », pages pas assez 
 | 5 | Réalisations | 14 boutiques, une signature |
 
 6 pages par direction (Accueil, Lignes, Module Gourmandise, Secteurs, Réalisations, Contact). Cadrage : `v3/BRIEF-v3.md`.
+
+## SEO 360 — plateforme d’audit SEO, IA, hashtags et budget pub (`seo/`)
+
+Outil indépendant des maquettes : entrez un site, une app ou un dépôt GitHub → corrections priorisées, plan 30/60/90 jours, mots-clés, hashtags par réseau, budget publicitaire, benchmark concurrents et étude de marché. **En ligne :** https://valeriongg.github.io/rgte-redesign/seo/ · CLI : `node seo/cli.mjs <url>` · Skills Claude Code : `.claude/skills/` · Documentation : [`seo/README.md`](seo/README.md) · Étude : [`seo/ETUDE-CONCURRENTIELLE.md`](seo/ETUDE-CONCURRENTIELLE.md).

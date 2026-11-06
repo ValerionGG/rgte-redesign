@@ -1,0 +1,19 @@
+{
+  "name": "seo360-fr",
+  "owner": {
+    "name": "ValerionGG",
+    "url": "https://github.com/valeriongg"
+  },
+  "metadata": {
+    "description": "Skills SEO, GEO, réseaux sociaux et publicité en français pour TPE et PME.",
+    "version": "3.0.0"
+  },
+  "plugins": [
+    {
+      "name": "seo360",
+      "source": "./plugins/seo360",
+      "description": "Pack SEO 360 : audit, SEO local, IA, Search Console, contenus, hashtags, budget pub, conformité, calendrier.",
+      "version": "3.0.0"
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 .claude-flow/
-.claude/
+.claude/*
+!.claude/skills/
 a/project/assets/
 b/project/assets/
+rapports-seo/
