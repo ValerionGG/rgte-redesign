@@ -330,7 +330,9 @@ async function run({ bundle } = {}) {
   const pasted = !bundle && v.html?.trim() ? { url: pastedUrl, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
   // Services de lecture : un seul état pour le site et ses concurrents (un service en panne l'est pour tous)
   const reading = newReading()
-  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted, target, reading, { onWait: (s) => { step = `Lecture en attente : le service gratuit lit 20 pages par minute, reprise dans ${s} s` } })
+  // Page claude.ai : aucune lecture externe possible (CSP) ; seuls le code et le robots.txt collés sont lus
+  const rv = ARTIFACT ? { ...v, proxy: 'none' } : v
+  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(rv, pasted, target, reading, { onWait: (s) => { step = `Lecture en attente : le service gratuit lit 20 pages par minute, reprise dans ${s} s` } })
   const canRead = bundle || pasted || kind !== 'site' || v.proxy !== 'none'
   const input = inputOf(v)
   S.busy = true; $('#go').disabled = true; $('#go').textContent = 'Analyse…'
@@ -347,7 +349,7 @@ async function run({ bundle } = {}) {
     if (bundle?.rendered) common.rendered = { wordCount: extract(bundle.rendered, bundle.url).wordCount }
     const job = Promise.all([
       analyze(target, { ...common, kind, crawl: bundle ? bundle.pages.length + 1 : pasted || v.proxy === 'none' ? 0 : v.crawl }),
-      ...comps.map((c) => analyze(c, { ...common, fetcher: v.proxy === 'none' ? null : makeFetcher(v, null, c, reading, { role: 'competitor' }), noFetch: v.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
+      ...comps.map((c) => analyze(c, { ...common, fetcher: rv.proxy === 'none' ? null : makeFetcher(rv, null, c, reading, { role: 'competitor' }), noFetch: rv.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
     ])
     const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('L’analyse a dépassé 2 minutes (proxy ou PageSpeed trop lent).')), 120000))
     const [rep, ...compReps] = await Promise.race([job, timeout])
