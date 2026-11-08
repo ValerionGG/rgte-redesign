@@ -3,7 +3,7 @@
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import http from 'node:http'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync } from 'node:fs'
 import { extract, topTerms } from '../engine/html.js'
 import { parseRobots, allowed, botMatrix, BOTS } from '../engine/robots.js'
 import { scoreBlocks } from '../engine/citability.js'
@@ -24,7 +24,7 @@ import { bookmarkletCode, validateBundle, bundleFetcher } from '../engine/bookma
 import { decodeBody } from '../engine/decode.js'
 import { analyzeVeille, extractHashtags, observedForHashtags, veilleMarkdown } from '../engine/veille.js'
 import { collectVeille } from '../veille-cli.mjs'
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync, execFile } from 'node:child_process'
 import { mkdtempSync, readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -617,4 +617,28 @@ test('« Mentions légales » écrit en pied de page sans lien : signalé comme 
   assert.equal(none?.title, 'Lien « Mentions légales » introuvable')
   const linked = (await run('<a href="/mentions-legales">Mentions légales</a>')).result.issues.find((i) => i.id === 'legal')
   assert.equal(linked, undefined)
+})
+
+test('CLI : page et robots.txt fournis en fichiers, puis site injoignable lu par Jina (vrai code HTTP, en-têtes non jugés)', async () => {
+  const cli = new URL('../cli.mjs', import.meta.url).pathname, dir = mkdtempSync(join(tmpdir(), 'seo360-'))
+  const html = `<!doctype html><html lang="fr"><head><title>Vitrines réfrigérées sur mesure | Test</title><meta name="description" content="Fabricant de vitrines réfrigérées sur mesure pour les métiers de bouche."></head><body><h1>Vitrines réfrigérées</h1><p>${'Fabricant de vitrines réfrigérées pour boulangeries et traiteurs. '.repeat(40)}</p><footer><a href="/mentions-legales">Mentions légales</a> <a href="/confidentialite">Confidentialité</a></footer></body></html>`
+  writeFileSync(join(dir, 'page.html'), html); writeFileSync(join(dir, 'robots.txt'), 'User-agent: *\nAllow: /')
+  const run = (args, env) => new Promise((ok) => execFile(process.execPath, [cli, ...args], { encoding: 'utf8', maxBuffer: 50e6, env: { ...process.env, ...env } }, (err, stdout, stderr) => ok({ err, stdout, stderr })))
+  // 1) --html et --robots : le moteur lit les fichiers, aucun accès au site
+  const r1 = await run(['https://site-injoignable.invalid/', '--html', join(dir, 'page.html'), '--robots', join(dir, 'robots.txt'), '--lecture', 'direct', '--no-psi', '--crawl', '0', '--json'], { NO_PROXY: '*' })
+  const j1 = JSON.parse(r1.stdout)
+  assert.equal(j1.ctx.fetch.source, 'paste'); assert.equal(j1.ctx.robots.status, 200); assert.notEqual(j1.result.global, null)
+  // 2) Accès direct impossible → Jina Reader (simulé) : provenance « jina », 404 réel de llms.txt, aucun en-tête HTTP jugé
+  const jina = http.createServer((req, res) => {
+    const t = decodeURIComponent(req.url.slice(1)), p = new URL(t).pathname, txt = /\.txt$/.test(p)
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({ code: 200, data: { url: t, finalUrl: t, httpStatus: p === '/llms.txt' ? 404 : 200, [txt ? 'text' : 'html']: p === '/robots.txt' ? 'User-agent: *\nAllow: /' : p === '/llms.txt' ? 'introuvable' : html } }))
+  })
+  await new Promise((ok) => jina.listen(0, '127.0.0.1', ok))
+  const r2 = await run(['https://site-injoignable.invalid/', '--no-psi', '--crawl', '0', '--json'], { NO_PROXY: '127.0.0.1', SEO360_JINA: `http://127.0.0.1:${jina.address().port}/` })
+  jina.close()
+  const j2 = JSON.parse(r2.stdout)
+  assert.equal(j2.ctx.fetch.source, 'jina'); assert.equal(j2.ctx.fetch.status, 200)
+  assert.equal(j2.ctx.robots.status, 200); assert.equal(j2.ctx.llms.status, 404)
+  assert.ok(!j2.result.issues.some((i) => /hsts|https-redirect|compression/.test(i.id)), 'en-têtes HTTP jugés sans avoir été vus')
 })

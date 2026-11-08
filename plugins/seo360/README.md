@@ -4,14 +4,18 @@ Pack de 21 skills en français pour les TPE, PME, artisans, commerces et freelan
 
 ## Installation
 
-Deux commandes dans Claude Code :
+**Dans Claude, Cowork et Claude Code en une fois (recommandé)** : dans l'application Claude, *Personnaliser › Plugins › Ajouter une marketplace*, saisir `ValerionGG/rgte-redesign`, puis installer **seo360** depuis *Découvrir*. Un plugin installé là est enregistré dans votre compte : il sert dans Cowork, dans le chat et dans Claude Code.
+
+**Dans Claude Code seul** :
 
 ```
 /plugin marketplace add ValerionGG/rgte-redesign
 /plugin install seo360@seo360-fr
 ```
 
-Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
+**Packs tiers relus** : le même catalogue propose 12 packs relus le 05/11/2026, chacun épinglé au commit relu (une mise à jour de leur auteur n'arrive pas sans nouvelle relecture). Pour commencer : `audit-seo-avance`, `web-quality-skills`, puis `audit-publicite` si vous faites de la publicité et `instagram-skills` ou `linkedin-skills` selon vos réseaux. Chaque skill installé coûte des jetons à chaque échange : installez peu, mais juste.
+
+Node 18 ou plus est nécessaire pour les commandes de mesure (aucune dépendance). Si le réseau ne joint pas le site (bac à sable, session cloud filtrée), la mesure passe par Jina Reader ; sinon, `--html page.html`.
 
 ## Premier usage
 
@@ -47,10 +51,10 @@ Dans le plugin, les skills appellent `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mj
 
 ## Données et confidentialité
 
-Tout tourne sur votre machine : les exports Search Console et les rapports ne sont envoyés nulle part. Les audits lisent les pages publiques du site analysé. Agent Reach (veille sociale) est en lecture seule et ne se connecte jamais à votre place.
+Tout tourne sur votre machine : les exports Search Console et les rapports ne sont envoyés nulle part. Les audits lisent les pages publiques du site analysé, directement, ou par Jina Reader (r.jina.ai) quand le réseau ne joint pas le site. Agent Reach (veille sociale) est en lecture seule et ne se connecte jamais à votre place.
 
 ## Évaluations
 
 `claude plugin eval plugins/seo360` lance les 63 cas du dossier `evals/` (2 cas qui doivent déclencher chaque skill, 1 cas voisin qui ne doit pas), avec et sans le plugin.
 
-Généré par `node seo/plugin.mjs` depuis `.claude/skills` (version 3.0.0) : ne modifiez pas les fichiers de ce dossier à la main, sauf `evals/`.
+Généré par `node seo/plugin.mjs` depuis `.claude/skills` (version 3.1.0) : ne modifiez pas les fichiers de ce dossier à la main, sauf `evals/`.

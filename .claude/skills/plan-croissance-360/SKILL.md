@@ -2,7 +2,7 @@
 name: plan-croissance-360
 description: Plan de croissance complet à partir d'un lien (site, application, dépôt GitHub, ou profil Instagram, TikTok, LinkedIn, YouTube avec vos statistiques exportées) : audit mesuré du site ou de l'app, toutes les améliorations gratuites et payantes par canal (Google, local, IA, pub, réseaux, e-mail, conversion), outils recommandés avec prix et guides d'installation, plan 90 jours, budget, indicateurs. À utiliser pour « voici mon site, dis-moi tout », « plan complet », « premier sur Google et percer sur TikTok », « toutes les améliorations possibles », « quels outils installer ». Audit SEO seul → seo-360.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Plan de croissance 360
@@ -30,11 +30,11 @@ Annoncer au début : « Je mesure d'abord, puis je vous donne tout ce qui peut f
 | Dépôt GitHub (`owner/repo`) | même commande, puis le skill `github-seo` |
 | Profil Instagram, TikTok, LinkedIn ou YouTube | pas de lecture automatique fiable : demander les statistiques des 90 derniers jours (export ou captures de Meta Business Suite, TikTok Studio, LinkedIn, YouTube Studio), la bio, le lien et la description des 9 dernières publications ; puis `veille-sociale` pour la demande réelle |
 
-Si la page ne peut pas être lue (`result.incomplete` : réseau de la session bloqué, pare-feu, site en JavaScript), proposer dans cet ordre :
-1. autoriser le domaine dans les réglages réseau de l'environnement ;
-2. le bouton-favori de l'interface (https://valeriongg.github.io/rgte-redesign/seo/, onglet Ressources), puis importer le `.json` ;
-3. lancer la même commande sur son ordinateur (Node 18 ou plus) et envoyer le `.json` ;
-4. coller le code source de la page.
+Réseau qui ne joint pas le site : la CLI passe d'elle-même par Jina Reader (`ctx.fetch.source: "jina"`). Si la page reste illisible (`result.incomplete` : pare-feu, page de défi, site en JavaScript), dans cet ordre :
+1. récupérer la page avec l'outil de lecture web, l'enregistrer, et relancer avec `--html page.html` (et `--robots robots.txt`) ;
+2. autoriser le domaine dans les réglages réseau de l'environnement ;
+3. le bouton-favori de l'interface (https://valeriongg.github.io/rgte-redesign/seo/, onglet Ressources), puis importer le `.json` ;
+4. lancer la même commande sur son ordinateur (Node 18 ou plus) et envoyer le `.json`.
 
 Ne jamais rédiger l'audit d'un site qui n'a pas été lu.
 
@@ -47,6 +47,8 @@ Ne jamais rédiger l'audit d'un site qui n'a pas été lu.
 - **Outils adaptés à l'audit** : `node seo/cli.mjs outils --rapport rapports-seo/<slug>.json`. La sortie donne l'ordre d'installation, les guides pas à pas, les prix datés et le budget mensuel.
 
 ## 3. Toutes les améliorations, canal par canal
+
+**D'abord l'analyse experte**, sans laquelle le plan reste générique : lire le site comme un client, tester 5 requêtes réelles, lire 3 vrais concurrents, croiser avec la mesure, puis écrire les propositions exactes sur les vraies pages ([references/analyse-experte.md](references/analyse-experte.md)). **Test de spécificité** : une amélioration qui pourrait être copiée telle quelle sur un autre site est réécrite avec les produits, pages, villes et concurrents du client, ou supprimée.
 
 Pour chaque canal : d'abord ce que l'audit a mesuré, puis les leviers habituels pas encore en place (étiquetés Hypothèse tant qu'ils ne sont pas vérifiés). Appliquer la méthode du skill spécialiste sans reposer ses questions.
 
@@ -92,6 +94,7 @@ Si des packs complémentaires sont installés dans la session (claude-seo, claud
 ## Terminé quand
 
 - [ ] L'audit a été mesuré, ou l'impossibilité est dite avec les 4 solutions.
+- [ ] L'analyse experte est faite (ou ce qui manquait est dit) et chaque amélioration passe le test de spécificité.
 - [ ] Chaque amélioration a son coût, son impact, son effort, qui la fait et sa confiance.
 - [ ] Les outils viennent de `outils`, avec guides et prix datés.
 - [ ] Le plan 90 jours, les temps forts, les indicateurs et la date de revue sont donnés.
@@ -99,6 +102,7 @@ Si des packs complémentaires sont installés dans la session (claude-seo, claud
 
 ## Jamais
 
+- Livrer une amélioration générique, sans la page, le texte ou le concurrent concernés.
 - Promettre une première place, un nombre d'abonnés ou un chiffre d'affaires.
 - Inventer un audit, un prix, un volume de recherche ou une statistique de compte.
 - Recommander l'achat de liens, d'abonnés, de vues ou d'avis.

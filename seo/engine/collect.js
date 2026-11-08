@@ -7,7 +7,8 @@ export async function collect(rawUrl, fetcher, opts = {}) {
   const url = normalizeInput(rawUrl)
   const ctx = { input: { ...(opts.input || {}), url }, collectedAt: new Date().toISOString(), source: opts.source || 'node' }
   const res = await fetcher(url)
-  ctx.fetch = { url, finalUrl: res.finalUrl || url, status: res.status, headers: res.headers || {}, redirects: res.redirects || [], timeMs: res.timeMs, ttfbMs: res.ttfbMs, error: res.error, source: opts.source || 'node', bytes: res.body?.length || 0, uaFallback: !!res.uaFallback }
+  // Provenance réelle de la page (Jina Reader, code fourni) : sans en-têtes HTTP vus, on ne les juge pas
+  ctx.fetch = { url, finalUrl: res.finalUrl || url, status: res.status, headers: res.headers || {}, redirects: res.redirects || [], timeMs: res.timeMs, ttfbMs: res.ttfbMs, error: res.error, source: res.via || opts.source || 'node', bytes: res.body?.length || 0, uaFallback: !!res.uaFallback }
   // Protection anti-robot (pare-feu, Cloudflare…) : on n'audite pas la page d'erreur à la place du site
   const blocked = blockedReason(res)
   if (blocked) ctx.blocked = blocked

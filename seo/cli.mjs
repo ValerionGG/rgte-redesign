@@ -5,7 +5,7 @@
 //   node seo/cli.mjs https://www.exemple.fr --crawl 30 --concurrents concurrent1.fr,concurrent2.fr --sortie rapports/
 //   node seo/cli.mjs https://apps.apple.com/fr/app/x/id123456789
 //   node seo/cli.mjs owner/repo           (dépôt GitHub)
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
@@ -14,6 +14,17 @@ import { decodeBody } from './engine/decode.js'
 import { blockedReason } from './engine/collect.js'
 import { SECTORS } from './data/sectors.js'
 import { GOALS, defaultGoal } from './engine/ads.js'
+
+// Réseau à proxy (session cloud, entreprise) : le fetch de Node ignore HTTPS_PROXY sauf avec NODE_USE_ENV_PROXY=1
+// (Node 22.21+ ou 24+). On se relance une fois avec cette variable pour que toutes les lectures passent par le proxy.
+{
+  const [maj, min] = process.versions.node.split('.').map(Number)
+  if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY && (maj >= 24 || (maj === 22 && min >= 21))) {
+    const { spawnSync } = await import('node:child_process')
+    const r = spawnSync(process.execPath, process.argv.slice(1), { stdio: 'inherit', env: { ...process.env, NODE_USE_ENV_PROXY: '1' } })
+    process.exit(r.status ?? 1)
+  }
+}
 
 // Par défaut, un agent de navigateur : beaucoup de pare-feu refusent les robots inconnus (on le détecte et le signale).
 const UAS = {
@@ -67,16 +78,37 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --no-psi              ne pas lancer PageSpeed Insights
   --github-token <t>    jeton GitHub (ou GITHUB_TOKEN) pour les dépôts
   --sortie <dossier>    dossier des rapports (défaut ./rapports-seo)
+  --html <fichier>      code HTML de la page, déjà récupéré (pas d'accès au site ou page protégée)
+  --robots <fichier>    contenu du robots.txt, déjà récupéré
+  --lecture auto|direct|jina  auto (défaut) : accès direct, puis Jina Reader si le réseau ne joint pas le site
   --json                afficher le JSON complet sur la sortie standard
 `)
   process.exit(target ? 0 : 1)
 }
 
 const UA_CHOICE = opt('ua', 'auto')
+// Lecture : « auto » = accès direct, puis Jina Reader pour un site que le réseau empêche de joindre (bac à sable,
+// session cloud filtrée) ; « direct » = jamais de service tiers ; « jina » = toujours Jina Reader.
+const LECTURE = String(opt('lecture', 'auto'))
+// Code de la page et robots.txt fournis en fichiers (récupérés par Claude, ou « Afficher le code source ») : lus tels quels
+const readOpt = (name) => { const f = opt(name, null); if (!f || f === true) return null; try { return readFileSync(f, 'utf8') } catch (e) { console.error(`Fichier illisible (--${name}) : ${f}`); process.exit(1) } }
+const HTML_FILE = readOpt('html'), ROBOTS_FILE = readOpt('robots')
+const sameDoc = (a, b) => { try { const x = new URL(a), y = new URL(/^https?:/i.test(b) ? b : 'https://' + b); return x.host.replace(/^www\./, '') === y.host.replace(/^www\./, '') && x.pathname.replace(/\/$/, '') === y.pathname.replace(/\/$/, '') } catch { return false } }
+const NETWORK_ERR = /ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|UND_ERR|fetch failed|Délai dépassé|proxy|tunnel|certificate|CERT_/i
+const viaJina = new Set() // hôtes injoignables en direct : lus par Jina pour toute la suite
 
 // Par défaut : on se présente comme « SEO360-Audit » ; si le site refuse les robots inconnus, on réessaie
 // une fois en navigateur et le rapport le signale (constat « ua-fallback »).
 async function fetcher(url, o = {}) {
+  if (HTML_FILE && !o.noFollow && sameDoc(url, target)) return { status: 200, body: HTML_FILE, finalUrl: url, headers: {}, redirects: [], via: 'paste' }
+  if (ROBOTS_FILE && !o.noFollow && /\/robots\.txt$/i.test(url)) return { status: 200, body: ROBOTS_FILE, finalUrl: url, headers: {}, redirects: [] }
+  const host = (() => { try { return new URL(url).host } catch { return '' } })()
+  if (LECTURE === 'jina' || viaJina.has(host)) return o.noFollow ? {} : jinaRead(url)
+  const r = await direct(url, o)
+  if (LECTURE === 'auto' && !r.status && NETWORK_ERR.test(r.error || '')) { viaJina.add(host); return o.noFollow ? {} : jinaRead(url) }
+  return r
+}
+async function direct(url, o) {
   if (UA_CHOICE === 'navigateur') return fetchAs(url, UAS.navigateur, o)
   const r = await fetchAs(url, UAS.seo360, o)
   if (UA_CHOICE === 'auto' && !o.noFollow && blockedReason(r)) {
@@ -84,6 +116,28 @@ async function fetcher(url, o = {}) {
     if (!blockedReason(r2)) return { ...r2, uaFallback: true }
   }
   return r
+}
+// Jina Reader (r.jina.ai) en mode JSON : vrai code HTTP, adresse finale, domaine introuvable signalé.
+// Sans clé : 20 lectures par minute ; on en garde 2 de marge et une page en trop passe son tour (« non lue »).
+const JINA = process.env.SEO360_JINA || 'https://r.jina.ai/' // réglable pour les tests ou un service compatible
+const jinaTimes = []
+async function jinaRead(url) {
+  const now = Date.now()
+  while (jinaTimes.length && now - jinaTimes[0] >= 60000) jinaTimes.shift()
+  if (jinaTimes.length >= 18) return { status: 0, error: 'Jina Reader : 20 lectures par minute atteintes' }
+  jinaTimes.push(now)
+  const text = /\.txt$/i.test((() => { try { return new URL(url).pathname } catch { return '' } })())
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)
+  try {
+    const r = await fetch(JINA + url, { headers: { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html' }, signal: ctrl.signal })
+    const j = await r.json().catch(() => null)
+    if (r.status === 422 && /could not be resolved/i.test(j?.message || '')) return { status: 0, error: 'nom de domaine introuvable (vérifiez l’orthographe de l’adresse)' }
+    if (!r.ok || !j?.data) return { status: 0, error: 'Jina Reader : réponse ' + r.status }
+    const d = j.data, body = String((text ? d.text : d.html) ?? '')
+    return { status: Number(d.httpStatus) || (body ? 200 : 0), body, finalUrl: d.finalUrl || d.url || url, headers: {}, redirects: [], via: 'jina' }
+  } catch (e) {
+    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (Jina Reader)' : 'Jina Reader injoignable : ' + (e.cause?.code || e.message) }
+  } finally { clearTimeout(timer) }
 }
 
 // Lecture bornée (5 Mo) avec délai global de 25 s (en-têtes ET corps), décodage selon l'encodage déclaré.
