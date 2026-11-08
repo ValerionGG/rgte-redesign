@@ -10,6 +10,7 @@ import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts, whereToApply } from './engine/fixes.js'
 import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
+import { blockedReason } from './engine/collect.js'
 import { upcoming, frShort } from './engine/calendar.js'
 import { recommendTools, WEEK, shortPrice } from './engine/outils.js'
 import { live, initLive, saveReport, saveFile, ask, AI_ERRORS, promptPlan, promptFix, promptPosts, promptQuestion, renderMd } from './live.js'
@@ -177,61 +178,141 @@ const solutions = () => `<div class="sol"><p><b>${MOBILE ? 'Sur téléphone, la 
   <li><b>Coller le code source</b> : sur votre page, clic droit → « Afficher le code source » → tout copier, puis collez-le dans « Plus d’options » (et votre robots.txt juste en dessous). <button class="btn sm" type="button" data-open-paste>Coller le code</button></li>
   <li><b>La ligne de commande</b> (audit le plus complet, avec exploration du site ; Node 18 et le dossier seo/) : <code>node seo/cli.mjs votre-site.fr</code></li>`}</ol></div>`
 
-// ───────── Collecte via proxy (navigateur) ─────────
-const PROXIES = {
-  allorigins: async (url, signal) => { const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal }); const j = await r.json(); return { status: j.status?.http_code || (j.contents ? 200 : 0), body: j.contents || '', finalUrl: j.status?.url || url, headers: {}, redirects: [] } },
-  codetabs: async (url, signal) => { const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, { signal }); return { status: r.status, body: await r.text(), finalUrl: url, headers: {}, redirects: [] } },
+// ───────── Lecture des pages via des services publics (navigateur) ─────────
+// AllOrigins et CodeTabs rendent le code source brut ; Jina Reader rend le HTML de la page, avec le vrai code HTTP
+// (sans garantie que le JavaScript ait tourné : un site rendu en JavaScript reste repéré comme tel).
+// Pour une page principale, les trois partent en même temps : un code source brut l'emporte, et la page de Jina sert
+// si aucun code brut n'arrive dans les 4 s qui suivent. Un service qui échoue (panne, délai, quota) est écarté jusqu'à
+// la fin de l'analyse : robots.txt, sitemap, llms.txt et pages explorées passent directement par ceux qui marchent,
+// au lieu d'attendre à chaque fichier un service en panne.
+const RAW = {
+  allorigins: async (url, signal) => {
+    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal })
+    if (!r.ok) throw new Error('AllOrigins ' + r.status)
+    const j = await r.json()
+    return { status: j.status?.http_code || (j.contents ? 200 : 0), body: j.contents || '', finalUrl: j.status?.url || url, headers: {}, redirects: [] }
+  },
+  codetabs: async (url, signal) => {
+    const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, { signal })
+    if (r.status >= 500) throw new Error('CodeTabs ' + r.status)
+    return { status: r.status, body: await r.text(), finalUrl: url, headers: {}, redirects: [] }
+  },
 }
-// Page principale en mode automatique : les deux proxys publics sont interrogés en même temps et la première
-// page HTML valide l'emporte ; si les deux échouent, Jina Reader (qui affiche la page comme un navigateur) prend le relais.
+// Jina Reader sans clé : 20 lectures par minute depuis un même appareil. On garde 2 lectures de marge, on attend un
+// créneau (50 s au plus) pour la page et son robots.txt ; le reste passe son tour et le rapport le dit.
+const JINA_MAX = 18, jinaLog = []
+async function jinaTurn(maxWaitMs, reserve = 0, onWait, signal) {
+  for (;;) {
+    if (signal?.aborted) return false // la course est finie : ne pas consommer de lecture pour rien
+    const now = Date.now()
+    while (jinaLog.length && now - jinaLog[0] >= 60000) jinaLog.shift()
+    if (jinaLog.length < JINA_MAX - reserve) { jinaLog.push(now); return true }
+    const wait = 60000 - (now - jinaLog[jinaLog.length - (JINA_MAX - reserve)]) + 100
+    if (wait > maxWaitMs) return false
+    onWait?.(Math.ceil(wait / 1000))
+    await new Promise((ok) => setTimeout(ok, wait)); maxWaitMs -= wait
+  }
+}
+async function jinaRead(url, signal) {
+  const text = /\.txt$/i.test(tryJ(() => new URL(url).pathname, ''))
+  const r = await fetch('https://r.jina.ai/' + url, { headers: { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html' }, signal })
+  const j = await r.json().catch(() => null)
+  if (r.status === 422 && /could not be resolved/i.test(j?.message || '')) return { status: 0, dns: true, error: 'ce nom de domaine ne répond pas (vérifiez l’orthographe de l’adresse)' }
+  if (!r.ok || !j?.data) throw new Error('Jina Reader ' + r.status)
+  const d = j.data, body = String((text ? d.text : d.html) ?? '')
+  return { status: num(d.httpStatus) || (body ? 200 : 0), body, finalUrl: d.finalUrl || d.url || url, headers: {}, redirects: [], via: 'jina' }
+}
 const looksHtml = (b) => /<html|<head|<title|<body|<!doctype/i.test(String(b || '').slice(0, 4000))
-async function raceProxies(url) {
-  const ctrls = Object.keys(PROXIES).map(() => new AbortController())
-  const t = setTimeout(() => ctrls.forEach((c) => c.abort()), 20000)
-  try {
-    const res = await Promise.any(Object.keys(PROXIES).map((name, i) => PROXIES[name](url, ctrls[i].signal).then((r) => (r.status >= 200 && r.status < 400 && looksHtml(r.body) ? r : Promise.reject(new Error('vide'))))))
-    ctrls.forEach((c) => c.abort())
-    return res
-  } catch { return null } finally { clearTimeout(t) }
-}
-async function jinaReader(url) {
-  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 25000)
-  try {
-    const r = await fetch('https://r.jina.ai/' + url, { headers: { 'X-Return-Format': 'html' }, signal: ctrl.signal })
-    const body = r.ok ? await r.text() : ''
-    return looksHtml(body) ? { status: 200, body, finalUrl: url, headers: {}, redirects: [], via: 'jina' } : null
-  } catch { return null } finally { clearTimeout(t) }
-}
-function makeFetcher(v, pasted, mainUrl = '') {
-  const order = v.proxy === 'custom' ? ['custom'] : v.proxy === 'none' ? [] : [v.proxy, ...Object.keys(PROXIES).filter((p) => p !== v.proxy)]
-  return async (url, { noFollow = false } = {}) => {
-    if (!noFollow && v.proxy === 'allorigins' && mainUrl && sameDoc(url, mainUrl) && !(pasted && sameDoc(url, pasted.url))) {
-      const won = await raceProxies(url) || await jinaReader(url)
-      if (won) { S.readVia = won.via || 'proxy'; return won }
-      return { status: 0, unknown: true }
+const GRACE = 4000
+// État des services pendant une analyse, partagé entre le site et ses concurrents
+// down : en panne ; slow : sans réponse à la fin d'une course (plus attendu pour l'accessoire) ; dead : domaine introuvable
+const newReading = () => ({ down: new Set(), slow: new Set(), dead: new Set(), best: null, quota: false })
+const pathOf = (u) => tryJ(() => new URL(u).pathname, '')
+const hostOf = (u) => tryJ(() => new URL(u).host, '')
+// Proxy brut en panne ou trop lent lors d'une analyse récente (3 min) : on le sonde encore, mais on ne l'attend plus
+const rawBadAt = new Map(), rawBad = (n) => Date.now() - (rawBadAt.get(n) || 0) < 180000
+const NO_SERVICE = 'les services de lecture gratuits ne répondent pas en ce moment (réessayez dans une minute, ou utilisez une des solutions ci-dessous)'
+const TOO_SLOW = 'les services de lecture n’ont pas répondu à temps (réessayez, ou utilisez une des solutions ci-dessous)'
+const QUOTA = 'le service de lecture gratuit est saturé : 20 pages par minute (relancez dans une minute)'
+
+function makeFetcher(v, pasted, mainUrl = '', reading = newReading(), { role = 'site', onWait } = {}) {
+  // Une tentative sur un service ; un échec qui ne vient pas de nous (panne, délai, quota) l'écarte pour la suite.
+  const attempt = async (name, url, ms, stop) => {
+    if (stop?.aborted) throw new Error('course terminée')
+    const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), ms), relay = () => ctrl.abort()
+    stop?.addEventListener('abort', relay)
+    try { return await (name === 'jina' ? jinaRead(url, ctrl.signal) : RAW[name](url, ctrl.signal)) }
+    catch (e) { if (!stop?.aborted) { reading.down.add(name); if (name !== 'jina') rawBadAt.set(name, Date.now()) } throw e }
+    finally { clearTimeout(t); stop?.removeEventListener('abort', relay) }
+  }
+  // Course entre services : page principale (HTML valide exigé, code brut préféré) ou premier fichier lu sans service connu.
+  const race = (url, { page }) => new Promise((resolve) => {
+    const names = ['allorigins', 'codetabs', 'jina'].filter((n) => !reading.down.has(n))
+    const stop = new AbortController(), settled = new Set()
+    let jinaOk = null, fallback = null, grace = null, over = false
+    const end = (res) => {
+      if (over) return
+      over = true; clearTimeout(grace); clearTimeout(cap); stop.abort()
+      for (const n of names) if (n !== 'jina' && n !== res?.by && !settled.has(n)) { reading.slow.add(n); rawBadAt.set(n, Date.now()) }
+      if (res?.by && res.by !== 'jina' && res.status) rawBadAt.delete(res.by)
+      if (res?.dns) reading.dead.add(hostOf(url))
+      if (res?.by && res.status) { reading.best = res.by; if (page && role === 'site') S.readVia = res.by === 'jina' ? 'jina' : 'proxy' }
+      resolve(res || { status: 0, unknown: true, error: ['allorigins', 'codetabs', 'jina'].every((n) => reading.down.has(n)) ? NO_SERVICE : reading.quota ? QUOTA : TOO_SLOW })
     }
+    const cap = setTimeout(() => end(jinaOk || fallback), 20000)
+    const rawPending = () => names.some((n) => n !== 'jina' && !settled.has(n) && !rawBad(n))
+    if (!names.length) return end(null)
+    for (const n of names) {
+      const turn = n === 'jina' ? jinaTurn(role === 'competitor' ? 25000 : 50000, role === 'competitor' ? 4 : 0, onWait, stop.signal) : Promise.resolve(true)
+      turn.then((ok) => (ok ? attempt(n, url, 20000, stop.signal) : Promise.reject(new Error(stop.signal.aborted ? 'fin' : (reading.quota = true, 'quota'))))).then((res) => {
+        res.by = n
+        if (res.dns) return end(res)
+        const good = page ? res.status >= 200 && res.status < 400 && looksHtml(res.body) && !blockedReason(res) : res.status > 0
+        if (good && (n !== 'jina' || !page)) return end(res)
+        if (good) { jinaOk = res; if (!rawPending()) return end(res); grace = setTimeout(() => end(res), GRACE) }
+        else if (res.status >= 400 && !fallback) fallback = res // vrai code d'erreur (404, 403…), si rien de mieux n'arrive
+      }).catch(() => {}).finally(() => {
+        settled.add(n)
+        if (settled.size === names.length) end(jinaOk || fallback)
+        else if (jinaOk && !rawPending()) end(jinaOk)
+      })
+    }
+  })
+  // Fichiers et pages suivants : d'abord le service qui a lu la page principale, puis les autres encore en service.
+  const readOther = async (url) => {
+    if (!reading.best) return race(url, { page: false })
+    const p = pathOf(url), map = /\.xml$/i.test(p)
+    // Essentiel : le robots.txt du site (sans lui, la note est plafonnée). Le reste est accessoire : jamais d'attente sur un service lent.
+    const extra = !(role === 'site' && /\/robots\.txt$/i.test(p))
+    for (const n of [reading.best, 'allorigins', 'codetabs', 'jina'].filter((x, i, a) => a.indexOf(x) === i && !reading.down.has(x) && !(extra && reading.slow.has(x)))) {
+      if (n === 'jina') {
+        // Concurrents : jamais d'attente, 4 lectures laissées au site, et pas de sitemap par Jina (non lu, c'est une simple information, sans effet sur la note)
+        // Site : on n'attend un créneau que pour robots.txt (sans lui, la note est plafonnée) ; llms.txt et sitemap non lus restent une simple information
+        const ok = role === 'competitor' ? !map && (await jinaTurn(0, 4)) : await jinaTurn(/\/robots\.txt$/i.test(p) ? 50000 : 0, extra ? 2 : 0, onWait)
+        if (!ok) continue
+      }
+      try { const res = await attempt(n, url, n === 'jina' ? 12000 : 9000); if (res.status || res.dns) return res } catch { /* service suivant */ }
+    }
+    return { status: 0, unknown: true }
+  }
+  return async (url, { noFollow = false } = {}) => {
     if (noFollow && v.proxy !== 'custom') return {} // redirections http/www : vérifiables seulement en CLI ou via votre proxy
     if (pasted && !noFollow && sameDoc(url, pasted.url)) return { status: 200, body: pasted.html, finalUrl: url, headers: {}, redirects: [] }
     if (pasted?.robots && !noFollow && tryJ(() => new URL(url).pathname === '/robots.txt' && new URL(url).origin === new URL(pasted.url).origin, false)) return { status: 200, body: pasted.robots, finalUrl: url, headers: {}, redirects: [] }
-    for (const name of order) {
-      const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 15000)
-      try {
-        if (name === 'custom') {
-          if (!v.proxyUrl) break
-          const r = await fetch(v.proxyUrl.replace('{url}', encodeURIComponent(url)) + (noFollow ? '&nofollow=1' : ''), { signal: ctrl.signal })
-          const headers = {}
-          for (const [k, val] of r.headers) if (k.startsWith('x-orig-')) headers[k.slice(7)] = val
-          const status = num(r.headers.get('x-status') || r.status)
-          if (noFollow) return { status, location: r.headers.get('x-location') || '' }
-          const buf = await r.arrayBuffer(), cs = (headers['content-type'] || '').match(/charset=["']?([\w-]+)/i)?.[1] || 'utf-8'
-          const body = tryJ(() => new TextDecoder(/^(iso-8859-1|latin1)$/i.test(cs) ? 'windows-1252' : cs).decode(buf), null) ?? new TextDecoder().decode(buf)
-          return { status, headers, body, finalUrl: r.headers.get('x-final-url') || url, redirects: tryJ(() => JSON.parse(r.headers.get('x-redirects') || '[]'), []), timeMs: num(r.headers.get('x-time')), ttfbMs: num(r.headers.get('x-ttfb')) }
-        }
-        const res = await PROXIES[name](url, ctrl.signal)
-        if (res.status) return res
-      } catch { /* proxy suivant */ } finally { clearTimeout(t) }
-    }
-    return { status: 0, unknown: true }
+    if (v.proxy === 'none' || reading.dead.has(hostOf(url))) return { status: 0, unknown: true }
+    if (v.proxy !== 'custom') return mainUrl && sameDoc(url, mainUrl) ? race(url, { page: true }) : readOther(url)
+    if (!v.proxyUrl) return { status: 0, unknown: true }
+    const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 15000)
+    try {
+      const r = await fetch(v.proxyUrl.replace('{url}', encodeURIComponent(url)) + (noFollow ? '&nofollow=1' : ''), { signal: ctrl.signal })
+      const headers = {}
+      for (const [k, val] of r.headers) if (k.startsWith('x-orig-')) headers[k.slice(7)] = val
+      const status = num(r.headers.get('x-status') || r.status)
+      if (noFollow) return { status, location: r.headers.get('x-location') || '' }
+      const buf = await r.arrayBuffer(), cs = (headers['content-type'] || '').match(/charset=["']?([\w-]+)/i)?.[1] || 'utf-8'
+      const body = tryJ(() => new TextDecoder(/^(iso-8859-1|latin1)$/i.test(cs) ? 'windows-1252' : cs).decode(buf), null) ?? new TextDecoder().decode(buf)
+      return { status, headers, body, finalUrl: r.headers.get('x-final-url') || url, redirects: tryJ(() => JSON.parse(r.headers.get('x-redirects') || '[]'), []), timeMs: num(r.headers.get('x-time')), ttfbMs: num(r.headers.get('x-ttfb')) }
+    } catch { return { status: 0, unknown: true } } finally { clearTimeout(t) }
   }
 }
 const sameDoc = (a, b) => tryJ(() => { const x = new URL(a), y = new URL(/^https?:/.test(b) ? b : 'https://' + b); return x.host.replace(/^www\./, '') === y.host.replace(/^www\./, '') && x.pathname.replace(/\/$/, '') === y.pathname.replace(/\/$/, '') }, false)
@@ -247,7 +328,11 @@ async function run({ bundle } = {}) {
   const kind = bundle ? 'site' : detectKind(target)
   const pastedUrl = /^https?:\/\//i.test(target) ? target : 'https://' + target.replace(/^\/+/, '')
   const pasted = !bundle && v.html?.trim() ? { url: pastedUrl, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
-  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted, target)
+  // Services de lecture : un seul état pour le site et ses concurrents (un service en panne l'est pour tous)
+  const reading = newReading()
+  // Page claude.ai : aucune lecture externe possible (CSP) ; seuls le code et le robots.txt collés sont lus
+  const rv = ARTIFACT ? { ...v, proxy: 'none' } : v
+  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(rv, pasted, target, reading, { onWait: (s) => { step = `Lecture en attente : le service gratuit lit 20 pages par minute, reprise dans ${s} s` } })
   const canRead = bundle || pasted || kind !== 'site' || v.proxy !== 'none'
   const input = inputOf(v)
   S.busy = true; $('#go').disabled = true; $('#go').textContent = 'Analyse…'
@@ -264,7 +349,7 @@ async function run({ bundle } = {}) {
     if (bundle?.rendered) common.rendered = { wordCount: extract(bundle.rendered, bundle.url).wordCount }
     const job = Promise.all([
       analyze(target, { ...common, kind, crawl: bundle ? bundle.pages.length + 1 : pasted || v.proxy === 'none' ? 0 : v.crawl }),
-      ...comps.map((c) => analyze(c, { ...common, fetcher: v.proxy === 'none' ? null : makeFetcher(v, null, c), noFetch: v.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
+      ...comps.map((c) => analyze(c, { ...common, fetcher: rv.proxy === 'none' ? null : makeFetcher(rv, null, c, reading, { role: 'competitor' }), noFetch: rv.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
     ])
     const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('L’analyse a dépassé 2 minutes (proxy ou PageSpeed trop lent).')), 120000))
     const [rep, ...compReps] = await Promise.race([job, timeout])
@@ -282,6 +367,8 @@ async function run({ bundle } = {}) {
     const R0 = rep.result, secs = Math.round((performance.now() - t0) / 1000)
     const done = R0?.global == null && R0?.incomplete ? `Audit incomplet (${secs} s) : ${R0.incomplete}.` : `Analyse terminée en ${secs} s.${R0?.caps?.length ? ' Note plafonnée : ' + R0.caps[0] + '.' : ''}`
     progress(rep.error ? humanError(rep.error) : `${done}${psiErr ? ' Vitesse non mesurée : ' + psiShort(psiErr) : ''}`, rep.error ? 'err' : R0?.global == null || R0?.caps?.length ? 'warn' : 'ok')
+    // Quota PageSpeed sans clé (partagé par tous) : un clic pour ouvrir le champ de la clé gratuite
+    if (!rep.error && /429|quota/i.test(psiErr || '')) $('#progress').insertAdjacentHTML('beforeend', ' <button class="linkish" type="button" data-psi-key>Ajouter ma clé</button>')
     collapseHero(true)
     go('synthese')
     autoSuggest()
@@ -293,7 +380,7 @@ async function run({ bundle } = {}) {
     clearInterval(tick); S.busy = false; $('#go').disabled = false; $('#go').textContent = ARTIFACT ? 'Analyser le code collé' : 'Analyser'
   }
 }
-const psiShort = (e) => (/429|quota/i.test(e) ? 'quota PageSpeed atteint (ajoutez une clé gratuite dans « Plus d’options »).' : e)
+const psiShort = (e) => (/429|quota/i.test(e) ? 'le quota gratuit de PageSpeed, partagé par tous, est atteint ; avec votre clé gratuite (2 min à créer), la mesure marche.' : e)
 
 // Historique : chaque audit d'une même adresse est comparé au précédent.
 function remember(rep) {
@@ -302,7 +389,8 @@ function remember(rep) {
   if (!R || R.global == null) return
   const k = 'hist:' + targetKey(rep.target)
   const hist = store.get(k, [])
-  hist.push({ date: rep.generatedAt, global: R.global, coverage: R.coverage, cats: Object.entries(R.scores || {}).filter(([, x]) => x.score != null).map(([k]) => k).sort(), issues: R.issues.map((i) => [i.id, i.sev, i.title]) })
+  // pages : pages réellement lues ; 4e valeur d'un point : 1 s'il vient de l'exploration (portée « site »)
+  hist.push({ date: rep.generatedAt, global: R.global, coverage: R.coverage, cats: Object.entries(R.scores || {}).filter(([, x]) => x.score != null).map(([k]) => k).sort(), pages: rep.ctx?.crawl?.pages?.length || 1, issues: R.issues.map((i) => [i.id, i.sev, i.title, i.scope === 'site' ? 1 : 0]) })
   store.set(k, hist.slice(-12))
 }
 function progressSince(rep) {
@@ -313,7 +401,10 @@ function progressSince(rep) {
   // Évolution de note seulement à couverture comparable : sinon un simple changement de mesure passe pour un progrès
   const comparable = !prev.cats || !cur.cats || prev.cats.join() === cur.cats.join()
   const diffCats = comparable ? [] : [...new Set([...prev.cats, ...cur.cats])].filter((k) => !(prev.cats.includes(k) && cur.cats.includes(k)))
-  return { prev, cur, comparable, diffCats, fixed: prev.issues.filter((i) => !now.has(i[0])), added: cur.issues.filter((i) => !before.has(i[0])), delta: cur.global - prev.global, still: stillDetected(rep) }
+  // Exploration plus courte que la fois d'avant (quota du service de lecture, délai) : un point trouvé par l'exploration
+  // et absent cette fois n'a peut-être pas été revu ; il n'est pas compté comme « corrigé et vérifié ».
+  const shorter = (cur.pages || 1) < (prev.pages || 1), gone = prev.issues.filter((i) => !now.has(i[0])), unseen = gone.filter((i) => shorter && i[3])
+  return { prev, cur, comparable: comparable && !unseen.length, diffCats, fixed: gone.filter((i) => !(shorter && i[3])), unseen, added: cur.issues.filter((i) => !before.has(i[0])), delta: cur.global - prev.global, still: stillDetected(rep) }
 }
 
 // ───────── Bouton-favori : réception des données ─────────
@@ -384,6 +475,7 @@ document.addEventListener('click', (e) => {
     else location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`
   }
   if (t.closest('[data-open-paste]')) { collapseHero(false); $('details.more').open = true; form.elements.html.focus(); form.elements.html.scrollIntoView({ block: 'center' }) }
+  if (t.closest('[data-psi-key]')) { collapseHero(false); $('details.more').open = true; form.elements.psiKey.focus(); form.elements.psiKey.scrollIntoView({ block: 'center' }) }
   const c = t.closest('[data-copy]'); if (c) copy(c.dataset.copy !== undefined && c.dataset.copy !== '' ? c.dataset.copy : c.closest('.code')?.querySelector('pre')?.textContent || '')
   const act = t.closest('[data-act]')?.dataset.act; if (act) action(act)
   const ai = t.closest('[data-ai]'); if (ai) { e.preventDefault(); runAi(ai.dataset.ai, ai.dataset.aiId || '') }
@@ -476,7 +568,7 @@ function synthese() {
   ${boardCard()}
   <div class="cols" style="margin-top:16px">
     ${c.page ? serpCard(r) : ''}
-    ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
+    ${prog ? `<div class="card"><h3>Vos progrès</h3>${prog.comparable ? `<p class="big">${prog.delta >= 0 ? '▲' : '▼'} ${fmt(prog.prev.global)} → <b>${fmt(prog.cur.global)}</b> <span class="note">depuis le ${new Date(prog.prev.date).toLocaleDateString('fr-FR')}</span></p>` : `<p><b>Évolution de note non comparable</b> <span class="note">: ${prog.diffCats.length ? `les deux audits n’ont pas mesuré les mêmes catégories (${esc(prog.diffCats.map((k) => R.scores[k]?.label || k).join(', '))}). Relancez dans les mêmes conditions (même collecte, PageSpeed).` : `l’exploration a lu moins de pages que la dernière fois.`}</span></p>`}<p>✅ ${prog.fixed.length} point(s) corrigé(s) et vérifié(s)${prog.fixed.length ? ' : ' + prog.fixed.slice(0, 4).map((i) => esc(i[2])).join(' · ') : ''}</p>${prog.unseen.length ? `<p class="note">${prog.unseen.length} point(s) trouvé(s) par l’exploration non revérifié(s) : ${prog.cur.pages} page(s) lue(s) cette fois contre ${prog.prev.pages}. Relancez dans une minute pour les revoir.</p>` : ''}${prog.still.length ? `<p>⚠️ ${prog.still.length} point(s) marqué(s) « fait » mais encore détecté(s) : ${prog.still.slice(0, 3).map((i) => esc(i.title)).join(' · ')}</p>` : ''}${prog.added.length ? `<p>🆕 ${prog.added.length} nouveau(x) : ${prog.added.slice(0, 3).map((i) => esc(i[2])).join(' · ')}</p>` : ''}</div>` : ''}
     <div class="card"><h3>Budget publicitaire</h3><p class="verdict v-${b.verdict.level}">${esc(b.verdict.text)}</p><p><a href="#budget" data-go="budget">Détail par canal et montée en charge →</a></p></div>
     ${(() => { const t = recommendTools(r); return `<div class="card"><h3>Vos outils</h3><p class="big">${Math.min(WEEK, t.essentiel.length)} outils gratuits cette semaine</p><p class="note">${esc(t.essentiel.slice(0, 3).map((x) => x.nom).join(', '))}… avec le guide d’installation de chacun, puis les outils payants seulement s’ils servent.</p><a href="#ressources" data-res="outils">Voir la boîte à outils →</a></div>` })()}
     <div class="card"><h3>Vos vraies données Google</h3>${G?.drop ? `<p class="verdict v-non">Clics par jour en baisse de ${Math.round(G.drop.drop * 100)} % depuis le ${esc(frShort(G.drop.date))} <span class="note">(14 jours après comparés aux 14 jours avant, à ne pas confondre avec l’écart entre deux périodes)</span></p><p class="note">${esc(G.drop.lecture)}</p><a href="#visibilite" data-go="visibilite">Voir le diagnostic →</a>` : gscOpp.length ? `<p class="big">≈ +${fmt(gscOpp.reduce((s, o) => s + o.gain, 0))} clics/mois possibles</p><p class="note">sur ${gscOpp.length} requêtes hors marque déjà proches du haut de page${G.brand?.share != null ? ` · ${Math.round(G.brand.share * 100)} % de vos clics viennent de votre marque` : ''}.</p><a href="#visibilite" data-go="visibilite">Voir les requêtes →</a>` : `<p class="note">Importez l’export ZIP de Search Console : clics à gagner, part de votre marque, comparaison avec la période précédente et chute datée.</p><a href="#visibilite" data-go="visibilite">Importer (2 min) →</a>`}</div>
@@ -487,7 +579,7 @@ function synthese() {
   ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
   ${r.kind === 'site' && c.page ? `<details class="card fold"><summary><h3>La page en bref, technologies et robots IA</h3></summary>${siteFacts(r)}${m.bots ? `<div class="table-wrap"><table><caption class="sr">Accès des robots</caption><thead><tr><th>Robot</th><th>Usage</th><th>Accès</th></tr></thead><tbody>${m.bots.map((x) => `<tr><td><code>${esc(x.ua)}</code></td><td>${esc(x.owner)}</td><td>${x.allowed ? '<span class="chip sev-ok">autorisé</span>' : '<span class="chip sev-critique">bloqué</span>'}</td></tr>`).join('')}</tbody></table></div>` : ''}</details>` : ''}`
 }
-const SOURCE = { node: 'ligne de commande', worker: 'votre proxy', proxy: 'proxy public', jina: 'Jina Reader (page affichée comme dans un navigateur)', paste: 'code collé', bookmarklet: 'bouton-favori', psi: 'PageSpeed seul' }
+const SOURCE = { node: 'ligne de commande', worker: 'votre proxy', proxy: 'proxy public', jina: 'Jina Reader (service de lecture public)', paste: 'code collé', bookmarklet: 'bouton-favori', psi: 'PageSpeed seul' }
 after.synthese = () => {
   $$('[data-cat]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); S.cat = a.dataset.cat; go('afaire') }))
 }

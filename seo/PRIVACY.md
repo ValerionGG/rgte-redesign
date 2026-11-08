@@ -6,7 +6,7 @@ SEO 360 n'a pas de serveur. Rien n'est envoyé à « SEO 360 ». Selon ce que vo
 
 | Action | Tiers contacté | Ce qui est envoyé |
 |---|---|---|
-| Lire votre page, réglage « Automatique » (par défaut) | AllOrigins (`api.allorigins.win`) et CodeTabs (`api.codetabs.com`), interrogés en même temps pour la page principale ; Jina Reader (`r.jina.ai`) en secours si les deux échouent | L'adresse de la page, puis celles de robots.txt, du sitemap, de llms.txt et des pages explorées (Jina Reader : la page principale seulement) |
+| Lire votre page, réglage « Automatique » (par défaut) | AllOrigins (`api.allorigins.win`), CodeTabs (`api.codetabs.com`) et Jina Reader (`r.jina.ai`), interrogés en même temps pour la page principale ; les fichiers suivants passent par celui qui a répondu, puis par les autres encore en service | L'adresse de la page, puis celles de robots.txt, du sitemap, de llms.txt et des pages explorées (et celles des concurrents que vous indiquez) |
 | Lire votre page, réglage « Mon proxy » | Votre propre proxy (Cloudflare Worker, `seo/proxy/`) | Les mêmes adresses |
 | Lire votre page, réglage « Aucune » | Personne | Seul le code que vous collez est analysé, dans le navigateur |
 | Mesurer la vitesse | Google PageSpeed Insights (`www.googleapis.com`) | L'adresse de la page, et votre clé PageSpeed si vous en donnez une |
