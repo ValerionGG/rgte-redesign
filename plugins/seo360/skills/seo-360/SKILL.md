@@ -11,7 +11,7 @@ metadata:
 
 Annoncer au début : « Je lance l'audit en lecture seule, puis je vous rends le verdict, les corrections classées et le plan. Je ne modifie rien sur le site. »
 
-Outil : `${CLAUDE_SKILL_DIR}/../../seo/cli.mjs` (Node ≥ 18, sans dépendance). Interface web : https://valeriongg.github.io/rgte-redesign/seo/ une fois la branche fusionnée dans `main` (mêmes moteurs ; la page est lue par un proxy de lecture, ou à partir du code collé).
+Outil : `${CLAUDE_SKILL_DIR}/../../seo/cli.mjs` (Node ≥ 18, sans dépendance). Interface web : https://valeriongg.github.io/rgte-redesign/seo/ (mêmes moteurs ; la page est lue par des services de lecture publics, ou à partir du code collé). Lien direct : `…/seo/#analyser=<adresse>`.
 
 ## Règles d'or
 

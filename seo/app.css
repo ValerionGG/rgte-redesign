@@ -495,3 +495,15 @@ abbr[title]:focus::after { content: attr(title); position: fixed; left: 16px; ri
 }
 .plug > summary h3 { font-size: 1rem; }
 .plug .card { box-shadow: none; margin-top: 12px; }
+/* Étapes de l'analyse en direct */
+.live-steps { list-style: none; margin: 10px 0 0; padding: 14px 16px; display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); max-width: 640px; }
+.live-steps li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: center; font-weight: 600; color: var(--muted); }
+.live-steps .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--field-line); position: relative; }
+.live-steps .st-run { color: var(--text); }
+.live-steps .st-run .dot { border-color: var(--accent); border-top-color: transparent; animation: spin .8s linear infinite; }
+.live-steps .st-done { color: var(--text); }
+.live-steps .st-done .dot { background: var(--g-good); border-color: var(--g-good); }
+.live-steps .st-done .dot::after { content: ""; position: absolute; left: 5px; top: 1px; width: 4px; height: 9px; border-right: 2px solid var(--bg); border-bottom: 2px solid var(--bg); transform: rotate(45deg); }
+.live-steps .st-fail { color: var(--imp); }
+.live-steps .st-fail .dot { border-color: var(--imp); background: var(--imp-bg); }
+@keyframes spin { to { transform: rotate(360deg); } }

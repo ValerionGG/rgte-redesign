@@ -49,7 +49,7 @@
               <span class="kind" id="kind" aria-live="polite">Site web</span>
             </div>
         <div class="grid main-fields">
-          <label>Secteur<select name="sector" id="f-sector" required></select></label>
+          <label>Secteur<select name="sector" id="f-sector"></select></label>
           <label>Mot-clé visé<input name="keyword" placeholder="ex. vitrine réfrigérée sur mesure"></label>
           <label>Ville ou zone<input name="city" placeholder="ex. Lyon" autocomplete="address-level2"></label>
           <button class="btn primary" type="submit" id="go">Analyser</button>
@@ -126,6 +126,7 @@
       </div>
     </div>
     <p class="progress" id="progress" role="status" aria-live="polite"></p>
+    <ol class="live-steps" id="live-steps" aria-label="Étapes de l’analyse" hidden></ol>
   </section>
 
   <section id="view" class="view" tabindex="-1" aria-live="off"></section>
@@ -134,7 +135,7 @@
 
 <footer class="foot">
   <p>SEO 360. Données de marché et benchmarks : recherche du 3 novembre 2026 (sources dans Ressources). Les budgets sont des ordres de grandeur à recaler sur vos comptes.</p>
-  <p>Confidentialité : SEO 360 n’a pas de serveur. Pour lire votre page, son adresse passe par un proxy public (AllOrigins, puis CodeTabs) ou par votre propre proxy, et par PageSpeed Insights de Google ; le mot-clé part vers les suggestions de Google. Avec « Lecture de la page : Aucune », seul le code que vous collez est analysé. Un lien de partage ne contient ni votre marge, ni votre budget, ni vos clés.</p>
+  <p>Confidentialité : SEO 360 n’a pas de serveur. Pour lire votre page, son adresse passe par des services de lecture publics (AllOrigins et CodeTabs, Jina Reader en secours) ou par votre propre proxy, et par PageSpeed Insights de Google ; le mot-clé part vers les suggestions de Google. Avec « Lecture de la page : Aucune », seul le code que vous collez est analysé. Un lien de partage ne contient ni votre marge, ni votre budget, ni vos clés.</p>
 </footer>
 <script type="module" src="app.js"></script>
 </body>

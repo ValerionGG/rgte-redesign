@@ -28,7 +28,9 @@ import bench from './data/research/benchmarks.js'
 const $ = (s, el = document) => el.querySelector(s)
 // Version publiée en page claude.ai (Artifact) : aucun accès aux autres sites, pas de téléchargement ni d'impression
 const ARTIFACT = !!document.querySelector('meta[name="seo360-mode"][content="artifact"]')
-const ARTIFACT_MSG = 'Dans cette page claude.ai, SEO 360 ne peut pas lire un site lui-même. Collez le code source de votre page (et votre robots.txt) dans « Plus d’options », demandez l’audit à Claude dans la conversation (« audite mon-site.fr »), ou ouvrez l’exemple.'
+// Version en ligne complète (GitHub Pages) : elle lit vraiment les sites, contrairement à la page claude.ai
+const ONLINE = 'https://valeriongg.github.io/rgte-redesign/seo/'
+const ARTIFACT_MSG = 'Dans cette page claude.ai, SEO 360 ne peut pas lire un site lui-même. Utilisez « Analyser en ligne » (la version complète s’ouvre avec votre adresse), collez le code source de votre page dans « Plus d’options », ou demandez l’audit à Claude dans la conversation.'
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 const num = (v, d = 0) => (Number.isFinite(+v) ? +v : d)
@@ -86,7 +88,7 @@ const S = { ai: {}, live: { reports: [], conseil: [], status: 'off', first: fals
 
 // ───────── Formulaire ─────────
 const form = $('#form')
-$('#f-sector').innerHTML = `<option value="">Votre secteur…</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
+$('#f-sector').innerHTML = `<option value="">Deviné d’après la page</option>` + SECTORS.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join('')
 $('#f-goal').innerHTML = Object.entries(GOALS).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')
 // Objectif par défaut selon le secteur (une boutique en ligne vend), tant que l'utilisateur ne l'a pas choisi lui-même
 let goalTouched = false
@@ -97,7 +99,8 @@ form.elements.psiKey.value = sess.get('psiKey'); form.elements.githubToken.value
 const vals = () => {
   const o = Object.fromEntries(new FormData(form))
   return {
-    ...o, sector: o.sector || 'autre', monthly: o.monthly === '' ? null : num(o.monthly), avgValue: num(o.avgValue), margin: o.margin === '' ? null : num(o.margin) / 100,
+    // Secteur vide = deviné d'après la page à l'analyse (sectorById('') retombe sur « Autre » ailleurs)
+    ...o, sector: o.sector || '', monthly: o.monthly === '' ? null : num(o.monthly), avgValue: num(o.avgValue), margin: o.margin === '' ? null : num(o.margin) / 100,
     closeRate: o.closeRate === '' ? null : num(o.closeRate) / 100, crawl: Math.max(0, Math.min(30, num(o.crawl, 8))), local: o.local === '' ? undefined : o.local === '1',
   }
 }
@@ -131,6 +134,16 @@ function refreshDerived() {
 
 // ───────── Progression & erreurs ─────────
 const progress = (m, kind = '') => { const p = $('#progress'); p.textContent = m; p.className = 'progress ' + kind }
+// Étapes de l'analyse en direct : lecture du site, vitesse réelle, diagnostic (affichées pendant le calcul)
+const STEPS = [['lecture', 'Lecture de la page, du robots.txt et du sitemap'], ['vitesse', 'Vitesse réelle sur mobile (PageSpeed de Google)'], ['diagnostic', 'Diagnostic, correctifs et plan d’action']]
+const STEP_STATE = { wait: 'à venir', run: 'en cours', done: 'fait', fail: 'incomplet' }
+function paintSteps(st) {
+  const el = document.getElementById('live-steps')
+  if (!el) return
+  if (!st) { el.hidden = true; el.innerHTML = ''; return }
+  el.hidden = false
+  el.innerHTML = STEPS.filter(([k]) => st[k] !== 'skip').map(([k, label]) => `<li class="st-${st[k]}"><span class="dot" aria-hidden="true"></span><span>${esc(label)}${k === 'lecture' && st.detail && st[k] === 'run' ? ` <span class="note">· ${esc(st.detail)}</span>` : ''}</span><span class="sr"> : ${STEP_STATE[st[k]]}</span></li>`).join('')
+}
 // Erreurs techniques traduites (jamais « Failed to fetch » brut).
 function humanError(err) {
   const m = String(err?.message || err || '')
@@ -169,9 +182,34 @@ const PROXIES = {
   allorigins: async (url, signal) => { const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal }); const j = await r.json(); return { status: j.status?.http_code || (j.contents ? 200 : 0), body: j.contents || '', finalUrl: j.status?.url || url, headers: {}, redirects: [] } },
   codetabs: async (url, signal) => { const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, { signal }); return { status: r.status, body: await r.text(), finalUrl: url, headers: {}, redirects: [] } },
 }
-function makeFetcher(v, pasted) {
+// Page principale en mode automatique : les deux proxys publics sont interrogés en même temps et la première
+// page HTML valide l'emporte ; si les deux échouent, Jina Reader (qui affiche la page comme un navigateur) prend le relais.
+const looksHtml = (b) => /<html|<head|<title|<body|<!doctype/i.test(String(b || '').slice(0, 4000))
+async function raceProxies(url) {
+  const ctrls = Object.keys(PROXIES).map(() => new AbortController())
+  const t = setTimeout(() => ctrls.forEach((c) => c.abort()), 20000)
+  try {
+    const res = await Promise.any(Object.keys(PROXIES).map((name, i) => PROXIES[name](url, ctrls[i].signal).then((r) => (r.status >= 200 && r.status < 400 && looksHtml(r.body) ? r : Promise.reject(new Error('vide'))))))
+    ctrls.forEach((c) => c.abort())
+    return res
+  } catch { return null } finally { clearTimeout(t) }
+}
+async function jinaReader(url) {
+  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 25000)
+  try {
+    const r = await fetch('https://r.jina.ai/' + url, { headers: { 'X-Return-Format': 'html' }, signal: ctrl.signal })
+    const body = r.ok ? await r.text() : ''
+    return looksHtml(body) ? { status: 200, body, finalUrl: url, headers: {}, redirects: [], via: 'jina' } : null
+  } catch { return null } finally { clearTimeout(t) }
+}
+function makeFetcher(v, pasted, mainUrl = '') {
   const order = v.proxy === 'custom' ? ['custom'] : v.proxy === 'none' ? [] : [v.proxy, ...Object.keys(PROXIES).filter((p) => p !== v.proxy)]
   return async (url, { noFollow = false } = {}) => {
+    if (!noFollow && v.proxy === 'allorigins' && mainUrl && sameDoc(url, mainUrl) && !(pasted && sameDoc(url, pasted.url))) {
+      const won = await raceProxies(url) || await jinaReader(url)
+      if (won) { S.readVia = won.via || 'proxy'; return won }
+      return { status: 0, unknown: true }
+    }
     if (noFollow && v.proxy !== 'custom') return {} // redirections http/www : vérifiables seulement en CLI ou via votre proxy
     if (pasted && !noFollow && sameDoc(url, pasted.url)) return { status: 200, body: pasted.html, finalUrl: url, headers: {}, redirects: [] }
     if (pasted?.robots && !noFollow && tryJ(() => new URL(url).pathname === '/robots.txt' && new URL(url).origin === new URL(pasted.url).origin, false)) return { status: 200, body: pasted.robots, finalUrl: url, headers: {}, redirects: [] }
@@ -205,30 +243,37 @@ async function run({ bundle } = {}) {
   const v = vals()
   const target = bundle ? bundle.url : v.url.trim()
   if (!target) { progress('Indiquez l’adresse de votre site, de votre application ou de votre dépôt GitHub.', 'err'); fieldError(form.elements.url, 'Indiquez une adresse : votre-site.fr, un lien App Store ou Google Play, ou owner/repo.'); return }
-  if (!form.elements.sector.value && !bundle) { progress('Choisissez votre secteur : il sert aux mots-clés, hashtags et budgets.', 'err'); fieldError(form.elements.sector, 'Choisissez votre secteur : il sert aux mots-clés, aux hashtags et au budget.'); return }
   if (ARTIFACT && !bundle && !(v.html || '').trim()) { progress(ARTIFACT_MSG, 'err'); return }
   const kind = bundle ? 'site' : detectKind(target)
   const pastedUrl = /^https?:\/\//i.test(target) ? target : 'https://' + target.replace(/^\/+/, '')
   const pasted = !bundle && v.html?.trim() ? { url: pastedUrl, html: v.html, robots: (v.robotsTxt || '').trim() || null } : null
-  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted)
+  const fetcher = bundle ? bundleFetcher(bundle) : makeFetcher(v, pasted, target)
   const canRead = bundle || pasted || kind !== 'site' || v.proxy !== 'none'
   const input = inputOf(v)
   S.busy = true; $('#go').disabled = true; $('#go').textContent = 'Analyse…'
   const t0 = performance.now()
   let step = 'Préparation'
-  const tick = setInterval(() => progress(`${step}… ${Math.round((performance.now() - t0) / 1000)} s`), 1000)
+  S.readVia = null
+  const st = { lecture: 'run', vitesse: kind === 'site' && !ARTIFACT ? 'run' : 'skip', diagnostic: 'wait', detail: '' }
+  paintSteps(st); progress('Lecture de votre page…')
+  const tick = setInterval(() => { progress(`${step}… ${Math.round((performance.now() - t0) / 1000)} s`); paintSteps(st) }, 1000)
   try {
     const comps = kind === 'site' && !bundle ? (v.competitors || '').split(/\s*[\n,;]\s*/).map((s) => s.trim()).filter(Boolean).slice(0, 5) : []
     const source = bundle ? 'bookmarklet' : pasted ? 'paste' : v.proxy === 'custom' ? 'worker' : 'proxy'
-    const common = { fetcher: canRead ? fetcher : null, noFetch: !canRead, source, psiKey: v.psiKey, githubToken: v.githubToken, input, onProgress: (m) => { step = m }, ...(ARTIFACT ? { psi: false } : {}) }
+    const common = { fetcher: canRead ? fetcher : null, noFetch: !canRead, source, psiKey: v.psiKey, githubToken: v.githubToken, input, onProgress: (m) => { step = m; if (/^Analyse/.test(m)) { st.lecture = 'done'; if (st.vitesse === 'run') st.vitesse = 'done'; st.diagnostic = 'run' } else if (/\d+\s*\/\s*\d+/.test(m)) st.detail = m; paintSteps(st) }, ...(ARTIFACT ? { psi: false } : {}) }
     if (bundle?.rendered) common.rendered = { wordCount: extract(bundle.rendered, bundle.url).wordCount }
     const job = Promise.all([
       analyze(target, { ...common, kind, crawl: bundle ? bundle.pages.length + 1 : pasted || v.proxy === 'none' ? 0 : v.crawl }),
-      ...comps.map((c) => analyze(c, { ...common, fetcher: v.proxy === 'none' ? null : makeFetcher(v, null), noFetch: v.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
+      ...comps.map((c) => analyze(c, { ...common, fetcher: v.proxy === 'none' ? null : makeFetcher(v, null, c), noFetch: v.proxy === 'none', source: 'proxy', kind: 'site', crawl: 0, rendered: null }).then((r) => competitorSummary(c, r)).catch((err) => ({ url: c, error: err.message, scores: {} }))),
     ])
     const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('L’analyse a dépassé 2 minutes (proxy ou PageSpeed trop lent).')), 120000))
     const [rep, ...compReps] = await Promise.race([job, timeout])
     if (comps.length) rep.competitors = compReps
+    if (S.readVia === 'jina' && rep.ctx?.fetch) rep.ctx.fetch.source = 'jina'
+    // Secteur deviné et objectif qui en découle : reportés dans le formulaire avant de recalculer budget et hashtags
+    if (rep.input?.sectorGuessed) form.elements.sector.value = rep.input.sector
+    if (rep.input?.goal && !goalTouched) form.elements.goal.value = rep.input.goal
+    st.lecture = rep.result?.global == null && rep.result?.incomplete ? 'fail' : 'done'; if (st.vitesse !== 'skip') st.vitesse = !rep.ctx?.psi || rep.ctx.psi.error ? 'fail' : 'done'; st.diagnostic = 'done'; paintSteps(st); setTimeout(() => paintSteps(null), 2500)
     S.report = rep; S.suggestions = []; S.cat = ''; S.shared = false
     refreshDerived()
     remember(rep)
@@ -242,6 +287,7 @@ async function run({ bundle } = {}) {
     autoSuggest()
   } catch (err) {
     console.error(err)
+    st.lecture = st.lecture === 'run' ? 'fail' : st.lecture; st.diagnostic = st.diagnostic === 'run' ? 'fail' : st.diagnostic; paintSteps(st)
     showError('L’analyse n’a pas abouti', humanError(err))
   } finally {
     clearInterval(tick); S.busy = false; $('#go').disabled = false; $('#go').textContent = ARTIFACT ? 'Analyser le code collé' : 'Analyser'
@@ -330,6 +376,7 @@ document.addEventListener('click', (e) => {
   const pb = t.closest('[data-pin]')
   if (pb) { e.preventDefault(); const item = tryJ(() => JSON.parse(pb.dataset.pin), null); if (item?.key && PIN_KIND[item.kind]) { togglePin(item); render() } }
   if (t.closest('.export-menu .menu .btn')) t.closest('details.export-menu')?.removeAttribute('open')
+  if (t.closest('[data-edit-sector]')) { collapseHero(false); form.elements.sector.focus(); form.elements.sector.scrollIntoView({ block: 'center' }) }
   if (t.closest('[data-edit-goal]')) { collapseHero(false); $('details.more').open = true; form.elements.goal.focus(); form.elements.goal.scrollIntoView({ block: 'center' }) }
   if (t.closest('[data-send-self]')) {
     const url = location.href.split('#')[0], title = 'SEO 360 : finir mon audit sur ordinateur'
@@ -415,7 +462,7 @@ function synthese() {
   const prog = S.shared ? null : progressSince(r)
   const b = r.budget
   const G = gscAnalysis(), gscOpp = G?.opportunities || []
-  const head = `<div class="section-head"><div><h2>${esc(r.target)}</h2><p>${KIND[r.kind]} · ${esc(sectorById(r.input.sector).label)}${r.input.city ? ' · ' + esc(r.input.city) : ''} · ${new Date(r.generatedAt).toLocaleString('fr-FR')}${c.fetch?.source ? ' · collecte : ' + esc(SOURCE[c.fetch.source] || c.fetch.source) : ''}</p>${r.provenance ? `<p class="chip tag">${esc(PROVENANCE[r.provenance])}</p>` : ''}</div>${reportBar()}</div>`
+  const head = `<div class="section-head"><div><h2>${esc(r.target)}</h2><p>${KIND[r.kind]} · ${esc(sectorById(r.input.sector).label)}${r.input.sectorGuessed ? ' <span class="chip tag">deviné d’après la page</span> <button class="linkish" type="button" data-edit-sector>changer</button>' : r.input.sectorUnknown ? ' <button class="linkish" type="button" data-edit-sector>choisir votre secteur</button>' : ''}${r.input.city ? ' · ' + esc(r.input.city) : ''} · ${new Date(r.generatedAt).toLocaleString('fr-FR')}${c.fetch?.source ? ' · collecte : ' + esc(SOURCE[c.fetch.source] || c.fetch.source) : ''}</p>${r.provenance ? `<p class="chip tag">${esc(PROVENANCE[r.provenance])}</p>` : ''}</div>${reportBar()}</div>`
   const incomplete = R.incomplete ? `<div class="card alert" role="alert"><h3>Audit incomplet : ${esc(R.incomplete)}</h3><p>Nous n’affichons pas de note quand l’essentiel n’a pas pu être mesuré : elle serait trompeuse. Ce qui a été mesuré reste listé ci-dessous.</p>${solutions()}</div>` : ''
   const caps = (R.caps || []).length ? `<p class="cap">Note plafonnée : ${R.caps.map((x) => esc(x)).join(' · ')}</p>` : ''
   return `${head}${incomplete}
@@ -440,7 +487,7 @@ function synthese() {
   ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
   ${r.kind === 'site' && c.page ? `<details class="card fold"><summary><h3>La page en bref, technologies et robots IA</h3></summary>${siteFacts(r)}${m.bots ? `<div class="table-wrap"><table><caption class="sr">Accès des robots</caption><thead><tr><th>Robot</th><th>Usage</th><th>Accès</th></tr></thead><tbody>${m.bots.map((x) => `<tr><td><code>${esc(x.ua)}</code></td><td>${esc(x.owner)}</td><td>${x.allowed ? '<span class="chip sev-ok">autorisé</span>' : '<span class="chip sev-critique">bloqué</span>'}</td></tr>`).join('')}</tbody></table></div>` : ''}</details>` : ''}`
 }
-const SOURCE = { node: 'ligne de commande', worker: 'votre proxy', proxy: 'proxy public', paste: 'code collé', bookmarklet: 'bouton-favori', psi: 'PageSpeed seul' }
+const SOURCE = { node: 'ligne de commande', worker: 'votre proxy', proxy: 'proxy public', jina: 'Jina Reader (page affichée comme dans un navigateur)', paste: 'code collé', bookmarklet: 'bouton-favori', psi: 'PageSpeed seul' }
 after.synthese = () => {
   $$('[data-cat]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); S.cat = a.dataset.cat; go('afaire') }))
 }
@@ -711,7 +758,7 @@ function calendarPanel(v) {
   const list = upcoming(new Date(), { days: 90, sector: v.sector, alsace })
   if (!list.length) return ''
   return `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Temps forts des 90 prochains jours</h3><label class="inline"><input type="checkbox" id="cal-alsace" ${alsace ? 'checked' : ''}> Alsace-Moselle</label></div>
-    <p class="note">Dates calculées pour votre secteur. Préparez le contenu à J-30, la pub à J-14, les posts à J-7 et les horaires de votre fiche Google avant chaque jour férié. Calendrier complet de l’année : <code>node seo/cli.mjs calendrier --secteur ${esc(v.sector)} --sortie rapports-seo</code> (tableur et agenda .ics).</p>
+    <p class="note">Dates calculées pour votre secteur. Préparez le contenu à J-30, la pub à J-14, les posts à J-7 et les horaires de votre fiche Google avant chaque jour férié. Calendrier complet de l’année : <code>node seo/cli.mjs calendrier --secteur ${esc(v.sector || 'autre')} --sortie rapports-seo</code> (tableur et agenda .ics).</p>
     <div class="actions"><button class="btn sm" type="button" data-cal-csv>${ARTIFACT && !live.downloads ? 'Copier le calendrier de l’année (tableur)' : 'Télécharger le calendrier de l’année (.csv)'}</button></div>
     <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
@@ -974,11 +1021,16 @@ $('#board-btn')?.addEventListener('click', () => { go('synthese'); requestAnimat
 if (ARTIFACT) {
   const n = document.createElement('p')
   n.className = 'demo-note'; n.id = 'artifact-note'; n.setAttribute('role', 'note')
-  n.textContent = 'Dans cette page, SEO 360 ne peut pas lire un site lui-même. Pour avoir votre audit : collez le code de votre page dans « Plus d’options », ou demandez-le à Claude dans la conversation (« audite mon-site.fr »), ou ouvrez l’exemple.'
+  n.textContent = 'Dans cette page, SEO 360 ne peut pas lire un site lui-même. Tapez votre adresse puis « Analyser en ligne » : l’analyse complète s’ouvre sur la version en ligne. Vous pouvez aussi coller le code de votre page dans « Plus d’options », demander l’audit à Claude dans la conversation, ou ouvrir l’exemple.'
   $('#hero .hero-full')?.prepend(n)
+  // Lien réel (une page claude.ai ne peut pas ouvrir de fenêtre par script) vers la version en ligne, adresse préremplie
+  const online = document.createElement('a')
+  online.className = 'btn primary'; online.id = 'go-online'; online.target = '_blank'; online.rel = 'noopener'; online.textContent = 'Analyser en ligne ↗'
+  const syncOnline = () => { const u = form.elements.url.value.trim(); online.href = ONLINE + (u ? '#analyser=' + encodeURIComponent(u) : '') }
+  syncOnline(); form.elements.url.addEventListener('input', syncOnline)
   const ex = document.createElement('button')
-  ex.type = 'button'; ex.className = 'btn primary'; ex.dataset.exemple = ''; ex.textContent = 'Voir un exemple de rapport'
-  $('#go').before(ex); $('#go').classList.remove('primary'); $('#go').textContent = 'Analyser le code collé'
+  ex.type = 'button'; ex.className = 'btn'; ex.dataset.exemple = ''; ex.textContent = 'Voir un exemple'
+  $('#go').before(online); $('#go').before(ex); $('#go').classList.remove('primary'); $('#go').textContent = 'Analyser le code collé'
   for (const name of ['proxy', 'proxyUrl', 'psiKey', 'githubToken', 'crawl']) form.elements[name]?.closest('label')?.setAttribute('hidden', '')
   $('#hero .hint')?.setAttribute('hidden', '')
   // Capacités de la page claude.ai : Claude en direct, synchronisation, téléchargements (absentes ailleurs)
@@ -991,12 +1043,16 @@ if (ARTIFACT) {
       if (S.tab === 'ressources' || !S.report) render()
     },
     onConseil: (list) => { S.live.conseil = list; if (S.tab === 'ressources' && S.res === 'direct') render() },
-  }).then(() => { if (live.sample || live.db || live.downloads) { n.textContent = `Cette page ne peut pas lire un site elle-même. Le plus simple : écrivez « audite mon-site.fr » à Claude dans la conversation, le rapport complet apparaît ici${live.db ? ' et se synchronise sur vos appareils' : ''}. Vous pouvez aussi coller le code de votre page dans « Plus d’options »${live.sample ? ', puis demander à Claude, ici même, un plan ou un correctif rédigé' : ''}.`; render() } })
+  }).then(() => { if (live.sample || live.db || live.downloads) { n.textContent = `Cette page ne peut pas lire un site elle-même : « Analyser en ligne » ouvre l’analyse complète avec votre adresse. Vous pouvez aussi demander l’audit à Claude dans la conversation (« audite mon-site.fr ») : le rapport apparaît ici${live.db ? ' et se synchronise sur vos appareils' : ''}${live.sample ? ', puis Claude vous rédige, ici même, un plan ou un correctif' : ''}.`; render() } })
 }
 ;(async () => {
   const h = location.hash
   if (h.startsWith('#r=')) {
     try { S.report = sanitizeReport(await decodeReport(h.slice(3)), 'partage'); S.shared = true; refreshDerived(); syncForm(S.report); collapseHero(true); history.replaceState(null, '', '#synthese'); progress('Rapport partagé (lecture seule). Relancez une analyse pour l’actualiser.', 'ok') } catch (err) { progress('Lien de rapport illisible : ' + err.message, 'err') }
+  } else if (h.startsWith('#analyser=')) {
+    const u = tryJ(() => decodeURIComponent(h.slice(10)), '').trim()
+    history.replaceState(null, '', location.pathname + location.search)
+    if (u && u.length < 400) { form.elements.url.value = u; updateKind(); if (!ARTIFACT) setTimeout(() => form.requestSubmit(), 60) }
   } else if (h === '#bm') {
     progress('En attente des données envoyées par le bouton-favori…')
     history.replaceState(null, '', '#synthese')

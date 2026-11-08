@@ -54,14 +54,14 @@ Pack de ${skills.length} skills en français pour les TPE, PME, artisans, commer
 
 ## Installation
 
-Deux commandes dans Claude Code (testées le 5 novembre 2026) :
+Deux commandes dans Claude Code :
 
 \`\`\`
-/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d
+/plugin marketplace add ValerionGG/rgte-redesign
 /plugin install seo360@seo360-fr
 \`\`\`
 
-Le \`#…\` désigne la branche de travail : une fois la branche fusionnée dans \`main\`, \`/plugin marketplace add ValerionGG/rgte-redesign\` suffit. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
+Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
 
 ## Premier usage
 
@@ -73,7 +73,7 @@ ${skills.map((s) => `- **${s}** — ${desc(s)}`).join('\n')}
 
 ## Commandes embarquées
 
-Dans le plugin, les skills appellent \`node "\${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"\` : audit (\`<url>\`, \`--avant\` après une refonte), \`gsc\` (export Search Console), \`veille\` (Agent Reach), \`calendrier\`, \`budget\`, \`hashtags\`. L'interface web sera en ligne à ${PAGES} une fois la branche fusionnée dans \`main\`
+Dans le plugin, les skills appellent \`node "\${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"\` : audit (\`<url>\`, \`--avant\` après une refonte), \`gsc\` (export Search Console), \`veille\` (Agent Reach), \`calendrier\`, \`budget\`, \`hashtags\`. L'interface web est en ligne : ${PAGES}
 
 ## Données et confidentialité
 

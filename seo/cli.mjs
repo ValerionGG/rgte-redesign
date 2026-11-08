@@ -44,7 +44,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
         node seo/cli.mjs hashtags --secteur <id> [--mot-cle "a, b"] [--ville X] [--marque X]   (hashtags seuls)
         node seo/cli.mjs outils [--rapport site.json | --secteur <id> --local]   (outils gratuits et payants + guides)
 
-  --secteur <id>        ${SECTORS.map((s) => s.id).join(', ')}
+  --secteur <id>        sans ce choix, le secteur est deviné d'après la page. Valeurs : ${SECTORS.map((s) => s.id).join(', ')}
   --mot-cle "<texte>"   mot-clé principal visé
   --ville <ville>       ville (SEO local + hashtags locaux)
   --marque <nom>        nom de marque
@@ -120,13 +120,13 @@ async function fetchAs(url, UA, { noFollow = false } = {}) {
 }
 
 const input = {
-  sector: opt('secteur', 'autre'), keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',
-  goal: opt('objectif', null) || defaultGoal(opt('secteur', 'autre')), monthly: opt('budget', null) == null ? null : +opt('budget'), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
+  sector: opt('secteur', '') || '', keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',
+  goal: opt('objectif', null) || (opt('secteur', '') ? defaultGoal(opt('secteur', '')) : ''), monthly: opt('budget', null) == null ? null : +opt('budget'), avgValue: +opt('valeur', 0), targetConversions: +opt('objectif-conv', 0), lang: opt('langue', 'fr'),
   margin: opt('marge', null) == null ? null : +opt('marge') / 100, closeRate: opt('signature', null) == null ? null : +opt('signature') / 100,
 }
 if (opt('local')) input.local = true
 if (opt('national')) input.local = false
-if (!SECTORS.some((s) => s.id === input.sector)) { console.error(`Secteur inconnu : ${input.sector}`); process.exit(1) }
+if (input.sector && !SECTORS.some((s) => s.id === input.sector)) { console.error(`Secteur inconnu : ${input.sector}`); process.exit(1) }
 
 const quiet = opt('json')
 const log = (...a) => { if (!quiet) console.error(...a) }
@@ -134,6 +134,10 @@ const common = { fetcher, fetchImpl: fetch, psi: !opt('no-psi'), psiKey: opt('ps
 
 log(`\n🔎 SEO 360 — ${target} (${detectKind(target)})`)
 const report = await analyze(target, { ...common, input, crawl: +opt('crawl', 15), onProgress: (m) => log('  · ' + m) })
+// Secteur deviné d'après la page quand --secteur manque : la suite (veille, budget) l'utilise aussi
+Object.assign(input, { sector: report.input.sector, goal: report.input.goal })
+if (report.input.sectorGuessed) log(`  · Secteur deviné : ${report.input.sectorGuessed} (--secteur pour le changer)`)
+else if (report.input.sectorUnknown) log('  · Secteur non reconnu : « autre » par défaut (précisez --secteur pour des mots-clés, hashtags et budgets plus justes)')
 if (report.kind === 'site' && (input.keyword || report.keywords?.base)) {
   log('  · Suggestions Google…')
   report.suggestions = await googleSuggest(input.keyword || report.keywords.base, { fetchImpl: fetch }).catch((e) => { report.suggestionsError = String(e?.message || e).slice(0, 120); return [] })
@@ -191,7 +195,7 @@ const R = report.result
 if (report.error) log(`\n⚠️  ${report.error}`)
 if (R) {
   if (R.incomplete) log(`\n⚠️  Audit incomplet : ${R.incomplete}. Pas de note globale.`)
-  else log(`\nNote : ${R.global}/100 (${R.grade}) · contrôles mesurés : ${Math.round(R.coverage * 100)} %${R.caps?.length ? ' · plafonnée : ' + R.caps.join(' ; ') : ''}`)
+  else log(`\nNote : ${R.global}/100 (${R.grade}) · part mesurée : ${Math.round(R.coverage * 100)} %${R.caps?.length ? ' · plafonnée : ' + R.caps.join(' ; ') : ''}`)
   for (const s of Object.values(R.scores)) log(`  ${s.score == null ? '  —' : String(s.score).padStart(3)}  ${s.label}${s.estimated ? ' (estimé)' : ''}`)
   if (report.plan?.week?.length) { log('\nVos 3 actions cette semaine :'); for (const i of report.plan.week) log(`  • ${i.title} (${i.who}${i.time ? ', ' + i.time : ''})`) }
   if (report.drift) log(`\nDérive après refonte : ${report.drift.verdict}${report.drift.items.length ? '\n' + report.drift.items.filter((i) => i.level !== 'info').slice(0, 8).map((i) => `  [${i.level}] ${i.rule} — ${i.url}`).join('\n') : ''}`)

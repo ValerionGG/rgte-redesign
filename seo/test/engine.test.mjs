@@ -589,3 +589,11 @@ test('critique finale : objectif par secteur, robots.txt fusionné, JSON-LD comp
   const d = compareReports(before, after)
   assert.ok(d.fixed.some((x) => /H1/i.test(x.title)), 'corrections non listées après revérification')
 })
+test('secteur deviné d’après la page quand il n’est pas choisi', async () => {
+  const { guessSector } = await import('../engine/guess.js')
+  const r = await analyze(O + '/', { fetcher: vfetch(site(GOOD)), psi: false, crawl: 0, input: { city: 'Lyon' } })
+  assert.equal(r.input.sector, 'boulangerie'); assert.ok(r.input.sectorGuessed)
+  const chosen = await analyze(O + '/', { fetcher: vfetch(site(GOOD)), psi: false, crawl: 0, input: { sector: 'ecommerce' } })
+  assert.equal(chosen.input.sector, 'ecommerce'); assert.ok(!chosen.input.sectorGuessed)
+  assert.equal(guessSector({ title: 'Accueil', headings: [], text: 'Bienvenue sur notre site. Contact. Menu.' }), null, 'secteur inventé sans signal')
+})

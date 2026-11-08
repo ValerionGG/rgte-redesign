@@ -4,14 +4,14 @@ Pack de 21 skills en français pour les TPE, PME, artisans, commerces et freelan
 
 ## Installation
 
-Deux commandes dans Claude Code (testées le 5 novembre 2026) :
+Deux commandes dans Claude Code :
 
 ```
-/plugin marketplace add ValerionGG/rgte-redesign#claude/seo-platform-hashtags-benchmark-fo1g2d
+/plugin marketplace add ValerionGG/rgte-redesign
 /plugin install seo360@seo360-fr
 ```
 
-Le `#…` désigne la branche de travail : une fois la branche fusionnée dans `main`, `/plugin marketplace add ValerionGG/rgte-redesign` suffit. Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
+Node 18 ou plus est nécessaire pour les commandes (aucune dépendance à installer).
 
 ## Premier usage
 
@@ -43,7 +43,7 @@ Dites « voici mon entreprise » : le skill `contexte-entreprise` crée `.claude
 
 ## Commandes embarquées
 
-Dans le plugin, les skills appellent `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"` : audit (`<url>`, `--avant` après une refonte), `gsc` (export Search Console), `veille` (Agent Reach), `calendrier`, `budget`, `hashtags`. L'interface web sera en ligne à https://valeriongg.github.io/rgte-redesign/seo/ une fois la branche fusionnée dans `main`
+Dans le plugin, les skills appellent `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs"` : audit (`<url>`, `--avant` après une refonte), `gsc` (export Search Console), `veille` (Agent Reach), `calendrier`, `budget`, `hashtags`. L'interface web est en ligne : https://valeriongg.github.io/rgte-redesign/seo/
 
 ## Données et confidentialité
 

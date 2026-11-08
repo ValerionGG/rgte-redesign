@@ -9,6 +9,7 @@ import { planBudget, preSpendChecks, GOALS, defaultGoal } from './ads.js'
 import { fetchRepo, auditRepo, parseRepo, GH_CATS } from './github.js'
 import { parseStoreUrl, lookupIOS, auditIOS, auditPlayHtml, ASO_CATS } from './appstore.js'
 import { sectorById } from '../data/sectors.js'
+import { guessSector } from './guess.js'
 
 export { CATEGORIES, SEVERITY, GOALS, GH_CATS, ASO_CATS }
 
@@ -36,6 +37,7 @@ export function socialProfile(u) {
   for (const [network, re] of SOCIAL_PROFILE) { const m = String(u || '').match(re); if (m) return { network, handle: m[1] } }
   return null
 }
+export { guessSector }
 export function detectKind(u) {
   u = String(u || '').trim()
   if (parseStoreUrl(u)) return 'app'
@@ -44,11 +46,13 @@ export function detectKind(u) {
 }
 
 export async function analyze(target, o = {}) {
-  const input = { sector: 'autre', monthly: null, lang: 'fr', ...o.input }
+  // Sans secteur choisi, on le devine d'après la page (voir guess.js) ; l'objectif suit alors le secteur trouvé.
+  const sectorAuto = !o.input?.sector, goalAuto = !o.input?.goal
+  const input = { monthly: null, lang: 'fr', ...o.input, sector: o.input?.sector || 'autre' }
   input.goal ||= defaultGoal(input.sector)
   const kind = o.kind || detectKind(target)
-  const sector = sectorById(input.sector)
-  const local = input.local ?? sector.local
+  let sector = sectorById(input.sector)
+  let local = input.local ?? sector.local
   const report = { version: 2, generatedAt: new Date().toISOString(), target, kind, input: { ...input, local } }
   const progress = o.onProgress || (() => {})
 
@@ -60,6 +64,13 @@ export async function analyze(target, o = {}) {
     if (o.psi !== false) tasks.push(runPSI(normalize(target), { key: o.psiKey, strategy: 'mobile', fetchImpl: o.fetchImpl }))
     const [ctx, psi] = await Promise.all(tasks)
     if (psi) ctx.psi = psi
+    const g = sectorAuto && ctx.page ? guessSector(ctx.page) : null
+    if (g) {
+      input.sector = g.id; sector = sectorById(g.id); local = input.local ?? sector.local
+      if (goalAuto) input.goal = defaultGoal(g.id)
+      ctx.input = { ...ctx.input, sector: g.id, local, goal: input.goal }
+      report.input = { ...input, local, sectorGuessed: g.label }
+    } else if (sectorAuto) report.input = { ...report.input, sectorGuessed: null, sectorUnknown: true }
     if (social) ctx.social = social
     progress('Analyse…')
     report.ctx = slim(ctx)
