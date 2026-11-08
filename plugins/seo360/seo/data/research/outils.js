@@ -1,0 +1,1303 @@
+// Généré depuis outils.json (recherche du 2026-11-05). Ne pas éditer à la main : modifiez le .json puis node seo/data/sync.mjs
+export default {
+ "generated": "2026-11-05",
+ "review_by": "2027-03-05",
+ "method": "Catalogue du 2026-11-05 : étude de marché (prix vérifiés le 2026-11-03) et recherche dédiée aux outils (44 fiches, pages de prix et d'aide officielles lues via la recherche web ; 31 vérifiées, 13 « à vérifier »). Prix d'entrée indicatifs, hors taxes sauf mention ; les totaux mensuels convertissent 1 $ ≈ 0,86 €. Changements 2026 intégrés : Apple Business, Data Studio, Hotjar dans Contentsquare, fin du plan gratuit d'Agorapulse, nouvelle adresse de Bing Places, consentement requis pour Clarity, Screaming Frog à 245 €/an.",
+ "tools": [
+  {
+   "id": "search-console",
+   "nom": "Google Search Console",
+   "url": "https://search.google.com/search-console",
+   "besoins": [
+    "mesure",
+    "seo"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vos vraies requêtes, positions, pages indexées et problèmes vus par Google ; indispensable pour mesurer chaque correction.",
+   "gratuit": true,
+   "limites_gratuit": "Entièrement gratuit ; jusqu'à 1 000 propriétés par compte ; une propriété Domaine se valide uniquement par enregistrement DNS (sauf sites Blogger / Google Sites) ; envoi de sitemap réservé aux propriétaires.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://search.google.com/search-console/about",
+   "doc": "https://support.google.com/webmasters/answer/34592?hl=fr",
+   "etapes": [
+    "Ouvrez le sélecteur de propriétés de la Search Console et choisissez « + Ajouter une propriété ».",
+    "Choisissez le type « Domaine » et saisissez le domaine racine, sans http(s)://, sans chemin et sans www (la propriété couvre tous les sous-domaines et protocoles).",
+    "Si votre registraire figure dans la liste, lancez la validation automatique ; sinon choisissez « Tous fournisseurs DNS », type TXT, et copiez la valeur fournie.",
+    "Chez votre hébergeur DNS, créez un enregistrement TXT (hôte vide ou « @ ») avec cette valeur, puis cliquez sur « Valider » ; comptez jusqu'à 72 h et ne supprimez pas l'enregistrement (aide : support.google.com/webmasters/answer/9008080).",
+    "Ouvrez le rapport Sitemaps, collez l'URL du sitemap (ex. /sitemap.xml) dans « Ajouter un nouveau sitemap » puis « Envoyer » (aide : support.google.com/webmasters/answer/7451001).",
+    "Revenez quelques jours plus tard : statut « Opération effectuée » attendu, sinon corrigez les erreurs signalées."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "ga4",
+   "nom": "Google Analytics 4",
+   "url": "https://analytics.google.com",
+   "besoins": [
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Visites, sources de trafic et conversions (appels, formulaires, achats) déclarées comme événements clés.",
+   "gratuit": true,
+   "limites_gratuit": "GA4 standard gratuit ; 30 événements clés maximum par propriété standard (50 en Analytics 360) ; rôle Éditeur requis pour créer un flux de données.",
+   "prix": "Gratuit (GA4 standard) ; Analytics 360 : sur devis, tarif non public (frais fixes incluant 25 M d'événements/mois + coût par événement au-delà).",
+   "mois_eur": null,
+   "source_prix": "https://marketingplatform.google.com/about/analytics-360/",
+   "doc": "https://support.google.com/analytics/answer/9304153?hl=fr",
+   "etapes": [
+    "Dans Administration, créez un compte Analytics (ou gardez le compte existant), puis « Créer » > « Propriété » : nom, fuseau horaire et devise.",
+    "Ajoutez un flux de données Web : URL principale du site et nom du flux ; la mesure améliorée (pages vues et autres événements) est activée par défaut.",
+    "Installez la balise Google : saisissez l'ID de mesure « G-… » dans votre CMS (Shopify, Wix…) ou collez la balise juste après l'ouverture de <head> sur chaque page, une seule balise Google par page (ou passez par Tag Manager).",
+    "Événements clés : Administration > Affichage des données > Événements, cliquez sur l'étoile de l'événement (ou « Événements clés » > nouvel événement clé) ; non rétroactif, jusqu'à 24 h de délai (aide : support.google.com/analytics/answer/13128484).",
+    "Contrôlez la collecte dans le rapport Temps réel ou dans DebugView."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "gtm",
+   "nom": "Google Tag Manager",
+   "url": "https://tagmanager.google.com",
+   "besoins": [
+    "mesure",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Installe GA4, les balises de conversion et les pixels sans retoucher le code à chaque fois.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit ; la version 360 (support dédié, SLA) vise les grands comptes. Un seul conteneur Web suffit pour tout un site.",
+   "prix": "Gratuit ; Tag Manager 360 : sur devis (« Talk to Sales »).",
+   "mois_eur": null,
+   "source_prix": "https://marketingplatform.google.com/about/tag-manager/compare/",
+   "doc": "https://support.google.com/tagmanager/answer/14842164?hl=fr",
+   "etapes": [
+    "Sur tagmanager.google.com, onglet Comptes > « Créer un compte », puis un conteneur Web nommé d'après l'URL principale du site.",
+    "Dans l'espace de travail, cliquez sur l'ID « GTM-… » : collez le 1er extrait le plus haut possible dans <head> et le 2e juste après l'ouverture de <body>, sur chaque page (aide : support.google.com/tagmanager/answer/14847097).",
+    "Balises > Nouvelle > Configuration de la balise > « Balise Google » : saisissez l'ID G-… du flux GA4, déclencheur « Initialisation – Toutes les pages », puis Enregistrer (aide : support.google.com/tagmanager/answer/9442095).",
+    "Cliquez sur « Prévisualiser » et saisissez l'URL du site : Tag Assistant s'ouvre dans un nouvel onglet et montre les balises déclenchées (aide : support.google.com/tagmanager/answer/6107056).",
+    "Quand tout est correct, « Envoyer » puis publiez la version du conteneur."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "consent-mode",
+   "nom": "Consent Mode v2 (Google)",
+   "url": "https://developers.google.com/tag-platform/security/guides/consent",
+   "besoins": [
+    "conformite",
+    "mesure",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Obligatoire pour mesurer et faire de la pub Google en respectant le consentement (CNIL) ; sans lui, Google Ads perd une partie des conversions.",
+   "gratuit": true,
+   "limites_gratuit": "Fonction Google gratuite ; nécessite une bannière (CMP), éventuellement payante ; une CMP partenaire de Google ne garantit pas à elle seule la conformité aux règles de consentement de l'UE.",
+   "prix": "Gratuit (hors coût éventuel de la CMP)",
+   "mois_eur": null,
+   "source_prix": "https://developers.google.com/tag-platform/security/concepts/consent-mode",
+   "doc": "https://support.google.com/google-ads/answer/14546213?hl=fr",
+   "etapes": [
+    "Installez d'abord la balise Google (GA4 / Google Ads) si ce n'est pas déjà fait.",
+    "Choisissez une CMP partenaire ; dans Google Ads : Admin > Gestion des balises Google > « Configurer le mode Consentement » > bannière créée par un tiers > Suivant > Plate-forme.",
+    "Avec Tag Manager : installez le modèle de la CMP depuis la galerie, cochez l'option Mode Consentement Google et utilisez le déclencheur « Initialisation du consentement – Toutes les pages ».",
+    "Sans modèle : appelez gtag('consent', 'default', …) sur chaque page avant toute commande de mesure, avec au minimum ad_storage, analytics_storage, ad_user_data et ad_personalization, puis gtag('consent', 'update', …) au choix du visiteur (doc : developers.google.com/tag-platform/security/guides/consent).",
+    "Testez en mode Prévisualisation : l'onglet Consentement de Tag Assistant doit montrer les valeurs par défaut puis mises à jour ; publiez le conteneur."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "clarity",
+   "nom": "Microsoft Clarity",
+   "url": "https://clarity.microsoft.com",
+   "besoins": [
+    "mesure",
+    "conversion"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Cartes de chaleur et enregistrements de sessions gratuits pour voir où les visiteurs bloquent ; à déclencher après consentement pour les visiteurs européens (exigence de Microsoft depuis octobre 2025).",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit à vie, sans limite de trafic ni de projets ; enregistrements plafonnés à 100 000 sessions par projet et par jour (échantillonnage au-delà) ; à ne pas utiliser sur un site visant les moins de 18 ans ; consentement exigé pour les visiteurs UE / Royaume-Uni / Suisse depuis le 31 octobre 2025.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://clarity.microsoft.com/pricing",
+   "doc": "https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-setup",
+   "etapes": [
+    "Sur clarity.microsoft.com, cliquez sur « Sign up » et suivez l'inscription : vous arrivez sur la page Projects.",
+    "« New project » : nom du projet, URL du site et secteur d'activité.",
+    "Settings > Setup > Installation methods > « Install manually » > « Get tracking code », puis collez le code dans le <head> du gabarit principal (ou installez via Google Tag Manager ou l'intégration WordPress, Shopify, Wix…).",
+    "Transmettez le consentement des visiteurs UE/UK/CH : Clarity lit les signaux Google Consent Mode, sinon utilisez l'API ConsentV2 (doc : learn.microsoft.com/en-us/clarity/setup-and-installation/consent-management).",
+    "Attendez au moins 30 minutes avant de consulter cartes de chaleur et enregistrements."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "bing-webmaster",
+   "nom": "Bing Webmaster Tools + IndexNow",
+   "url": "https://www.bing.com/webmasters",
+   "besoins": [
+    "seo",
+    "ia"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Bing alimente Copilot et une partie de ChatGPT Search ; rapport « AI Performance » des citations IA ; IndexNow signale vos nouvelles pages en quelques minutes.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit ; import de 100 sites maximum par opération, 1 000 sites par compte ; IndexNow : 10 000 URL maximum par requête POST ; l'API URL Submission de Bing pourrait être abandonnée au profit d'IndexNow.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://www.bing.com/webmasters/help",
+   "doc": "https://www.bing.com/webmasters/help/add-and-verify-site-12184f8b",
+   "etapes": [
+    "Connectez-vous à Bing Webmaster Tools, page « My Sites », puis cliquez sur « Import ».",
+    "Connectez votre compte Google, cliquez sur « Allow », sélectionnez les sites vérifiés dans Search Console puis « Import » : ils sont vérifiés automatiquement avec leurs sitemaps (données sous 48 h).",
+    "Contrôlez la section Sitemaps (statut, dernière lecture, erreurs) et ajoutez au besoin une ligne Sitemap: dans robots.txt.",
+    "IndexNow : générez une clé et publiez le fichier {clé}.txt (UTF-8) à la racine du site (doc : www.bing.com/indexnow/getstarted).",
+    "Soumettez les URL nouvelles ou modifiées : GET pour une URL, POST JSON (host, key, urlList) pour plusieurs, vers api.indexnow.org — ou activez un CMS, plugin ou CDN compatible.",
+    "Suivez les envois dans l'onglet IndexNow de Bing Webmaster Tools."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "gbp",
+   "nom": "Google Business Profile",
+   "url": "https://business.google.com",
+   "besoins": [
+    "local",
+    "avis"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Premier levier du SEO local : apparaître dans Google Maps et le pack local, récolter et répondre aux avis.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit ; réservé aux entreprises éligibles ; validation obligatoire pour apparaître dans la recherche et Maps ; la méthode de validation est imposée par Google et peut en combiner plusieurs.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://support.google.com/business/answer/2911778?hl=fr",
+   "doc": "https://support.google.com/business/answer/2911778?hl=fr",
+   "etapes": [
+    "Allez sur business.google.com/add et ajoutez votre établissement ; s'il existe déjà, recherchez-le dans Google Maps > « Revendiquer cet établissement » > « Gérer ».",
+    "Renseignez nom, catégorie et adresse (ou zone desservie) en respectant les consignes Google.",
+    "Sélectionnez l'option de validation proposée (vidéo, appel vidéo en direct, téléphone, SMS, e-mail ou courrier) et suivez les étapes à l'écran (aide : support.google.com/business/answer/7107242).",
+    "Validation vidéo : depuis le mobile, « Valider » > vidéo en direct d'une seule prise, d'au moins 30 s, montrant l'emplacement, l'enseigne et une preuve de gestion ; examen jusqu'à 5 jours ouvrés (aide : support.google.com/business/answer/14271705).",
+    "Si la fiche appartient à quelqu'un d'autre : « Demander l'accès » ; sans réponse sous 3 jours, la revendication peut devenir possible."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "apple-business",
+   "nom": "Apple Business (ex-Apple Business Connect)",
+   "url": "https://businessconnect.apple.com",
+   "besoins": [
+    "local"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Votre fiche dans Plans, Siri et Spotlight sur iPhone ; gratuit (Apple Business remplace Business Connect depuis avril 2026).",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit depuis le 14 avril 2026 ; Apple Business remplace Business Connect (données migrées automatiquement) ; organisation à vérifier sous 60 jours sous peine de suppression ; publicités dans Plans réservées aux États-Unis et au Canada.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://www.apple.com/newsroom/2026/03/introducing-apple-business-a-new-all-in-one-platform-for-businesses-of-all-sizes/",
+   "doc": "https://support.apple.com/guide/business/sign-up-and-verify-your-organization-axm402206497/web",
+   "etapes": [
+    "Sur business.apple.com, cliquez sur « Get Started » (ou « Sign up now »).",
+    "Saisissez le nom de l'organisation, votre vrai nom légal, le pays, les codes reçus par e-mail et téléphone, puis acceptez les conditions (e-mail hors domaine déjà vérifié par une autre organisation).",
+    "Vérifiez l'organisation : Settings > Organization > « Verify Now » > « Send for Review », avec deux justificatifs (D-U-N-S, TXT DNS ou document officiel) ; jusqu'à 5 jours ouvrés.",
+    "Brands > Locations > « Add » : recherchez le lieu et confirmez l'épingle ; si « This location is already managed », demandez un transfert (aide : support.apple.com/guide/business/add-a-single-location-abcb98816a34/web).",
+    "Lieu déjà présent dans Plans : vérification par appel au numéro connu d'Apple et saisie d'un code à 4 chiffres.",
+    "Ajoutez ensuite photos, actions et Showcase."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "bing-places",
+   "nom": "Bing Places for Business",
+   "url": "https://www.bing.com/forbusiness",
+   "besoins": [
+    "local"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Votre fiche dans Bing Maps et Copilot ; synchronisation depuis votre fiche Google.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit ; import Google : choix des fiches impossible, doublons possibles, fiches synchronisées non modifiables dans Bing (modifier dans Google puis resynchroniser), certains champs (catégories, UTM) mal synchronisés ; publication en 7 à 12 jours.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://blogs.bing.com/search/2025/10/Introducing-the-New-Bing-Places-for-Business-Built-for-Business-Owners,-Powered-by-Research/",
+   "doc": "https://www.bing.com/forbusiness/help/syncGoogleBusinessProfile",
+   "etapes": [
+    "Allez sur bing.com/forbusiness (nouveau portail depuis octobre 2025, comptes bingplaces.com migrés) et connectez-vous.",
+    "Choisissez « Import from your Google Business Profile », une synchronisation hebdomadaire, toutes les deux semaines ou mensuelle, connectez-vous à Google et importez les fiches détectées.",
+    "Sans import : recherchez l'établissement (pays, nom, lieu), revendiquez la fiche existante ou créez-en une (aide : bing.com/forbusiness/help/manageYourListings).",
+    "Vérification : automatique si la fiche Google est validée, sinon code PIN par téléphone, e-mail, SMS ou courrier selon les options proposées.",
+    "Attendez la publication, puis faites les mises à jour des fiches liées dans Google avant de resynchroniser."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "merchant-center",
+   "nom": "Google Merchant Center (fiches gratuites)",
+   "url": "https://merchants.google.com",
+   "besoins": [
+    "ecommerce",
+    "seo"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vos produits gratuitement dans l'onglet Shopping, Google Images et la recherche.",
+   "gratuit": true,
+   "limites_gratuit": "Fiches gratuites sans frais, activées par défaut, mais affichage non garanti ; une adresse Google = un seul compte Merchant Center ; site validé, données produit et politique de retour conformes exigées. Les annonces Shopping restent payantes.",
+   "prix": "Gratuit (fiches gratuites)",
+   "mois_eur": null,
+   "source_prix": "https://support.google.com/merchants/answer/13889434?hl=fr",
+   "doc": "https://support.google.com/merchants/answer/12159157?hl=fr",
+   "etapes": [
+    "Créez le compte depuis la page de connexion Google Merchant Center avec votre compte Google.",
+    "Renseignez les informations sur l'entreprise (nom de la boutique, lieux de vente…).",
+    "Validez et revendiquez le site : plateforme e-commerce, e-mail, balise ou fichier HTML, Tag Manager ou Google Analytics.",
+    "Configurez livraison et retours (menu « Livraison et retours ») ; la politique de retour doit être consultable sans connexion.",
+    "Ajoutez les produits : un par un (Produits > Ajouter des produits), fichier, Google Sheets, données structurées du site ou synchronisation Shopify, avec les attributs obligatoires (id, titre, lien, image, disponibilité, marque, GTIN…).",
+    "Vérifiez la page « Fiches gratuites » et l'onglet « Attention requise » de la page Produits."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "looker-studio",
+   "nom": "Data Studio (ex-Looker Studio)",
+   "url": "https://lookerstudio.google.com",
+   "besoins": [
+    "mesure"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Un tableau de bord mensuel gratuit qui réunit Search Console et GA4 (redevenu « Data Studio » en 2026).",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit pour créer et consulter des rapports ; rapports GA4 soumis aux quotas de l'API Google Analytics Data ; segments et comparaisons GA4 indisponibles via le connecteur ; une source Search Console = une seule table (site ou URL).",
+   "prix": "Data Studio Pro : 9 $/utilisateur/projet Google Cloud/mois (essai gratuit de 30 jours)",
+   "mois_eur": null,
+   "source_prix": "https://cloud.google.com/data-studio",
+   "doc": "https://cloud.google.com/looker/docs/studio/connect-to-search-console",
+   "etapes": [
+    "Sur l'accueil de Data Studio (nom repris par Looker Studio en avril 2026), cliquez sur « Create » > « Data Source ».",
+    "Choisissez le connecteur Search Console, autorisez l'accès et sélectionnez la propriété (même compte Google que dans Search Console, au moins en lecture).",
+    "Choisissez la table « Site Impression » ou « URL Impression » et le type de recherche, puis « Connect » ; créez deux sources pour comparer les deux tables.",
+    "GA4 : « Create » > « Data Source » > connecteur Google Analytics > compte > propriété > « Connect » (droit Lire et analyser requis ; doc : docs.cloud.google.com/looker/docs/studio/connect-to-google-analytics).",
+    "Cliquez sur « Create Report » > « Add to Report » pour construire les graphiques."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "keyword-planner",
+   "nom": "Google Keyword Planner",
+   "url": "https://ads.google.com/aw/keywordplanner/home",
+   "besoins": [
+    "mots-cles",
+    "pub"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Volumes de recherche et CPC réels par mot-clé (compte Google Ads requis, sans obligation de dépenser).",
+   "gratuit": true,
+   "limites_gratuit": "Outil gratuit mais compte Google Ads en mode Expert obligatoire (inaccessible en mode intelligent) ; l'aide officielle exige les informations de facturation pour « Découvrir de nouveaux mots clés » ; sans dépenses actives, volumes souvent affichés en fourchettes larges (sources tierces).",
+   "prix": "Gratuit (aucune campagne obligatoire ; des guides tiers signalent une possible vérification du moyen de paiement)",
+   "mois_eur": null,
+   "source_prix": "https://support.google.com/google-ads/answer/7337243?hl=fr",
+   "doc": "https://support.google.com/google-ads/answer/7337243?hl=fr",
+   "etapes": [
+    "Créez un compte Google Ads en mode Expert (le mode intelligent ne donne pas accès à l'outil).",
+    "Pour ne pas lancer d'annonce, des guides tiers concordants indiquent « Passer en mode Expert » puis « Créer un compte sans campagne » (parcours non décrit dans l'aide officielle).",
+    "Complétez la configuration du compte avec les informations de facturation, exigées par l'aide officielle pour les fonctions de base.",
+    "Outils > Planification > Keyword Planner > « Découvrir de nouveaux mots clés » : partez de mots-clés séparés par une virgule et/ou d'une URL.",
+    "Pour une liste existante : « Obtenir le volume de recherche et les prévisions » (saisie ou import)."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "google-trends",
+   "nom": "Google Trends",
+   "url": "https://trends.google.fr",
+   "besoins": [
+    "mots-cles",
+    "contenu"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Saisonnalité et tendances d'un sujet en France : quand publier et quand lancer la pub.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [
+    "Ouvrir trends.google.fr et saisir le mot-clé principal.",
+    "Régler le pays (France ou votre région) et la période sur 5 ans pour voir la saison.",
+    "Ajouter jusqu'à 4 termes à comparer (variantes, concurrents).",
+    "Noter les mois de pic : préparer contenus et publicité 4 à 6 semaines avant."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "psi-key",
+   "nom": "Clé API PageSpeed Insights",
+   "url": "https://developers.google.com/speed/docs/insights/v5/get-started",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Mesure la vitesse réelle (Core Web Vitals) à chaque audit SEO 360 sans dépasser le quota gratuit.",
+   "gratuit": true,
+   "limites_gratuit": "API gratuite, utilisable même sans clé ; une clé est recommandée pour les requêtes automatisées fréquentes ; quotas non publiés dans la doc consultée (visibles dans le projet Google Cloud).",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://developers.google.com/speed/docs/insights/v5/get-started",
+   "doc": "https://developers.google.com/speed/docs/insights/v5/get-started",
+   "etapes": [
+    "Ouvrez la page « Get Started with the PageSpeed Insights API » et cliquez sur « Get a Key » (ou passez par la page Credentials de la console Google Cloud).",
+    "Choisissez ou créez un projet Google Cloud, puis créez la clé API.",
+    "Copiez la clé.",
+    "Ajoutez key=VOTRE_CLE à chaque requête runPagespeed de l'API v5 (les versions v1 à v4 sont obsolètes)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "rich-results",
+   "nom": "Test des résultats enrichis + validateur Schema.org",
+   "url": "https://search.google.com/test/rich-results",
+   "besoins": [
+    "technique",
+    "donnees"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Vérifie vos données structurées (LocalBusiness, Product, Article…) avant et après correction.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": "https://validator.schema.org",
+   "etapes": [
+    "Ouvrir le Test des résultats enrichis et coller l'adresse de la page (ou son code).",
+    "Lire les éléments détectés et corriger les erreurs signalées.",
+    "Pour un schéma sans résultat enrichi Google (Organization, LocalBusiness), vérifier aussi sur validator.schema.org.",
+    "Relancer le test après correction, puis demander l'indexation de la page dans Search Console."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "ahrefs-awt",
+   "nom": "Ahrefs Webmaster Tools",
+   "url": "https://ahrefs.com/webmaster-tools",
+   "besoins": [
+    "liens",
+    "technique"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Audit de site et liens entrants de VOTRE site, gratuitement (propriété vérifiée).",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit pour les sites dont la propriété est vérifiée (projets illimités) ; Site Audit : 5 000 crédits de crawl par projet vérifié et par mois ; Site Explorer : 500 crédits/mois sur les projets vérifiés ; Web Analytics gratuit jusqu'à 1 million d'événements/mois.",
+   "prix": "Gratuit (sites dont vous prouvez la propriété). Option : ahrefs Starter : 29 $/mois hors taxes (renouvellement mensuel uniquement) ; Lite : 129 $/mois ; grille inchangée depuis juin 2024",
+   "mois_eur": null,
+   "source_prix": "https://ahrefs.com/pricing",
+   "doc": "https://help.ahrefs.com/en/articles/3275938-verifying-ownership-of-your-project-or-website",
+   "etapes": [
+    "Créez un compte gratuit sur ahrefs.com/webmaster-tools.",
+    "Ajoutez votre site comme projet.",
+    "Vérifiez la propriété : import Google Search Console (recommandé, même variante www / sans www que dans GSC), enregistrement TXT DNS (« @ » ou vide), fichier HTML à la racine ou balise meta dans le <head> de la page d'accueil.",
+    "Laissez le fichier, la balise ou l'enregistrement en place : la propriété est revérifiée régulièrement.",
+    "Lancez Site Audit (plafonnez au besoin « Max number of internal pages ») et consultez Site Explorer."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "screaming-frog",
+   "nom": "Screaming Frog SEO Spider",
+   "url": "https://www.screamingfrog.co.uk/seo-spider/",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Explore tout le site comme Google : erreurs, redirections, titres, canonical ; gratuit jusqu'à 500 URL.",
+   "gratuit": true,
+   "limites_gratuit": "Version gratuite limitée à 500 URL par crawl, sans sauvegarde des crawls ; configuration et fonctions avancées (rendu JavaScript, extraction personnalisée, intégrations API) bloquées.",
+   "prix": "199 £/an par utilisateur, soit 245 €/an ou 279 $/an depuis l'ajustement monétaire de mai 2025 (prix de base inchangé depuis 2023) ; dégressif dès 5 licences",
+   "mois_eur": 20,
+   "source_prix": "https://www.screamingfrog.co.uk/seo-spider/pricing/",
+   "doc": "https://www.screamingfrog.co.uk/seo-spider/user-guide/general/",
+   "etapes": [
+    "Téléchargez l'installeur sur screamingfrog.co.uk (Windows, macOS ou Ubuntu ; système 64 bits et au moins 4 Go de RAM disponibles).",
+    "Installez puis lancez le SEO Spider.",
+    "Mode Spider (par défaut) : saisissez l'URL de départ et lancez le crawl ; mode List pour contrôler une liste d'URL.",
+    "Licence : menu « Licence » > « Enter Licence Key », puis redémarrez l'application pour lever la limite de 500 URL.",
+    "À l'expiration de la licence annuelle, le logiciel repasse en version gratuite restreinte."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "cloudflare",
+   "nom": "Cloudflare (offre gratuite)",
+   "url": "https://www.cloudflare.com",
+   "besoins": [
+    "technique",
+    "ia",
+    "securite"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "CDN, HTTPS, cache et protection gratuits ; réglage des robots IA (AI Crawl Control, Content Signals).",
+   "gratuit": true,
+   "limites_gratuit": "Offre Free à 0 $ prévue pour des projets non critiques ; sur Free, AI Crawl Control identifie les robots IA par leur user-agent ; robots.txt et Content Signals expriment des préférences que les robots peuvent ignorer.",
+   "prix": "Pro : 20 $/mois en facturation annuelle (25 $ au mois) ; Business : 200 $/mois en annuel (250 $ au mois)",
+   "mois_eur": 17,
+   "source_prix": "https://www.cloudflare.com/plans/",
+   "doc": "https://developers.cloudflare.com/fundamentals/manage-domains/add-site/",
+   "etapes": [
+    "Tableau de bord > Domains > « Onboard a domain » : saisissez le domaine racine, laissez Cloudflare scanner les DNS et choisissez l'offre Free.",
+    "Vérifiez les enregistrements importés (apex, sous-domaines, MX, SPF, DKIM) pour éviter les erreurs DNS_PROBE_FINISHED_NXDOMAIN.",
+    "Désactivez DNSSEC chez le registraire, puis remplacez ses serveurs de noms par les deux serveurs Cloudflare attribués, copiés à l'identique.",
+    "Attendez l'activation (jusqu'à 24 h, e-mail et statut « Active »), réactivez DNSSEC via Cloudflare et terminez la configuration SSL/TLS.",
+    "AI Crawl Control (ex-AI Audit, renommé le 27 août 2025) : onglet Crawlers, action « Block » pour les robots à refuser (doc : developers.cloudflare.com/ai-crawl-control/get-started/).",
+    "Content Signals : réglez la politique Training sur Disallow et activez « Bot Preference Sync » pour servir un robots.txt géré avec Content-Signal (search, ai-input, ai-train)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "tarteaucitron",
+   "nom": "tarteaucitron.js",
+   "url": "https://tarteaucitron.io",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Bandeau de consentement cookies gratuit, open source, compatible Consent Mode v2.",
+   "gratuit": true,
+   "limites_gratuit": "Version open source gratuite, sans limite de durée ni de trafic ; chaque service doit être déclaré à la main ; pas de détection automatique des services ni de tableau de bord (réservés à la version Pro).",
+   "prix": "Pro : 25 € pour 1 mois (sans reconduction), 190 € HT/an, 490 € HT/3 ans, 690 € HT à vie — sites et trafic illimités, essai 7 jours sans carte",
+   "mois_eur": 16,
+   "source_prix": "https://tarteaucitron.io/en/pricing-of-the-licence/",
+   "doc": "https://tarteaucitron.io/en/free-installation-open-source/",
+   "etapes": [
+    "Récupérez la bibliothèque (dépôt GitHub AmauriC/tarteaucitron.js ou npm).",
+    "Chargez tarteaucitron.min.js le plus tôt possible dans la page, sans defer ni async.",
+    "Appelez tarteaucitron.init({…}) avec vos options, notamment « highPrivacy »: true (pas de consentement implicite), « googleConsentMode »: true et « bodyPosition ».",
+    "Pour chaque service (GA4, Meta…), retirez le code d'origine et remplacez-le par son équivalent tarteaucitron, du type tarteaucitron.user.xxx = '…'; (tarteaucitron.job = tarteaucitron.job || []).push('xxx');",
+    "Testez : aucun cookie tiers avant consentement, bandeau et panneau de gestion fonctionnels."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "meta-business",
+   "nom": "Meta Business Suite + Pixel Meta + API Conversions",
+   "url": "https://business.facebook.com",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Publier et planifier sur Facebook et Instagram, statistiques, et mesurer les conversions pour la pub Meta.",
+   "gratuit": true,
+   "limites_gratuit": "Outils gratuits (seules les publicités sont payantes) ; 2 portefeuilles business créables par personne ; le lien « Générer un jeton d'accès » de l'API Conversions n'est visible que pour les utilisateurs ayant des droits développeur.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://www.facebook.com/business/help/952192354843755",
+   "doc": "https://www.facebook.com/business/help/952192354843755",
+   "etapes": [
+    "Sur business.facebook.com, menu sous « Accueil » > « Créer un portefeuille business » : nom public de l'entreprise, vos nom et e-mail professionnel, puis confirmez l'e-mail (aide : facebook.com/business/help/1710077379203657).",
+    "Gestionnaire d'événements > « Connecter des données » > Web > « Connecter », nommez le pixel puis « Créer le pixel ».",
+    "Choisissez « API Conversions et pixel Meta » ou « Pixel Meta uniquement », puis un partenaire (Shopify, WordPress…) ou le code manuel : code de base dans le <head> de chaque page.",
+    "Vérifiez qu'un événement PageView apparaît dans le Gestionnaire d'événements (extension Meta Ads Data Advisor, bloqueur de publicité désactivé), puis configurez les événements (achat, prospect…).",
+    "API Conversions : Paramètres du pixel > section API Conversions : intégration partenaire, passerelle Conversions API Gateway (serveur cloud, 1 à 4 h) ou configuration manuelle avec jeton d'accès (aide : facebook.com/business/help/433493041367251)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "tiktok-business",
+   "nom": "TikTok Business Center + Pixel TikTok + Events API",
+   "url": "https://business.tiktok.com",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Compte professionnel, statistiques TikTok, et mesure des conversions pour TikTok Ads.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit (publicités payantes) ; jusqu'à 30 Business Centers par utilisateur ; informations d'entreprise parfois non modifiables après création ; Events API : 1 000 requêtes/s par compte publicitaire avec un jeton généré dans le Gestionnaire d'événements.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://ads.tiktok.com/help/article/get-started-pixel",
+   "doc": "https://ads.tiktok.com/help/article/get-started-pixel",
+   "etapes": [
+    "Sur business.tiktok.com, créez le Business Center : identifiants, e-mail vérifié, profil annonceur, pays, raison sociale, fuseau horaire et devise (aide : ads.tiktok.com/help/article/create-tiktok-business-center).",
+    "Dans TikTok Ads Manager : Outils > Gestionnaire d'événements > « Connecter une source de données » > Web, puis saisissez l'URL du site.",
+    "Choisissez la configuration manuelle (ou un partenaire : Shopify, Google Tag Manager…) et nommez le pixel (128 caractères maximum).",
+    "Collez le code de base en haut de l'en-tête de chaque page (ou dans une balise HTML personnalisée GTM sur toutes les pages), puis ajoutez les événements avec l'Event Builder sans code ou du code.",
+    "Events API : onglet Paramètres du pixel > générez un jeton d'accès (rôle Admin ou Opérateur) et envoyez les événements serveur avec l'ID du pixel et ce jeton (aide : ads.tiktok.com/help/article/getting-started-events-api).",
+    "Vérifiez avec Pixel Helper, Test Events ou Diagnostics."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "linkedin-insight",
+   "nom": "LinkedIn Campaign Manager + Insight Tag",
+   "url": "https://www.linkedin.com/campaignmanager",
+   "besoins": [
+    "reseaux",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Mesure des visiteurs B2B et des conversions pour la pub LinkedIn.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit (publicités payantes) ; à ne pas installer sur des pages contenant des données sensibles (santé, finances…) ; validation du domaine de quelques minutes à 24 h.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://business.linkedin.com/marketing-solutions/insight-tag",
+   "doc": "https://www.linkedin.com/help/lms/answer/a418880",
+   "etapes": [
+    "Dans Campaign Manager, ouvrez le compte publicitaire > « Measure » > « Signals manager ».",
+    "Section « Sources catalog » : cliquez sur Insight Tag, puis « Create Insight Tag » si aucun tag n'existe.",
+    "Choisissez « I will install the tag myself » et copiez le code (guillemets droits, pas typographiques).",
+    "Collez le JavaScript sur toutes les pages du domaine, de préférence juste avant la fermeture de </body> dans le pied de page global ; avec un gestionnaire de balises, copiez plutôt l'ID partenaire et utilisez le modèle de la galerie GTM.",
+    "Après une visite du site, le tag passe « Active » dans les sources de données (quelques minutes à 24 h)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "pinterest-business",
+   "nom": "Pinterest Business + balise Pinterest",
+   "url": "https://business.pinterest.com",
+   "besoins": [
+    "reseaux",
+    "pub"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Épingles indexées par Google, trafic durable pour la déco, la mode, la cuisine, le mariage.",
+   "gratuit": true,
+   "limites_gratuit": "Gratuit ; compte professionnel obligatoirement public ; création d'un compte pro neuf uniquement depuis un ordinateur ; données de la balise visibles sous 24 h.",
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": "https://business.pinterest.com/fr/pinterest-tag",
+   "doc": "https://help.pinterest.com/en/business/article/install-the-pinterest-tag",
+   "etapes": [
+    "Créez un compte professionnel sur pinterest.com (« Sign up », depuis un ordinateur) ou convertissez votre compte : Paramètres > Gestion du compte > « Convertir le compte » (aide : help.pinterest.com/en/business/article/get-a-business-account).",
+    "Menu > Conversions (Gestionnaire de conversions) > « Commencer ».",
+    "Choisissez un partenaire d'intégration (Shopify, WooCommerce, BigCommerce, GTM), l'envoi des instructions à un développeur, ou l'installation manuelle.",
+    "Manuel : copiez votre code de base personnalisé (avec votre ID de balise) et collez-le dans le HTML de chaque page, avant tout code d'événement.",
+    "Ajoutez les codes d'événement (ajout au panier, achat…) requis pour les campagnes de conversion ; Pinterest recommande aussi l'API de conversions."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "youtube-studio",
+   "nom": "YouTube Studio",
+   "url": "https://studio.youtube.com",
+   "besoins": [
+    "reseaux",
+    "video"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Chaîne, Shorts et statistiques ; YouTube est aussi une source majeure de citations IA.",
+   "gratuit": true,
+   "limites_gratuit": null,
+   "prix": "Gratuit",
+   "mois_eur": null,
+   "source_prix": null,
+   "doc": null,
+   "etapes": [
+    "Créer la chaîne de l'entreprise avec un compte Google (compte de marque si plusieurs personnes la gèrent).",
+    "Remplir la description, les liens et la bannière (Studio → Personnalisation).",
+    "Publier les Shorts avec un titre et une description qui contiennent le mot-clé.",
+    "Suivre la rétention et les sources de trafic dans Studio → Statistiques."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "canva",
+   "nom": "Canva",
+   "url": "https://www.canva.com",
+   "besoins": [
+    "design",
+    "reseaux"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Visuels, carrousels et miniatures aux formats de chaque réseau.",
+   "gratuit": true,
+   "limites_gratuit": "Canva reste gratuit pour les particuliers (modèles et contenus gratuits) ; contenus premium, suppression d'arrière-plan et la plupart des outils d'IA réservés aux offres payantes ; Canva Pro n'a qu'un seul titulaire.",
+   "prix": "à vérifier — aucun prix en euros trouvé sur une page officielle Canva ; sources françaises de 2026 divergentes : 110 €/an (12 €/mois) ou 119,99 €/an (14,99 €/mois) ; essai gratuit de 30 jours",
+   "mois_eur": 10,
+   "source_prix": "https://www.canva.com/pricing/",
+   "doc": "https://www.canva.com/help/upgrade-to-canva-pro-or-business/",
+   "etapes": [
+    "Sur canva.com, inscrivez-vous par e-mail (code de confirmation), Google ou Facebook ; adresses jetables refusées (aide : canva.com/help/sign-up-log-in/).",
+    "Depuis l'accueil, choisissez de passer à un forfait supérieur ou de commencer l'essai gratuit.",
+    "Sélectionnez Canva Pro puis l'essai gratuit si vous y avez droit (un essai par compte et par moyen de paiement).",
+    "Choisissez la facturation mensuelle ou annuelle, saisissez le moyen de paiement et confirmez."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "capcut",
+   "nom": "CapCut",
+   "url": "https://www.capcut.com",
+   "besoins": [
+    "video",
+    "reseaux"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Montage vidéo au téléphone pour Reels, TikTok et Shorts : sous-titres automatiques, formats verticaux.",
+   "gratuit": true,
+   "limites_gratuit": "Version gratuite sans carte bancaire, mais certains modèles, effets et éléments premium ajoutent un filigrane ; clip de fin avec logo à retirer ; depuis janvier 2026, l'export 2K/4K dépend de l'appareil et de la plateforme, avec des limites possibles pour les comptes gratuits.",
+   "prix": "à vérifier — prix variable selon la région, l'appareil et les promotions ; page officielle en USD : Pro 19,99 $/mois ou 179,99 $/an ; prix en euros à lire dans l'appli (Moi > Rejoindre CapCut Pro)",
+   "mois_eur": 13,
+   "source_prix": "https://www.capcut.com/pricing",
+   "doc": "https://www.capcut.com/fr-fr/help/monthly-and-yearly-plans",
+   "etapes": [
+    "Téléchargez CapCut depuis capcut.com, le Microsoft Store, l'App Store ou Google Play (évitez les APK « Pro » de sites tiers).",
+    "Connectez-vous avec un e-mail, Google, TikTok ou Facebook.",
+    "Avant l'export, remplacez les éléments marqués Pro et retirez le clip de fin pour éviter le filigrane (aide : capcut.com/fr-fr/help/video-without-watermark).",
+    "Pour passer Pro : bouton « Rejoindre Pro » sur ordinateur ou Moi > Rejoindre CapCut Pro sur mobile, puis plan mensuel ou annuel."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "metricool",
+   "nom": "Metricool",
+   "url": "https://metricool.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Planifier les posts de tous les réseaux et suivre les statistiques au même endroit.",
+   "gratuit": true,
+   "limites_gratuit": "Plan gratuit permanent sans carte : 1 marque, 20 publications par mois (compteur remis à zéro le 1er), 5 concurrents, 30 jours d'historique ; LinkedIn et X non inclus. (Certaines pages marketing parlent encore de 50 publications.)",
+   "prix": "Starter : à partir de 16 €/mois en facturation annuelle (20 €/mois en mensuel), 5 marques",
+   "mois_eur": 16,
+   "source_prix": "https://metricool.com/pricing/",
+   "doc": "https://help.metricool.com/how-to-connect-social-media-and-ad-platforms-to-metricool-qrkvn",
+   "etapes": [
+    "Inscrivez-vous par e-mail, Google ou Facebook (gratuit, sans moyen de paiement) et activez le compte via le lien reçu.",
+    "Menu en haut à droite > « Connections ».",
+    "Choisissez la marque dans la liste, puis la plateforme, et suivez l'autorisation (droits administrateur ou propriétaire ; acceptez toutes les permissions).",
+    "Instagram : compte professionnel (Business ou Créateur) lié à une Page Facebook pour toutes les fonctions ; Facebook : Pages uniquement.",
+    "Une marque = un compte par réseau ; Metricool importe les 30 derniers jours de données."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "buffer",
+   "nom": "Buffer",
+   "url": "https://buffer.com/pricing",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Planification simple des posts, offre gratuite pour quelques comptes.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free : 3 canaux connectés, 10 publications programmées par canal, 1 utilisateur ; 8 canaux uniques maximum par réseau sur la durée de vie du compte.",
+   "prix": "Essentials : 6 $/canal/mois en mensuel (5 $/canal/mois en annuel)",
+   "mois_eur": 15,
+   "source_prix": "https://buffer.com/pricing",
+   "doc": "https://support.buffer.com/article/564-connecting-your-channels-to-buffer",
+   "etapes": [
+    "Créez un compte Buffer (sur l'appli mobile : « I'm new to Buffer »).",
+    "Connectez-vous d'abord au réseau social dans un autre onglet du navigateur.",
+    "Avatar > Channels > choisissez le réseau, autorisez l'accès puis « Add to Buffer ».",
+    "Facebook : connectez une Page (pas un profil personnel) en laissant toutes les Pages cochées dans la fenêtre d'autorisation.",
+    "Pour un deuxième compte du même réseau : déconnectez-vous ou utilisez une fenêtre privée."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "later",
+   "nom": "Later",
+   "url": "https://later.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Planification visuelle Instagram et TikTok, liens en bio.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "25 $/mois (Starter)",
+   "mois_eur": 22,
+   "source_prix": "https://later.com/pricing/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "agorapulse",
+   "nom": "Agorapulse",
+   "url": "https://www.agorapulse.com/pricing/",
+   "besoins": [
+    "reseaux"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Planification, boîte de réception commune des commentaires et rapports, pour une équipe ou une agence.",
+   "gratuit": false,
+   "limites_gratuit": "L'ancien plan Free est supprimé depuis le 6 juillet 2026 ; il reste le plan gratuit « Archie » (création et publication par IA pour Facebook, Instagram et LinkedIn, sans boîte de réception ni écoute) ; essai de 30 jours sans carte (2 × 15 jours).",
+   "prix": "Standard : 79 $/utilisateur/mois en annuel (99 $ en mensuel), 10 profils sociaux partagés",
+   "mois_eur": 68,
+   "source_prix": "https://www.agorapulse.com/pricing/",
+   "doc": "https://support.agorapulse.com/en/articles/8762473-how-to-add-a-social-profile",
+   "etapes": [
+    "Sur agorapulse.com, « Try for free » : e-mail professionnel et mot de passe, ou Google (aide : support.agorapulse.com/en/articles/8762489-how-to-sign-up-log-in-and-log-out-of-agorapulse).",
+    "Complétez l'assistant : nom, téléphone, nombre de profils et de membres, organisation (un lien de profil social suffit sans site).",
+    "Icône + du menu de gauche > « Add a user/profile » > « Add a social profile ».",
+    "Choisissez le réseau, autorisez Agorapulse, cliquez sur « Connect » pour chaque page puis « Done connecting profiles ».",
+    "Si besoin, prolongez l'essai de 15 jours dans les 90 jours suivant son début."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "answerthepublic",
+   "nom": "AnswerThePublic",
+   "url": "https://answerthepublic.com",
+   "besoins": [
+    "contenu",
+    "mots-cles"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Les questions que les gens posent autour d'un mot-clé : FAQ, intertitres, idées de vidéos.",
+   "gratuit": true,
+   "limites_gratuit": "3 recherches gratuites par jour avec un compte gratuit (1 seule sans inscription) ; certaines vues (prépositions) réservées aux inscrits.",
+   "prix": "Starter : 10 $/mois facturé annuellement (1 utilisateur, 100 recherches/mois)",
+   "mois_eur": 9,
+   "source_prix": "https://answerthepublic.com/en/pricing",
+   "doc": "https://neilpatel.com/blog/how-to-use-new-answerthepublic-guide/",
+   "etapes": [
+    "Créez un compte gratuit sur answerthepublic.com pour obtenir 3 recherches par jour.",
+    "Réglez la langue du contenu et le pays cible (Settings > Localization).",
+    "Saisissez un mot-clé court (1 ou 2 mots).",
+    "Exploitez questions, prépositions et comparaisons, puis téléchargez les résultats (tableur ou nuage de mots)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "alsoasked",
+   "nom": "AlsoAsked",
+   "url": "https://alsoasked.com",
+   "besoins": [
+    "contenu",
+    "mots-cles"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Les « Autres questions posées » de Google en arbre : plan d'un article qui répond à tout.",
+   "gratuit": true,
+   "limites_gratuit": "Quelques recherches gratuites (3 selon l'aide, mais renouvellement quotidien, mensuel ou unique selon les articles, contradictoires) ; export PNG gratuit ; crédits mensuels non reportés.",
+   "prix": "Basic : 12 $/mois HT (100 crédits/mois, historique 24 h) ou 144 $/an",
+   "mois_eur": 10,
+   "source_prix": "https://alsoasked.com/pricing",
+   "doc": "https://help.alsoasked.com/en/collections/3394820-alsoasked-user-guides",
+   "etapes": [
+    "Créez un compte sur alsoasked.com.",
+    "Saisissez la requête puis choisissez pays et langue (la ville la plus peuplée est choisie par défaut ; le dernier réglage est mémorisé).",
+    "Lancez la recherche : aucun crédit n'est débité si aucun résultat n'est trouvé.",
+    "Exportez le graphe en PNG (tous comptes) ou en CSV, XLSX ou Google Sheets (données complètes sur Lite et Pro)."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "haloscan",
+   "nom": "Haloscan",
+   "url": "https://www.haloscan.com/",
+   "besoins": [
+    "mots-cles",
+    "contenu",
+    "concurrents"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Outil français de mots-clés et de concurrents, moins cher que les suites américaines.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free : 5 000 résultats/exports et 50 recherches Keyword Explorer par mois, 1 utilisateur, 100 résultats maximum par recherche.",
+   "prix": "Starter : 59 €/mois — montant confirmé sur la page tarifs officielle ; la mention HT vient de plusieurs sources françaises concordantes mais n'apparaît pas dans l'extrait de la page officielle ; environ 590 € HT/an en annuel selon des sources tierces ; Agency : 179 €/mois",
+   "mois_eur": 59,
+   "source_prix": "https://www.haloscan.com/pricing",
+   "doc": "https://www.haloscan.com/en",
+   "etapes": [
+    "Créez un compte gratuit sur tool.haloscan.com (sans carte bancaire).",
+    "Keyword Explorer : saisissez un mot-clé pour obtenir volume, CPC, concurrence, difficulté (KVI) et intentions.",
+    "Site Explorer : analysez votre domaine ou un concurrent (mots-clés, positions, trafic, pages principales).",
+    "Avec Starter : créez vos projets et suivis de positions (5 projets, 800 mots-clés suivis).",
+    "API (à partir de Starter) : clé et documentation sur tool.haloscan.com/user/api."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "semrush",
+   "nom": "Semrush",
+   "url": "https://www.semrush.com/prices/",
+   "besoins": [
+    "mots-cles",
+    "concurrents",
+    "liens",
+    "pub"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suite complète : mots-clés, concurrents, backlinks, pub ; utile pour une agence ou un marché concurrentiel.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "139,95 $/mois (Pro, mensuel) — ~117 $/mois en annuel",
+   "mois_eur": 120,
+   "source_prix": "https://www.semrush.com/prices/",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "ahrefs",
+   "nom": "Ahrefs",
+   "url": "https://ahrefs.com/pricing",
+   "besoins": [
+    "liens",
+    "concurrents",
+    "mots-cles"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Référence des backlinks et de l'analyse concurrentielle.",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "129 $/mois (Lite) — Starter à 29 $/mois très limité",
+   "mois_eur": 111,
+   "source_prix": "https://ahrefs.com/pricing",
+   "doc": null,
+   "etapes": [],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "otterly",
+   "nom": "Otterly.AI",
+   "url": "https://otterly.ai/pricing",
+   "besoins": [
+    "ia"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suit vos citations dans ChatGPT, Perplexity, AI Overviews : savoir si vous êtes recommandé.",
+   "gratuit": false,
+   "limites_gratuit": "Pas de plan gratuit permanent ; essai gratuit de 7 jours sans carte bancaire selon les sources récentes (14 jours sur une ancienne page).",
+   "prix": "Lite : 29 $/mois (15 prompts suivis sur ChatGPT, Google AI Overviews, Perplexity et Copilot) ; 25 $/mois en annuel",
+   "mois_eur": 25,
+   "source_prix": "https://otterly.ai/pricing",
+   "doc": "https://help.otterly.ai/otterlyai-onboarding-guide",
+   "etapes": [
+    "Inscrivez-vous sur otterly.ai/signup (e-mail + code à 6 chiffres, ou Google).",
+    "Dans l'assistant, ajoutez le domaine de la marque, les concurrents et des prompts : un premier Brand Report est créé automatiquement.",
+    "Search Prompts > « Add Prompts » : texte, pays, tag — ou import CSV/texte (un prompt par ligne), ou AI Prompt Research (aide : help.otterly.ai/add-prompts).",
+    "Brand Report : nom et domaine de la marque, prompts reliés, concurrents ; RegEx personnalisée si le nom de marque est un mot courant.",
+    "Premiers résultats en quelques minutes, puis suivi quotidien automatique."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "peec",
+   "nom": "Peec AI",
+   "url": "https://peec.ai/pricing",
+   "besoins": [
+    "ia"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Suivi de visibilité IA plus complet (plusieurs moteurs, concurrents, sources citées).",
+   "gratuit": null,
+   "limites_gratuit": null,
+   "prix": "89 €/mois (Starter)",
+   "mois_eur": 89,
+   "source_prix": "https://peec.ai/pricing",
+   "doc": null,
+   "etapes": [],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "calendly",
+   "nom": "Calendly",
+   "url": "https://calendly.com/pricing",
+   "besoins": [
+    "conversion"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Prise de rendez-vous en ligne depuis le site et les réseaux, rappels automatiques.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free permanent : 1 type d'événement, 1 calendrier connecté, rendez-vous en tête-à-tête, page de réservation personnalisable.",
+   "prix": "Standard : 10 $/siège/mois (facturation annuelle)",
+   "mois_eur": 9,
+   "source_prix": "https://calendly.com/pricing",
+   "doc": "https://calendly.com/help/how-to-set-up-an-event-type",
+   "etapes": [
+    "Créez un compte gratuit sur calendly.com.",
+    "Availability > Calendar settings > « + Connect calendar account » (Google, Outlook/Office 365, Exchange) et choisissez les calendriers à vérifier pour les conflits.",
+    "Page Scheduling > « + Create » > type d'événement : nom, couleur, durée, lieu (un événement 1:1 de 30 min existe déjà).",
+    "Sur la carte de l'événement, « Copy link » ; ou partagez la page de tous vos événements, intégrez le planificateur au site ou créez un lien à usage unique (aide : calendly.com/help/how-to-share-your-scheduling-link)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "call-tracking",
+   "nom": "Ringover (téléphonie et suivi d’appels)",
+   "url": "https://www.ringover.fr",
+   "besoins": [
+    "conversion",
+    "pub",
+    "mesure"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Savoir quel canal (Google, Maps, pub, réseaux) fait sonner le téléphone.",
+   "gratuit": false,
+   "limites_gratuit": "Pas d'offre gratuite (essai gratuit, 7 jours selon le blog Ringover). CallRail écarté : pas de numéros de suivi en France (États-Unis, Canada, Royaume-Uni et Australie seulement).",
+   "prix": "à vérifier — TALK : 19 € HT/utilisateur/mois en engagement annuel, 3 utilisateurs minimum (≈ 29 € en mensuel d'après la page internationale) ; analytics avancées et campagnes en BUSINESS (49 € HT) ; présence du tableau de suivi d'appels par campagne dans TALK non confirmée",
+   "mois_eur": 57,
+   "source_prix": "https://www.ringover.com/pricing",
+   "doc": "https://support.ringover.com/hc/en-us/articles/15206499377425-How-to-add-a-number",
+   "etapes": [
+    "Souscrivez ou lancez l'essai ; seuls les administrateurs (ou accès autorisé au tableau de bord) peuvent ajouter des numéros.",
+    "Ajoutez un numéro : pays, type (géographique, national ; mobile = forfait Business), indicatif, adresse de l'entreprise, choix dans la liste, confirmation.",
+    "Activez un numéro virtuel par campagne (Google Ads, Facebook, LinkedIn…) et affichez-le sur l'annonce ou la page correspondante (page : ringover.com/call-tracking-software).",
+    "Utilisateurs > « Add a user » (e-mail, licence, numéro) ; l'invité active son compte via « Activate my Ringover ».",
+    "Installez l'appli de bureau (avatar > téléchargements) ou mobile (App Store, Google Play), puis suivez nombre d'appels, durée et résultats par campagne."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "hotjar",
+   "nom": "Contentsquare (ex-Hotjar)",
+   "url": "https://contentsquare.com/pricing/",
+   "besoins": [
+    "conversion"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Enquêtes, retours visiteurs et analyse de parcours ; Hotjar fait partie de Contentsquare et n'accepte plus de nouveaux comptes. Clarity suffit souvent au début.",
+   "gratuit": true,
+   "limites_gratuit": "Hotjar a fusionné dans Contentsquare le 1er juillet 2025 : plus de création de compte Hotjar ; plan Free Contentsquare : 200 000 sessions/mois, 10 000 enregistrements de session, 100 réponses d'enquête/mois.",
+   "prix": "à vérifier — Growth : à partir de 39 $/mois en annuel (page Contentsquare la plus récente) ; 49 $ affiché sur la page tarifs ; « à partir de 40 €/mois » dans un article Contentsquare",
+   "mois_eur": 34,
+   "source_prix": "https://contentsquare.com/pricing/",
+   "doc": "https://support.contentsquare.com/hc/en-us/articles/37271848593297-How-do-I-install-the-Contentsquare-tag",
+   "etapes": [
+    "Créez un compte Contentsquare Free : l'assistant in-app guide l'installation.",
+    "Choisissez l'installation manuelle, par plateforme (WordPress, WooCommerce, Wix, Squarespace…) ou via Google Tag Manager.",
+    "Manuel : section Tag script > « Copy » (Tag ID inclus), puis collez le script dans le <head> de chaque page suivie.",
+    "Settings > Tag Installation > « Verify installation » avec une URL du site.",
+    "Déclarez les cookies Contentsquare dans votre CMP (le tag n'hérite pas du bandeau) et autorisez ses domaines dans votre CSP."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "brevo",
+   "nom": "Brevo",
+   "url": "https://www.brevo.com/fr/pricing/",
+   "besoins": [
+    "emailing",
+    "sms"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "E-mails et SMS (outil français) : relances, lettre d'information, avis clients.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free permanent sans carte : 300 e-mails/jour (9 000/mois), jusqu'à 100 000 contacts stockés, 1 utilisateur, automatisations limitées à 2 000 contacts, logo Brevo ; SMS uniquement par crédits prépayés.",
+   "prix": "Starter : à partir de 7 €/mois (palier 5 000 e-mails/mois, sans limite quotidienne ; 9 $ en USD) ; SMS : packs de 100 crédits sans expiration, coût selon le pays",
+   "mois_eur": 7,
+   "source_prix": "https://www.brevo.com/pricing/",
+   "doc": "https://help.brevo.com/hc/en-us/articles/360016175440-Getting-started-with-Emails-campaigns",
+   "etapes": [
+    "Créez le compte avec une adresse sur votre propre domaine (les domaines gratuits ne s'authentifient pas).",
+    "Senders, Domains & Dedicated IPs > Domains : ajoutez le domaine et publiez les enregistrements DNS (code Brevo, DKIM, DMARC), automatiquement chez un hébergeur partenaire ou à la main (aide : help.brevo.com/hc/en-us/articles/12163873383186).",
+    "Senders : créez l'expéditeur (nom et adresse), vérifié automatiquement si le domaine est authentifié.",
+    "CRM > Contacts > « Import contacts » (fichier ou copier-coller ; contacts consentants uniquement).",
+    "Marketing > Campaigns > « Create campaign » > Email (Regular) : expéditeur, destinataires, objet, puis envoi ou programmation.",
+    "SMS : enregistrez un Sender ID alphanumérique pour la France, achetez des crédits (compte > My Plan > SMS & WhatsApp) et respectez les plages horaires françaises (aide : help.brevo.com/hc/en-us/articles/16603051344146)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "make",
+   "nom": "Make",
+   "url": "https://www.make.com/en/pricing",
+   "besoins": [
+    "automatisation"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Automatiser sans coder : formulaire → CRM → e-mail → avis.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free sans limite de durée : 1 000 crédits/mois (1 crédit par action de module ; davantage pour certaines fonctions IA) ; planification toutes les 15 min par défaut.",
+   "prix": "Core : 9 $/mois en facturation annuelle (10 000 crédits/mois)",
+   "mois_eur": 8,
+   "source_prix": "https://www.make.com/pricing",
+   "doc": "https://help.make.com/step-1-plan-your-scenario",
+   "etapes": [
+    "Créez un compte gratuit puis cliquez sur « Create a new scenario » (en haut à droite).",
+    "Cliquez sur le grand « + », choisissez l'app et le module déclencheur (ex. Google Sheets « Watch New Rows ») et créez la connexion.",
+    "Ajoutez les modules d'action, nommez le scénario et enregistrez (icône Save).",
+    "Testez avec « Run once » : des bulles au-dessus des modules montrent les résultats.",
+    "Icône horloge du déclencheur : planification (15 min par défaut, quotidienne, à la demande… ou instantanée) puis activez le scénario (aide : help.make.com/schedule-a-scenario)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "zapier",
+   "nom": "Zapier",
+   "url": "https://zapier.com/pricing",
+   "besoins": [
+    "automatisation"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Automatisations prêtes à l'emploi entre plus de 7 000 applications.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free : 100 tâches/mois, Zaps en 2 étapes seulement (1 déclencheur + 1 action), vérification toutes les 15 min, 1 utilisateur, 2 500 enregistrements Tables.",
+   "prix": "Professional : à partir de 19,99 $/mois en facturation annuelle",
+   "mois_eur": 17,
+   "source_prix": "https://zapier.com/pricing",
+   "doc": "https://help.zapier.com/hc/en-us/articles/8496288188429-Set-up-your-Zap-trigger",
+   "etapes": [
+    "Créez un compte puis « + Create » > Zap dans la barre latérale.",
+    "Déclencheur : choisissez l'app et l'événement, connectez le compte, puis « Test trigger ».",
+    "Action : app, événement, compte et champs, puis « Test step » (le test agit réellement dans l'app).",
+    "Cliquez sur « Publish » : le Zap ne traite que les données créées après la publication (aide : help.zapier.com/hc/en-us/articles/18811411817741-Test-Zap-steps)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "axeptio",
+   "nom": "Axeptio",
+   "url": "https://www.axeptio.eu/fr/pricing",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Bandeau cookies français, apprécié des visiteurs, Consent Mode v2 intégré.",
+   "gratuit": true,
+   "limites_gratuit": "Offre gratuite tant que le site reste sous 200 visiteurs uniques sur 30 jours, 1 domaine, un seul projet en essai par compte ; au-delà, 21 jours pour repasser sous le seuil, sinon le widget est dépublié.",
+   "prix": "à vérifier — la page tarifs officielle (lecture difficile, devises mélangées) indique « Extra Small » à 7,50 €/mois en paiement annuel (jusqu'à 2 500 pages vues/mois) ; Capterra cite « Small » à 29 €/mois (5 000 pages vues/mois)",
+   "mois_eur": 8,
+   "source_prix": "https://www.axeptio.eu/en/pricing",
+   "doc": "https://support.axeptio.eu/en/articles/273981-embed-the-axeptio-script-on-your-site",
+   "etapes": [
+    "Créez un compte puis « Create a new project » avec l'adresse du site et le nom du projet.",
+    "Créez une configuration du bandeau : services déclarés (GA4, Meta, YouTube…), textes, langues et style — ou générez-la avec l'audit des traceurs.",
+    "Si GA4 ou Google Ads sont déclarés, l'écran Consent Mode v2 s'active : laissez les 4 signaux refusés par défaut pour l'UE (aide : support.axeptio.eu/en/articles/704808-configure-google-consent-mode-v2-gtm-integration).",
+    "Cliquez sur « Publish » dans le back-office.",
+    "Integration > General : choisissez la configuration, copiez le script et collez-le avant tout script Google — ou utilisez le modèle GTM (déclencheur « Consent Initialization – All Pages ») ou le module WordPress, Shopify, PrestaShop."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "didomi",
+   "nom": "Didomi",
+   "url": "https://www.didomi.io/pricing",
+   "besoins": [
+    "conformite"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Gestion du consentement pour les sites à fort trafic ou multi-pays.",
+   "gratuit": false,
+   "limites_gratuit": "Pas d'offre gratuite pour la CMP selon plusieurs comparatifs tiers (seul le service server-side Addingwell by Didomi aurait un palier gratuit de 100 000 requêtes/mois).",
+   "prix": "Sur devis — paliers Essential, Advanced et Premium ; CMP tarifée selon les visiteurs uniques mensuels (MUV), domaines illimités ; aucun prix public",
+   "mois_eur": null,
+   "source_prix": "https://www.didomi.io/offers",
+   "doc": "https://developers.didomi.io/cmp/web-sdk/getting-started",
+   "etapes": [
+    "Console Didomi > Consent Notices > « Create a notice + » > site web.",
+    "Choisissez un préréglage (Google Consent Mode V2, IAB TCF) ou aucun.",
+    "Personnalisez catégories, informations de l'entreprise, format (bandeau bas, bandeau haut ou pop-in) et vendors.",
+    "Étape « 3. Publish » > onglet Embed : générez et copiez le code du SDK correspondant à la configuration.",
+    "Collez-le tout en haut du <head>, avant toute autre balise, puis ajoutez le lien de réouverture des choix (pied de page) (aide : support.didomi.io/create-your-consent-notice-directly-in-the-console-new-flow)."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "rank-math",
+   "nom": "Rank Math",
+   "url": "https://rankmath.com/pricing/",
+   "besoins": [
+    "technique",
+    "contenu"
+   ],
+   "niveau": "essentiel",
+   "pourquoi": "Extension SEO WordPress : titres, descriptions, sitemap, données structurées.",
+   "gratuit": true,
+   "limites_gratuit": "Version gratuite sur le répertoire WordPress ; PRO ajoute les fonctions avancées et s'utilise sur un nombre illimité de sites vous appartenant (sites clients exclus).",
+   "prix": "à vérifier — PRO : 8,99 €/mois HT facturé annuellement (107,88 € + taxes/an), prix de renouvellement affiché sur la page tarifs ; première année souvent remisée (5,59 € à 7,99 €/mois selon les pages promotionnelles)",
+   "mois_eur": 9,
+   "source_prix": "https://rankmath.com/pricing/",
+   "doc": "https://rankmath.com/kb/how-to-setup/",
+   "etapes": [
+    "WordPress > Extensions > Ajouter > recherchez « Rank Math » > « Installer maintenant » > « Activer » (aide : rankmath.com/kb/installation/).",
+    "Cliquez sur « Connect Your Account » pour créer ou relier le compte Rank Math (plus tard : Rank Math SEO > Dashboard > Help > « Connect Now »).",
+    "Suivez l'assistant de configuration (import possible depuis Yoast).",
+    "Pour le relancer : Rank Math SEO > Dashboard > onglet Setup Wizard.",
+    "PRO : téléchargez le zip depuis votre compte Rank Math puis Extensions > Ajouter > Téléverser."
+   ],
+   "confiance": "à vérifier",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "yoast",
+   "nom": "Yoast SEO",
+   "url": "https://yoast.com/wordpress/plugins/seo/",
+   "besoins": [
+    "technique",
+    "contenu"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Alternative à Rank Math, très répandue.",
+   "gratuit": true,
+   "limites_gratuit": "Yoast SEO gratuit ; fonctions supplémentaires réservées à Premium.",
+   "prix": "Premium : 118,80 $/an HT (118,80 €/an selon la zone)",
+   "mois_eur": 10,
+   "source_prix": "https://yoast.com/product/yoast-seo-premium-wordpress/",
+   "doc": "https://yoast.com/help/yoast-seo-first-time-configuration/",
+   "etapes": [
+    "WordPress > Extensions > Ajouter > recherchez « Yoast SEO » > « Installer maintenant » > « Activer » (aide : yoast.com/help/installation-guide-for-wordpress-seo/).",
+    "Sur l'écran de bienvenue, cliquez sur « Start first-time configuration ».",
+    "Suivez les 5 étapes : optimisation des données SEO, représentation du site (organisation ou personne), profils sociaux, préférences personnelles, fin.",
+    "Pour y revenir : Yoast SEO > Général > « First-time configuration »."
+   ],
+   "confiance": "vérifié",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "wp-rocket",
+   "nom": "WP Rocket",
+   "url": "https://wp-rocket.me/pricing/",
+   "besoins": [
+    "technique"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Cache et optimisation de vitesse WordPress en quelques clics.",
+   "gratuit": false,
+   "limites_gratuit": "Pas de version gratuite ; remboursement sous 14 jours (WP Rocket propose aussi une page d'essai gratuit de 14 jours).",
+   "prix": "à vérifier — Single (1 site) : 59 $/an (59,95 $ sur certaines pages officielles) ; une page officielle en euros affiche 49,95 €/an ; prix final selon pays et taxes, à confirmer au paiement",
+   "mois_eur": 5,
+   "source_prix": "https://wp-rocket.me/pricing/",
+   "doc": "https://docs.wp-rocket.me/article/6-installing-wp-rocket",
+   "etapes": [
+    "Téléchargez le zip depuis votre compte WP Rocket (sous Safari, désactivez la décompression automatique).",
+    "WordPress > Extensions > Ajouter > « Téléverser une extension » > choisissez le zip > « Installer maintenant ».",
+    "Activez l'extension : la licence est validée en arrière-plan, sans clé à copier.",
+    "Si la validation échoue : définissez l'e-mail du compte et la clé API (fichier license-data.php du zip) comme constantes dans wp-config.php (aide : docs.wp-rocket.me/article/100-resolving-problems-with-license-validation).",
+    "Alternative : décompressez et envoyez le dossier wp-rocket dans wp-content/plugins par FTP, puis activez."
+   ],
+   "confiance": "à vérifier",
+   "cms": [
+    "WordPress",
+    "WooCommerce"
+   ]
+  },
+  {
+   "id": "partoo",
+   "nom": "Partoo",
+   "url": "https://www.partoo.co/fr/",
+   "besoins": [
+    "local",
+    "avis"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Gérer et synchroniser plusieurs fiches locales (réseaux de magasins, franchises).",
+   "gratuit": false,
+   "limites_gratuit": "Aucune offre gratuite trouvée.",
+   "prix": "Sur devis — aucune grille publique ; la seule offre chiffrée trouvée (29,90 €/mois) était une promotion expirée le 30/03/2020 ; en Enterprise, prix selon le nombre de points de vente, révision annuelle indexée Syntec",
+   "mois_eur": null,
+   "source_prix": "https://www.partoo.co/wp-content/uploads/2023/07/CGV-Partoo-SMBs-FR-V_2023_02.pdf",
+   "doc": "https://help.partoo.co/en/articles/1909039-how-to-connect-your-google-business-profile-to-partoo",
+   "etapes": [
+    "Prérequis : une fiche Google Business Profile active (le support Partoo peut aider à la créer).",
+    "Dans Partoo : avatar > Paramètres > Plateformes > Connexions > « + » > continuer avec Google pour lier le compte.",
+    "Ouvrez l'écran d'édition de l'établissement et cliquez sur le bouton Google « Connecter ».",
+    "Sélectionnez l'établissement et les informations à importer (elles écrasent les données Partoo), puis « Connect and update ».",
+    "Les validations par vidéo ou appel vidéo se font uniquement dans la console Google (aide : help.partoo.co/fr/articles/7903097-verifier-une-fiche-google-business-profile-depuis-partoo)."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  },
+  {
+   "id": "guest-suite",
+   "nom": "Guest Suite",
+   "url": "https://www.guest-suite.com/",
+   "besoins": [
+    "avis"
+   ],
+   "niveau": "pro",
+   "pourquoi": "Collecte d'avis clients vérifiés et diffusion sur Google, outil français.",
+   "gratuit": false,
+   "limites_gratuit": "Pas d'offre gratuite ; essai gratuit de 14 jours sans carte bancaire et démo de 30 minutes.",
+   "prix": "À partir de 49 €/mois sans engagement (offre indépendants) ; réseaux multi-sites : tarifs dégressifs sur devis",
+   "mois_eur": 49,
+   "source_prix": "https://www.guest-suite.com/offres",
+   "doc": "https://faq.guest-suite.com/knowledge/comment-creer-une-enquete",
+   "etapes": [
+    "Lancez l'essai de 14 jours (ou demandez une démo) et connectez votre fiche Google pour faire remonter les avis.",
+    "Collecte > Enquêtes > créer : nom, langue par défaut et type « satisfaction et collecte d'avis » (le seul qui diffuse les avis en ligne).",
+    "Cochez les plateformes de diffusion ; pour en ajouter : Administration > Paramètres de diffusion.",
+    "Onglet Partage : URL, QR code ou mode kiosque sur tablette ; l'e-mail et le SMS se règlent dans les campagnes.",
+    "Répartition automatique : Google est proposé en priorité si l'e-mail du client est lié à un compte Google (15 caractères minimum par avis sur la plateforme)."
+   ],
+   "confiance": "vérifié",
+   "cms": null
+  },
+  {
+   "id": "trustpilot",
+   "nom": "Trustpilot",
+   "url": "https://business.trustpilot.com/pricing",
+   "besoins": [
+    "avis"
+   ],
+   "niveau": "recommande",
+   "pourquoi": "Avis clients publics pour l'e-commerce, avec une offre gratuite de base.",
+   "gratuit": true,
+   "limites_gratuit": "Plan Free sans carte : 50 invitations d'avis par mois ; lecture, réponse et signalement des avis.",
+   "prix": "à vérifier pour la France — Plus : à partir de 289 €/mois par domaine, facturé annuellement (page Irlande en euros ; 319 $ aux États-Unis), essai 14 jours ; hausse possible jusqu'à 5 % sans préavis au renouvellement (conditions de juin 2026)",
+   "mois_eur": 289,
+   "source_prix": "https://ie.business.trustpilot.com/pricing",
+   "doc": "https://support.trustpilot.com/hc/en-us/articles/115015561467--How-do-I-claim-my-company-profile-",
+   "etapes": [
+    "Sur Trustpilot Business, créez un compte gratuit, de préférence avec un e-mail du domaine de votre site.",
+    "Activez le compte via le lien reçu et définissez le mot de passe.",
+    "Si l'e-mail n'est pas sur le domaine : vérifiez-le par e-mail du domaine, fichier à la racine, Google Search Console, balise meta ou TXT DNS (jusqu'à 72 h) (aide : help.trustpilot.com/s/article/Verify-your-domain).",
+    "Invitez vos clients (50 invitations/mois en gratuit) avec un processus et des formulations justes et neutres.",
+    "Ignorez toute demande de vérification reçue par lien e-mail ou externe : Trustpilot n'en envoie jamais."
+   ],
+   "confiance": "à vérifier",
+   "cms": null
+  }
+ ]
+}
