@@ -14,13 +14,25 @@ const count = (hay, needle) => {
   return n
 }
 
+// « Vitrines boulangerie », « matériel de pâtisserie », « mobilier pour restaurants » : le site vend AUX boulangers
+// ou aux restaurateurs, il n'en est pas un. Le métier client qui suit un produit professionnel compte alors pour
+// l'équipement B2B, pas pour ce métier. (Ni « four » ni « comptoir » : « Le Four à pain », « Le Comptoir » sont des enseignes.)
+const SUPPLY = /\b(vitrines?|agencements?|amenagements?|mobiliers?|equipements?|materiels?|machines?|fournitures?|emballages?|cuves?|chambres? froides?|froid commercial|fabricants?|fournisseurs?|grossistes?|installateurs?)\b([^.!?;:|·\n()]{0,70})/g
+const CLIENTS = /\b(boulangeries?|boulangers?|patisseries?|patissiers?|chocolat(?:iers?|eries?)|boucheries?|bouchers?|charcuteries?|poissonneries?|traiteurs?|restaurants?|restauration|hotels?|hotellerie|bars?|cafes?|snacks?|sandwicheries?|supermarches?|epiceries?|magasins?|commerces?|commercants?|pharmacies?|fromageries?|glaciers?|primeurs?|salons?|cantines?|collectivites)\b/
+function supplierSpans(text) {
+  let n = 0
+  const rest = text.replace(SUPPLY, (m, noun, tail) => (CLIENTS.test(tail) ? (n++, noun + ' '.repeat(tail.length)) : m))
+  return { rest, n }
+}
+
 export function guessSector(page) {
   if (!page) return null
-  const strong = fold([page.title, page.metaDescription, ...(page.headings || page.h || []).filter((h) => h.level <= 2).map((h) => h.text)].join(' · '))
-  const body = fold(String(page.text || '').slice(0, 30000))
+  const s1 = supplierSpans(fold([page.title, page.metaDescription, ...(page.headings || page.h || []).filter((h) => h.level <= 2).map((h) => h.text)].join(' · ')))
+  const s2 = supplierSpans(fold(String(page.text || '').slice(0, 30000)))
+  const strong = s1.rest, body = s2.rest
   const ld = fold(JSON.stringify(page.jsonLd || []) + ' ' + (page.microdataTypes || []).join(' '))
   const scores = SECTORS.filter((s) => s.id !== 'autre').map((s) => {
-    let score = 0
+    let score = s.id === 'equipement-pro' ? 5 * Math.min(3, s1.n) + Math.min(6, s2.n) : 0
     for (const kw of s.keywords || []) {
       const k = fold(kw)
       if (GENERIC.has(k)) continue

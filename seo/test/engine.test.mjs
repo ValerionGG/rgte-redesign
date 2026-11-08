@@ -597,3 +597,24 @@ test('secteur deviné d’après la page quand il n’est pas choisi', async () 
   assert.equal(chosen.input.sector, 'ecommerce'); assert.ok(!chosen.input.sectorGuessed)
   assert.equal(guessSector({ title: 'Accueil', headings: [], text: 'Bienvenue sur notre site. Contact. Menu.' }), null, 'secteur inventé sans signal')
 })
+test('secteur deviné : un fournisseur des boulangers n’est pas une boulangerie (cas réel rgte.eu)', async () => {
+  const { guessSector } = await import('../engine/guess.js')
+  const P = (title, h1, text, jsonLd = []) => ({ title, metaDescription: '', headings: [{ level: 1, text: h1 }], text, jsonLd })
+  const g = (p) => guessSector(p)?.id ?? null
+  assert.equal(g(P('Vitrines boulangerie, pâtisserie, chocolatiers', 'agencement de vitrines réfrigérées', 'Vitrine réfrigérée boulangerie Loire. Vitrine réfrigérée boucherie. Réalisations : agencement pâtissier chocolatier, sandwicherie. Secteurs d’activités : boulangerie, pâtisserie, traiteur. Bureau d’études et show-room.')), 'equipement-pro')
+  assert.equal(g(P('Matériel de restauration professionnelle', 'Fours, vitrines et chambres froides pour restaurants', 'Fabricant de matériel pour restaurants, boulangeries et traiteurs.')), 'equipement-pro')
+  // Pièges : une vraie boulangerie qui parle de ses vitrines, et des enseignes « Four » ou « Comptoir »
+  assert.equal(g(P('Boulangerie Dupont à Lyon — pains, viennoiseries et pâtisseries', 'Boulangerie artisanale', 'Nos vitrines de pâtisseries changent chaque jour. Pain au levain, viennoiseries, gâteau anniversaire.', [{ '@type': 'Bakery' }])), 'boulangerie')
+  assert.equal(g(P('Le Four à Bois — restaurant pizzeria', 'Restaurant au feu de bois', 'Menu, réservation, livraison repas. Restaurant ouvert dimanche.')), 'restaurant')
+  assert.equal(g(P('Le Comptoir de Lyon, restaurant bistronomique', 'Restaurant', 'Menu du jour, réservation en ligne, brunch le dimanche.')), 'restaurant')
+})
+test('« Mentions légales » écrit en pied de page sans lien : signalé comme tel', async () => {
+  const page = (foot) => `<!doctype html><html lang="fr"><head><title>Vitrines réfrigérées sur mesure</title></head><body><h1>Vitrines réfrigérées</h1><p>${'Fabricant de vitrines réfrigérées pour les métiers de bouche. '.repeat(30)}</p><footer>${foot}</footer></body></html>`
+  const run = (foot) => analyze(O + '/', { fetcher: vfetch({ [O + '/']: { status: 200, body: page(foot) }, [O + '/robots.txt']: { status: 200, body: 'User-agent: *\nAllow: /' } }), psi: false, crawl: 0 })
+  const plain = (await run('Mentions légales<br> Conditions de vente<br> Gestion des cookies')).result.issues.find((i) => i.id === 'legal')
+  assert.ok(plain && /n’est pas un lien/.test(plain.title), 'texte sans lien non repéré : ' + plain?.title)
+  const none = (await run('Contact')).result.issues.find((i) => i.id === 'legal')
+  assert.equal(none?.title, 'Lien « Mentions légales » introuvable')
+  const linked = (await run('<a href="/mentions-legales">Mentions légales</a>')).result.issues.find((i) => i.id === 'legal')
+  assert.equal(linked, undefined)
+})
