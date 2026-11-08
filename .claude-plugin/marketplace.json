@@ -5,15 +5,148 @@
     "url": "https://github.com/valeriongg"
   },
   "metadata": {
-    "description": "Skills SEO, GEO, réseaux sociaux et publicité en français pour TPE et PME.",
-    "version": "3.0.0"
+    "description": "SEO 360 et les packs tiers relus, en français pour TPE et PME. Chaque pack tiers est épinglé au commit relu.",
+    "version": "3.1.0"
   },
   "plugins": [
     {
       "name": "seo360",
       "source": "./plugins/seo360",
       "description": "Pack SEO 360 : audit, SEO local, IA, Search Console, contenus, hashtags, budget pub, conformité, calendrier.",
-      "version": "3.0.0"
+      "version": "3.1.0",
+      "category": "seo"
+    },
+    {
+      "name": "audit-seo-avance",
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-seo",
+        "sha": "6be93f45064ffbadced572b5d5c95f55fd263af0"
+      },
+      "description": "Relu le 05/11/2026 (commit 6be93f4, licence MIT). Projet claude-seo. Audit SEO approfondi en sous-agents : technique, contenu, schéma, local, e-commerce, Search Console, CrUX. 26 skills, environ 4 700 jetons permanents. Un hook valide le JSON-LD après chaque modification de fichier.",
+      "category": "seo",
+      "homepage": "https://github.com/AgriciDaniel/claude-seo"
+    },
+    {
+      "name": "audit-publicite",
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-ads",
+        "sha": "fc3908e786c318776df89a3a098333da377364be"
+      },
+      "description": "Relu le 05/11/2026 (commit fc3908e, licence MIT). Projet claude-ads. Audits publicitaires Google, Meta, TikTok, LinkedIn, Microsoft et autres. 34 skills, environ 6 600 jetons permanents.",
+      "category": "publicite",
+      "homepage": "https://github.com/AgriciDaniel/claude-ads"
+    },
+    {
+      "name": "instagram-skills",
+      "source": {
+        "source": "github",
+        "repo": "sergebulaev/instagram-skills",
+        "sha": "550d3cf6cece08de75dae64235bd32136820920f"
+      },
+      "description": "Relu le 05/11/2026 (commit 550d3cf, licence MIT). Instagram : légendes, carrousels, Reels, accroches, hashtags. 9 skills, environ 1 800 jetons.",
+      "category": "reseaux",
+      "homepage": "https://github.com/sergebulaev/instagram-skills"
+    },
+    {
+      "name": "linkedin-skills",
+      "source": {
+        "source": "github",
+        "repo": "sergebulaev/linkedin-skills",
+        "sha": "8f8bc4b40a2d5419b2dcf898772b85712cfbdf41"
+      },
+      "description": "Relu le 05/11/2026 (commit 8f8bc4b, licence MIT). LinkedIn : posts, commentaires, profil, régularité (B2B). 12 skills, environ 2 100 jetons.",
+      "category": "reseaux",
+      "homepage": "https://github.com/sergebulaev/linkedin-skills"
+    },
+    {
+      "name": "social-media-research-skills",
+      "source": {
+        "source": "github",
+        "repo": "ScrapeCreators/social-media-research-skills",
+        "sha": "64ba7b4dea71e130d2712ffb6c1c1024b3b7c4b2"
+      },
+      "description": "Relu le 05/11/2026 (commit 64ba7b4, licence MIT). Données réelles TikTok, Instagram, YouTube : publications hors norme, commentaires, pubs des concurrents. Demande une clé API ScrapeCreators, payante. 13 skills.",
+      "category": "reseaux",
+      "homepage": "https://github.com/ScrapeCreators/social-media-research-skills"
+    },
+    {
+      "name": "web-quality-skills",
+      "source": {
+        "source": "github",
+        "repo": "addyosmani/web-quality-skills",
+        "sha": "afa8da942115f2961fdbfa80807ea0b232ff6c00"
+      },
+      "description": "Relu le 05/11/2026 (commit afa8da9, licence MIT). Performance, Core Web Vitals, accessibilité WCAG 2.2, bonnes pratiques (Addy Osmani). 6 skills, environ 540 jetons.",
+      "category": "technique",
+      "homepage": "https://github.com/addyosmani/web-quality-skills"
+    },
+    {
+      "name": "youtube",
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-youtube",
+        "sha": "84c3fa6805200632fadb4fe2795ef265511271c7"
+      },
+      "description": "Relu le 05/11/2026 (commit 84c3fa6, licence MIT). Projet claude-youtube. Chaîne YouTube : SEO vidéo, scripts, miniatures, Shorts, calendrier. Ses scripts demandent une clé de l’API YouTube.",
+      "category": "reseaux",
+      "homepage": "https://github.com/AgriciDaniel/claude-youtube"
+    },
+    {
+      "name": "aso-skills",
+      "source": {
+        "source": "github",
+        "repo": "appeeky/aso-skills",
+        "sha": "3919d7c27402d92c7ef698f2016174b874ea189e"
+      },
+      "description": "Relu le 05/11/2026 (commit 3919d7c, licence MIT). Seulement pour une application mobile : 40 skills d’ASO (mots-clés, fiche, concurrents), environ 7 200 jetons permanents.",
+      "category": "application",
+      "homepage": "https://github.com/appeeky/aso-skills"
+    },
+    {
+      "name": "blog-seo",
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-blog",
+        "sha": "4f9c2cb8fd17f594e868d6c2ce0e8fb2c971f987"
+      },
+      "description": "Relu le 05/11/2026 (commit 4f9c2cb, licence MIT). Projet claude-blog. Seulement pour un blog à fort volume : 32 skills pour écrire, réécrire et auditer des articles, environ 7 300 jetons permanents.",
+      "category": "contenu",
+      "homepage": "https://github.com/AgriciDaniel/claude-blog"
+    },
+    {
+      "name": "local-seo-skills",
+      "source": {
+        "source": "github",
+        "repo": "garrettjsmith/localseoskills",
+        "sha": "c3b7a25b7d5cc370752d74cfea240ccf992a24db"
+      },
+      "description": "Relu le 05/11/2026 (commit c3b7a25, licence MIT). Seulement pour un réseau d’établissements : 39 skills de SEO local, environ 5 900 jetons permanents. Contient un serveur MCP.",
+      "category": "seo",
+      "homepage": "https://github.com/garrettjsmith/localseoskills"
+    },
+    {
+      "name": "last30days",
+      "source": {
+        "source": "github",
+        "repo": "mvanhorn/last30days-skill",
+        "sha": "e9c31b868ab9d284c1a988e528c3391c51ebf944"
+      },
+      "description": "Relu le 05/11/2026 (commit e9c31b8, licence MIT). Veille sur 30 jours : Reddit, X, YouTube, Hacker News et autres. 1 skill, environ 100 jetons ; accède au réseau de ces sites.",
+      "category": "veille",
+      "homepage": "https://github.com/mvanhorn/last30days-skill"
+    },
+    {
+      "name": "marketing-skills",
+      "source": {
+        "source": "github",
+        "repo": "coreyhaines31/marketingskills",
+        "sha": "88c79f6528a9347420e57ceb1fff9a60de651768"
+      },
+      "description": "Relu le 05/11/2026 (commit 88c79f6, licence MIT). Pack complet de 53 skills marketing (copywriting, offres, e-mails, lead magnets, relations presse), lourd : environ 16 100 jetons permanents. À installer seulement si besoin.",
+      "category": "marketing",
+      "homepage": "https://github.com/coreyhaines31/marketingskills"
     }
   ]
 }

@@ -2,7 +2,7 @@
 name: seo-360
 description: Point d'entrée du pack : étude SEO complète d'un site, d'une application ou d'un dépôt GitHub. Verdict d'abord, corrections (technique, contenu, vitesse, IA, local, RGPD) avec correctifs prêts à coller et niveau de confiance, plan 30/60/90 jours, mots-clés, hashtags, budget pub, concurrents ; oriente vers les skills spécialisés. À utiliser dès qu'arrive une URL, une app ou un repo : « audite mon site », « mon site n'apparaît pas sur google », « être en première page », « referencement naturel », « que dois-je corriger ». Chute de trafic → diagnostic-baisse-trafic.
 metadata:
-  version: "2.0"
+  version: "2.1"
 ---
 
 # SEO 360 — étude complète
@@ -11,7 +11,7 @@ metadata:
 
 Annoncer au début : « Je lance l'audit en lecture seule, puis je vous rends le verdict, les corrections classées et le plan. Je ne modifie rien sur le site. »
 
-Outil : `seo/cli.mjs` (Node ≥ 18, sans dépendance). Interface web : https://valeriongg.github.io/rgte-redesign/seo/ (mêmes moteurs ; la page est lue par des services de lecture publics, ou à partir du code collé). Lien direct : `…/seo/#analyser=<adresse>`.
+Outil : `seo/cli.mjs` (Node ≥ 18, sans dépendance). Il **mesure** ; l'analyse et les propositions, c'est vous (étape 4). Interface web : https://valeriongg.github.io/rgte-redesign/seo/ (mêmes moteurs, sans l'analyse experte). Lien direct : `…/seo/#analyser=<adresse>`.
 
 ## Règles d'or
 
@@ -36,7 +36,9 @@ node seo/cli.mjs <cible> --secteur <id> --mot-cle "<mot-clé>" --ville <ville> -
 - Sans `--budget`, le budget de départ conseillé est calculé (minimum viable du canal principal). `--cpc <€>` et `--volume <recherches/mois>` affinent avec des données réelles.
 - PageSpeed : variable `PSI_KEY` ou `--psi-key` ; sans clé, quota faible (`--no-psi` si erreur 429).
 - La CLI s'annonce « SEO360-Audit » ; si le site refuse les robots inconnus, elle réessaie en navigateur et le rapport le signale (`--ua seo360` pour l'interdire).
-- Site qui refuse le robot (403, page de défi) ou réseau bloqué : le rapport le dit (`result.incomplete`). Proposer le **bouton-favori** de l'interface (onglet Ressources), le code source collé, ou une autre machine.
+- `cli.mjs` introuvable (plugin utilisé dans Cowork ou le chat) : `find / -path '*seo360*/seo/cli.mjs' -not -path '*/node_modules/*' 2>/dev/null | head -1`, puis utiliser ce chemin.
+- Réseau qui ne joint pas le site (bac à sable, session cloud filtrée) : la CLI passe d'elle-même par Jina Reader (`ctx.fetch.source: "jina"`, en-têtes HTTP non jugés). `--lecture direct` l'interdit.
+- Toujours illisible : récupérer la page avec l'outil de lecture web, l'enregistrer, puis `--html page.html` (et `--robots robots.txt`). Site qui refuse le robot (403, page de défi) : le rapport le dit (`result.incomplete`) ; proposer le **bouton-favori** de l'interface (onglet Ressources) ou le code source collé.
 - Demande réelle : `--veille reddit,youtube,web` (Agent Reach installé, skill veille-sociale).
 - Search Console fourni : `node seo/cli.mjs gsc export.zip --marque "<marque>"` (étape 5).
 - Sortie : `rapports-seo/<slug>.md` (synthèse, 3 actions, correctifs prêts à coller) et `.json` (importable dans l'interface).
@@ -45,9 +47,17 @@ node seo/cli.mjs <cible> --secteur <id> --mot-cle "<mot-clé>" --ville <ville> -
 
 `result.issues` (triés gravité puis priorité ; `scope: 'site'` = issu du crawl), `result.scores` (`score: null` = non mesuré), `result.meta` (CMS, traceurs, CMP, robots IA, schema, réseaux, téléphone, adresse), `ctx.psi`, `ctx.crawl`, `plan.week` (3 actions avec `who` et `time`), `budget.verdict`, `hashtags`, `keywords`, `competitors` (comparés sur la page d'accueil, mêmes conditions). Correctifs prêts à coller : dans le rapport `.md` (sous chaque constat) et dans l'onglet « À faire » de l'interface.
 
-## 4. Vérifier le type de page dominant
+## 4. L'analyse experte : ce que la CLI ne fait pas
 
-Avant de recommander un contenu pour le mot-clé principal, regarder les 10 premiers résultats (navigation privée, ville de l'entreprise) et les classer : fiche service locale, pack local, comparatif, guide, fiche produit, vidéo, forum. Si la page du client n'est pas du type dominant, le dire et proposer le bon format (skill contenu-seo-redaction). Exemple : « Google montre surtout des comparatifs pour “meilleur logiciel de caisse” : votre page produit ne s'y classera pas telle quelle. » Impossible à vérifier : l'écrire dans « Ce qu'on n'a pas pu vérifier ».
+La CLI mesure, elle ne connaît ni le métier du client ni ses concurrents. Un rapport qui recopie `result.issues` ne vaut pas mieux que l'interface web. Avant de rédiger, faire ces cinq étapes (grilles et modèles : [references/analyse-experte.md](references/analyse-experte.md)) :
+
+1. **Lire le site comme un client** : l'accueil et les 3 pages qui font vendre (offre principale, un produit ou service type, contact ou devis). Noter ce qu'on comprend en 5 secondes, l'offre réelle (gammes, prix ou « sur devis »), la cible (particuliers ou pros, zone), les preuves (références, chiffres, avis, réalisations) et ce qui freine la prise de contact.
+2. **Chercher comme le client** (recherche web) : 5 requêtes réelles, dont 3 sans la marque, 1 locale et 1 de prix ou de comparaison. Pour chacune : qui occupe le top 5, le type de page dominant (fiche service locale, pack local, comparatif, guide, fiche produit, vidéo, forum), ce que ces pages ont et pas le client. Page du client d'un autre type que le dominant : le dire et proposer le bon format.
+3. **Lire 3 vrais concurrents**, trouvés dans ces résultats ou donnés par l'utilisateur : promesse, preuves, prix affichés, contenus, avis. Ce qu'ils font mieux, et l'angle qu'aucun ne prend.
+4. **Croiser avec la mesure** ce que les règles ne voient pas : sitemap qui ne liste qu'une partie des pages explorées, titre sans le produit ni la marque, gammes absentes des titres, page devis introuvable, avis invisibles, offre et requêtes visées qui ne se rencontrent pas.
+5. **Écrire les propositions exactes** sur les vraies pages : pour chaque page clé, le texte actuel cité, puis le titre (≤ 60 caractères), la meta description (≤ 155), le H1 et la première phrase proposés ; pour chaque contenu à créer, le titre, le plan en H2, la requête visée et sa preuve de demande (suggestion Google, question trouvée, page concurrente classée).
+
+Recherche web indisponible : le dire dans « Ce qu'on n'a pas pu vérifier », et marquer Hypothèse ce qui en dépendait.
 
 ## 5. Remonter les positions 8-20 (Search Console)
 
@@ -76,6 +86,13 @@ Lire : part des clics de marque et hors marque, opportunités hors marque (posit
 7. **Ce qu'on n'a pas pu vérifier** : sources bloquées, PageSpeed indisponible, Search Console non fourni, type de page non vérifié, données non publiques.
 8. **Constats écartés** : faux positif connu, contredit par une mesure, doublon d'une même cause, avec la raison.
 9. **Prochaine étape** : la commande ou l'action suivante et la date du contrôle (suivi-performance-mensuel). L'interface compare deux audits d'une même adresse (corrigés, encore détectés, nouveaux) ; l'évolution de la note n'a de sens qu'à couverture comparable.
+
+### Barre de qualité, avant d'envoyer
+
+- **Test de spécificité** : chaque proposition pourrait-elle être copiée telle quelle sur un autre site ? Si oui, la réécrire avec les produits, pages, villes et concurrents du client, ou la supprimer.
+- Chaque proposition cite sa preuve (mesure, page lue, résultat de recherche) ; sans preuve, elle est marquée Hypothèse.
+- Correctif de texte : l'avant et l'après, longueur comptée. Les 3 actions de la semaine sont faisables tout de suite, texte prêt.
+- Interdit sans le contenu exact : « améliorez votre contenu », « publiez régulièrement », « optimisez vos mots-clés », « travaillez vos liens ».
 
 ## Skills du pack
 
@@ -113,6 +130,7 @@ Lire : part des clics de marque et hors marque, opportunités hors marque (posit
 ## Terminé quand
 
 - [ ] Le verdict est donné (ou l'absence de note est expliquée).
+- [ ] Les 5 étapes de l'analyse experte sont faites (ou ce qui manquait est dit), et chaque proposition passe le test de spécificité.
 - [ ] Les 10 corrections ont preuve, impact, correctif et confiance.
 - [ ] Le plan 30/60/90 et les 3 actions de la semaine sont livrés.
 - [ ] « Ce qu'on n'a pas pu vérifier » et « Constats écartés » sont remplis.
@@ -121,6 +139,7 @@ Lire : part des clics de marque et hors marque, opportunités hors marque (posit
 ## Jamais
 
 - Annoncer une note quand rien n'a été mesuré.
+- Livrer un conseil générique, sans la page, le texte ou le concurrent concernés.
 - Inventer un volume, une position, un CPC ou un concurrent.
 - Promettre une première place ou un délai garanti.
 - Modifier le site, publier ou dépenser sans la validation du dirigeant.

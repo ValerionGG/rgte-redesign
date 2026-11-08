@@ -5,7 +5,7 @@ Entrez **un site, une application (App Store / Google Play) ou un dépôt GitHub
 - **Interface web** : `seo/index.html`, en ligne sur https://valeriongg.github.io/rgte-redesign/seo/ (GitHub Pages publie `main`). Lien direct d'analyse : `https://valeriongg.github.io/rgte-redesign/seo/#analyser=votre-site.fr`. En local : `python3 -m http.server --directory docs` puis http://localhost:8000/seo/.
 - **Confidentialité et sécurité** : [PRIVACY.md](PRIVACY.md) (qui reçoit quoi) et [SECURITY.md](SECURITY.md) (protections, limites, signaler une faille).
 - **CLI** (audit complet : en-têtes, redirections, crawl) : `node seo/cli.mjs <cible>`
-- **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin : `/plugin marketplace add ValerionGG/rgte-redesign`, puis `/plugin install seo360@seo360-fr`
+- **Skills Claude Code** : `.claude/skills/` (21 skills, voir plus bas), aussi installables comme plugin. Dans l'application Claude : *Personnaliser › Plugins › Ajouter une marketplace* `ValerionGG/rgte-redesign`, puis installer **seo360** (il sert alors dans Cowork, le chat et Claude Code). Dans Claude Code seul : `/plugin marketplace add ValerionGG/rgte-redesign`, puis `/plugin install seo360@seo360-fr`. Le même catalogue propose 12 packs tiers relus, épinglés au commit relu
 - **Étude concurrentielle & benchmark** : [`ETUDE-CONCURRENTIELLE.md`](ETUDE-CONCURRENTIELLE.md)
 
 Aucune dépendance : Node ≥ 18 et un navigateur récent suffisent.
@@ -192,7 +192,7 @@ PageSpeed Insights (API Google ouverte au navigateur) mesure la vitesse réelle 
 
 **Packs complémentaires** (claude-seo, claude-ads, instagram-skills, linkedin-skills, ScrapeCreators, sélection de marketingskills…) : relus commit par commit, avec leur coût en jetons et la commande d'installation, dans [`plan-croissance-360/references/packs-complementaires.md`](../.claude/skills/plan-croissance-360/references/packs-complementaires.md). Installez peu mais juste : chaque skill coûte des jetons à chaque échange.
 
-**Dans un autre projet**, installez le plugin : `/plugin marketplace add ValerionGG/rgte-redesign`, puis `/plugin install seo360@seo360-fr`. Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Sur claude.ai, chaque dossier de skill zippé peut s’importer.
+**Dans un autre projet**, installez le plugin : `/plugin marketplace add ValerionGG/rgte-redesign`, puis `/plugin install seo360@seo360-fr`. Il embarque la ligne de commande, et les chemins sont réécrits pour fonctionner partout. Il est généré par `node seo/plugin.mjs` depuis `.claude/skills` ; ne le modifiez pas à la main, sauf `evals/`. Évaluations : `claude plugin eval plugins/seo360`. Installé depuis l'application Claude (*Personnaliser › Plugins*), le plugin sert dans Cowork, le chat et Claude Code. Sans accès direct au site, la ligne de commande lit les pages par Jina Reader, ou des fichiers fournis (`--html`, `--robots`).
 
 ## Structure
 

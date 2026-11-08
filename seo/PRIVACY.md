@@ -34,6 +34,7 @@ Tout tourne sur votre machine. La ligne de commande contacte :
 - le site audité, et les concurrents que vous indiquez ;
 - PageSpeed, sauf avec `--no-psi` ;
 - Google Suggest ;
-- GitHub, pour un dépôt.
+- GitHub, pour un dépôt ;
+- Jina Reader (`r.jina.ai`), seulement pour un site que le réseau ne permet pas de joindre directement (bac à sable, session cloud filtrée) : l'adresse des pages lues lui est alors envoyée. `--lecture direct` l'interdit ; `--html` et `--robots` lisent des fichiers fournis, sans aucun accès au site.
 
 La veille (`veille`) passe par Agent Reach, installé chez vous, en lecture seule. Elle ne se connecte jamais à un compte à votre place.
