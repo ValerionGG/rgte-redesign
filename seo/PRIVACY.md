@@ -19,6 +19,8 @@ Ce qui reste sur votre appareil :
 - dans le stockage local du navigateur : vos réglages (sauf le code collé, le robots.txt collé, la clé PageSpeed et le jeton GitHub), l'historique de vos audits et les tâches cochées ;
 - pour la session seulement : la clé PageSpeed et le jeton GitHub.
 
+La clé Jina Reader, si vous en saisissez une, est gardée pour la session seulement et n'est envoyée qu'à Jina (`r.jina.ai`).
+
 ## Lien de partage
 
 Le rapport est encodé dans l'adresse, après le `#`. Cette partie n'est pas envoyée aux serveurs quand on ouvre le lien. En revanche, toute personne qui a le lien peut lire le rapport. Depuis la version 3.3, le lien ne contient ni vos clés, ni votre marge, ni votre budget, ni la valeur d'un client.

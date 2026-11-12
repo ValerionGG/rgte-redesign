@@ -273,7 +273,7 @@ details.fold[open] > summary { margin-bottom: 12px; }
 .bar .fill { height: 100%; border-radius: 999px; }
 .bar b { text-align: right; font: 760 1rem var(--display); font-variant-numeric: tabular-nums; }
 .bar .lbl small { display: inline; margin-left: 4px; }
-.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; }
 .kpi .v { font: 780 1.45rem/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .kpi .k { font-size: .78rem; color: var(--muted); font-weight: 650; margin-top: 4px; }
@@ -507,3 +507,19 @@ abbr[title]:focus::after { content: attr(title); position: fixed; left: 16px; ri
 .live-steps .st-fail { color: var(--imp); }
 .live-steps .st-fail .dot { border-color: var(--imp); background: var(--imp-bg); }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Diagnostic en clair : ce qui va, ce qui freine, le risque juridique à part */
+.diag { margin-bottom: 16px; }
+.diag h3 { margin: 0 0 12px; }
+.diag-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px 28px; }
+.diag-k { margin: 0 0 6px; font: 700 .78rem/1.2 var(--font); letter-spacing: .04em; text-transform: uppercase; }
+.diag-k.diag-ok { color: var(--ok); }
+.diag-k.diag-brake { color: var(--imp); }
+.diag ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.diag li { position: relative; padding-left: 20px; line-height: 1.4; }
+.diag li::before { content: ''; position: absolute; left: 2px; top: .5em; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.diag-cols > div:last-child li::before { background: var(--pop); }
+.diag li a { color: var(--text); font-weight: 650; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.diag-legal { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: .92rem; color: var(--muted); }
+.diag-legal b { color: var(--text); }
+@media (max-width: 720px) { .diag-cols { grid-template-columns: minmax(0, 1fr); } }

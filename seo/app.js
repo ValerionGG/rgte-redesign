@@ -96,7 +96,7 @@ let goalTouched = false
 $('#f-goal').addEventListener('change', () => { goalTouched = true })
 $('#f-sector').addEventListener('change', () => { if (!goalTouched) $('#f-goal').value = defaultGoal($('#f-sector').value) })
 for (const [k, v] of Object.entries(store.get('form', {}))) { const el = form.elements[k]; if (el && el.type !== 'file' && !['html', 'robotsTxt', 'psiKey', 'githubToken'].includes(k)) el.value = v }
-form.elements.psiKey.value = sess.get('psiKey'); form.elements.githubToken.value = sess.get('githubToken')
+form.elements.psiKey.value = sess.get('psiKey'); form.elements.githubToken.value = sess.get('githubToken'); if (form.elements.jinaKey) form.elements.jinaKey.value = sess.get('jinaKey') || ''
 const vals = () => {
   const o = Object.fromEntries(new FormData(form))
   return {
@@ -106,11 +106,11 @@ const vals = () => {
   }
 }
 const inputOf = (v) => ({ sector: v.sector, keyword: v.keyword.trim(), city: v.city.trim(), brand: v.brand.trim(), goal: v.goal, monthly: v.monthly, avgValue: v.avgValue, margin: v.margin, closeRate: v.closeRate, lang: v.lang, local: v.local })
-const persist = () => { const v = Object.fromEntries(new FormData(form)); delete v.html; delete v.robotsTxt; delete v.psiKey; delete v.githubToken; store.set('form', v) }
+const persist = () => { const v = Object.fromEntries(new FormData(form)); delete v.html; delete v.robotsTxt; delete v.psiKey; delete v.githubToken; delete v.jinaKey; store.set('form', v) }
 const updateKind = () => { $('#kind').textContent = KIND[detectKind(form.elements.url.value || 'exemple.fr')] }
 form.addEventListener('input', (e) => {
   if (e.target.name === 'url') updateKind()
-  if (e.target.name === 'psiKey' || e.target.name === 'githubToken') sess.set(e.target.name, e.target.value)
+  if (['psiKey', 'githubToken', 'jinaKey'].includes(e.target.name)) sess.set(e.target.name, e.target.value)
   persist()
   if (S.report && ['sector', 'city', 'brand', 'keyword', 'lang', 'goal', 'monthly', 'avgValue', 'margin', 'closeRate', 'local'].includes(e.target.name)) {
     Object.assign(S.report.input, inputOf(vals()))
@@ -213,10 +213,20 @@ async function jinaTurn(maxWaitMs, reserve = 0, onWait, signal) {
     await new Promise((ok) => setTimeout(ok, wait)); maxWaitMs -= wait
   }
 }
-async function jinaRead(url, signal) {
+// Sans clé, Jina refuse parfois un réseau entier (401 « bad IP reputation » : VPN, entreprise, centre de données) :
+// on réessaie deux fois, puis on le dit. Une clé Jina gratuite (champ dans « Plus d'options ») lève ce blocage.
+let jinaRefused = false
+async function jinaRead(url, signal, key = '') {
   const text = /\.txt$/i.test(tryJ(() => new URL(url).pathname, ''))
-  const r = await fetch('https://r.jina.ai/' + url, { headers: { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html' }, signal })
-  const j = await r.json().catch(() => null)
+  const headers = { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html', ...(key ? { Authorization: 'Bearer ' + key } : {}) }
+  let r, j
+  for (let i = 0; i < 3; i++) {
+    r = await fetch('https://r.jina.ai/' + url, { headers, signal })
+    j = await r.json().catch(() => null)
+    if (r.status !== 401 || key) break
+    await new Promise((ok) => setTimeout(ok, 350))
+  }
+  if (r.status === 401) jinaRefused = true
   if (r.status === 422 && /could not be resolved/i.test(j?.message || '')) return { status: 0, dns: true, error: 'ce nom de domaine ne répond pas (vérifiez l’orthographe de l’adresse)' }
   if (!r.ok || !j?.data) throw new Error('Jina Reader ' + r.status)
   const d = j.data, body = String((text ? d.text : d.html) ?? '')
@@ -233,6 +243,7 @@ const hostOf = (u) => tryJ(() => new URL(u).host, '')
 const rawBadAt = new Map(), rawBad = (n) => Date.now() - (rawBadAt.get(n) || 0) < 180000
 const NO_SERVICE = 'les services de lecture gratuits ne répondent pas en ce moment (réessayez dans une minute, ou utilisez une des solutions ci-dessous)'
 const TOO_SLOW = 'les services de lecture n’ont pas répondu à temps (réessayez, ou utilisez une des solutions ci-dessous)'
+const JINA_KEY = 'le service de lecture refuse votre réseau sans clé (VPN ou réseau d’entreprise) : ajoutez une clé Jina gratuite dans « Plus d’options », ou utilisez une des solutions ci-dessous'
 const QUOTA = 'le service de lecture gratuit est saturé : 20 pages par minute (relancez dans une minute)'
 
 function makeFetcher(v, pasted, mainUrl = '', reading = newReading(), { role = 'site', onWait } = {}) {
@@ -241,7 +252,7 @@ function makeFetcher(v, pasted, mainUrl = '', reading = newReading(), { role = '
     if (stop?.aborted) throw new Error('course terminée')
     const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), ms), relay = () => ctrl.abort()
     stop?.addEventListener('abort', relay)
-    try { return await (name === 'jina' ? jinaRead(url, ctrl.signal) : RAW[name](url, ctrl.signal)) }
+    try { return await (name === 'jina' ? jinaRead(url, ctrl.signal, (v.jinaKey || '').trim()) : RAW[name](url, ctrl.signal)) }
     catch (e) { if (!stop?.aborted) { reading.down.add(name); if (name !== 'jina') rawBadAt.set(name, Date.now()) } throw e }
     finally { clearTimeout(t); stop?.removeEventListener('abort', relay) }
   }
@@ -257,7 +268,7 @@ function makeFetcher(v, pasted, mainUrl = '', reading = newReading(), { role = '
       if (res?.by && res.by !== 'jina' && res.status) rawBadAt.delete(res.by)
       if (res?.dns) reading.dead.add(hostOf(url))
       if (res?.by && res.status) { reading.best = res.by; if (page && role === 'site') S.readVia = res.by === 'jina' ? 'jina' : 'proxy' }
-      resolve(res || { status: 0, unknown: true, error: ['allorigins', 'codetabs', 'jina'].every((n) => reading.down.has(n)) ? NO_SERVICE : reading.quota ? QUOTA : TOO_SLOW })
+      resolve(res || { status: 0, unknown: true, error: jinaRefused ? JINA_KEY : ['allorigins', 'codetabs', 'jina'].every((n) => reading.down.has(n)) ? NO_SERVICE : reading.quota ? QUOTA : TOO_SLOW })
     }
     const cap = setTimeout(() => end(jinaOk || fallback), 20000)
     const rawPending = () => names.some((n) => n !== 'jina' && !settled.has(n) && !rawBad(n))
@@ -381,6 +392,26 @@ async function run({ bundle } = {}) {
   }
 }
 const psiShort = (e) => (/429|quota/i.test(e) ? 'le quota gratuit de PageSpeed, partagé par tous, est atteint ; avec votre clé gratuite (2 min à créer), la mesure marche.' : e)
+
+// Diagnostic en mots, avant la liste des tâches : ce qui va, ce qui freine la visibilité, et le risque juridique à part.
+const STRONG = { technique: 'Google peut lire et indexer vos pages', contenu: 'vos pages sont bien balisées (titres, textes)', performance: 'le site est rapide', donnees: 'vos données structurées sont en place', ia: 'les robots des IA ont accès à votre site', social: 'vos liens partagés s’affichent bien', local: 'votre présence locale est solide', conformite: 'mesure et conformité sont en place' }
+const LEGAL_IDS = new Set(['cmp', 'legal', 'privacy', 'cgv', 'mentions', 'consent'])
+function diagnosis(r) {
+  const R = r.result
+  if (!R || R.global == null) return ''
+  // Solide = 85 ou plus, mesuré, et aucun point critique ou important dans la catégorie (sinon on se contredit)
+  const heavy = new Set(R.issues.filter((i) => ['critique', 'important'].includes(i.sev)).map((i) => i.cat))
+  const strong = Object.entries(R.scores || {}).filter(([k, x]) => x.score != null && x.score >= 85 && !x.estimated && STRONG[k] && !heavy.has(k)).sort((a, b) => b[1].score - a[1].score).slice(0, 3).map(([k]) => STRONG[k])
+  // Être trouvé : indexation, contenu, vitesse, données structurées, IA, local. Le partage social et la conformité viennent après.
+  const FOUND = ['technique', 'contenu', 'performance', 'donnees', 'ia', 'local']
+  const brakes = R.issues.filter((i) => FOUND.includes(i.cat) && ['critique', 'important', 'moyen'].includes(i.sev)).slice(0, 3)
+  const legal = R.issues.filter((i) => LEGAL_IDS.has(i.id))
+  if (!strong.length && !brakes.length && !legal.length) return ''
+  return `<div class="card diag"><h3>Le diagnostic en clair</h3><div class="diag-cols">
+    <div><p class="diag-k diag-ok">Ce qui va</p>${strong.length ? `<ul>${strong.map((t) => `<li>${esc(t[0].toUpperCase() + t.slice(1))}.</li>`).join('')}</ul>` : '<p class="note">Aucune catégorie n’est encore solide (85/100 ou plus).</p>'}</div>
+    <div><p class="diag-k diag-brake">Ce qui vous freine pour être trouvé</p>${brakes.length ? `<ul>${brakes.map((i) => `<li><a href="#" data-go="afaire" data-issue="${esc(i.id)}">${esc(i.title)}</a>${i.scope === 'site' ? ' <span class="note">(sur plusieurs pages)</span>' : ''}</li>`).join('')}</ul>` : '<p class="note">Aucun frein important relevé sur cette page.</p>'}</div>
+  </div>${legal.length ? `<p class="diag-legal"><b>Risque juridique, à part de la visibilité :</b> ${legal.length} point${legal.length > 1 ? 's' : ''} (${esc(legal.map((i) => ({ cmp: 'bandeau cookies', legal: 'mentions légales', privacy: 'confidentialité', cgv: 'CGV' })[i.id] || i.id).join(', '))}). <a href="#" data-go="afaire">Voir les correctifs</a></p>` : ''}</div>`
+}
 
 // Historique : chaque audit d'une même adresse est comparé au précédent.
 function remember(rep) {
@@ -558,8 +589,10 @@ function synthese() {
   const incomplete = R.incomplete ? `<div class="card alert" role="alert"><h3>Audit incomplet : ${esc(R.incomplete)}</h3><p>Nous n’affichons pas de note quand l’essentiel n’a pas pu être mesuré : elle serait trompeuse. Ce qui a été mesuré reste listé ci-dessous.</p>${solutions()}</div>` : ''
   const caps = (R.caps || []).length ? `<p class="cap">Note plafonnée : ${R.caps.map((x) => esc(x)).join(' · ')}</p>` : ''
   return `${head}${incomplete}
+  ${r.kind === 'site' && c.crawl && c.crawl.pages.length <= 1 && (c.crawl.discovered || 0) > 1 ? `<p class="demo-note" role="note">Seule la page d’accueil a été lue : le service de lecture n’a pas répondu pour les ${c.crawl.discovered - 1} autres pages trouvées. La note porte sur cette page ; relancez dans une minute pour explorer le site.</p>` : ''}
+  ${r.kind === 'site' ? diagnosis(r) : ''}
   <div class="summary">
-    <div class="card ring">${ring(R.global, R.grade)}<p>${R.global == null ? 'Complétez la collecte pour obtenir une note.' : R.global >= 85 ? 'Excellent socle : place à la croissance.' : R.global >= 70 ? 'Bon niveau, quelques freins à lever.' : R.global >= 50 ? 'Des corrections importantes vont débloquer du trafic.' : 'Priorité : corriger les points critiques.'}</p>
+    <div class="card ring">${ring(R.global, R.grade)}<p>${R.global == null ? 'Complétez la collecte pour obtenir une note.' : R.global >= 85 ? 'Excellent socle : place à la croissance.' : R.global >= 70 ? 'Base correcte, avec de vrais freins à lever (voir le diagnostic).' : R.global >= 50 ? 'Des corrections importantes vont débloquer du trafic.' : 'Priorité : corriger les points critiques.'}</p>
       <p class="cover">Part mesurée : <b>${Math.round((R.coverage || 0) * 100)} %</b> <span class="note">(catégories lues, pondérées par leur poids)</span>${R.coverage < 1 ? ` <a href="#" data-go="afaire">(voir ce qui manque)</a>` : ''}</p>${caps}</div>
     <div class="card week"><h3>Vos 3 actions cette semaine</h3>
       ${week.length ? `<ol class="clean steps">${week.slice(0, 3).map((i) => `<li><div><b>${gloss(esc(i.title))}</b><p class="note">${esc(i.fix || '')}</p><p class="who"><span class="chip tag">${esc(i.who)}</span>${i.time ? ` <span class="chip tag">⏱ ${esc(i.time)}</span>` : ''}${S.fixes[i.id] ? ' <span class="chip ok-soft">correctif prêt</span>' : ''}${pinBtn({ key: 'action:' + i.id, kind: 'action', title: i.title, meta: [i.who, i.time].filter(Boolean).join(' · '), go: 'afaire' })}</p></div></li>`).join('')}</ol>
@@ -576,7 +609,7 @@ function synthese() {
   ${aiConsultant()}
   <div class="card" style="margin-top:16px"><h3>Scores par catégorie</h3><div class="bars">${Object.entries(R.scores).map(([k, s]) => `<div class="bar"><span class="lbl"><a href="#afaire" data-cat="${esc(k)}">${esc(s.label)}</a>${s.estimated ? '<small>(estimé)</small>' : ''}</span><span class="track"><span class="fill" style="width:${s.score ?? 0}%;background:${gcolor(s.score)}"></span></span><b>${s.score == null ? '<span class="note">non mesuré</span>' : s.score}</b></div>`).join('')}</div>
     <div class="chips">${['critique', 'important', 'moyen', 'faible', 'ok'].map((s) => `<span class="chip sev-${s}">${SEVERITY[s].label} · ${R.counts[s]}</span>`).join('')}</div></div>
-  ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
+  ${r.kind === 'site' ? `<div class="kpis">${[['Vitesse mobile (Lighthouse)', psi?.scores?.performance ?? '—'], ['LCP réel', psi?.field?.LCP ? fmt(psi.field.LCP / 1000, 1) + ' s' : '—'], ['INP réel', psi?.field?.INP ? psi.field.INP + ' ms' : '—'], ['Mots sur la page', c.page?.wordCount ?? '—'], ['Pages lues', c.crawl?.pages?.filter((x) => x.status === 200).length ?? (c.page ? 1 : 0)], ['Points validés', R.counts.ok]].filter(([, v]) => v !== '—').map(([k, v]) => `<div class="kpi"><div class="v">${v}</div><div class="k">${gloss(esc(k))}</div></div>`).join('')}</div>` : `<div class="card" style="margin-top:16px">${metaFacts(m)}</div>`}
   ${r.kind === 'site' && c.page ? `<details class="card fold"><summary><h3>La page en bref, technologies et robots IA</h3></summary>${siteFacts(r)}${m.bots ? `<div class="table-wrap"><table><caption class="sr">Accès des robots</caption><thead><tr><th>Robot</th><th>Usage</th><th>Accès</th></tr></thead><tbody>${m.bots.map((x) => `<tr><td><code>${esc(x.ua)}</code></td><td>${esc(x.owner)}</td><td>${x.allowed ? '<span class="chip sev-ok">autorisé</span>' : '<span class="chip sev-critique">bloqué</span>'}</td></tr>`).join('')}</tbody></table></div>` : ''}</details>` : ''}`
 }
 const SOURCE = { node: 'ligne de commande', worker: 'votre proxy', proxy: 'proxy public', jina: 'Jina Reader (service de lecture public)', paste: 'code collé', bookmarklet: 'bouton-favori', psi: 'PageSpeed seul' }
@@ -1123,7 +1156,7 @@ if (ARTIFACT) {
   const ex = document.createElement('button')
   ex.type = 'button'; ex.className = 'btn'; ex.dataset.exemple = ''; ex.textContent = 'Voir un exemple'
   $('#go').before(online); $('#go').before(ex); $('#go').classList.remove('primary'); $('#go').textContent = 'Analyser le code collé'
-  for (const name of ['proxy', 'proxyUrl', 'psiKey', 'githubToken', 'crawl']) form.elements[name]?.closest('label')?.setAttribute('hidden', '')
+  for (const name of ['proxy', 'proxyUrl', 'psiKey', 'jinaKey', 'githubToken', 'crawl']) form.elements[name]?.closest('label')?.setAttribute('hidden', '')
   $('#hero .hint')?.setAttribute('hidden', '')
   // Capacités de la page claude.ai : Claude en direct, synchronisation, téléchargements (absentes ailleurs)
   initLive({

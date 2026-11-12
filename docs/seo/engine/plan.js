@@ -15,6 +15,7 @@ const OWNER_BY_ID = {
 }
 const OWNER_BY_CAT = { technique: 'Webmaster', performance: 'Webmaster', donnees: 'Webmaster', conformite: 'Webmaster', contenu: 'Vous', social: 'Webmaster', ia: 'Vous', local: 'Vous', decouverte: 'Vous', readme: 'Vous', confiance: 'Vous', activite: 'Vous', metadonnees: 'Vous', visuels: 'Vous', avis: 'Vous', fraicheur: 'Développeur' }
 const LEGAL = new Set(['cmp', 'legal', 'privacy', 'cgv', 'mentions', 'consent'])
+const LEGAL_SHORT = { cmp: 'bandeau cookies', legal: 'mentions légales', privacy: 'confidentialité', cgv: 'CGV', mentions: 'mentions légales', consent: 'consentement' }
 export const ownerOf = (i) => OWNER_BY_ID[i.id] || OWNER_BY_CAT[i.cat] || 'Webmaster'
 export const timeOf = (effort) => ['15 min', '15 min', '1 h', '½ journée', '2 à 5 jours', 'projet'][effort] || '1 h'
 const gain = (i) => i.impact * 3 + (6 - i.effort) * 2
@@ -82,8 +83,17 @@ export function actionPlan(result, { local = false, hasAds = false, kind = 'site
       kind === 'app' ? ex('j90', 'Développeur', 'Tester 2 icônes et 2 jeux de captures (Product Page Optimization / expériences Play Console)') : ex('j90', 'Vous', 'Réallouer le budget pub vers les canaux au meilleur coût par client réel'),
     ] },
   ]
-  // Les 3 actions de la semaine : critiques, puis la fiche Google (activité locale), puis les gains rapides
-  const week = [...critiques, ...legal, ...(local ? steps[0].extra.slice(0, 1) : []), ...quick, ...steps[0].extra, ...m1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3)
+  // Les 3 actions de la semaine : les points bloquants, puis UNE action de mise en règle (les points juridiques
+  // regroupés, pour ne pas occuper les 3 places), puis ce qui fait gagner en visibilité : fiche Google en local,
+  // corrections rapides à fort effet. Un dirigeant qui veut être trouvé doit voir au moins une action de visibilité.
+  const legalOne = legal.length > 1
+    ? [{ ...legal[0], title: `Mettre le site en règle : ${legal.length} points (${legal.map((i) => LEGAL_SHORT[i.id] || i.id).join(', ')})`, fix: 'Réglez ces points ensemble : ils se corrigent au même endroit (pied de page et bandeau de consentement). Détail et correctifs dans « À faire ».', group: legal.map((i) => i.id), time: '1 à 2 h' }]
+    : legal
+  // Visibilité d'abord (indexation, contenu, vitesse, données structurées, IA, local) ; le partage social ensuite
+  const FOUND = ['technique', 'contenu', 'performance', 'donnees', 'ia', 'local']
+  const pool = [...quick, ...m1, ...m2].filter((i) => i.cat !== 'conformite')
+  const visible = [...pool.filter((i) => FOUND.includes(i.cat)), ...pool]
+  const week = [...critiques, ...legalOne, ...(local ? steps[0].extra.slice(0, 1) : []), ...visible, ...quick, ...steps[0].extra, ...m1].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3)
   return { steps, week, kpis: kpis(result, local) }
 }
 

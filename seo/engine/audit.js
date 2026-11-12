@@ -404,7 +404,14 @@ export function audit(ctx) {
   }
 
   // ───────────────────────── Crawl (plusieurs pages) ─────────────────────────
-  if (ctx.crawl?.pages?.length > 1) { const n = F.length; crawlFindings(ctx.crawl, add); for (const f of F.slice(n)) f.scope = 'site' }
+  if (ctx.crawl?.pages?.length > 1) {
+    const n = F.length
+    crawlFindings(ctx.crawl, add)
+    // Sitemap qui oublie l'essentiel du site : il liste bien moins de pages que l'exploration n'en a trouvé par les liens
+    const listed = ctx.sitemap?.status === 200 ? ctx.sitemap.count : null, found = ctx.crawl.discovered || 0
+    if (listed != null && !ctx.sitemap.isIndex && found >= 10 && listed < found * 0.5) add('technique', listed < found * 0.2 ? 'important' : 'moyen', 'sitemap-partial', `Sitemap incomplet : ${listed} page${listed > 1 ? 's' : ''} listée${listed > 1 ? 's' : ''}, au moins ${found} sur le site`, `Votre sitemap déclare ${listed} adresse${listed > 1 ? 's' : ''} alors que l’exploration en a trouvé ${found} par les liens. Google découvre plus lentement les pages absentes, surtout les fiches produits profondes.`, 'Régénérez le sitemap pour qu’il liste toutes les pages à indexer (votre outil de site le fait en général tout seul), puis renvoyez-le dans Search Console.', { effort: 2, impact: 4 })
+    for (const f of F.slice(n)) f.scope = 'site'
+  }
 
   // ───────────────────────── PageSpeed Insights ─────────────────────────
   if (ctx.psi && !ctx.psi.error) psiFindings(ctx.psi, add)
