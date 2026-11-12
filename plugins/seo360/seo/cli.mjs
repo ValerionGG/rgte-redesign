@@ -21,7 +21,7 @@ import { GOALS, defaultGoal } from './engine/ads.js'
   const [maj, min] = process.versions.node.split('.').map(Number)
   if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY && (maj >= 24 || (maj === 22 && min >= 21))) {
     const { spawnSync } = await import('node:child_process')
-    const r = spawnSync(process.execPath, process.argv.slice(1), { stdio: 'inherit', env: { ...process.env, NODE_USE_ENV_PROXY: '1' } })
+    const r = spawnSync(process.execPath, process.argv.slice(1), { stdio: 'inherit', env: { ...process.env, NODE_USE_ENV_PROXY: '1', NODE_NO_WARNINGS: '1' } })
     process.exit(r.status ?? 1)
   }
 }
@@ -36,7 +36,7 @@ const MAX_BYTES = 5 * 1024 * 1024
 const args = process.argv.slice(2)
 
 // ───────── Sous-commandes : veille sociale (Agent Reach), Search Console, calendrier ─────────
-const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs' }
+const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs', fiche: './fiche-cli.mjs' }
 if (SUB[args[0]]) {
   await import(SUB[args[0]]).then((m) => m.main(args.slice(1)))
   process.exit(process.exitCode || 0)
@@ -54,6 +54,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
         node seo/cli.mjs budget --secteur <id> [--objectif leads] [--budget €] [--valeur €] [--marge %]   (budget pub seul)
         node seo/cli.mjs hashtags --secteur <id> [--mot-cle "a, b"] [--ville X] [--marque X]   (hashtags seuls)
         node seo/cli.mjs outils [--rapport site.json | --secteur <id> --local]   (outils gratuits et payants + guides)
+        node seo/cli.mjs fiche --store apple|play --nom … --sous-titre … --mots-cles …   (contrôle d'une fiche de store avant envoi)
 
   --secteur <id>        sans ce choix, le secteur est deviné d'après la page. Valeurs : ${SECTORS.map((s) => s.id).join(', ')}
   --mot-cle "<texte>"   mot-clé principal visé

@@ -57,4 +57,4 @@ Tout tourne sur votre machine : les exports Search Console et les rapports ne so
 
 `claude plugin eval plugins/seo360` lance les 63 cas du dossier `evals/` (2 cas qui doivent déclencher chaque skill, 1 cas voisin qui ne doit pas), avec et sans le plugin.
 
-Généré par `node seo/plugin.mjs` depuis `.claude/skills` (version 3.2.0) : ne modifiez pas les fichiers de ce dossier à la main, sauf `evals/`.
+Généré par `node seo/plugin.mjs` depuis `.claude/skills` (version 3.3.0) : ne modifiez pas les fichiers de ce dossier à la main, sauf `evals/`.

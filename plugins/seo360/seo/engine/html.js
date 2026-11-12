@@ -88,7 +88,7 @@ export function extract(html = '', baseUrl = 'https://exemple.invalid/') {
     if ((tag === 'h2' || tag === 'h3') && !inSvg) marks.push({ level: +tag[1], open: tlen })
     if (tag === 'footer' && footerAt < 0) footerAt = tlen
     else if (inHead && !HEADISH.has(tag)) inHead = false
-    if (tag === 'svg') inSvg++
+    if (tag === 'svg' && m[4] !== '/') inSvg++ // « <svg … /> » fermé sur lui-même : rien à ignorer ensuite
     if (RAW.has(tag)) {
       const endRe = new RegExp(`</${tag}`, 'gi'); endRe.lastIndex = last
       const end = endRe.exec(html)?.index ?? -1
