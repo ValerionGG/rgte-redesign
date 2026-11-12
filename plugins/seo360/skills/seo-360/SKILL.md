@@ -2,7 +2,7 @@
 name: seo-360
 description: Point d'entrée du pack : étude SEO complète d'un site, d'une application ou d'un dépôt GitHub. Verdict d'abord, corrections (technique, contenu, vitesse, IA, local, RGPD) avec correctifs prêts à coller et niveau de confiance, plan 30/60/90 jours, mots-clés, hashtags, budget pub, concurrents ; oriente vers les skills spécialisés. À utiliser dès qu'arrive une URL, une app ou un repo : « audite mon site », « mon site n'apparaît pas sur google », « être en première page », « referencement naturel », « que dois-je corriger ». Chute de trafic → diagnostic-baisse-trafic.
 metadata:
-  version: "2.1"
+  version: "2.2"
 ---
 
 # SEO 360 — étude complète
@@ -86,6 +86,8 @@ Lire : part des clics de marque et hors marque, opportunités hors marque (posit
 7. **Ce qu'on n'a pas pu vérifier** : sources bloquées, PageSpeed indisponible, Search Console non fourni, type de page non vérifié, données non publiques.
 8. **Constats écartés** : faux positif connu, contredit par une mesure, doublon d'une même cause, avec la raison.
 9. **Prochaine étape** : la commande ou l'action suivante et la date du contrôle (suivi-performance-mensuel). L'interface compare deux audits d'une même adresse (corrigés, encore détectés, nouveaux) ; l'évolution de la note n'a de sens qu'à couverture comparable.
+
+Forme de l'audit, règles vérifiées sur un vrai chantier et précautions avec les packs tiers : [references/lecons-terrain.md](references/lecons-terrain.md). Un point n'est « corrigé » que lorsque la correction est vue en ligne.
 
 ### Barre de qualité, avant d'envoyer
 

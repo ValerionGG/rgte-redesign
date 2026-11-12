@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "SEO 360 et les packs tiers relus, en français pour TPE et PME. Chaque pack tiers est épinglé au commit relu.",
-    "version": "3.2.0"
+    "version": "3.3.0"
   },
   "plugins": [
     {
       "name": "seo360",
       "source": "./plugins/seo360",
       "description": "Pack SEO 360 : audit, SEO local, IA, Search Console, contenus, hashtags, budget pub, conformité, calendrier.",
-      "version": "3.2.0",
+      "version": "3.3.0",
       "category": "seo"
     },
     {

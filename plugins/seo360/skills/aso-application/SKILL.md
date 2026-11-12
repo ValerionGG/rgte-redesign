@@ -2,7 +2,7 @@
 name: aso-application
 description: ASO des applications iOS et Android : audit de la fiche App Store ou Google Play (titre, sous-titre, mots-clés, captures, notes), 3 options par champ avec leur longueur, ASO saisonnier, Custom Product Pages, In-App Events, Apple Ads. À utiliser avec un lien apps.apple.com ou play.google.com, ou pour « plus de téléchargements », « mon appli n'est pas trouvée », « mots-clés App Store », « aso ». Site de l'app → seo-360.
 metadata:
-  version: "2.0"
+  version: "2.1"
 ---
 
 # ASO : référencer une application
@@ -37,7 +37,7 @@ Ne pas juger une application challenger sur sa position pour un terme génériqu
 |---|---|---|---|
 | iOS : nom | 30 | oui, champ le plus pondéré | mot-clé principal après la marque |
 | iOS : sous-titre | 30 | oui | bénéfice + 2e mot-clé |
-| iOS : champ mots-clés | 100 | oui (privé) | virgules sans espaces, pas de mot déjà dans le nom ou le sous-titre, singulier ; ne change qu'avec une nouvelle version |
+| iOS : champ mots-clés | 100 **octets** (une lettre accentuée en vaut 2) | oui (privé) | virgules sans espaces, pas de mot déjà dans le nom ou le sous-titre, singulier ; ne change qu'avec une nouvelle version |
 | iOS : texte promotionnel | 170 | non | modifiable à tout moment sans nouvelle version : idéal pour les offres et les saisons |
 | iOS : description | 4 000 | non pour l'App Store | sert la conversion (et la page web de la fiche) |
 | Android : titre | 30 | oui | |
@@ -54,6 +54,15 @@ Sous-titre (30 car.)
 ```
 
 Pas de nom d'application concurrente, de marque déposée ni de prix dans les métadonnées : l'App Review le refuse (règle 2.3.7 des App Review Guidelines).
+
+### Contrôle avant envoi (obligatoire)
+
+```bash
+node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" fiche --store apple --nom "…" --sous-titre "…" --mots-cles "a,b,c" --marques "marque1,marque2"
+node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" fiche --store play --titre "…" --description-courte "…" --description-longue fiche.txt --mot-cle "…"
+```
+
+Il vérifie les longueurs (mots-clés Apple en octets), les doublons, les mots déjà pris par le nom ou le sous-titre, les mots refusés dans un titre (« gratuit », « n°1 », « meilleur », emoji), les marques d'autrui passées en `--marques`, et la présence du mot-clé dans les 167 premiers caractères sur Google Play. Leçons d'un vrai chantier : [references/lecons-terrain-aso.md](references/lecons-terrain-aso.md).
 
 ## 4. Conversion de la fiche
 
@@ -92,7 +101,7 @@ Prendre les dates du skill calendrier-marketing-fr (rentrée, Noël, bonnes rés
 
 ## 10. Site de l'application
 
-Smart App Banner, liens universels (iOS) et App Links (Android), schéma `SoftwareApplication`, une page par fonctionnalité pour le SEO (seo-360), contenus TikTok et Reels (contenus-reseaux-video).
+Vérifier d'abord où mènent les boutons « Télécharger » du site : vers les fiches des stores, pas vers une page d'inscription ou un site de test (contrôles `store-links` et `staging-links` de l'audit). Smart App Banner, liens universels (iOS) et App Links (Android), schéma `SoftwareApplication`, une page par fonctionnalité pour le SEO (seo-360), contenus TikTok et Reels (contenus-reseaux-video).
 
 ## Format de sortie
 
@@ -114,12 +123,16 @@ Smart App Banner, liens universels (iOS) et App Links (Android), schéma `Softwa
 
 - [ ] La maturité de la marque est établie et la stratégie de mots-clés en découle.
 - [ ] 3 options par champ, chacune dans sa limite, avec son nombre de caractères.
+- [ ] Chaque fiche proposée passe `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" fiche` sans erreur.
+- [ ] La déclaration de données (Google Play) et l'étiquette de confidentialité (Apple) sont comparées à ce que l'app collecte vraiment.
 - [ ] Le texte promotionnel (iOS) et un plan saisonnier sont proposés.
 - [ ] Les données non publiques sont marquées « à vérifier ».
 - [ ] Les causes des mauvais avis sont listées avec leur correctif.
 
 ## Jamais
 
+- Envoyer une fiche sans l'avoir passée au contrôle `fiche`, ou compter les mots-clés Apple en caractères.
+- Demander « Vous aimez l'app ? » avant la fenêtre de note (interdit par les consignes Android).
 - Mettre le nom d'une application concurrente ou une marque déposée dans les métadonnées.
 - Acheter des avis, des notes ou des installations, ou récompenser un avis.
 - Demander un avis au premier lancement, ou seulement aux utilisateurs satisfaits.

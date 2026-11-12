@@ -662,3 +662,29 @@ test('conseils : description sans trous, pas de commune pour un fabricant nation
   assert.match(week.find((i) => i.cat === 'conformite').title, /Mettre le site en règle : \d points/)
   assert.ok(week.some((i) => ['technique', 'contenu'].includes(i.cat)), 'aucune action de visibilité dans les 3')
 })
+
+test('leçons RaceLink : og vers un ancien domaine, liens vers un site de test, boutons Télécharger sans store, fiche de store en octets', async () => {
+  const { checkListing } = await import('../engine/fiche.js')
+  const html = (extra, og = '') => `<!doctype html><html lang="fr"><head><title>AppTest — le réseau des pilotes</title><meta name="description" content="AppTest, l'application mobile des pilotes amateurs.">${og}</head><body><h1>AppTest</h1><p>${'Notre application mobile est disponible sur l’App Store et Google Play. '.repeat(20)}</p>${extra}</body></html>`
+  const run = async (extra, og) => (await analyze(O + '/', { fetcher: vfetch(site(html(extra, og))), psi: false, crawl: 0 })).result.issues
+  const bad = await run('<a href="https://app.staging.maison-exemple.fr/register?ref=X">Télécharger</a> <a href="https://app.staging.maison-exemple.fr/register">Télécharger l’app</a>', '<meta property="og:url" content="https://landing.ancien-domaine.games/"><meta property="og:image" content="https://landing.ancien-domaine.games/og.png">')
+  assert.ok(bad.find((i) => i.id === 'staging-links' && i.sev === 'critique' && /2 liens/.test(i.title)), 'liens vers un site de test non signalés')
+  assert.ok(bad.find((i) => i.id === 'og-foreign' && /ancien-domaine\.games/.test(i.title)), 'og:url vers un autre domaine non signalé')
+  assert.ok(bad.find((i) => i.id === 'store-links'), 'boutons Télécharger sans store non signalés')
+  const good = await run('<a href="https://apps.apple.com/fr/app/apptest/id123456789">Télécharger sur l’App Store</a> <a href="https://play.google.com/store/apps/details?id=fr.apptest">Télécharger sur Google Play</a>', `<meta property="og:url" content="${O}/"><meta property="og:image" content="https://res.cloudinary.com/x/og.png">`)
+  assert.ok(!good.some((i) => ['staging-links', 'og-foreign', 'store-links'].includes(i.id)), 'faux positif : ' + good.map((i) => i.id).join(','))
+  // Fiche App Store : mots-clés en octets (« é » = 2), doublons, mots déjà dans le nom, marque d'autrui, emoji
+  const kw = 'équipe,écurie,pilote,course,agenda,live,endurance,drift,trackday,paddock,sponsor,rallycross,karting'
+  assert.equal([...kw].length, 99); assert.ok(new TextEncoder().encode(kw).length > 100)
+  assert.ok(checkListing('apple', { 'mots-cles': kw }).lines.some((l) => l.level === 'erreur' && /octets : dépasse/.test(l.msg)), 'mots-clés comptés en caractères')
+  const r = checkListing('apple', { nom: 'App GRATUIT n°1 🏁', 'sous-titre': 'Réseau F1 et rallye', 'mots-cles': 'rallye, karting,karting' }, { marques: ['F1'] })
+  for (const re of [/gratuit/, /n°1/, /emoji/, /marque d’autrui « F1 »/, /espace autour/, /doublon « karting »/, /« rallye » est déjà/]) assert.ok(r.lines.some((l) => l.level === 'erreur' && re.test(l.msg)), 'règle manquante : ' + re)
+  const play = checkListing('play', { titre: 'AppTest : Réseau Pilotes', 'description-courte': 'Pilotes, courses, rallye, karting, agenda et résultats en direct', 'description-longue': 'Bienvenue. '.repeat(30) + 'sport auto' }, { motCle: 'sport auto' })
+  assert.equal(play.errors, 0); assert.ok(play.lines.some((l) => /167 premiers caractères/.test(l.msg)))
+})
+
+test('texte : un <svg … /> fermé sur lui-même ne fait pas ignorer la suite de la page (cas réel racelink-app.co)', () => {
+  const p = extract(`<!doctype html><html lang="fr"><head><title>T</title></head><body><nav><svg width="10" height="6" viewBox="0 0 10 6" /></nav><h1>Accède au cœur du motorsport</h1><p>${'Pilotes, courses et circuits réunis dans une seule application. '.repeat(12)}</p><svg><title>icône</title><path d="M0 0"/></svg><p>Texte après une icône complète.</p></body></html>`, 'https://exemple.fr/')
+  assert.ok(p.wordCount > 100, 'texte ignoré après un svg auto-fermant : ' + p.wordCount + ' mots')
+  assert.ok(/Texte après une icône complète/.test(p.text) && !/icône Texte/.test(p.text.replace('icône complète', '')), 'le contenu d’un svg ne doit pas compter')
+})

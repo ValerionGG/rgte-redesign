@@ -30,6 +30,12 @@ Précisions :
 - **audit-seo-avance** ajoute un hook : après chaque modification de fichier, il valide localement le JSON-LD du fichier. Ses extensions MCP (Ahrefs, DataForSEO, Firecrawl…) sont optionnelles et demandent des clés payantes.
 - **social-media-research-skills** demande une clé API ScrapeCreators, payante. **youtube** : ses scripts demandent une clé de l'API YouTube.
 
+## Précautions relevées sur un vrai chantier (RaceLink, 08/11/2026)
+
+- **audit-seo-avance** (claude-seo) : sa connexion Google demande Search Console en lecture et écriture, Indexing et Analytics ; préférer un compte de service en lecture seule. Retirer le pied de page publicitaire de ses livrables. Ne pas installer ses extensions Bing et Ahrefs (clés en clair). Ses scripts Python vont chercher le site depuis le terminal : sans accès web, mesurer dans le navigateur.
+- **aso-skills** : ne pas brancher le service Appeeky (il demande la clé App Store Connect) ; le mode manuel suffit. Il compte les mots-clés Apple en caractères : contrôler avec `node seo/cli.mjs fiche` (octets).
+- **marketing-skills** : commencer par `product-marketing`, qui écrit la fiche produit que les autres skills relisent.
+
 ## Seulement si le besoin existe
 
 | Nom dans le catalogue | Quand | Skills | Coût permanent | Commit relu |
