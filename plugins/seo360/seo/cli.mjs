@@ -129,8 +129,12 @@ async function jinaRead(url) {
   const text = /\.txt$/i.test((() => { try { return new URL(url).pathname } catch { return '' } })())
   const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)
   try {
-    const r = await fetch(JINA + url, { headers: { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html' }, signal: ctrl.signal })
-    const j = await r.json().catch(() => null)
+    // Sans clé, Jina refuse parfois une adresse IP (401 « bad IP reputation ») : 2 nouvelles tentatives, puis message clair
+    const key = process.env.JINA_API_KEY || ''
+    const headers = { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html', ...(key ? { Authorization: 'Bearer ' + key } : {}) }
+    let r, j
+    for (let i = 0; i < 3; i++) { r = await fetch(JINA + url, { headers, signal: ctrl.signal }); j = await r.json().catch(() => null); if (r.status !== 401 || key) break; await new Promise((ok) => setTimeout(ok, 400)) }
+    if (r.status === 401) return { status: 0, error: 'Jina Reader refuse ce réseau sans clé : définissez JINA_API_KEY (clé gratuite sur jina.ai/reader), ou fournissez la page avec --html' }
     if (r.status === 422 && /could not be resolved/i.test(j?.message || '')) return { status: 0, error: 'nom de domaine introuvable (vérifiez l’orthographe de l’adresse)' }
     if (!r.ok || !j?.data) return { status: 0, error: 'Jina Reader : réponse ' + r.status }
     const d = j.data, body = String((text ? d.text : d.html) ?? '')

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS = join(ROOT, '.claude/skills'), OUT = join(ROOT, 'plugins/seo360')
-export const VERSION = '3.1.0'
+export const VERSION = '3.2.0'
 const PAGES = 'https://valeriongg.github.io/rgte-redesign/seo/'
 const REPO = 'https://github.com/valeriongg/rgte-redesign'
 

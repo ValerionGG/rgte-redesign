@@ -24,13 +24,17 @@ export function facts(report) {
   let origin = 'https://votre-site.fr', url = r.target
   try { const U = new URL(r.ctx?.fetch?.finalUrl || r.target); origin = U.origin; url = U.href } catch {}
   const parts = (page.title || '').split(/\s[|–—-]\s/)
-  const brand = input.brand || m.orgName || page.og?.site_name || (parts.length > 1 ? parts.pop().trim() : '')
+  // Marque : saisie, déclarée dans la page, ou à défaut tirée du nom de domaine (« rgte.eu » → « RGTE », « maison-exemple.fr » → « Maison Exemple »)
+  const fromHost = (() => { try { const l = new URL(origin).hostname.replace(/^www\./, '').split('.')[0]; return /^[a-z0-9]{2,5}$/.test(l) ? l.toUpperCase() : l.split('-').map(cap).join(' ') } catch { return '' } })()
+  const brand = input.brand || m.orgName || page.og?.site_name || (parts.length > 1 ? parts.pop().trim() : '') || (origin === 'https://votre-site.fr' ? '' : fromHost)
+  // Ville : seulement pour une clientèle locale (un fabricant national ne vise pas la commune de son usine)
+  const isLocal = input.local ?? !!sectorById(input.sector).local
   const h1 = page.h?.find((h) => h.level === 1)?.text || ''
   const phone = m.phone || ''
   const address = m.address || null
   const sameAs = Object.values(m.social || {}).filter((u) => !/github\.com/.test(u) || r.kind === 'github')
   const image = page.og?.image || page.firstImage || ''
-  return { origin, url, brand, h1, phone, address, sameAs, image, city: input.city || address?.locality || '', keyword: input.keyword || '', sector: sectorById(input.sector), page, p, meta: m, input }
+  return { origin, url, brand, h1, phone, address, sameAs, image, city: input.city || (isLocal ? address?.locality : '') || '', keyword: input.keyword || '', sector: sectorById(input.sector), page, p, meta: m, input }
 }
 
 export function suggestTitle(f) {
@@ -49,17 +53,25 @@ export function suggestTitle(f) {
   return t
 }
 
+// « 0800951313 » → « 08 00 95 13 13 » : un numéro français se lit par paires
+const fmtPhone = (t) => { const d = String(t || '').replace(/[^\d+]/g, ''); return /^0\d{9}$/.test(d) ? d.replace(/(\d{2})(?=\d)/g, '$1 ') : String(t || '').trim() }
 export function suggestDescription(f) {
+  const phone = fmtPhone(f.phone)
   const text = (f.page.intro || f.page.metaDescription || '').trim()
   const goal = f.input.goal
-  const cta = goal === 'ventes' ? 'Commandez en ligne.' : goal === 'telechargements' ? 'Téléchargez l’application.' : f.sector.local || f.input.local ? (f.phone ? `Appelez le ${f.phone}.` : 'Demandez votre devis gratuit.') : 'Demandez une démo ou un devis.'
+  const cta = goal === 'ventes' ? 'Commandez en ligne.' : goal === 'telechargements' ? 'Téléchargez l’application.' : f.sector.local || f.input.local ? (phone ? `Appelez le ${phone}.` : 'Demandez votre devis gratuit.') : f.sector.id === 'saas' ? 'Demandez une démo.' : phone ? `Devis au ${phone}.` : 'Demandez un devis.'
   // Coupe de préférence à la fin d'une phrase
   let intro = text ? cut(text, 150 - cta.length - 1) : ''
   const end = intro.lastIndexOf('. '), comma = intro.lastIndexOf(', ')
   if (end >= 60) intro = intro.slice(0, end + 1)
   else if (/…$/.test(intro) && comma >= 60) intro = intro.slice(0, comma) + '.'
   const subj = cap(f.keyword || f.h1 || f.sector.keywords[0])
-  let base = text ? intro : `${subj}${f.city && !norm(subj).includes(norm(f.city)) ? ' à ' + f.city : ''} : ${f.brand ? f.brand + ', ' : ''}[votre bénéfice principal + une preuve chiffrée].`
+  // Pas de paragraphe d'introduction : on assemble ce que la page dit déjà (sujet, titre actuel, sous-titres), jamais de texte à trous
+  const said = [f.page.title, ...(f.page.h || []).filter((h) => h.level === 2).map((h) => h.text)].map((t) => String(t || '').split(/\s[|–—-]\s/)[0].trim()).filter((t, i) => t.length >= 12 && t.length <= 70 && !norm(t).includes(norm(subj)) && !norm(subj).includes(norm(t)) && (i === 0 || (t.split(/\s+/).length >= 4 && !/^(d[ée]couvrez|bienvenue|demande|contact|nos |notre )/i.test(t) && !DANGLING.test(t))))
+  const where = f.city && !norm(subj).includes(norm(f.city)) ? ' à ' + f.city : ''
+  let built = `${subj}${where}${f.brand && !norm(subj).includes(norm(f.brand)) ? ' par ' + f.brand : ''}`
+  for (const t of said.slice(0, 2)) { const cand = `${built}${built.includes(' : ') ? ', ' : ' : '}${t.charAt(0).toLowerCase() + t.slice(1)}`; if (cand.length + cta.length + 2 <= 155) built = cand }
+  let base = text ? intro : built + '.'
   // Le mot-clé principal doit figurer dans la description (c'est un contrôle de l'audit)
   if (f.keyword && !norm(base).includes(norm(f.keyword))) {
     const head = `${cap(f.keyword)} : `
@@ -104,7 +116,7 @@ export function buildFixes(report) {
   const title = suggestTitle(f), desc = suggestDescription(f)
   const metaBlock = `<title>${escAttr(title)}</title>\n<meta name="description" content="${escAttr(desc)}">`
   for (const id of ['title', 'title-long', 'title-short', 'title-multi', 'keyword', 'city', 'lh-document-title']) put(id, { label: 'Titre proposé (à relire)', lang: 'html', value: `<title>${escAttr(title)}</title>`, note: `${title.length} caractères.` })
-  for (const id of ['description', 'description-long', 'description-short', 'lh-meta-description']) put(id, { label: 'Meta description proposée (à relire)', lang: 'html', value: `<meta name="description" content="${escAttr(desc)}">`, note: `${desc.length} caractères. Remplacez les crochets s’il y en a.` })
+  for (const id of ['description', 'description-long', 'description-short', 'lh-meta-description']) put(id, { label: 'Meta description proposée (à relire)', lang: 'html', value: `<meta name="description" content="${escAttr(desc)}">`, note: `${desc.length} caractères.` })
   if (report.result.issues.some((i) => i.id === 'keyword')) put('keyword', { label: 'Titre et meta proposés', lang: 'html', value: metaBlock })
   for (const id of ['h1', 'h1-empty', 'h1-multi']) put(id, { label: 'H1 proposé', lang: 'html', value: `<h1>${escAttr(cap(f.keyword || f.h1 || f.page.title || ''))}${f.city && !norm(f.keyword || f.h1).includes(norm(f.city)) ? ' à ' + escAttr(f.city) : ''}</h1>`, note: 'Un seul H1 par page ; le logo ne doit pas être un H1.' })
   put('canonical', { label: 'Canonical', lang: 'html', value: `<link rel="canonical" href="${escAttr(f.url)}">` })

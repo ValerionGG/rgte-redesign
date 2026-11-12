@@ -642,3 +642,23 @@ test('CLI : page et robots.txt fournis en fichiers, puis site injoignable lu par
   assert.equal(j2.ctx.robots.status, 200); assert.equal(j2.ctx.llms.status, 404)
   assert.ok(!j2.result.issues.some((i) => /hsts|https-redirect|compression/.test(i.id)), 'en-têtes HTTP jugés sans avoir été vus')
 })
+
+test('conseils : description sans trous, pas de commune pour un fabricant national, 3 actions équilibrées, sitemap incomplet', async () => {
+  const { actionPlan } = await import('../engine/plan.js')
+  const { facts: factsOf, suggestDescription, suggestTitle } = await import('../engine/fixes.js')
+  const links = Array.from({ length: 14 }, (_, i) => `<a href="/gamme-${i}/">Gamme ${i}</a>`).join(' ')
+  const home = `<!doctype html><html lang="fr"><head><title>Vitrines boulangerie, pâtisserie, chocolatiers</title><script async src="https://www.googletagmanager.com/gtag/js?id=G-ABCDEF1234"></script></head><body><h1>agencement de vitrines réfrigérées</h1><h2>Découvrez nos</h2>${links}<p>Tél : <a href="tel:0800951313">0 800 95 13 13</a></p><footer>423 chemin des Vernèdes, 83480 Puget-sur-Argens · Mentions légales · Gestion des cookies</footer></body></html>`
+  const pages = { [O + '/']: { body: home }, [O + '/robots.txt']: { body: 'User-agent: *\nAllow: /' }, [O + '/sitemap.xml']: { body: `<urlset><url><loc>${O}/contact/</loc></url></urlset>` } }
+  for (let i = 0; i < 14; i++) pages[`${O}/gamme-${i}/`] = { body: `<!doctype html><html lang="fr"><head><title>Gamme ${i} de vitrines</title></head><body><h1>Gamme ${i}</h1><p>${'Vitrine réfrigérée sur mesure. '.repeat(30)}</p></body></html>` }
+  const r = await analyze(O + '/', { fetcher: vfetch(pages), psi: false, crawl: 6, input: { sector: 'equipement-pro' } })
+  const f = factsOf(r), d = suggestDescription(f), t = suggestTitle(f)
+  assert.ok(!/[\[\]]/.test(d), 'description à trous : ' + d)
+  assert.ok(!/Puget/.test(d + t), 'commune de l’usine visée pour une activité nationale : ' + t + ' / ' + d)
+  assert.ok(d.length <= 160 && /vitrines/i.test(d) && /08 00 95 13 13/.test(d), d)
+  const sm = r.result.issues.find((i) => i.id === 'sitemap-partial')
+  assert.ok(sm && sm.scope === 'site' && /1 page listée/.test(sm.title), 'sitemap incomplet non signalé')
+  const week = actionPlan(r.result, { local: false, kind: 'site' }).week
+  assert.equal(week.filter((i) => i.cat === 'conformite').length, 1, 'une seule action de mise en règle : ' + week.map((i) => i.title).join(' | '))
+  assert.match(week.find((i) => i.cat === 'conformite').title, /Mettre le site en règle : \d points/)
+  assert.ok(week.some((i) => ['technique', 'contenu'].includes(i.cat)), 'aucune action de visibilité dans les 3')
+})
