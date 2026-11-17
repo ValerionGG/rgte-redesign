@@ -40,6 +40,7 @@ node seo/cli.mjs <cible> --secteur <id> --mot-cle "<mot-clé>" --ville <ville> -
 - Réseau qui ne joint pas le site (bac à sable, session cloud filtrée) : la CLI passe d'elle-même par Jina Reader (`ctx.fetch.source: "jina"`, en-têtes HTTP non jugés). `--lecture direct` l'interdit.
 - Toujours illisible : récupérer la page avec l'outil de lecture web, l'enregistrer, puis `--html page.html` (et `--robots robots.txt`). Site qui refuse le robot (403, page de défi) : le rapport le dit (`result.incomplete`) ; proposer le **bouton-favori** de l'interface (onglet Ressources) ou le code source collé.
 - Demande réelle : `--veille reddit,youtube,web` (Agent Reach installé, skill veille-sociale).
+- Présence en ligne (réseaux, applications, avis, SIREN, vous contre vos concurrents) : `node seo/cli.mjs presence <site> --concurrents a.fr,b.fr`.
 - Search Console fourni : `node seo/cli.mjs gsc export.zip --marque "<marque>"` (étape 5).
 - Sortie : `rapports-seo/<slug>.md` (synthèse, 3 actions, correctifs prêts à coller) et `.json` (importable dans l'interface).
 

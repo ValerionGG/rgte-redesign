@@ -539,3 +539,18 @@ abbr[title]:focus::after { content: attr(title); position: fixed; left: 16px; ri
 .fold-step > summary .pct { margin-left: auto; }
 .fold-step:not([open]) > summary .why { margin-bottom: 4px; }
 @media print { .more-tasks > summary { display: none; } }
+
+/* Profil de présence */
+.presence h4 { margin: 18px 0 8px; }
+.pres-fams { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 22px; margin-top: 6px; }
+.pres-fam .k { margin: 0 0 6px; font: 700 .75rem/1.2 var(--font); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.chip.pres { text-decoration: none; color: var(--text); border: 1px solid var(--line); background: var(--surface); }
+.chip.pres:hover { border-color: var(--accent); }
+.chip.pres .h { color: var(--muted); font-weight: 500; }
+.pres-list li { margin-bottom: 8px; line-height: 1.45; }
+.pres-cand { margin-top: 12px; }
+.pres-cand > summary { cursor: pointer; font-weight: 650; }
+.pres-matrix td.n a { text-decoration: none; font-weight: 800; color: var(--ok); }
+.pres-matrix tr.gap td:first-child { font-weight: 700; color: var(--imp); }
+.pres-matrix tr.total td { border-top: 2px solid var(--line); }
+.pres-matrix th.us { color: var(--accent); }

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS = join(ROOT, '.claude/skills'), OUT = join(ROOT, 'plugins/seo360')
-export const VERSION = '3.3.0'
+export const VERSION = '3.4.0'
 const PAGES = 'https://valeriongg.github.io/rgte-redesign/seo/'
 const REPO = 'https://github.com/valeriongg/rgte-redesign'
 
@@ -23,8 +23,8 @@ export function rewrite(md) {
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => { const p = join(dir, f); return statSync(p).isDirectory() ? walk(p) : [p] })
 const ENGINE = () => [
-  // Toutes les commandes : cli.mjs et chaque sous-commande *-cli.mjs (une liste écrite à la main avait oublié outils-cli.mjs).
-  ...readdirSync(join(ROOT, 'seo')).filter((f) => f === 'cli.mjs' || /-cli\.mjs$/.test(f)).sort().map((f) => join(ROOT, 'seo', f)),
+  // Toutes les commandes : cli.mjs, chaque sous-commande *-cli.mjs et la lecture partagée node-fetch.mjs (une liste écrite à la main avait oublié outils-cli.mjs).
+  ...readdirSync(join(ROOT, 'seo')).filter((f) => f === 'cli.mjs' || f === 'node-fetch.mjs' || /-cli\.mjs$/.test(f)).sort().map((f) => join(ROOT, 'seo', f)),
   ...walk(join(ROOT, 'seo/engine')), ...walk(join(ROOT, 'seo/data')).filter((f) => !/sync\.mjs$/.test(f)),
 ]
 

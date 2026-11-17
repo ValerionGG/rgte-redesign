@@ -11,6 +11,7 @@ import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts, whereToApply } from './engine/fixes.js'
 import { readGscFiles, parseGscFiles, analyzeGsc } from './engine/gsc.js'
 import { blockedReason } from './engine/collect.js'
+import { PLATFORMS, FAMILIES, platformLabel } from './engine/presence.js'
 import { upcoming, frShort } from './engine/calendar.js'
 import { recommendTools, WEEK, shortPrice } from './engine/outils.js'
 import { live, initLive, saveReport, saveFile, ask, AI_ERRORS, promptPlan, promptFix, promptPosts, promptQuestion, renderMd } from './live.js'
@@ -996,12 +997,38 @@ after.budget = () => {
 }
 
 // ───────── Concurrents ─────────
+// Profil de présence : où l'entreprise existe en ligne d'après son site (toutes les pages lues), et ce qui manque
+function presenceCard(r) {
+  const P = r?.presence
+  if (!P) return ''
+  const fams = Object.keys(FAMILIES).map((f) => [f, P.items.filter((i) => i.family === f)]).filter(([, l]) => l.length)
+  const chip = (i) => `<a class="chip pres" href="${esc(i.urls[0] || '#')}" target="_blank" rel="noopener" title="${esc(i.sources.join(', '))}${i.pages.length > 1 ? ` · ${i.pages.length} pages` : ''}">${esc(i.label)}${i.handles[0] ? ` <span class="h">${esc(i.handles[0].length > 24 ? i.handles[0].slice(0, 22) + '…' : i.handles[0])}</span>` : ''}</a>`
+  return `<div class="card presence"><div class="section-head"><div><h3>Votre présence en ligne</h3><p class="note">D’après votre site : liens de toutes les pages lues, données structurées (sameAs), balises d’application. Un compte non relié depuis le site peut exister quand même.</p></div></div>
+    ${fams.length ? `<div class="pres-fams">${fams.map(([f, l]) => `<div class="pres-fam"><p class="k">${esc(FAMILIES[f])}</p><div class="tags">${l.map(chip).join('')}</div></div>`).join('')}</div>` : '<p>Aucun profil, aucune application ni page d’avis n’est relié depuis les pages lues.</p>'}
+    ${P.findings.length ? `<h4>Ce qui manque ou ne colle pas</h4><ul class="clean pres-list">${P.findings.map((f) => `<li><b>${esc(f.text)}</b> <span class="note">${esc(f.todo)}</span></li>`).join('')}</ul>` : ''}
+    ${P.candidates.length ? `<details class="pres-cand"><summary>Comptes possibles à vérifier (${P.candidates.length})</summary><p class="note">Construits à partir de votre nom, <b>non vérifiés</b> : ouvrez-les ; si c’est vous, reliez-les depuis le site, sinon c’est un homonyme.</p><ul class="clean">${P.candidates.map((c) => `<li>${esc(c.label)} : <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.url.replace(/^https?:\/\/(www\.)?/, ''))}</a> · <a href="${esc(c.search)}" target="_blank" rel="noopener">chercher</a></li>`).join('')}</ul></details>` : ''}
+    ${P.sameAsSnippet ? `<details class="pres-cand"><summary>Bloc sameAs prêt à coller</summary><div class="code"><pre>${esc(P.sameAsSnippet)}</pre><button class="btn sm" data-copy="">Copier</button></div></details>` : ''}
+    <p class="note">Le registre des entreprises, l’App Store et une comparaison complète avec vos concurrents : <code>node seo/cli.mjs presence votre-site.fr --concurrents a.fr,b.fr</code>, ou demandez-le à Claude.</p></div>`
+}
+function presenceMatrix(r) {
+  const me = r.presence?.items || [], comps = (r.competitors || []).filter((c) => !c.error && c.presence)
+  if (!comps.length) return ''
+  const rows = [{ name: r.target + ' (vous)', me: true, list: me.map((i) => ({ platform: i.platform, url: i.urls[0] })) }, ...comps.map((c) => ({ name: c.url, list: c.presence }))]
+  const ids = [...new Set(rows.flatMap((x) => x.list.map((y) => y.platform)))].sort((a, b) => rows.filter((x) => x.list.some((y) => y.platform === b)).length - rows.filter((x) => x.list.some((y) => y.platform === a)).length)
+  if (!ids.length) return ''
+  const gaps = ids.filter((id) => !rows[0].list.some((y) => y.platform === id) && comps.filter((c) => c.presence.some((y) => y.platform === id)).length >= (comps.length === 1 ? 1 : Math.max(2, Math.ceil(comps.length / 2))))
+  return `<div class="card" style="margin-top:16px"><h3>Qui est où</h3><p class="note">Plateformes reliées depuis la page d’accueil de chacun (vous : toutes les pages lues).</p>
+    <div class="table-wrap"><table class="pres-matrix"><thead><tr><th>Plateforme</th>${rows.map((x) => `<th class="n${x.me ? ' us' : ''}">${esc(x.name.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))}</th>`).join('')}</tr></thead><tbody>
+    ${ids.map((id) => `<tr class="${gaps.includes(id) ? 'gap' : ''}"><td>${esc(platformLabel(id))}</td>${rows.map((x) => { const hit = x.list.find((y) => y.platform === id); return `<td class="n">${hit ? (hit.url ? `<a href="${esc(hit.url)}" target="_blank" rel="noopener" aria-label="${esc(platformLabel(id))} de ${esc(x.name)}">✓</a>` : '✓') : '<span class="note">—</span>'}</td>` }).join('')}</tr>`).join('')}
+    <tr class="total"><td>Total</td>${rows.map((x) => `<td class="n"><b>${x.list.length}</b></td>`).join('')}</tr></tbody></table></div>
+    ${gaps.length ? `<p><b>À rattraper en priorité :</b> ${esc(gaps.map(platformLabel).join(', '))} (au moins la moitié de vos concurrents, et au moins 2, y sont ; pas vous).</p>` : '<p class="note">Aucune plateforme où la majorité de vos concurrents sont présents sans vous.</p>'}</div>`
+}
 function concurrents() {
   const r = S.report
   // Sans liste : un lien pour trouver ses concurrents locaux et en ligne (Maps et recherche Google préremplies)
   const q = r ? [sectorById(r.input?.sector).label.split(/[,(/]/)[0].trim(), r.input?.city].filter(Boolean).join(' ') : ''
   const finders = q ? `<p>Pour les trouver : <a href="https://www.google.com/maps/search/${encodeURIComponent(q)}" target="_blank" rel="noopener">vos concurrents sur Google Maps</a> · <a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">sur Google</a>. Gardez les 3 à 5 sites qui apparaissent avant vous, hors annuaires et plateformes.</p>` : ''
-  if (!r?.competitors?.length) return `<div class="card empty">${EMPTY_ART}<h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p>${finders}<p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
+  if (!r?.competitors?.length) return (r?.presence ? presenceCard(r) + '<div style="height:16px"></div>' : '') + `<div class="card empty">${EMPTY_ART}<h2>Concurrents</h2><p>Ajoutez jusqu’à 5 sites concurrents dans « Plus d’options », puis relancez l’analyse.</p>${finders}<p class="note">En ligne de commande : <code>node seo/cli.mjs votre-site.fr --concurrents a.fr,b.fr</code></p></div>`
   const R = r.result
   const base = R.pageScores || Object.fromEntries(Object.entries(R.scores).map(([k, v]) => [k, v.score]))
   const me = { url: r.target + ' (vous)', global: R.pageGlobal ?? R.global, scores: base, perf: r.ctx?.psi?.scores?.performance, lcp: r.ctx?.psi?.field?.LCP, words: r.ctx?.page?.wordCount, schema: R.meta?.schemaTypes?.join(', '), social: Object.keys(R.meta?.social || {}), llms: r.ctx?.llms?.status === 200, terms: R.meta?.terms?.words?.map((t) => t.term) || [], me: true }
@@ -1026,7 +1053,9 @@ function concurrents() {
   <div class="cols" style="margin-top:16px">
     <div class="card"><h3>Ce qu’ils font mieux</h3><ul class="clean">${!comps.some((x) => x.comparable) ? '<li>Aucun concurrent n’a pu être lu : comparaison impossible. Essayez la ligne de commande ou un autre mode de collecte.</li>' : better.map((b) => `<li>• ${b}</li>`).join('') || '<li>Rien de mesurable : vous êtes devant ou à égalité sur les axes comparés.</li>'}</ul></div>
     <div class="card"><h3>Sujets qu’ils traitent et pas vous</h3>${gapTerms.length ? `<div class="tags">${gapTerms.map((t) => `<span class="chip tag">${esc(t)}</span>`).join('')}</div><p class="note">Termes fréquents chez vos concurrents, absents de votre page : pistes de contenu.</p>` : '<p class="note">Pas d’écart net détecté.</p>'}</div>
-  </div>`
+  </div>
+  ${presenceMatrix(r)}
+  ${r.presence ? `<div style="margin-top:16px">${presenceCard(r)}</div>` : ''}`
 }
 
 // ───────── Ressources ─────────
@@ -1129,7 +1158,15 @@ function sanitizeReport(r, provenance = null) {
     crawl: c.crawl && { pages: (c.crawl.pages || []).slice(0, 200).map((x) => ({ ...x, url: str(x.url, 500), status: num0(x.status) })), broken: (c.crawl.broken || []).slice(0, 100).map((b) => ({ url: str(b.url, 500), from: str(b.from, 500), status: num0(b.status) })) },
     llms: c.llms && { status: num0(c.llms.status), bytes: num0(c.llms.bytes) },
   }
-  out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null })) : undefined
+  const safeUrl = (u) => (/^https?:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? str(u, 400) : '')
+  const PL = new Set(PLATFORMS.map(([id]) => id))
+  out.presence = r.presence && typeof r.presence === 'object' ? {
+    items: (r.presence.items || []).filter((i) => PL.has(i?.platform)).slice(0, 60).map((i) => ({ platform: i.platform, label: platformLabel(i.platform), family: str(i.family, 20), urls: (i.urls || []).map(safeUrl).filter(Boolean).slice(0, 3), handles: (i.handles || []).map((h) => str(h, 80)).slice(0, 5), sources: (i.sources || []).map((x) => str(x, 20)).slice(0, 4), pages: (i.pages || []).map(safeUrl).filter(Boolean).slice(0, 3) })),
+    findings: (r.presence.findings || []).slice(0, 30).map((f) => ({ level: str(f.level, 20), platform: str(f.platform, 40), text: str(f.text, 400), todo: str(f.todo, 400) })),
+    candidates: (r.presence.candidates || []).slice(0, 10).map((c) => ({ platform: str(c.platform, 40), label: str(c.label, 60), url: safeUrl(c.url), search: safeUrl(c.search) })),
+    sameAsSnippet: r.presence.sameAsSnippet ? str(r.presence.sameAsSnippet, 4000) : null, sirenSeen: /^\d{9}$/.test(r.presence.sirenSeen || '') ? r.presence.sirenSeen : null,
+  } : undefined
+  out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null, presence: (x.presence || []).filter((y) => PL.has(y?.platform)).slice(0, 60).map((y) => ({ platform: y.platform, url: safeUrl(y.url) })) })) : undefined
   return out
 }
 

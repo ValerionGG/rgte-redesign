@@ -10,6 +10,7 @@ import { fetchRepo, auditRepo, parseRepo, GH_CATS } from './github.js'
 import { parseStoreUrl, lookupIOS, auditIOS, auditPlayHtml, ASO_CATS } from './appstore.js'
 import { sectorById } from '../data/sectors.js'
 import { guessSector } from './guess.js'
+import { presenceFromSite } from './presence.js'
 
 export { CATEGORIES, SEVERITY, GOALS, GH_CATS, ASO_CATS }
 
@@ -22,6 +23,7 @@ export function competitorSummary(url, rep) {
     title: p?.title || '', schema: R?.meta?.schemaTypes?.join(', ') || (p ? 'aucune' : '—'), social: Object.keys(R?.meta?.social || {}),
     trackers: R?.meta?.trackers || [], cms: R?.meta?.cms || [], issues: R?.issues?.length ?? null, error: rep.error || R?.incomplete || null,
     llms: rep.ctx?.llms?.status === 200, bots: (R?.meta?.bots || []).filter((b) => !b.allowed).map((b) => b.ua),
+    presence: (rep.presence?.items || []).map((i) => ({ platform: i.platform, url: i.urls[0] || '' })),
   }
 }
 
@@ -73,6 +75,9 @@ export async function analyze(target, o = {}) {
     } else if (sectorAuto) report.input = { ...report.input, sectorGuessed: null, sectorUnknown: true }
     if (social) ctx.social = social
     progress('Analyse…')
+    // Profil de présence : liens de la page d'accueil et des pages explorées, sameAs, balises d'application
+    if (ctx.page) { let origin = ''; try { origin = new URL(ctx.fetch.finalUrl).origin } catch {}
+      report.presence = presenceFromSite({ page: ctx.page, pages: (ctx.crawl?.pages || []).filter((x) => x.presence || x.siren).map((x) => ({ url: x.url, links: x.presence || [], text: x.siren ? `SIREN ${x.siren}` : '' })), origin, sector: input.sector, local, brand: input.brand }) }
     report.ctx = slim(ctx)
     report.result = audit(ctx)
   } else if (kind === 'github') {

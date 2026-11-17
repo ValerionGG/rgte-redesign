@@ -688,3 +688,45 @@ test('texte : un <svg … /> fermé sur lui-même ne fait pas ignorer la suite d
   assert.ok(p.wordCount > 100, 'texte ignoré après un svg auto-fermant : ' + p.wordCount + ' mots')
   assert.ok(/Texte après une icône complète/.test(p.text) && !/icône Texte/.test(p.text.replace('icône complète', '')), 'le contenu d’un svg ne doit pas compter')
 })
+
+test('profil de présence : plateformes, constats, SIREN, sameAs, matrice, App Store et registre (réponses simulées)', async () => {
+  const { identify, presenceFromSite, presenceMatrix, appStoreLookup, registryLookup } = await import('../engine/presence.js')
+  assert.deepEqual(identify('https://www.instagram.com/rgte_officiel/'), { platform: 'instagram', handle: 'rgte_officiel' })
+  assert.equal(identify('https://www.facebook.com/sharer/sharer.php?u=x'), null, 'lien de partage pris pour un profil')
+  assert.equal(identify('https://apps.apple.com/fr/app/racelink/id6755679484').handle, '6755679484')
+  assert.equal(identify('https://play.google.com/store/apps/details?id=com.racelink.app').platform, 'google-play')
+  assert.equal(identify('https://g.page/r/abc123/review').platform, 'google-avis')
+  assert.equal(identify('https://www.linkedin.com/in/jean-dupont').platform, 'linkedin-perso')
+  const home = extract(`<!doctype html><html lang="fr"><head><title>Vitrines</title><meta name="apple-itunes-app" content="app-id=123456789"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Exemple","sameAs":["https://www.youtube.com/@exemplevitrines","https://www.instagram.com/exemple_vitrines/"]}</script></head><body><h1>Vitrines</h1><footer><a href="https://www.instagram.com/exemple_vitrines/">Instagram</a> <a href="https://www.facebook.com/ExempleVitrines">Facebook</a> <a href="https://www.facebook.com/sharer/sharer.php?u=x">Partager</a> <a href="https://www.linkedin.com/in/jean-dupont">Le fondateur</a></footer></body></html>`, 'https://www.exemple.fr/')
+  const pages = [{ url: 'https://www.exemple.fr/contact', links: [{ href: 'https://www.instagram.com/exemple.vitrines.fr/' }, { href: 'https://www.trustpilot.com/review/exemple.fr' }], text: 'SIREN 123 456 789' }]
+  const p = presenceFromSite({ page: home, pages, origin: 'https://www.exemple.fr', sector: 'equipement-pro', brand: 'Exemple' })
+  const ids = p.items.map((i) => i.platform)
+  for (const id of ['instagram', 'facebook', 'youtube', 'app-store', 'trustpilot', 'linkedin-perso']) assert.ok(ids.includes(id), 'manque ' + id)
+  assert.ok(p.items.find((i) => i.platform === 'youtube').sources.includes('sameAs'))
+  assert.equal(p.items.find((i) => i.platform === 'instagram').handles.length, 2)
+  const txt = p.findings.map((f) => f.text).join(' | ')
+  assert.match(txt, /Instagram : 2 comptes différents/); assert.match(txt, /sameAs mais jamais relié.*YouTube/); assert.match(txt, /absent.*du sameAs : Facebook/)
+  assert.match(txt, /seul un profil personnel est relié/); assert.ok(p.missing.includes('linkedin'), 'LinkedIn attendu pour du B2B')
+  assert.equal(p.sirenSeen, '123456789')
+  assert.ok(JSON.parse(p.sameAsSnippet).sameAs.includes('https://www.youtube.com/@exemplevitrines'))
+  assert.ok(p.candidates.every((c) => /exemple/.test(c.url)) && p.candidates.some((c) => c.platform === 'linkedin'))
+  const m = presenceMatrix([{ name: 'moi', me: true, items: p.items }, { name: 'a', items: [{ platform: 'linkedin', urls: ['https://www.linkedin.com/company/a/'] }] }, { name: 'b', items: [{ platform: 'linkedin', urls: ['x'] }, { platform: 'tiktok', urls: ['y'] }] }])
+  assert.deepEqual(m.gaps, ['LinkedIn'])
+  const fake = (body) => async () => body
+  const apps = await appStoreLookup('Exemple', fake({ results: [{ trackId: 1, trackName: 'Exemple', sellerName: 'Exemple SAS', trackViewUrl: 'https://apps.apple.com/app/id1' }, { trackId: 2, trackName: 'Exemple Timing', sellerName: 'Autre SA', trackViewUrl: 'https://apps.apple.com/app/id2' }] }))
+  assert.equal(apps.apps.length, 2); assert.equal(apps.homonyms, true)
+  let asked = ''
+  const reg = await registryLookup('Exemple', async (u) => { asked = u; return { results: [{ siren: '123456789', nom_complet: 'EXEMPLE SAS', activite_principale: '28.25Z', date_creation: '2010-01-01', etat_administratif: 'A', siege: { libelle_commune: 'PUGET', code_postal: '83480' } }] } }, { siren: '123456789' })
+  assert.match(asked, /q=123456789/, 'le SIREN lu sur le site doit servir à la recherche'); assert.equal(reg.results[0].annuaire, 'https://annuaire-entreprises.data.gouv.fr/entreprise/123456789')
+  assert.equal((await registryLookup('x', async () => { throw new Error('bloqué') })).error, 'bloqué')
+})
+
+test('profil de présence : instantané comparé (--avant) et rapport Markdown', async () => {
+  const { diffPresence, toMarkdown } = await import('../presence-cli.mjs')
+  const prev = { generatedAt: '2026-10-01T10:00:00Z', presence: { items: [{ platform: 'facebook' }] }, competitors: [{ name: 'a.fr', items: [{ platform: 'instagram' }] }] }
+  const cur = { generatedAt: '2026-11-01T10:00:00Z', target: 'moi.fr', brand: 'Moi', presence: { items: [{ platform: 'facebook', label: 'Facebook', family: 'reseau', urls: ['https://www.facebook.com/moi'], sources: ['lien'], pages: [] }, { platform: 'linkedin', label: 'LinkedIn', family: 'reseau', urls: ['https://www.linkedin.com/company/moi/'], sources: ['lien'], pages: [] }], findings: [], candidates: [], sameAsSnippet: null }, competitors: [{ name: 'a.fr', items: [{ platform: 'instagram' }, { platform: 'tiktok' }] }], appStore: null, registry: { url: 'u', sirenSeen: null, results: [{ siren: '501609507', name: 'R G T E', postcode: '83480', city: 'PUGET', active: true, annuaire: 'https://annuaire-entreprises.data.gouv.fr/entreprise/501609507', match: 'code postal' }] }, matrix: null }
+  cur.changes = diffPresence(prev, cur)
+  assert.deepEqual(cur.changes.list.map((x) => [x.name, x.added, x.lost]), [['moi.fr (vous)', ['LinkedIn'], []], ['a.fr', ['TikTok'], []]])
+  const md = toMarkdown(cur)
+  assert.match(md, /apparu LinkedIn/); assert.match(md, /Probablement vous : R G T E, SIREN 501609507/); assert.match(md, /Aucun SIREN ou SIRET lu/)
+})
