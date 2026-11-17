@@ -523,3 +523,19 @@ abbr[title]:focus::after { content: attr(title); position: fixed; left: 16px; ri
 .diag-legal { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: .92rem; color: var(--muted); }
 .diag-legal b { color: var(--text); }
 @media (max-width: 720px) { .diag-cols { grid-template-columns: minmax(0, 1fr); } }
+
+/* À faire : semaine en clair (5 tâches), le reste replié ; étapes 30/60/90 jours repliables */
+.more-tasks { margin-top: 10px; }
+.more-tasks > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; border: 1px dashed var(--line); color: var(--muted); font-weight: 650; font-size: .9rem; }
+.more-tasks > summary::-webkit-details-marker { display: none; }
+.more-tasks > summary::before { content: '+'; font-weight: 800; }
+.more-tasks[open] > summary::before { content: '−'; }
+.more-tasks > .issues { margin-top: 10px; }
+.fold-step { border-top: 1px solid var(--line); padding-top: 4px; }
+.fold-step > summary { cursor: pointer; list-style: none; }
+.fold-step > summary::-webkit-details-marker { display: none; }
+.fold-step > summary h3::after { content: "▾"; margin-left: 10px; color: var(--muted); font-size: .9em; transition: transform .2s; }
+.fold-step[open] > summary h3::after { transform: rotate(180deg); }
+.fold-step > summary .pct { margin-left: auto; }
+.fold-step:not([open]) > summary .why { margin-bottom: 4px; }
+@media print { .more-tasks > summary { display: none; } }

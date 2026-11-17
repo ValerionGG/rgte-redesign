@@ -736,11 +736,23 @@ function afaire() {
   const all = r.plan.steps.flatMap((s) => [...s.items, ...s.extra])
   const nDone = all.filter((i) => done[i.id]).length
   const cats = Object.entries(R.scores).filter(([, s]) => s.issues)
-  return `<div class="section-head"><div><h2>À faire</h2><p>${nDone}/${all.length} fait · cochez au fur et à mesure (enregistré sur cet appareil). Cliquez une ligne pour le correctif. Avant de coller un correctif : sauvegardez le site, changez une chose à la fois et notez comment revenir en arrière.</p></div><div class="actions"><button class="btn" data-act="mail">Copier le message pour mon prestataire</button>${reportBar()}</div></div>
+  const open = !!(S.cat || S.sevs.size < 4 || S.printing) // filtre actif ou impression : tout est déplié
+  return `<div class="section-head"><div><h2>À faire</h2><p>${nDone}/${all.length} fait · commencez par le haut : les tâches sont classées par effet. Cliquez une ligne pour son correctif.</p><p class="note">Avant de coller un correctif : sauvegardez le site, changez une chose à la fois et notez comment revenir en arrière.</p></div><div class="actions"><button class="btn" data-act="mail">Copier le message pour mon prestataire</button>${reportBar()}</div></div>
   <div class="progressbar" role="progressbar" aria-valuenow="${nDone}" aria-valuemin="0" aria-valuemax="${all.length}" aria-label="Avancement"><span style="width:${all.length ? (nDone / all.length) * 100 : 0}%"></span></div>
   <div class="filters" role="group" aria-label="Filtrer par catégorie"><button class="chip tag" data-fcat="" aria-pressed="${!S.cat}">Toutes</button>${cats.map(([k, v]) => `<button class="chip tag" data-fcat="${esc(k)}" aria-pressed="${S.cat === k}">${esc(v.label)} · ${v.issues}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="Filtrer par gravité">${['critique', 'important', 'moyen', 'faible'].map((s) => `<button class="chip sev-${s}" data-fsev="${s}" aria-pressed="${S.sevs.has(s)}">${SEVERITY[s].label} · ${R.counts[s]}</button>`).join('')}</div>
-  ${r.plan.steps.map((s) => { const items = [...s.items, ...s.extra].filter(visible); if (s.id === 'semaine') { const w = (r.plan.week || []).map((x) => x.id), at = (i) => (w.includes(i.id) ? w.indexOf(i.id) : 99); items.sort((a, b) => at(a) - at(b)) } return items.length ? `<section class="step"><h3>${esc(s.title)} <span class="pct">${items.filter((i) => done[i.id]).length}/${items.length}</span></h3><p class="why">${esc(s.why)}</p><div class="issues">${items.map((i) => item(i, done)).join('')}</div></section>` : '' }).join('')}
+  ${r.plan.steps.map((s) => {
+    const items = [...s.items, ...s.extra].filter(visible)
+    if (!items.length) return ''
+    if (s.id === 'semaine') { const w = (r.plan.week || []).map((x) => x.id), at = (i) => (w.includes(i.id) ? w.indexOf(i.id) : 99); items.sort((a, b) => at(a) - at(b)) }
+    const head = `<h3>${esc(s.title)} <span class="pct">${items.filter((i) => done[i.id]).length}/${items.length}</span></h3><p class="why">${esc(s.why)}</p>`
+    // Cette semaine : les 5 premières en clair, le reste replié. 30/60/90 jours : replié, sauf filtre actif ou impression.
+    if (s.id === 'semaine') {
+      const first = open ? items : items.slice(0, 5), rest = open ? [] : items.slice(5)
+      return `<section class="step">${head}<div class="issues">${first.map((i) => item(i, done)).join('')}</div>${rest.length ? `<details class="more-tasks"><summary>Voir les ${rest.length} autres tâches de la semaine</summary><div class="issues">${rest.map((i) => item(i, done)).join('')}</div></details>` : ''}</section>`
+    }
+    return `<details class="step fold-step"${open ? ' open' : ''}><summary>${head}</summary><div class="issues">${items.map((i) => item(i, done)).join('')}</div></details>`
+  }).join('')}
   ${R.passed.length ? `<details class="card fold"><summary><h3>Déjà bien (${R.passed.length})</h3></summary><ul class="clean">${R.passed.map((p) => `<li><span class="chip sev-ok">OK</span> ${gloss(esc(p.title))}</li>`).join('')}</ul></details>` : ''}
   ${R.infos.length ? `<details class="card fold" open><summary><h3>Non vérifié ou à vérifier hors site (${R.infos.length})</h3></summary><ul class="clean">${R.infos.map((p) => `<li><span class="chip sev-info">À vérifier</span> <b>${gloss(esc(p.title))}</b>${p.detail ? ` — <span class="note">${esc(p.detail)}</span>` : ''}${p.fix ? `<br><span class="note">${esc(p.fix)}</span>` : ''}</li>`).join('')}</ul></details>` : ''}`
 }
@@ -1070,7 +1082,7 @@ function printReport() {
   const sections = []
   sections.push(`<header class="cover"><h1>Audit SEO 360</h1><p class="big">${esc(r.target)}</p><p>${esc(sectorById(r.input.sector).label)}${r.input.city ? ' · ' + esc(r.input.city) : ''} — ${new Date(r.generatedAt).toLocaleDateString('fr-FR')}</p><p class="big">${R?.global == null ? 'Audit incomplet' : `Note : ${R.global}/100 (${R.grade})`} · mesuré à ${Math.round((R?.coverage || 0) * 100)} %</p></header>`)
   S.tab = 'synthese'; sections.push(synthese())
-  S.tab = 'afaire'; const saved = new Set(S.sevs); S.sevs = new Set(['critique', 'important', 'moyen', 'faible']); const cat = S.cat; S.cat = ''; sections.push(afaire()); S.sevs = saved; S.cat = cat
+  S.tab = 'afaire'; const saved = new Set(S.sevs); S.sevs = new Set(['critique', 'important', 'moyen', 'faible']); const cat = S.cat; S.cat = ''; S.printing = true; sections.push(afaire()); S.printing = false; S.sevs = saved; S.cat = cat
   S.tab = 'budget'; sections.push(budget())
   S.tab = tab
   box.innerHTML = sections.join('<div class="pb"></div>')
