@@ -10,8 +10,7 @@ import { join } from 'node:path'
 import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
 import { googleSuggest } from './engine/keywords.js'
-import { decodeBody } from './engine/decode.js'
-import { blockedReason } from './engine/collect.js'
+import { makeNodeFetcher } from './node-fetch.mjs'
 import { SECTORS } from './data/sectors.js'
 import { GOALS, defaultGoal } from './engine/ads.js'
 
@@ -26,17 +25,11 @@ import { GOALS, defaultGoal } from './engine/ads.js'
   }
 }
 
-// Par défaut, un agent de navigateur : beaucoup de pare-feu refusent les robots inconnus (on le détecte et le signale).
-const UAS = {
-  navigateur: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
-  seo360: 'Mozilla/5.0 (compatible; SEO360-Audit/2.0; +https://github.com/valeriongg/rgte-redesign)',
-}
-const MAX_BYTES = 5 * 1024 * 1024
 
 const args = process.argv.slice(2)
 
 // ───────── Sous-commandes : veille sociale (Agent Reach), Search Console, calendrier ─────────
-const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs', fiche: './fiche-cli.mjs' }
+const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs', fiche: './fiche-cli.mjs', presence: './presence-cli.mjs' }
 if (SUB[args[0]]) {
   await import(SUB[args[0]]).then((m) => m.main(args.slice(1)))
   process.exit(process.exitCode || 0)
@@ -54,6 +47,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
         node seo/cli.mjs budget --secteur <id> [--objectif leads] [--budget €] [--valeur €] [--marge %]   (budget pub seul)
         node seo/cli.mjs hashtags --secteur <id> [--mot-cle "a, b"] [--ville X] [--marque X]   (hashtags seuls)
         node seo/cli.mjs outils [--rapport site.json | --secteur <id> --local]   (outils gratuits et payants + guides)
+        node seo/cli.mjs presence <site> [--concurrents a,b] [--marque X]   (réseaux, apps, avis, registre ; vous contre vos concurrents)
         node seo/cli.mjs fiche --store apple|play --nom … --sous-titre … --mots-cles …   (contrôle d'une fiche de store avant envoi)
 
   --secteur <id>        sans ce choix, le secteur est deviné d'après la page. Valeurs : ${SECTORS.map((s) => s.id).join(', ')}
@@ -94,89 +88,7 @@ const LECTURE = String(opt('lecture', 'auto'))
 // Code de la page et robots.txt fournis en fichiers (récupérés par Claude, ou « Afficher le code source ») : lus tels quels
 const readOpt = (name) => { const f = opt(name, null); if (!f || f === true) return null; try { return readFileSync(f, 'utf8') } catch (e) { console.error(`Fichier illisible (--${name}) : ${f}`); process.exit(1) } }
 const HTML_FILE = readOpt('html'), ROBOTS_FILE = readOpt('robots')
-const sameDoc = (a, b) => { try { const x = new URL(a), y = new URL(/^https?:/i.test(b) ? b : 'https://' + b); return x.host.replace(/^www\./, '') === y.host.replace(/^www\./, '') && x.pathname.replace(/\/$/, '') === y.pathname.replace(/\/$/, '') } catch { return false } }
-const NETWORK_ERR = /ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH|UND_ERR|fetch failed|Délai dépassé|proxy|tunnel|certificate|CERT_/i
-const viaJina = new Set() // hôtes injoignables en direct : lus par Jina pour toute la suite
-
-// Par défaut : on se présente comme « SEO360-Audit » ; si le site refuse les robots inconnus, on réessaie
-// une fois en navigateur et le rapport le signale (constat « ua-fallback »).
-async function fetcher(url, o = {}) {
-  if (HTML_FILE && !o.noFollow && sameDoc(url, target)) return { status: 200, body: HTML_FILE, finalUrl: url, headers: {}, redirects: [], via: 'paste' }
-  if (ROBOTS_FILE && !o.noFollow && /\/robots\.txt$/i.test(url)) return { status: 200, body: ROBOTS_FILE, finalUrl: url, headers: {}, redirects: [] }
-  const host = (() => { try { return new URL(url).host } catch { return '' } })()
-  if (LECTURE === 'jina' || viaJina.has(host)) return o.noFollow ? {} : jinaRead(url)
-  const r = await direct(url, o)
-  if (LECTURE === 'auto' && !r.status && NETWORK_ERR.test(r.error || '')) { viaJina.add(host); return o.noFollow ? {} : jinaRead(url) }
-  return r
-}
-async function direct(url, o) {
-  if (UA_CHOICE === 'navigateur') return fetchAs(url, UAS.navigateur, o)
-  const r = await fetchAs(url, UAS.seo360, o)
-  if (UA_CHOICE === 'auto' && !o.noFollow && blockedReason(r)) {
-    const r2 = await fetchAs(url, UAS.navigateur, o)
-    if (!blockedReason(r2)) return { ...r2, uaFallback: true }
-  }
-  return r
-}
-// Jina Reader (r.jina.ai) en mode JSON : vrai code HTTP, adresse finale, domaine introuvable signalé.
-// Sans clé : 20 lectures par minute ; on en garde 2 de marge et une page en trop passe son tour (« non lue »).
-const JINA = process.env.SEO360_JINA || 'https://r.jina.ai/' // réglable pour les tests ou un service compatible
-const jinaTimes = []
-async function jinaRead(url) {
-  const now = Date.now()
-  while (jinaTimes.length && now - jinaTimes[0] >= 60000) jinaTimes.shift()
-  if (jinaTimes.length >= 18) return { status: 0, error: 'Jina Reader : 20 lectures par minute atteintes' }
-  jinaTimes.push(now)
-  const text = /\.txt$/i.test((() => { try { return new URL(url).pathname } catch { return '' } })())
-  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)
-  try {
-    // Sans clé, Jina refuse parfois une adresse IP (401 « bad IP reputation ») : 2 nouvelles tentatives, puis message clair
-    const key = process.env.JINA_API_KEY || ''
-    const headers = { Accept: 'application/json', 'X-Return-Format': text ? 'text' : 'html', ...(key ? { Authorization: 'Bearer ' + key } : {}) }
-    let r, j
-    for (let i = 0; i < 3; i++) { r = await fetch(JINA + url, { headers, signal: ctrl.signal }); j = await r.json().catch(() => null); if (r.status !== 401 || key) break; await new Promise((ok) => setTimeout(ok, 400)) }
-    if (r.status === 401) return { status: 0, error: 'Jina Reader refuse ce réseau sans clé : définissez JINA_API_KEY (clé gratuite sur jina.ai/reader), ou fournissez la page avec --html' }
-    if (r.status === 422 && /could not be resolved/i.test(j?.message || '')) return { status: 0, error: 'nom de domaine introuvable (vérifiez l’orthographe de l’adresse)' }
-    if (!r.ok || !j?.data) return { status: 0, error: 'Jina Reader : réponse ' + r.status }
-    const d = j.data, body = String((text ? d.text : d.html) ?? '')
-    return { status: Number(d.httpStatus) || (body ? 200 : 0), body, finalUrl: d.finalUrl || d.url || url, headers: {}, redirects: [], via: 'jina' }
-  } catch (e) {
-    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (Jina Reader)' : 'Jina Reader injoignable : ' + (e.cause?.code || e.message) }
-  } finally { clearTimeout(timer) }
-}
-
-// Lecture bornée (5 Mo) avec délai global de 25 s (en-têtes ET corps), décodage selon l'encodage déclaré.
-async function fetchAs(url, UA, { noFollow = false } = {}) {
-  const redirects = []
-  let cur = url, res, ttfb
-  const t0 = performance.now(), ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 25000)
-  try {
-    for (let i = 0; i < 10; i++) {
-      res = await fetch(cur, { redirect: 'manual', signal: ctrl.signal, headers: { 'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.6' } })
-      ttfb ??= performance.now() - t0
-      const loc = res.headers.get('location')
-      if (res.status >= 300 && res.status < 400 && loc) {
-        if (noFollow) return { status: res.status, location: new URL(loc, cur).href, headers: Object.fromEntries(res.headers) }
-        redirects.push({ url: cur, status: res.status }); cur = new URL(loc, cur).href; continue
-      }
-      break
-    }
-    const reader = res.body?.getReader(), chunks = []
-    let size = 0, truncated = false
-    while (reader) {
-      const { done, value } = await reader.read()
-      if (done) break
-      size += value.length
-      if (size > MAX_BYTES) { truncated = true; await reader.cancel(); break }
-      chunks.push(value)
-    }
-    const buf = new Uint8Array(Buffer.concat(chunks.map((c) => Buffer.from(c))))
-    const headers = Object.fromEntries(res.headers)
-    return { status: res.status, headers, body: decodeBody(buf, headers['content-type']), finalUrl: cur, redirects, timeMs: performance.now() - t0, ttfbMs: ttfb, truncated }
-  } catch (e) {
-    return { status: 0, error: e.name === 'AbortError' ? 'Délai dépassé (25 s)' : (e.cause?.code || e.message), finalUrl: cur, redirects }
-  } finally { clearTimeout(timer) }
-}
+const fetcher = makeNodeFetcher({ ua: UA_CHOICE, lecture: LECTURE, html: HTML_FILE, robots: ROBOTS_FILE, target })
 
 const input = {
   sector: opt('secteur', '') || '', keyword: opt(['mot-cle', 'keyword'], '') || '', city: opt('ville', '') || '', brand: opt('marque', '') || '',

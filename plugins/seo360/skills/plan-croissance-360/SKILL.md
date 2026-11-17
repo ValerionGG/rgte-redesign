@@ -2,7 +2,7 @@
 name: plan-croissance-360
 description: Plan de croissance complet à partir d'un lien (site, application, dépôt GitHub, ou profil Instagram, TikTok, LinkedIn, YouTube avec vos statistiques exportées) : audit mesuré du site ou de l'app, toutes les améliorations gratuites et payantes par canal (Google, local, IA, pub, réseaux, e-mail, conversion), outils recommandés avec prix et guides d'installation, plan 90 jours, budget, indicateurs. À utiliser pour « voici mon site, dis-moi tout », « plan complet », « premier sur Google et percer sur TikTok », « toutes les améliorations possibles », « quels outils installer ». Audit SEO seul → seo-360.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Plan de croissance 360
@@ -43,6 +43,7 @@ Ne jamais rédiger l'audit d'un site qui n'a pas été lu.
 - **Search Console** (si l'utilisateur a l'export) : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" gsc export.zip [--avant export-precedent.zip] --marque "<nom>"`.
 - **Demande réelle** : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" veille "<mot-clé>" --marque "<nom>"` (Agent Reach, skill `veille-sociale`).
 - **Temps forts des 90 jours** : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" calendrier --secteur <id>`.
+- **Présence en ligne** : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" presence <site> --marque "<nom>"` (réseaux, applications, avis, annuaires, SIREN, bloc sameAs prêt à coller).
 - **Budget publicitaire** : options `--budget`, `--valeur`, `--marge` de l'audit, ou `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" budget …`.
 - **Outils adaptés à l'audit** : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" outils --rapport rapports-seo/<slug>.json`. La sortie donne l'ordre d'installation, les guides pas à pas, les prix datés et le budget mensuel.
 
@@ -62,7 +63,7 @@ Pour chaque canal : d'abord ce que l'audit a mesuré, puis les leviers habituels
 | Conversion | appel, devis, formulaire, mesure des conversions | `conversion-site` |
 | Publicité | rentabilité, contrôle avant dépense, montée en charge | `budget-publicite` |
 | Instagram, TikTok, YouTube, LinkedIn, Pinterest | formats, accroches, rythme, hashtags par niveau | `contenus-reseaux-video`, `hashtags-reseaux`, `veille-sociale` |
-| Concurrents | ce qu'ils font mieux, leurs pubs actives | `benchmark-concurrents` |
+| Concurrents | ce qu'ils font mieux, leurs pubs actives, qui est où (`node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" presence <site> --concurrents …`) | `benchmark-concurrents` |
 | Temps forts | dates calculées, rétroplanning | `calendrier-marketing-fr` |
 | Suivi | indicateurs, rapport mensuel, revérification | `suivi-performance-mensuel` |
 

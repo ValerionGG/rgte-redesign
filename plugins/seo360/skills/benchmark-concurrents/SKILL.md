@@ -2,7 +2,7 @@
 name: benchmark-concurrents
 description: Étude concurrentielle SEO, réseaux et publicité : même grille d'audit pour vous et vos concurrents, tableau noté sur 10, leurs pubs actives (bibliothèques Meta, Google, LinkedIn, TikTok), ce qu'ils font mieux, SWOT et 3 priorités à 90 jours. À utiliser pour « analyse mes concurrents », « benchmark », « pourquoi mon concurrent est devant moi sur google », « leurs pubs », « SWOT », « concurents ». Ce que disent les internautes → veille-sociale.
 metadata:
-  version: "2.0"
+  version: "2.1"
 ---
 
 # Benchmark concurrents et marché
@@ -51,11 +51,19 @@ Les bibliothèques publicitaires sont publiques :
 
 Pour chaque concurrent, noter les accroches, les offres, les appels à l'action, les formats, la page d'arrivée et la date de début. Une publicité active depuis longtemps est *probablement* rentable : c'est une hypothèse, pas une preuve. Les montants dépensés ne sont pas publics, hors publicités politiques : ne pas en inventer.
 
-## 4. Réseaux sociaux
+## 4. Présence en ligne : qui est où
+
+```bash
+node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" presence <site> --marque "<nom>" --concurrents a.fr,b.fr,c.fr [--avant rapports-seo/<site>-presence.json]
+```
+
+Pour vous et chaque concurrent : réseaux, applications, avis, annuaires, réservation, vente, contenus, emploi, d'après les liens de leur site, le sameAs et les balises d'application ; puis l'App Store et le registre des entreprises (SIREN reconnu par le code postal du site). Livrer la matrice « qui est où », les plateformes à rattraper, le bloc sameAs prêt à coller, et avec `--avant` ce qui a changé depuis le dernier instantané. « Non trouvé » veut dire « non relié depuis le site » : vérifier les comptes candidats avant de conclure. Que chaque profil renvoie bien au site se vérifie à la main, dans le navigateur.
+
+## 5. Réseaux sociaux
 
 Repérer les publications hors norme de chaque concurrent avec la méthode du skill veille-sociale (médiane du compte par format, seuils 1,5 / 2 / 5 fois, au moins 20 publications, « confiance faible » sous 10). En tirer les thèmes et les formats qui marchent dans le secteur, pour le skill contenus-reseaux-video.
 
-## 5. Présence dans les réponses IA
+## 6. Présence dans les réponses IA
 
 Poser les mêmes questions types (« meilleur <métier> à <ville> », « <produit> pas cher », « <marque A> ou <marque B> ? ») à ChatGPT, Perplexity, Gemini et Google (AI Overviews), puis noter qui est cité. Suivre le protocole du skill geo-visibilite-ia : plusieurs exécutions par question, taille d'échantillon indiquée.
 
@@ -87,6 +95,7 @@ Poser les mêmes questions types (« meilleur <métier> à <ville> », « <produ
 
 - [ ] Tous les sites sont passés par la même grille ; les sites non lus sont marqués « non comparable ».
 - [ ] Le tableau noté sur 10 a une preuve par note.
+- [ ] La matrice de présence (`presence`) est livrée, avec les plateformes à rattraper.
 - [ ] Les bibliothèques publicitaires ont été consultées, ou leur absence est signalée.
 - [ ] Chaque écart a une action, et le livrable se termine par 3 priorités datées.
 - [ ] La section « ce qu'on n'a pas pu vérifier » est remplie.

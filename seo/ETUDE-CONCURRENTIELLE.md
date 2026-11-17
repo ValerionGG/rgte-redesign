@@ -190,6 +190,37 @@ Les packs étudiés citent la FTC et le CAN-SPAM, et leurs calendriers sont amé
 - import des termes de recherche Google Ads ;
 - statistiques de posts en CSV.
 
+## 5 ter. Profil de présence de marque (17/11/2026)
+
+**Méthode et limite** : recherche du 17/11/2026 par résultats de recherche web seulement (les sites des éditeurs n'ont pas pu être ouverts depuis la session) ; les prix viennent surtout d'agrégateurs et sont **non vérifiés**.
+
+| Outil | Ce qu'il fait | Ce qu'il lui faut | Prix d'entrée (non vérifié) | Sa limite pour ce besoin |
+|---|---|---|---|---|
+| Namechk, KnowEm | pseudo libre ou pris sur des centaines de réseaux | un pseudo | gratuit (KnowEm : forfaits payants pour l'enregistrement) | ne sait pas si le compte pris est celui de la marque |
+| Social Blade | statistiques et historique d'un compte | le pseudo de chaque réseau | gratuit, payant dès ≈ 4 $/mois | ne trouve pas les comptes |
+| BuiltWith | technologies d'un site | une URL | recherche gratuite, ≈ 295 $/mois | rien sur réseaux, avis ou registre |
+| Similarweb | trafic et canaux | un domaine | ≈ 125 $/mois | cher, peu fiable pour les petits sites |
+| Semrush Local, Partoo, Uberall, Yext | fiches locales, NAP et avis sur les annuaires | la fiche établissement | ≈ 30 à 60 $/mois par établissement (Semrush), sur devis (Partoo, Uberall) | abonnement par établissement, pas de vue réseaux et apps |
+| Pappers | registre : SIREN, dirigeants, comptes | un nom ou un SIREN | site gratuit, API payante | ne relie pas l'entreprise à sa présence en ligne |
+| AppFollow | notes, avis et mots-clés d'apps | l'identifiant de l'app | gratuit (2 apps), puis ≈ 19 $/mois | il faut connaître l'app |
+| Mention | veille des mentions | des mots-clés | ≈ 599 $/mois depuis 2025 | hors budget d'une TPE |
+| Metricool | statistiques et suivi de concurrents | ses comptes et les pseudos concurrents | gratuit (1 marque), ≈ 20 $/mois | il faut déjà connaître les comptes |
+
+**Ce qu'aucun ne fait, et que SEO 360 fait désormais** (`node seo/cli.mjs presence`) :
+
+| Idée | Statut |
+|---|---|
+| Partir du site (pied de page, toutes les pages explorées, sameAs, balises d'application) pour trouver tous les profils, avis, apps, places de marché | fait |
+| Croiser le SIREN des mentions légales avec le registre (recherche-entreprises.api.gouv.fr) ; à défaut, reconnaître l'entreprise par le code postal du site | fait |
+| Repérer les pseudos qui changent d'un réseau à l'autre et les comptes en double | fait |
+| Bloc sameAs prêt à coller | fait |
+| Matrice « qui est où » face aux concurrents, plateformes à rattraper | fait |
+| Applications : note, avis, dernière version, langues (App Store) | fait (Apple refuse souvent les requêtes depuis un centre de données) |
+| Instantané daté et comparaison (`--avant`) | fait |
+| Le profil renvoie-t-il au site ? | à la main : les réseaux refusent la lecture automatique |
+
+Premier passage réel (17/11/2026), RGTE contre 5 fabricants et agenceurs : rgte.eu relie **0** plateforme ; ocf.fr 4 (YouTube, Pinterest, Instagram, LinkedIn), pousstronic.pro 3, lavitrinefrancaise.com 2 ; aucun SIREN lu sur rgte.eu, entreprise reconnue au registre par le code postal 83480.
+
 ## 6. Benchmarks clés 2026
 
 | Secteur (Google Ads, US) | CTR | CPC | Taux conv. | Coût/lead |

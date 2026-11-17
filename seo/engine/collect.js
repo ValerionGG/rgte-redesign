@@ -2,6 +2,7 @@
 // Le « fetcher » est injecté : Node (cli.mjs) ou proxy CORS (navigateur).
 import { extract } from './html.js'
 import { parseRobots } from './robots.js'
+import { identify } from './presence.js'
 
 export async function collect(rawUrl, fetcher, opts = {}) {
   const url = normalizeInput(rawUrl)
@@ -103,7 +104,11 @@ export async function crawl(ctx, fetcher, max = 20, onProgress) {
       const isHtml = /<html|<!doctype/i.test((r.body || '').slice(0, 1000))
       if (!isHtml) continue
       const pg = extract(r.body, r.finalUrl || q.url)
-      pages.push({ url: q.url, status: r.status, ...summary(pg), depth: q.depth, timeMs: r.timeMs })
+      // Liens externes vers des plateformes (réseaux, apps, avis…) : servent au profil de présence
+      const ext = pg.links.filter((l) => !l.internal && /^https?:/.test(l.href || '') && identify(l.href)).map((l) => ({ href: l.href, text: (l.text || '').slice(0, 40) }))
+      // SIREN ou SIRET (mentions légales) : croisé ensuite avec le registre des entreprises
+      const siren = (pg.text.match(/(?:siren|siret|rcs)[^0-9]{0,40}(\d{3}\s?\d{3}\s?\d{3})/i) || [])[1]?.replace(/\s/g, '')
+      pages.push({ url: q.url, status: r.status, ...summary(pg), depth: q.depth, timeMs: r.timeMs, ...(ext.length ? { presence: ext.slice(0, 40) } : {}), ...(siren ? { siren } : {}) })
       for (const l of pg.links) if (l.internal) enqueue(l.href, q.url, q.depth + 1)
     }
     onProgress?.(pages.length, max)
