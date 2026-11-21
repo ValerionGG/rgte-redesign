@@ -1,0 +1,173 @@
+{
+  "notes": {
+    "A": {"Justesse et preuves": 9, "Impact des améliorations": 7, "Priorisation et faisabilité": 7.5, "Qualité du benchmark": 5.5, "Clarté": 7.5},
+    "B": {"Justesse et preuves": 8, "Impact des améliorations": 8.5, "Priorisation et faisabilité": 8.5, "Qualité du benchmark": 7.5, "Clarté": 8.5},
+    "C": {"Justesse et preuves": 9, "Impact des améliorations": 8.5, "Priorisation et faisabilité": 9, "Qualité du benchmark": 7, "Clarté": 8},
+    "D": {"Justesse et preuves": 9, "Impact des améliorations": 7.5, "Priorisation et faisabilité": 8, "Qualité du benchmark": 6, "Clarté": 8},
+    "E": {"Justesse et preuves": 8.5, "Impact des améliorations": 8, "Priorisation et faisabilité": 7, "Qualité du benchmark": 9, "Clarté": 8}
+  },
+  "totaux_sur_100": {"A": 75.25, "B": 82, "C": 84.75, "D": 78.75, "E": 81},
+  "classement": ["C", "B", "E", "D", "A"],
+  "justifications": {
+    "A": {
+      "Justesse et preuves": "« la CLI donne 30/100 E … En code collé … 92/100 · A, Mesuré : 91 % » : rejoué à l'identique, comme ERR_MODULE_NOT_FOUND du plugin et « ≈ 6 € de marge » ; tous les fichier:ligne sont exacts. Moins 1 pour des gravités gonflées (« n'importe qui fabrique un rapport SEO 360 » classé Élevée) et le raccourci du tableau « Un site bloqué pour Google reçoit 92/100 A » sans « en code collé ».",
+      "Impact des améliorations": "« Contrôle bloquant non lu : note provisoire plafonnée » et « Ajouter outils-cli.mjs au plugin » protègent la confiance et réparent la promesse « outils et prix » ; mais l'ensemble est défensif, et « aucun proxy par défaut » casserait le parcours « un lien suffit » sans solution de remplacement.",
+      "Priorisation et faisabilité": "Tableau impact/effort réaliste (< 1 j, 2 h) avec le geste exact (`e.origin === new URL(d.url).origin`, `max-age=300` sans includeSubDomains) ; ordre dicté par le risque, pas par la valeur pour la TPE ; conflit confidentialité/lecture du site non arbitré.",
+      "Qualité du benchmark": "« Lighthouse … la catégorie reste sans note », « Ahrefs … Health Score », « claude-seo : SECURITY.md, PRIVACY.md » : sourcé et utile pour la note honnête, mais ni prix, ni positionnement, ni alternative réelle d'une TPE.",
+      "Clarté": "Compact et bien structuré, mais dense en jargon (postMessage, X-Forwarded-Proto, heap out of memory) et en chemins `T/…`."
+    },
+    "B": {
+      "Justesse et preuves": "« gh api … ?ref=main → 404 », « Budget de départ conseillé : 350 € », « au beurre AOP, à. », « 66/100 en Synthèse et 73 dans Concurrents », « cases de 20 × 20 px » : tous reproduits. Moins 2 : « à l'aveugle » exagéré (la sortie demande la valeur client), « 1re tâche à 959 px » non retrouvé (875 px), « 3 onglets hors écran » incomplet (le 3e est coupé et estompé).",
+      "Impact des améliorations": "« Publier la version complète et y renvoyer depuis claude.ai — Très fort », « Le Worker existant (seo/proxy) d'abord », « où coller selon l'outil de site » : ce sont les trois verrous qui empêchent un boulanger d'agir lundi.",
+      "Priorisation et faisabilité": "Rangé par impact, efforts ≤ 2 jours, colonne « Comment » exécutable (« Réutiliser la détection Wix, Shopify et WordPress ») ; le n° 1 est bien le vrai bloquant.",
+      "Qualité du benchmark": "6 outils avec prix, sources et comparaison dans les deux sens ; seul à opposer ChatGPT (« Déjà sur le téléphone ») et Localo (« tâches de la semaine faisables au téléphone ») ; prix en dollars de comparateurs, aucun concurrent open source.",
+      "Clarté": "« lundi, un boulanger ne peut pas auditer son site » : lisible par un dirigeant ; seuls les problèmes 6 et 8 sont des listes serrées."
+    },
+    "C": {
+      "Justesse et preuves": "Les pièges rejoués donnent exactement ses sorties : « Aucun outil de mesure d'audience détecté » (t1), « ✗ Consent Mode v2… obligatoire (CNIL) » avec RGPD 100 (t2), « Pas de schéma LocalBusiness » (t3), « Adresse (NAP) introuvable » (t5), IA 100 malgré nosnippet (t4), « 100 % Meta » et « +94 clics/mois » ; dates web justes (22/07/2026, ChatGPT-User). Moins 1 : SE Ranking Essential périmé, médiane Triple Whale tous canaux présentée pour Meta.",
+      "Impact des améliorations": "« Reconnaître CMP et GTM », « Retirer le prix par lien », « Shopping/PMax d'abord en e-commerce », « areaServed sans adresse = valide » : supprime des conseils qui feraient poser un 2e GA4, acheter des liens, mettre 1 500 € sur Meta ou baliser une fausse adresse.",
+      "Priorisation et faisabilité": "Efforts en heures (15 min, 2 h, 3 h), chaque correctif adossé à un test (« pièges t1-t2 en tests », « test qui interdit € par lien »), puis un corpus de 30 sites pour mesurer les faux positifs : le plan le plus directement exécutable.",
+      "Qualité du benchmark": "6 outils prix datés au 05/11/2026 et reliés aux constats (Screaming Frog « microdata, nosnippet », Otterly « mesure réelle des citations IA ») ; un prix périmé (SE Ranking) et peu d'alternatives TPE (ni ChatGPT ni outil local).",
+      "Clarté": "Précis et vérifiable, mais technique pour un dirigeant (« `/Tag/` capte GTM », PMax, microdataTypes)."
+    },
+    "D": {
+      "Justesse et preuves": "« Vos 3 actions commence à y = 840 … Voir les correctifs est à y = 1 354. Seuls 2 onglets sur 6 sont visibles », « Voir un exemple … à y = 991 », « 33 titres de niveau 1 » : reproduits au pixel et au titre près ; contraste 1,29:1 recalculé ; lignes app.js et app.css exactes. Seul écart : « 5 boutons d'export » (4 + « Modifier »).",
+      "Impact des améliorations": "« Synthèse mobile », « claude.ai sans impasse », « Réparer l'export Markdown », « M'envoyer le lien sur ordinateur » : utile à un dirigeant sur téléphone, mais ne change ni la justesse ni la valeur des conseils.",
+      "Priorisation et faisabilité": "Impact et effort réalistes pour chaque point, du plus rapide (1 h) au plus lourd (2-3 j), avec tests (« un seul titre de niveau 1 »).",
+      "Qualité du benchmark": "Parcours d'accueil de 5 outils (Seobility « page lue par leurs serveurs, sans proxy ») cohérent avec l'angle design, mais sans prix ni positionnement, sources secondaires (tutoriel d'agence, avis tiers).",
+      "Clarté": "Mesures nettes et vérifiables ; problèmes 6 à 8 en inventaires longs."
+    },
+    "E": {
+      "Justesse et preuves": "« 0 étoile, ni licence ni topic … dernier déploiement le 18/10 », « competitors.json … (l. 104) … (l. 187) … (l. 457) … (l. 892) » et « Core : 129 $ » : tous vérifiés ; seul `app.js:31` est décalé (l. 29) et deux avis tiers restent [À VÉRIFIER].",
+      "Impact des améliorations": "« ★ Benchmark local automatique », « ★ Panel IA mensuel », « ★ Suivi hebdomadaire » répondent à la demande de Nadir (concurrence, mesure, suivi) mais exigent clés API, facturation Google Cloud et GitHub Actions pour une TPE « sans développeur ».",
+      "Priorisation et faisabilité": "Les ★ à 3-5 jours passent avant « Publier pour de vrai » (< 1 j) et « Un lien qui marche » (1 j), qui conditionnent tout le reste ; faisabilité côté TPE peu traitée.",
+      "Qualité du benchmark": "9 concurrents dont 2 open source (étoiles, coût en jetons), prix sourcés, forces et faiblesses, « Choisir SEO 360 / Choisir un concurrent », « ~229 $/mois (One + Local) » : le seul vrai benchmark de marché.",
+      "Clarté": "Verdict final très net ; tableau de benchmark dense."
+    }
+  },
+  "verifications": {
+    "A": [
+      "Problème 1 (code collé + Disallow: /) → rejoué `node preuves/A/scripts/colle-bloque.cjs` : « 92/100 · A … Mesuré : 91 % » sur 8820 et sur 8810 ; CLI sur la même page servie en 8898 (`--no-psi`) : 30/100 (E). audit.js:165 (robots non vérifié = info, pénalité 0) et :491 (couverture par catégories) exacts → CONFIRMÉ",
+      "Problème 3 → `node plugins/seo360/seo/cli.mjs outils` : ERR_MODULE_NOT_FOUND (outils-cli.mjs absent) ; plugin.mjs:26 sans outils-cli.mjs ; `plugin.mjs --check` sort en code 1 ; tests 34/35 ; les 63 prompt.md ont `allowed_tools: [Skill, Read, Glob, Grep]` ; plan-croissance-360 l.20 « seulement ceux de `node seo/cli.mjs outils` » → CONFIRMÉ",
+      "Problème 5 → `budget --secteur boulangerie --valeur 45` : « Pas rentable aujourd'hui : ≈ 13 € par contact pour ≈ 6 € de marge » ; ads.js:80-81 marge 0,5 et signature 0,25 par défaut, jamais affichées ; budget-publicite/SKILL.md:17 « verdict inconnu, rien d'inventé » → CONFIRMÉ",
+      "Problèmes 2 et 4 → app.js:203 écoute `message` sans contrôle d'origine ; app.js:726 garde la note importée (simple bornage) ; index.html:38 et :88 contre l'option par défaut « Automatique (proxys publics) » (l.64), allorigins et codetabs (app.js:103-104), Google Suggest (keywords.js:78) ; share.js:26 garde marge, signature et budget dans `input` ; API GitHub : licence null → CONFIRMÉ (code ; attaque postMessage non rejouée)",
+      "Problèmes 6 à 8 → gsc.js:416 ne contrôle que la taille déclarée puis décompresse sans borne (l.420) ; html.js:233 parcours récursif ; fixes.js:82 HSTS 1 an + includeSubDomains ; detectKind('https://www.tiktok.com/@x') et Instagram → 'site' → CONFIRMÉ (bombe ZIP non relancée pour ne pas saturer la machine partagée)",
+      "Faiblesse « Agent Reach 109 000 étoiles [À VÉRIFIER] » → API GitHub : Panniantong/Agent-Reach 109 179 étoiles → chiffre JUSTE"
+    ],
+    "B": [
+      "Problème 1 → `gh api repos/valeriongg/rgte-redesign/contents/docs/seo?ref=main` : 404, de même pour `seo/` et `.claude-plugin/marketplace.json` → CONFIRMÉ",
+      "Problème 3 → `budget --secteur boulangerie` : « Budget de départ conseillé : 350 € » et « Rien de bloquant détecté » avec les 6 points à « ? » ; `--valeur 35 --marge 60` : « Pas rentable » (≈ 5 € de marge) → CONFIRMÉ, mais la sortie demande la valeur client",
+      "Problèmes 4 et 5 → export de l'exemple régénéré depuis avant/ : action n° 2 « Robots de recherche IA bloqués : PerplexityBot — Vous, 15 min » avec robots.txt à adapter ; « Pâtisserie lyon : … au beurre AOP, à. » (3 fois) → CONFIRMÉ",
+      "Problèmes 6 et 7 → Playwright 390 × 844 sur 8811 : Synthèse 66, Concurrents « (vous) » 73 avec « accueil de chacun » ; « Cette semaine 0/9 » ; 48 cases de 20 × 20 px ; 3 onglets entièrement hors écran et le 3e coupé ; 1re action à 875 px (959 non retrouvé, même conclusion) → CONFIRMÉ pour l'essentiel",
+      "Problème 8 → app.js:640 donne « Mesure, » et deux « Vitesse » (vus dans le tableau) ; report.js:10 + 46-47 n'indentent que la 1re ligne du code ; app.js:666 « Node 18 ou plus, aucune installation » → CONFIRMÉ"
+    ],
+    "C": [
+      "Problème 1 → pièges t1 et t2 servis à l'identique (md5) puis `cli.mjs --secteur boulangerie --ville Lyon --no-psi` : t1 « Aucun outil de mesure d'audience détecté » dans les 3 actions, GA4 et GTM conseillés, verdict suspendu ; t2 « ✗ Consent Mode v2 — … obligatoire (CNIL) » avec RGPD 100 ; outils.json:491, audit.js:30-33, ads.js:167 exacts → CONFIRMÉ",
+      "Problème 2 → t3 : « Pas de schéma LocalBusiness » dans les 3 actions, plus sameAs, types conseillés et Organization faux ; t5 : « Adresse (NAP) introuvable » et « Types conseillés absents : HomeAndConstructionBusiness, GeneralContractor, LocalBusiness » pour un Plumber ; html.js:178 collecte microdataTypes que l'audit n'utilise pas → CONFIRMÉ",
+      "Problèmes 3 et 4 → ads.js:235 « 80 à 400 € par lien de qualité » contre netlinking SKILL.md:20 ; `budget --secteur ecommerce --objectif ventes --valeur 60` : 1 500 €, Meta 100 %, « Canaux écartés : Google PMax, Google Search… », « ≈ 106 ventes » (ROAS 4,24) ; Triple Whale 2024 = 2,04 vérifié (médiane tous canaux) → CONFIRMÉ",
+      "Problème 5 → t4 (googlebot nosnippet, max-snippet:0) : Visibilité IA 100 ; robots.js:58 n'est qu'un commentaire ; recherche web : AI Overviews et AI Mode lancés en France le 22/07/2026, OpenAI écrit que robots.txt « may not apply » à ChatGPT-User → CONFIRMÉ",
+      "Problèmes 6 à 8 → `cli.mjs gsc seo/test/fixtures/gsc-complet.zip` : « vitrine réfrigérée occasion | 2,2 | 3 000 | 0,8 % | +94 » ; gsc.js:5-11 et :359, audit.js:8-17, plan.js:16 et :36, cli.mjs:139 (`.catch(() => [])`), pixels Meta et TikTok avec API serveur dans « Cette semaine » ; plugin outils.js sans shortPrice → CONFIRMÉ"
+    ],
+    "D": [
+      "Problème 1 → Playwright 390 × 844 sur 8811 : titre « Vos 3 actions » à y = 840, « Voir les correctifs » à y = 1 354 ; barre d'onglets coupée à 330 px avec masque : 2 onglets entièrement visibles → CONFIRMÉ au pixel près",
+      "Problème 4 → 8820 à 390 px : « Voir un exemple » à y = 991, « Analyser » actif → CONFIRMÉ",
+      "Problème 5 → export de l'exemple régénéré depuis avant/ (identique octet pour octet à mesures/exemple.md) puis `pandoc -f gfm` : 33 h1 dont « User-agent: GPTBot » ; cause report.js:10 et 46-47 → CONFIRMÉ",
+      "Problèmes 2 et 7 → app.js:168 affiche « Analyse terminée » en classe ok même si l'audit est incomplet ; toast 1 800 ms (app.js:260) ; aucun aria-invalid ; --line #dfe3ec → 1,29:1 sur blanc (recalculé) ; niveau des hashtags par la seule bordure (app.css:251) ; scrollIntoView (app.js:219) → CONFIRMÉ (parcours clavier non rejoué)",
+      "Problèmes 6 et 8 → `outils --secteur boulangerie --local` : 3 580 mots, Pixel Meta dans « Cette semaine » ; app.js:513 « Choisis d'après l'audit » ; Haloscan et Make gratuit=true avec prix payant, Ahrefs Webmaster Tools gratuit=true avec le prix Starter 29 $ → CONFIRMÉ"
+    ],
+    "E": [
+      "Problème 1 → API GitHub : 0 étoile, licence null, topics vides, description « RGTE — 10 propositions de refonte (concepts, non officiel) » ; main sans seo/, docs/seo/, .claude-plugin/marketplace.json (404) ; dernier déploiement github-pages le 18/10/2026 depuis main → CONFIRMÉ",
+      "Problème 8 → competitors.json l.104 (SE Ranking 65 $ Essential), l.187 (Ubersuggest geo_ia 0), l.457 (Haloscan Agency 79 €), l.892 (Metricool local 0), outils.json:837 (Agency 179 €), aucune ligne SEO 360 ; recherche web : Essential retiré, Core 129 $ → CONFIRMÉ (E a raison, C a tort)",
+      "Problèmes 2 à 5 → app.js:622 (onglet vide sans liste), plan.js:32 (fiche Google ajoutée sans mesure), keywords.js:6-9, README:242-243, local 90 sur le site de test (JSON de E) → CONFIRMÉ ; le message de app.js:31 est en fait l.29",
+      "Benchmark → API GitHub : claude-seo 26 910 étoiles (MIT), marketingskills 58 714 (MIT) ; recherche web : Semrush SEO 139,95 $, One 199 $, Local 30 $ par établissement ; Places API Text Search Pro 5 000 appels gratuits par mois → CONFIRMÉ"
+    ]
+  },
+  "a_garder": {
+    "A": [
+      "Note honnête quand un contrôle bloquant n'est pas lu (code collé) : note « provisoire » plafonnée, « robots.txt non vérifié » en synthèse, couverture comptée par contrôle et non par catégorie, test « code collé + Disallow »",
+      "Réparer le plugin : ajouter outils-cli.mjs à plugin.mjs, tester chaque sous-commande depuis plugins/seo360, autoriser Bash dans les évaluations (seul audit à avoir vu la panne réelle)",
+      "Intégrité : recalculer la note à l'import avec « importé, non revérifié », exiger `e.origin === new URL(d.url).origin` pour le bouton-favori",
+      "Lien de partage sans marge, taux de signature ni budget ; PRIVACY.md qui nomme chaque tiers ; LICENSE et SECURITY.md",
+      "Correctifs sans danger : HSTS par paliers (max-age=300 sans includeSubDomains), redirection HTTPS compatible Cloudflare « Flexible » (X-Forwarded-Proto)",
+      "Robustesse : compter les octets décompressés des ZIP, parcours JSON-LD itératif borné, validation de `input`",
+      "Pas de verdict pub sur une marge inventée : « inconnu » ou hypothèses affichées"
+    ],
+    "B": [
+      "Le scénario « lundi matin, un boulanger sur son téléphone » comme test d'acceptation",
+      "Publier la version complète sur main, bouton « Analyser mon site » depuis claude.ai, essai réel de /plugin",
+      "Lecture fiable par défaut avec le Worker existant (seo/proxy), proxys publics en secours",
+      "« Qui » réaliste et « où coller » selon Wix, Shopify ou WordPress ; robots.txt et schémas confiés au webmaster",
+      "Demander « Combien rapporte une commande ? » dans la carte Budget ; jamais de budget « conseillé » sans valeur client",
+      "Une seule liste de 3 actions, même ordre et même note sur tous les écrans ; 3 outils par semaine au plus, filtrés par le verdict pub",
+      "ChatGPT et Localo dans le benchmark : les vraies alternatives d'une TPE"
+    ],
+    "C": [
+      "Méthode des pages pièges (tarteaucitron, GTM seul, microdata, nosnippet, artisan sans vitrine) transformées en tests de non-régression",
+      "Reconnaître tarteaucitron (gtagUa, job.push), Axeptio, Didomi, Cookiebot ; GTM seul = « ? » et non « ✗ obligatoire (CNIL) »",
+      "Retirer « 80 à 400 € par lien » ; lien payé = rel=\"sponsored\" ; test qui interdit « € par lien »",
+      "Contrôle nosnippet, max-snippet, data-nosnippet et X-Robots-Tag comme critique IA ; corriger la phrase sur ChatGPT-User",
+      "Budget : minimums puis répartition, Shopping/PMax d'abord en e-commerce, conversion Meta réaliste, hypothèses affichées, au mieux « à tester » sans marge",
+      "Lire microdataTypes, table des sous-types schema.org, areaServed sans adresse = valide",
+      "Poids par profil (local 25 %) et risque légal CNIL en tête ; courbe de CTR avec réponses IA ; « suggestions indisponibles » signalé ; corpus de 30 sites français avec taux de faux positifs publié"
+    ],
+    "D": [
+      "Mesures mobiles chiffrées et Synthèse mobile : 3 actions d'abord, exports dans un menu, « Voir les correctifs » toujours visible",
+      "Réparer l'export Markdown (indenter chaque ligne) avec le test « un seul titre de niveau 1 »",
+      "Plus de « Analyse terminée » en vert sur un audit incomplet : avertissement sous 60 % mesuré, erreur sous le champ avec aria-invalid, erreurs traduites, toast de 6 s",
+      "claude.ai : « Voir un exemple » en bouton principal, « Analyser » actif seulement avec du code collé, favori, proxy et clés masqués",
+      "Recours mobile « M'envoyer le lien sur ordinateur » (navigator.share)",
+      "Passe accessibilité mesurée : bordures à 3:1, étiquette visible, niveau des hashtags écrit, glossaire hors Tab, scrollLeft au lieu de scrollIntoView",
+      "Lexique commun à toutes les surfaces (30/60/90 contre S1-2/S3-4/M2/M3, 8 contre 15 pages explorées)"
+    ],
+    "E": [
+      "Preuve par l'API GitHub que la page publique et l'installation du plugin ne mènent nulle part (main sans seo/, dernier déploiement le 18/10, 0 étoile, sans licence)",
+      "★ Benchmark local automatique via Places API (Text Search Pro, 5 000 appels gratuits par mois) qui remplit --concurrents et mesure l'action « fiche Google »",
+      "★ Panel IA mensuel (part de voix face aux concurrents) et ★ suivi hebdomadaire avec alertes (nouveau critique, clics -20 %)",
+      "Importer les sources gratuites (Keyword Planner, Haloscan, Ubersuggest, Metricool) et masquer les idées sans demande",
+      "Skills qui trouvent seuls 3 à 5 concurrents « secteur ville » quand la liste est vide",
+      "Étude corrigée et testée : une seule source de prix, test de cohérence des deux JSON, ligne SEO 360 dans la grille",
+      "Benchmark de marché complet avec open source et guide « Choisir SEO 360 / Choisir un concurrent »"
+    ]
+  },
+  "erreurs": {
+    "A": [
+      "Tableau : « Un site bloqué pour Google reçoit 92/100 A » sans préciser « en code collé », où robots.txt est illisible par construction ; la CLI et la version complète le lisent et donnent 30/100 E (vérifié)",
+      "Gravité « Élevée » de la falsification de rapport discutable : tout rapport calculé côté navigateur se falsifie, ce que l'audit reconnaît pour Lighthouse Viewer (code vérifié, gravité non)",
+      "Amélioration 4 « aucun proxy par défaut » non arbitrée : elle supprimerait l'analyse à partir d'un lien, que B et E veulent au contraire fiabiliser (affirmation de jugement, non testée)",
+      "Agent Reach à 109 000 étoiles, marqué [À VÉRIFIER] : vérifié, c'est juste (109 179)"
+    ],
+    "B": [
+      "« 350 €/mois conseillés à l'aveugle » exagéré : la sortie ajoute « Indiquez la valeur d'un client (et votre marge) pour savoir si c'est rentable » (vérifié)",
+      "« 1re tâche à 959 px » non retrouvé : 875 px pour la 1re action, titre à 840 (vérifié ; conclusion inchangée)",
+      "« 3 onglets sur 6 hors écran » : exact, mais le 3e est coupé et estompé, seuls 2 sont entièrement visibles (vérifié)",
+      "ChatGPT Go à 8 $/mois et prix Localo : non vérifiés"
+    ],
+    "C": [
+      "« SE Ranking Essential : 55-65 $/mois » périmé : Essential retiré en 2026, entrée à Core 129 $ (vérifié par recherche web ; signalé [À VÉRIFIER] par l'audit)",
+      "« médiane Triple Whale 2024 : 2,04 » est la médiane tous canaux, pas celle de Meta (1,88 sur la période récente) : l'argument reste valable (vérifié)",
+      "« Achat de liens recommandé » est une lecture : la carte chiffre « 80 à 400 € par lien » sans écrire « acheter » ; lecture raisonnable (vérifié)",
+      "« #patissier — niche me semble faux » : non vérifié, ni par l'audit ni par moi"
+    ],
+    "D": [
+      "« après 5 boutons d'export » : 4 exports plus « Modifier / nouvelle analyse » (vérifié sur sa propre capture)",
+      "Benchmark appuyé sur des sources secondaires (tutoriel d'agence, temperstack) et sans prix (non vérifié)",
+      "Parcours clavier (45 arrêts) et pastille « 10 » à 2,24:1 en sombre : non rejoués"
+    ],
+    "E": [
+      "`app.js:31` : le message « l'analyse en direct est bloquée » est l.29 (vérifié)",
+      "« Reddit hostile selon PricingSaaS » et « Peec ~70-85 € » : non vérifiés (signalés [À VÉRIFIER] par l'audit)",
+      "Panel IA par API : les réponses obtenues par API, souvent sans recherche web, ne reflètent pas ce que voit l'utilisateur de ChatGPT ou Perplexity (doute de méthode, non vérifié)",
+      "Places API « avec la clé de l'utilisateur » et Action GitHub supposent projet Google Cloud, facturation et GitHub, peu réalistes pour la TPE « sans développeur » de ses propres hypothèses (non vérifié)"
+    ]
+  },
+  "manques_communs": [
+    "Aucun audit n'exécute les skills dans Claude Code ni les 63 évaluations : la qualité réelle du plan de plan-croissance-360, cœur de la demande « un lien, un plan complet », n'est jugée que sur le code et la CLI.",
+    "Les réseaux sociaux (« percer sur TikTok, Instagram ») restent à peine audités : scripts vidéo, plan de publication, niveaux de hashtags et veille Agent Reach ne sont testés sur aucun cas.",
+    "Personne ne chiffre la note visée après corrections ni ne fusionne les 40 améliorations en une feuille de route commune vers ~90/100, alors que Nadir demande d'approcher 100.",
+    "Aucun test sur de vrais sites de TPE françaises ni avec de vrais dirigeants : faux positifs et temps jusqu'à la 1re action restent estimés (seul C propose un corpus).",
+    "Vitesse et Core Web Vitals (17 % de la note) non vérifiés faute de PageSpeed : la justesse des constats et correctifs de vitesse reste inconnue.",
+    "Calendrier calculé (soldes, fête des mères, ponts, Alsace-Moselle), exports CSV, .ics et PDF, canal e-mail promis par plan-croissance-360 : vérifiés par personne.",
+    "Aucun ne traite l'entretien des données datées (prix, mises à jour Google) : qui les rafraîchit et à quel rythme ; E montre la dérive, pas le processus."
+  ],
+  "commentaire": "C est le meilleur audit : ses cinq pages pièges et ses commandes se rejouent à l'identique et révèlent des faux positifs qui pousseraient une TPE à de mauvaises actions (2e balise GA4, schéma inutile, achat de liens, 1 500 € sur Meta), avec des correctifs chiffrés en heures et testables ; à compléter par le benchmark de marché de E et l'angle « lundi matin » de B."
+}

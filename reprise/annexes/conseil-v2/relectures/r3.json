@@ -1,0 +1,144 @@
+{
+  "notes": {
+    "A": {
+      "justesse": 7,
+      "impact": 9,
+      "faisabilite": 7,
+      "ambition": 8,
+      "priorisation": 7,
+      "justification": "justesse 7 : le fond est exact et je l'ai reproduit (interface : 100/100 · A « Rien de bloquant 🎉 » en mode PageSpeed seul, 93/A proxy KO ; Node sur le vrai moteur : `content=none` non signalé, « * bloqué, Googlebot autorisé » → « interdit tout le site à tous les robots », Plumber/ExerciseGym/Attorney/AutoDealer/CafeOrCoffeeShop → « Pas de schéma LocalBusiness », logo `<a><img alt>` → lien sans texte, « +33 4 78… » → « Pas de numéro », « par exemple » masque auteur/date, en-uk accepté ; budget ROAS 35-118, LinkedIn 438 €, 32-711 ventes, 2 971-4 457 clics, tous exacts). Mais trois renvois fichier:ligne n'existent pas (plan.js:209-214, keywords.js:117-144, collect.js:171-201) et « la fiche Google à 90 jours » est à moitié faux. impact 9 : « plafond 30 si noindex/none, Googlebot bloqué, 4xx/5xx, coquille JS, canonical externe » est la seule proposition qui empêche une page lue mais bloquée d'avoir A ; « gain = impressions × écart de CTR » (Search Console) ; « CPA max rentable ; plafond = volume × CTR ; campagnes App et Apple Ads ». faisabilite 7 : regex prêtes (« 5 formats testés »), pages pièges à figer en tests, mais 3 emplacements faux à retrouver. ambition 8 : « aucun A sur les pages pièges, au moins 95 % de constats exacts sur 30 sites français relus, un budget à fourchette ≤ ×2 avec le CPA max rentable ». priorisation 7 : tableau ordonné et 3 étapes, mais 1 314 mots pour 1 100 demandés, constat 2 très dense, et l'UX notée 60/100 n'est presque pas analysée."
+    },
+    "B": {
+      "justesse": 9,
+      "impact": 8,
+      "faisabilite": 9,
+      "ambition": 7,
+      "priorisation": 8,
+      "justification": "justesse 9 : mesures reproduites à l'identique : titre de section à 0 px sous un en-tête de 59 px après chaque changement d'onglet, « Erreur : Failed to fetch » remplacé par « Analyse en cours… 1 s » en moins d'1 s, focus renvoyé sur BODY après un filtre, contrastes 3,86 / 3,35 / 4,23 / 4,48 / 2,49 / 2,72 exacts au centième, 45 corrections / 49 tâches / 107 cases, 8 onglets coupés ou hors écran à 390 px. Tous les fichier:ligne sont justes ; seuls « Rapport importé : undefined » (non reproduit) et la perte au rechargement (un bouton « Rouvrir la dernière analyse » existe) sont discutables. impact 8 : #1 « 3 solutions (autre proxy, coller le code, CLI) à la place de la note », #4 « critiques d'abord, 5 actions maximum, avec durée et qui s'en charge », #7 « clients voulus + valeur d'un client → budget conseillé », #8 « prêt à coller… aperçu Google ». En revanche, rien sur les faux constats du moteur ni sur des données réelles. faisabilite 9 : chaque ligne pointe le bon endroit, correctif testé (`scroll-padding-top:72px`), couleurs de remplacement fournies, rappel « node build.mjs » (copie vers docs/seo/). ambition 7 : « En 60 s, tes 3 actions de la semaine… à J+30, la preuve du progrès », « 3 clics au plus », « zéro échec WCAG 2.2 AA » : crédible mais centré sur l'interface. priorisation 8 : 12 lignes impact/effort, 3 étapes, gains rapides, dans la limite de longueur."
+    },
+    "C": {
+      "justesse": 9,
+      "impact": 9,
+      "faisabilite": 8,
+      "ambition": 9,
+      "priorisation": 8,
+      "justification": "justesse 9 : tout ce que j'ai testé tient : 100/A en PageSpeed seul ; « 7 constats sur 45 ont un code prêt (16 %) » exact sur le rapport d'exemple ; concurrent de 4 mots « 58 contre 22 » dû au crawl asymétrique (app.js:96) ; Guide à 6 314 px et Étude de marché à 5 452 px, exacts au pixel ; prix Semrush/Ahrefs/Haloscan/Peec/Otterly conformes à competitors.json ; « boucle fermée » bien listée dans github-oss.json ; `web_search_20260209` et 10 $ les 1 000 recherches exacts. Seule la citation « peu actionnable » est une paraphrase. impact 9 : `engine/fixes.js` (« titre tiré du H1 et de la marque…, JSON-LD avec l'adresse et les sameAs détectés »), « Revérifier + historique (corrigés / restants / nouveaux) », verdict budget « rentable, test plafonné (arrêt… après 50 clics) ou SEO local d'abord », bouton-favori qui évite proxy et copier-coller. faisabilite 8 : emplacements justes (audit.js:418, app.js:78-108, html.js:34, plan.js:48). Mais le bouton-favori lit le DOM rendu, ce qui masquerait le constat « contenu dépendant du JavaScript », et le lien `#r=` comme la clé IA stockée exigent d'abord un échappement absent aujourd'hui. ambition 9 : « l'outil qui ferme la boucle… de l'URL au correctif publié et prouvé… à 0 € », adossé aux prix concurrents, avec « au moins 80 % des constats avec un correctif prêt à coller (16 % aujourd'hui) » et « moins de 15 minutes entre l'URL et le premier correctif publié puis revérifié ». priorisation 8 : 11 lignes, 3 étapes chiffrées (≈ 2 jours, ≈ 2 semaines, ≈ 3 semaines), section « On retire » ; #3 est noté impact 3 alors qu'il corrige le benchmark faussé du constat 4."
+    },
+    "D": {
+      "justesse": 9,
+      "impact": 8,
+      "faisabilite": 9,
+      "ambition": 6,
+      "priorisation": 7,
+      "justification": "justesse 9 : les constats les plus graves du conseil, tous reproduits. « Taper rgte.fr lance un audit d'appli Android » : badge « Application », requête Google Play via le proxy, note 100/A sur la 404 simulée ; idem pour www.rgte.fr, et monsite.fr/contact → « Dépôt GitHub ». Un panier de 45 € ou un budget de 1 230 € rendent le formulaire invalide, et la valeur reste mémorisée après l'import du rapport d'exemple. XSS : `counts.critique` lit `seo360:form`, clé PageSpeed et jeton GitHub compris (exécutée 3 fois). Aussi vérifiés : délai CLI limité aux en-têtes, `%E9` → URIError, H1 de 1 204 caractères, 4 000 `<a>` → 3,3 s (coût quadratique), modèle robots.txt qui bloque /compteurs-…, 36 283 €. Nuances : Chrome affiche quand même sa bulle de validation (« rien ne se passe » est exagéré), et un concurrent non lu n'est pas « à 100 partout » (technique −25). impact 8 : couche de vérité indispensable (routage, step, délais, collecte honnête, CSP), mais peu de choses pour comprendre, agir ou décider du budget au-delà du champ « recherches/mois ». faisabilite 9 : effort 1 presque partout, lieux exacts (`plan.js:38` pour porter l'id), CSP « testée : XSS bloqué, 0 violation sur 8 onglets ». ambition 6 : « Aucune note sans preuve », ±2 points, faux positifs < 5 % en CI sur 30 sites : rigoureux et mesurable, mais c'est une barre de qualité, pas ce qui rendrait l'outil meilleur pour une TPE. priorisation 7 : bon principe (« une couche de vérité avant toute nouvelle fonction »), mais 1 185 mots pour 1 100 demandés et une liste très technique (SSRF du Worker, coût quadratique) peu lisible pour Nadir."
+    },
+    "E": {
+      "justesse": 9,
+      "impact": 9,
+      "faisabilite": 8,
+      "ambition": 8,
+      "priorisation": 8,
+      "justification": "justesse 9 : chiffres reproduits à l'identique : 93/A par défaut ; « ≈ 124 conversions, ≈ 12 €, ROAS 0,4 – 2,1 » ; « 0,93 € » au milieu de la fourchette ; RGTE « de 12 à 40 demandes, ROAS de 23 à 79 ». Également vérifiés : HTTPS repoussé à 30 jours par `plan.js:6`, fiche Google en dernière ligne de la semaine, « accueilnos », « pâtisserie lyon Lyon », « quel pâtisserie lyon », #Lyon avant #PatisserieLyon, rapport importé perdu au rechargement, message d'erreur hors écran sur mobile. Seuls « −160 px » (−93 px chez moi, même constat) et « 56 termes techniques » sont approximatifs ou invérifiables. impact 9 : « Vos 3 actions cette semaine… qui (vous/webmaster/hébergeur), durée, coût ; bouton « Copier le message pour mon prestataire » », « verdict (valeur × marge × taux de signature contre CPA prudent) ; recommended = 10 clics/jour × CPC haut si budget vide », mode simple + GLOSSARY, import Search Console : c'est exactement comprendre, agir et décider du budget. faisabilite 8 : endroits exacts (`finalize`, `synthese()`, `planBudget`, `TABS` app.js:22), gains rapides en une ligne (`i.sev === 'critique' ||`). Mais les lignes #4 et #6 regroupent plusieurs chantiers, et la table qui/durée/coût reste à rédiger pour ~120 contrôles. ambition 8 : « En 2 minutes et sans jargon : 3 actions, qui les fait, leur coût et un montant de pub justifié. Puis, chaque mois, la preuve que ça monte », avec « aucun score sous 80 % de contrôles mesurés », « première action visible sans défiler sur mobile », un verdict pour les 28 secteurs et un rappel .ics. priorisation 8 : la plus lisible en 5 minutes (« un score fiable, puis 3 actions et un montant »), mais un tableau de 6 lignes dont les notes impact/effort discriminent peu, parce que chaque ligne regroupe plusieurs chantiers."
+    }
+  },
+  "classement": ["C", "E", "B", "D", "A"],
+  "a_garder": {
+    "A": [
+      "Plafonner la note quand une condition bloque : 30 si noindex/none, Googlebot bloqué, 4xx/5xx, coquille JS, canonical externe ; 60 sous 150 mots. C'est la seule réponse qui voit qu'une page entièrement lue mais désindexée reçoit A (noindex 94/A, Disallow 85/A, canonical préprod 99/A)",
+      "Batterie de pages pièges (construction 86/A, noindex 94/A, none 99/A, Disallow 85/A, canonical préprod 99/A, SPA 78/B) figée en tests dans seo/test/fixtures/pieges/",
+      "Liste des faux positifs/négatifs du moteur, tous vérifiés, avec leurs correctifs : regex robots (noindex|none), regex téléphone +33 testée sur 5 formats, retrait du /i sur « par [A-Z] », alt de l'image compté dans le texte du lien, sous-types LocalBusiness, OnlineStore sans adresse, `Manufacturer` inexistant dans schema.org, hreflang en-uk, status 0 = non vérifié, double comptage robots-all + robots-block",
+      "Import Search Console : requêtes en position 4–20, gain = impressions × écart de CTR → 10 pages à retravailler en tête du Plan",
+      "Budget réaliste : minimum viable par canal (LinkedIn 1 500 €/mois d'après benchmarks.json:89, alors que l'outil lui donne 438 €), estimation centrale ±35 %, taux de signature B2B 10 %, CPA max rentable, plafond = volume × CTR, campagnes App + Apple Ads au lieu de Performance Max pour une appli",
+      "Voie « Conformité » (mentions légales, CMP, CGV) sortie du score SEO, et SEO local dès la semaine 1",
+      "Retirer #meilleurouvrierdefrance (titre protégé : risque de pratique commerciale trompeuse) et #paris_patisserie",
+      "Écart de contenu : termes présents chez au moins 2 concurrents et absents chez toi (competitorSummary)",
+      "Cible mesurable : au moins 95 % de constats exacts sur 30 sites français relus"
+    ],
+    "B": [
+      "`html{scroll-padding-top:72px}` : corrige le titre caché sous l'en-tête collant après chaque changement d'onglet (vérifié : h2 à 0 px, en-tête à 59 px)",
+      "Contrastes WCAG mesurés, avec couleurs de remplacement (#c2410c, #946200, #536173, #166534, #0f766e), texte sombre sur le bouton Analyser en thème sombre, filtres inactifs en contour au lieu d'opacity .45, role img sur .meter",
+      "Mise à jour sans re-rendu complet (le focus est aujourd'hui perdu sur BODY), `onProgress` branché pour afficher les étapes, `clearInterval` dans `finally`",
+      "Une seule liste « À faire » indexée par `issue.id` : Plan affiché comme vue de cette liste, checklists pré-cochées",
+      "Champs « prêts à coller » (title, meta, OG, llms.txt) modifiables, avec compteur et aperçu Google",
+      "Budget inversé : clients voulus + valeur d'un client → budget conseillé et coût par client maximal ; cartes au lieu du tableau de 8 colonnes sur mobile",
+      "pushState/popstate et restauration du rapport ; PDF client avec couverture, Synthèse et À faire ensemble, sans le slogan",
+      "Rappel : `node build.mjs` après chaque modification (copie vers docs/seo/)",
+      "Petits bugs à corriger : en-tête « MESURE, » (app.js:368), identifiants bruts `google_search` (app.js:344), secteur par défaut « Restaurant », Étude de marché où SEO 360 se note lui-même (app.js:390)",
+      "Critère d'objectif : 3 clics au plus de l'URL au correctif copié"
+    ],
+    "C": [
+      "Positionnement « fermer la boucle diagnostiquer → corriger → vérifier → prouver », adossé aux prix concurrents de competitors.json et au manque relevé dans github-oss.json (feature_gaps[8])",
+      "`engine/fixes.js` : correctif pré-rempli depuis la page (titre tiré du H1 et de la marque, meta extraite, JSON-LD avec l'adresse et les sameAs détectés, robots.txt, llms.txt), avec l'indicateur « au moins 80 % des constats avec correctif prêt (16 % aujourd'hui) »",
+      "« Revérifier » + historique : comparaison par id (corrigés / restants / nouveaux), série score-couverture, export",
+      "Couverture = somme des poids CATEGORIES évalués ; aucune note sous 60 %",
+      "Verdict budget à 3 issues : rentable / test plafonné (arrêt si le coût dépasse le seuil après 50 clics) / SEO local d'abord",
+      "Bouton-favori « Auditer cette page » (window.open + postMessage) pour lire la page sans proxy public ni copier-coller",
+      "Lien de rapport client `#r=` compressé (CompressionStream), logo d'agence, sans serveur, à faire seulement après l'échappement des données importées",
+      "Rédaction IA avec la clé de l'utilisateur (en-tête d'accès direct navigateur), chaque texte revalidé par l'audit ; panel IA mensuel de 20 questions, méthode affichée",
+      "Comparatif concurrents sans les constats de crawl (scope site), pour un benchmark à grille égale",
+      "« On retire » : Étude de marché, Guide et Checklists dans une page « Ressources », tableau des 19 robots repliable, indicateurs PageSpeed vides masqués"
+    ],
+    "D": [
+      "Routage de la saisie : supprimer le paquet Android nu (appstore.js:18), n'accepter `owner/repo` que si owner n'a pas de point (index.js:29). Aujourd'hui rgte.fr et www.rgte.fr partent en audit Google Play noté A",
+      "`step=any` sur le budget et la valeur client, avec l'invalidité expliquée dans #progress : 45 € ou 1 230 € bloquent l'analyse, et la valeur reste mémorisée après l'import du rapport d'exemple",
+      "Sécurité de l'interface : CSP en meta (testée), `esc()` partout, `Number()` + vérification de version à l'import, jetons PageSpeed et GitHub exclus de `persist()` (origine github.io partagée)",
+      "Délais : AbortController à 20 s par requête et 120 s au total ; CLI : délai jusqu'à la fin du corps et 5 Mo max",
+      "Collecte honnête : 401/403/429/503 → « robot bloqué » sans audit on-page (pare-feu qui refuse l'UA), `TextDecoder(charset)` pour l'ISO-8859-1, erreur de collecte ≠ lien cassé, même profondeur de crawl pour tous les sites comparés",
+      "Robustesse du parseur : `try` sur `decodeURIComponent` (crash sur %E9), garde-fous contre les balises non fermées (H1 géant, coût quadratique)",
+      "Modèle robots.txt sans Disallow génériques (/compte bloque /compteurs-…, /recherche bloque /recherche-et-developpement)",
+      "Durcir le Worker : Origin connue ou jeton, hôte revérifié à chaque redirection, blocage de 0.0.0.0/8, 172.16/12 et des IPv6 privées, try/catch",
+      "Plan indexé par `étape:issue.id`, en ajoutant l'id dans `toItem` (plan.js:38)",
+      "Objectif « Aucune note sans preuve » : chaque constat avec son extrait, son statut ou son en-tête ; reproductibilité à ±2 points ; 30 sites FR figés en fixtures ; faux positifs < 5 % en CI"
+    ],
+    "E": [
+      "Carte « Vos 3 actions cette semaine » : qui (vous/webmaster/hébergeur), durée, coût, et bouton « Copier le message pour mon prestataire »",
+      "Verdict budget en une phrase : valeur × marge × taux de signature contre CPA prudent ; budget recommandé = 10 clics/jour × CPC haut si le champ est vide (règle de benchmarks.json:90) ; champs marge et taux ; export = budget affiché (aujourd'hui report.js et app.js:315 divergent)",
+      "La formulation « 1 € de pub rapporte 0,93 € de chiffre d'affaires avant marge » : le verdict qui manque à l'écran",
+      "Mode simple par défaut (Priorités, Budget, Réseaux) avec interrupteur « Expert », GLOSSARY en `<abbr title>`, formulaire replié après l'analyse",
+      "Constat d'incohérence entre modes : le même site obtient 87 (échec), 66 (HTML collé) et 56 (CLI)",
+      "Message d'erreur en anglais et hors écran sur mobile, parce que go() fait défiler vers les résultats",
+      "Budget vide par défaut (plan.js:20 pousse la pub dans les deux branches) et secteur à choisir au lieu de « Restaurant »",
+      "Mois 2 : rappel .ics à 30 jours, historique local « +12 pts, 6/9 faites », liens pré-remplis `?url=&secteur=` pour les agences",
+      "Critères « première action visible sans défiler sur mobile » et « aucun sigle inexpliqué en mode simple »",
+      "Gains rapides : `i.sev === 'critique' ||` dans plan.js:6, « métier + ville » avant « ville » (hashtags.js:69-71), « quelle », ville non répétée dans les mots-clés"
+    ]
+  },
+  "erreurs": {
+    "A": [
+      "`plan.js:209-214` n'existe pas : plan.js fait 51 lignes (wc -l). Le report du local et de l'IA à J+90 vient de plan.js:10 (m2 limité à technique/contenu/performance/données)",
+      "`keywords.js:117-144` n'existe pas : le fichier fait 90 lignes, les gabarits sont aux l.4-9 et 22-31 (lu)",
+      "`collect.js:171-201` n'existe pas : le fichier fait 116 lignes, le crawl est aux l.76-106 (lu)",
+      "« la fiche Google à 90 jours » est à moitié faux : la tâche « Revendiquer et compléter la fiche Google Business Profile » est dans « Cette semaine » (plan.js:15, vérifié dans exemple-rapport.json). Seul le constat « Pas de lien vers votre fiche Google / Maps » tombe à 90 jours",
+      "« Les microdonnées sont ignorées (html.js:162) » est exagéré : html.js:162 les détecte et évite « Aucune donnée structurée ». Ce sont leurs types qui sont ignorés (vérifié : des microdonnées Bakery donnent quand même « Pas de schéma LocalBusiness »)"
+    ],
+    "B": [
+      "« Rapport importé : undefined » non reproduit : l'import du rapport d'exemple affiche « Rapport importé : http://127.0.0.1:8765/ ». Le message n'apparaît qu'avec un JSON sans `target` (non vérifié)",
+      "« recharger ou Retour perd le rapport » est partiel : après une analyse, l'accueil propose « Rouvrir la dernière analyse » (app.js:221). La perte n'est totale que pour un rapport importé (vérifié au rechargement)",
+      "Filtres inactifs « 1,65 à 1,9:1 » : j'ai mesuré 1,64 à 2,06:1 (la pastille Critique inactive est à 2,06). Écart mineur, même conclusion"
+    ],
+    "C": [
+      "« peu actionnable » est cité comme venant de competitors.json, qui dit en fait « Limité au monitoring (peu d'actions) » (Peec) : c'est une paraphrase entre guillemets (lu)",
+      "« Proxy public en échec : 87/100 » n'est vrai que pour le faux site en http:// (le constat HTTPS critique s'ajoute) ; un site https donne 93/100 (vérifié dans l'interface)",
+      "Bouton-favori : il transmettrait le DOM rendu après JavaScript, pas le HTML servi aux robots, ce qui masquerait le constat « contenu dépendant du JavaScript » (audit.js:187-189). COOP et usage mobile ne sont pas traités. Non testé (réseau bloqué)",
+      "Lien `#r=` et clé IA stockée dans le navigateur : sans l'échappement qui manque aujourd'hui (app.js:125 et 181 ; XSS vérifiée), un simple lien partagé suffirait à exécuter du code et à lire la clé. Risque non mentionné",
+      "« ≈ 5 200 caractères pour 45 constats (mesuré) » : non vérifié, dépend des champs inclus"
+    ],
+    "D": [
+      "« Bouton muet… rien ne se passe » est exagéré : Chrome affiche sa bulle de validation native sur le champ (validationMessage : « the two nearest valid values are 40 and 50 »). En revanche #progress reste vide et l'analyse ne part pas (vérifié)",
+      "« Concurrents non lus → 100 partout » est exagéré : la catégorie technique prend « Page inaccessible » (−25, audit.js:73). Le reste à 100 et le faux « vous devance en Contenu » sont exacts (lu)",
+      "« rgte.fr → 93/100 A » : reproduit avec 100/100 A sur ma 404 simulée. La note dépend de la page simulée, le constat tient"
+    ],
+    "E": [
+      "« −160 px sur mobile » : j'ai mesuré −93 px en 390×844. Le message est bien hors écran, la valeur dépend de l'état",
+      "« 12 200 mots » : environ 13 000 mesurés, onglets dépliés (méthode de comptage différente). « Au moins 56 termes techniques » : non vérifié"
+    ]
+  },
+  "manques_communs": [
+    "Les 9 skills Claude Code (.claude/skills/*/SKILL.md), demandés en toutes lettres par Nadir (« Crée-moi des skills »), ne sont audités par aucune réponse",
+    "Les modes Application (appstore.js, ASO) et Dépôt GitHub (github.js) ne sont pas audités sur le fond, à part le routage (D) et le budget appli (A). L'onglet Concurrents n'est testé que sur le faux site",
+    "Aucune source réelle de popularité ou de tendance des hashtags n'est proposée, alors que « les meilleurs hashtags pour tous les réseaux » ouvre la demande (manque déjà noté dans github-oss.json:feature_gaps[0]). A et E corrigent seulement les gabarits",
+    "Personne ne propose d'exploiter les audits SEO de Lighthouse que PageSpeed renvoie déjà (titre, meta description, canonical, hreflang, robots.txt, texte des liens) pour évaluer une partie des catégories sans proxy, ni de mettre en avant la clé PageSpeed gratuite, cachée dans les options avancées",
+    "Ordre sécurité / nouvelles fonctions : B (rapport restauré au démarrage), C (lien #r=, clé IA stockée) et E (store.set('last') à l'import) proposent des ajouts qui rendraient la XSS d'import, trouvée par D seul, persistante ou déclenchable par un lien. Aucune ne les conditionne à l'échappement préalable"
+  ],
+  "commentaire": "Prendre C comme colonne vertébrale (corriger → revérifier → prouver), mais commencer par la couche de vérité de D (routage rgte.fr, step, XSS, délais) et les plafonds et corrections moteur de A, puis y greffer la carte « 3 actions + message au prestataire » et le verdict budget de E, et les correctifs UX mesurés de B."
+}
