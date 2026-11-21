@@ -1,3 +1,5 @@
+> **Reprendre le projet (autre PC, nouvelle session)** : lire [reprise/REPRISE.md](reprise/REPRISE.md), tout y est. Plateforme SEO 360 : [seo/README.md](seo/README.md).
+
 # RGTE — 10 propositions de refonte
 
 Concepts de refonte complète de [rgte.eu](https://www.rgte.eu) (RGTE · R.G. Technologies, vitrines réfrigérées sur mesure, Puget-sur-Argens). **Ce n'est pas le site officiel** : chaque page porte la mention « Proposition de refonte — concept, non officiel », et les pages sont en `noindex`.

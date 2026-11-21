@@ -1,0 +1,632 @@
+{
+  "generatedAt": "2026-11-17T22:37:03.636Z",
+  "target": "rgte.eu",
+  "brand": "RGTE",
+  "presence": {
+    "name": "rgte.eu",
+    "error": null,
+    "items": [],
+    "findings": [
+      {
+        "level": "manque",
+        "platform": "linkedin",
+        "text": "LinkedIn : aucun lien depuis le site.",
+        "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+      },
+      {
+        "level": "manque",
+        "platform": "youtube",
+        "text": "YouTube : aucun lien depuis le site.",
+        "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+      },
+      {
+        "level": "manque",
+        "platform": "google-avis",
+        "text": "Fiche Google (avis, itinéraire) : aucun lien depuis le site.",
+        "todo": "Ajoutez un lien « Avis Google » ou « Itinéraire » vers votre fiche (et créez-la si elle n’existe pas)."
+      }
+    ],
+    "missing": [
+      "linkedin",
+      "youtube",
+      "google-avis"
+    ],
+    "candidates": [
+      {
+        "platform": "linkedin",
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/company/rgte/",
+        "search": "https://www.google.com/search?q=%22RGTE%22%20site%3Alinkedin.com"
+      },
+      {
+        "platform": "youtube",
+        "label": "YouTube",
+        "url": "https://www.youtube.com/@rgte",
+        "search": "https://www.google.com/search?q=%22RGTE%22%20site%3Ayoutube.com"
+      }
+    ],
+    "counts": {},
+    "sirenSeen": null,
+    "sameAsSnippet": null
+  },
+  "competitors": [
+    {
+      "name": "ocf.fr",
+      "error": null,
+      "items": [
+        {
+          "platform": "instagram",
+          "label": "Instagram",
+          "family": "reseau",
+          "urls": [
+            "https://www.instagram.com/matferbourgeatcreation/?hl=fr",
+            "https://www.instagram.com/matferbourgeatcreation/",
+            "https://www.instagram.com/ocf_vitrine/"
+          ],
+          "handles": [
+            "matferbourgeatcreation",
+            "ocf_vitrine"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.ocf.fr/",
+            "https://www.ocf.fr/agencement-de-commerce/",
+            "https://www.ocf.fr/contact/"
+          ]
+        },
+        {
+          "platform": "youtube",
+          "label": "YouTube",
+          "family": "reseau",
+          "urls": [
+            "https://www.youtube.com/channel/UChzkF1iK3Dkj1MnqcT_BvSA"
+          ],
+          "handles": [
+            "UChzkF1iK3Dkj1MnqcT_BvSA"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.ocf.fr/",
+            "https://www.ocf.fr/agencement-de-commerce/",
+            "https://www.ocf.fr/contact/"
+          ]
+        },
+        {
+          "platform": "linkedin",
+          "label": "LinkedIn",
+          "family": "reseau",
+          "urls": [
+            "https://www.linkedin.com/company/ocf-vitrines/"
+          ],
+          "handles": [
+            "ocf-vitrines"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.ocf.fr/",
+            "https://www.ocf.fr/agencement-de-commerce/",
+            "https://www.ocf.fr/contact/"
+          ]
+        },
+        {
+          "platform": "pinterest",
+          "label": "Pinterest",
+          "family": "reseau",
+          "urls": [
+            "https://ro.pinterest.com/vitrineocf/"
+          ],
+          "handles": [
+            "vitrineocf"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.ocf.fr/",
+            "https://www.ocf.fr/agencement-de-commerce/",
+            "https://www.ocf.fr/contact/"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "level": "manque",
+          "platform": "google-avis",
+          "text": "Fiche Google (avis, itinéraire) : aucun lien depuis le site.",
+          "todo": "Ajoutez un lien « Avis Google » ou « Itinéraire » vers votre fiche (et créez-la si elle n’existe pas)."
+        },
+        {
+          "level": "coherence",
+          "text": "4 profils reliés depuis le site mais absents du sameAs : Instagram, YouTube, LinkedIn, Pinterest.",
+          "todo": "Ajoutez-les au « sameAs » de votre bloc Organization : c’est ce qui relie votre marque à ses profils pour Google et les IA."
+        },
+        {
+          "level": "coherence",
+          "platform": "instagram",
+          "text": "Instagram : 2 comptes différents liés (matferbourgeatcreation, ocf_vitrine).",
+          "todo": "Gardez un seul compte officiel par réseau et redirigez les autres."
+        },
+        {
+          "level": "info",
+          "text": "Identifiants différents selon les réseaux : YouTube @UChzkF1iK3Dkj1MnqcT_BvSA · LinkedIn @ocf-vitrines · Pinterest @vitrineocf.",
+          "todo": "Un même identifiant partout aide les gens (et les IA) à vous retrouver. À harmoniser quand c’est possible."
+        }
+      ],
+      "missing": [
+        "google-avis"
+      ],
+      "candidates": [],
+      "counts": {
+        "reseau": 4
+      },
+      "sirenSeen": null,
+      "sameAsSnippet": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Organization\",\n  \"url\": \"https://www.ocf.fr/\",\n  \"sameAs\": [\n    \"https://www.youtube.com/channel/UChzkF1iK3Dkj1MnqcT_BvSA\",\n    \"https://www.linkedin.com/company/ocf-vitrines/\",\n    \"https://ro.pinterest.com/vitrineocf/\"\n  ]\n}"
+    },
+    {
+      "name": "lavitrinefrancaise.com",
+      "error": null,
+      "items": [
+        {
+          "platform": "linkedin",
+          "label": "LinkedIn",
+          "family": "reseau",
+          "urls": [
+            "https://www.linkedin.com/company/la-vitrine-francaise/"
+          ],
+          "handles": [
+            "la-vitrine-francaise"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.lavitrinefrancaise.com/",
+            "https://www.lavitrinefrancaise.com/notre-entreprise/",
+            "https://www.lavitrinefrancaise.com/boulangerie/"
+          ]
+        },
+        {
+          "platform": "facebook",
+          "label": "Facebook",
+          "family": "reseau",
+          "urls": [
+            "https://www.facebook.com/LaVitrineFrancaise/"
+          ],
+          "handles": [
+            "LaVitrineFrancaise"
+          ],
+          "sources": [
+            "lien"
+          ],
+          "pages": [
+            "https://www.lavitrinefrancaise.com/",
+            "https://www.lavitrinefrancaise.com/notre-entreprise/",
+            "https://www.lavitrinefrancaise.com/boulangerie/"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "level": "manque",
+          "platform": "youtube",
+          "text": "YouTube : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "google-avis",
+          "text": "Fiche Google (avis, itinéraire) : aucun lien depuis le site.",
+          "todo": "Ajoutez un lien « Avis Google » ou « Itinéraire » vers votre fiche (et créez-la si elle n’existe pas)."
+        },
+        {
+          "level": "coherence",
+          "text": "2 profils reliés depuis le site mais absents du sameAs : LinkedIn, Facebook.",
+          "todo": "Ajoutez-les au « sameAs » de votre bloc Organization : c’est ce qui relie votre marque à ses profils pour Google et les IA."
+        }
+      ],
+      "missing": [
+        "youtube",
+        "google-avis"
+      ],
+      "candidates": [
+        {
+          "platform": "youtube",
+          "label": "YouTube",
+          "url": "https://www.youtube.com/@lavitrinefrancaise",
+          "search": "https://www.google.com/search?q=%22lavitrinefrancaise%22%20site%3Ayoutube.com"
+        }
+      ],
+      "counts": {
+        "reseau": 2
+      },
+      "sirenSeen": null,
+      "sameAsSnippet": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Organization\",\n  \"url\": \"https://www.lavitrinefrancaise.com/\",\n  \"sameAs\": [\n    \"https://www.linkedin.com/company/la-vitrine-francaise/\",\n    \"https://www.facebook.com/LaVitrineFrancaise/\"\n  ]\n}"
+    },
+    {
+      "name": "tecmag.fr",
+      "error": null,
+      "items": [],
+      "findings": [
+        {
+          "level": "manque",
+          "platform": "linkedin",
+          "text": "LinkedIn : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "youtube",
+          "text": "YouTube : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "google-avis",
+          "text": "Fiche Google (avis, itinéraire) : aucun lien depuis le site.",
+          "todo": "Ajoutez un lien « Avis Google » ou « Itinéraire » vers votre fiche (et créez-la si elle n’existe pas)."
+        }
+      ],
+      "missing": [
+        "linkedin",
+        "youtube",
+        "google-avis"
+      ],
+      "candidates": [
+        {
+          "platform": "linkedin",
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/company/tecmag/",
+          "search": "https://www.google.com/search?q=%22tecmag%22%20site%3Alinkedin.com"
+        },
+        {
+          "platform": "youtube",
+          "label": "YouTube",
+          "url": "https://www.youtube.com/@tecmag",
+          "search": "https://www.google.com/search?q=%22tecmag%22%20site%3Ayoutube.com"
+        }
+      ],
+      "counts": {},
+      "sirenSeen": null,
+      "sameAsSnippet": null
+    },
+    {
+      "name": "fmaconcept.com",
+      "error": null,
+      "items": [],
+      "findings": [
+        {
+          "level": "manque",
+          "platform": "linkedin",
+          "text": "LinkedIn : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "youtube",
+          "text": "YouTube : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "google-avis",
+          "text": "Fiche Google (avis, itinéraire) : aucun lien depuis le site.",
+          "todo": "Ajoutez un lien « Avis Google » ou « Itinéraire » vers votre fiche (et créez-la si elle n’existe pas)."
+        }
+      ],
+      "missing": [
+        "linkedin",
+        "youtube",
+        "google-avis"
+      ],
+      "candidates": [
+        {
+          "platform": "linkedin",
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/company/fmaconcept/",
+          "search": "https://www.google.com/search?q=%22fmaconcept%22%20site%3Alinkedin.com"
+        },
+        {
+          "platform": "youtube",
+          "label": "YouTube",
+          "url": "https://www.youtube.com/@fmaconcept",
+          "search": "https://www.google.com/search?q=%22fmaconcept%22%20site%3Ayoutube.com"
+        }
+      ],
+      "counts": {},
+      "sirenSeen": null,
+      "sameAsSnippet": null
+    },
+    {
+      "name": "pousstronic.pro",
+      "error": null,
+      "items": [
+        {
+          "platform": "facebook",
+          "label": "Facebook",
+          "family": "reseau",
+          "urls": [
+            "https://www.facebook.com/pousstronic/"
+          ],
+          "handles": [
+            "pousstronic"
+          ],
+          "sources": [
+            "lien",
+            "sameAs"
+          ],
+          "pages": [
+            "https://www.pousstronic.pro/",
+            "https://www.pousstronic.pro/contact",
+            "https://www.pousstronic.pro/agencement-magasins-w1"
+          ]
+        },
+        {
+          "platform": "instagram",
+          "label": "Instagram",
+          "family": "reseau",
+          "urls": [
+            "https://www.instagram.com/pousstronic/?locale=akun%2Bdemo%2Bslot%2Bpg%2Bsoft%E3%80%90666777.ORG%E3%80%91.ucrh&hl=zh-tw"
+          ],
+          "handles": [
+            "pousstronic"
+          ],
+          "sources": [
+            "lien",
+            "sameAs"
+          ],
+          "pages": [
+            "https://www.pousstronic.pro/",
+            "https://www.pousstronic.pro/contact",
+            "https://www.pousstronic.pro/agencement-magasins-w1"
+          ]
+        },
+        {
+          "platform": "google-avis",
+          "label": "Fiche Google (avis, itinéraire)",
+          "family": "avis",
+          "urls": [
+            "https://maps.app.goo.gl/a65bbJvwyMdEgN1Z7"
+          ],
+          "handles": [
+            "a65bbJvwyMdEgN1Z7"
+          ],
+          "sources": [
+            "lien",
+            "sameAs"
+          ],
+          "pages": [
+            "https://www.pousstronic.pro/",
+            "https://www.pousstronic.pro/contact",
+            "https://www.pousstronic.pro/agencement-magasins-w1"
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "level": "manque",
+          "platform": "linkedin",
+          "text": "LinkedIn : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        },
+        {
+          "level": "manque",
+          "platform": "youtube",
+          "text": "YouTube : aucun lien depuis le site.",
+          "todo": "Si le compte existe, reliez-le depuis le pied de page et le sameAs ; sinon, c’est un canal attendu pour votre activité."
+        }
+      ],
+      "missing": [
+        "linkedin",
+        "youtube"
+      ],
+      "candidates": [
+        {
+          "platform": "linkedin",
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/company/pousstronic/",
+          "search": "https://www.google.com/search?q=%22pousstronic%22%20site%3Alinkedin.com"
+        },
+        {
+          "platform": "youtube",
+          "label": "YouTube",
+          "url": "https://www.youtube.com/@pousstronic",
+          "search": "https://www.google.com/search?q=%22pousstronic%22%20site%3Ayoutube.com"
+        }
+      ],
+      "counts": {
+        "reseau": 2,
+        "avis": 1
+      },
+      "sirenSeen": null,
+      "sameAsSnippet": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Organization\",\n  \"url\": \"https://www.pousstronic.pro/\",\n  \"sameAs\": [\n    \"https://www.facebook.com/pousstronic/\",\n    \"https://www.instagram.com/pousstronic/?locale=akun%2Bdemo%2Bslot%2Bpg%2Bsoft%E3%80%90666777.ORG%E3%80%91.ucrh&hl=zh-tw\"\n  ]\n}"
+    }
+  ],
+  "appStore": {
+    "error": "réponse 403",
+    "url": "https://itunes.apple.com/search?term=RGTE&country=fr&entity=software&limit=15"
+  },
+  "registry": {
+    "url": "https://recherche-entreprises.api.gouv.fr/search?q=RGTE&per_page=5",
+    "results": [
+      {
+        "siren": "919241836",
+        "name": "RGTE",
+        "naf": "41.20A",
+        "nafLabel": "",
+        "created": "2022-09-12",
+        "active": false,
+        "city": "BOULOGNE-BILLANCOURT",
+        "postcode": "92100",
+        "employees": "NN",
+        "category": "PME",
+        "leaders": [
+          {
+            "name": "SAMIR ARAFA",
+            "role": "Gérant"
+          }
+        ],
+        "annuaire": "https://annuaire-entreprises.data.gouv.fr/entreprise/919241836"
+      },
+      {
+        "siren": "894192178",
+        "name": "RGTE CONSTRUCTION",
+        "naf": "43.99C",
+        "nafLabel": "",
+        "created": "2021-02-01",
+        "active": true,
+        "city": "VILLENEUVE",
+        "postcode": "04180",
+        "employees": "NN",
+        "category": "PME",
+        "leaders": [
+          {
+            "name": "GAETAN DOMINIQUE MARC PAPPALARDO",
+            "role": "Liquidateur"
+          }
+        ],
+        "annuaire": "https://annuaire-entreprises.data.gouv.fr/entreprise/894192178"
+      },
+      {
+        "siren": "501609507",
+        "name": "R G T E",
+        "naf": "46.69C",
+        "nafLabel": "",
+        "created": "2008-01-01",
+        "active": true,
+        "city": "PUGET-SUR-ARGENS",
+        "postcode": "83480",
+        "employees": "01",
+        "category": "PME",
+        "leaders": [
+          {
+            "name": "RICHARD JEAN GUILLOT",
+            "role": "Président de SAS"
+          }
+        ],
+        "annuaire": "https://annuaire-entreprises.data.gouv.fr/entreprise/501609507"
+      }
+    ],
+    "sirenSeen": null
+  },
+  "matrix": {
+    "platforms": [
+      {
+        "id": "youtube",
+        "label": "YouTube",
+        "family": "reseau"
+      },
+      {
+        "id": "pinterest",
+        "label": "Pinterest",
+        "family": "reseau"
+      },
+      {
+        "id": "instagram",
+        "label": "Instagram",
+        "family": "reseau"
+      },
+      {
+        "id": "linkedin",
+        "label": "LinkedIn",
+        "family": "reseau"
+      },
+      {
+        "id": "facebook",
+        "label": "Facebook",
+        "family": "reseau"
+      },
+      {
+        "id": "google-avis",
+        "label": "Fiche Google (avis, itinéraire)",
+        "family": "avis"
+      }
+    ],
+    "rows": [
+      {
+        "name": "rgte.eu",
+        "me": true,
+        "cells": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "total": 0
+      },
+      {
+        "name": "ocf.fr",
+        "me": false,
+        "cells": [
+          "https://www.youtube.com/channel/UChzkF1iK3Dkj1MnqcT_BvSA",
+          "https://ro.pinterest.com/vitrineocf/",
+          "https://www.instagram.com/matferbourgeatcreation/?hl=fr",
+          "https://www.linkedin.com/company/ocf-vitrines/",
+          null,
+          null
+        ],
+        "total": 4
+      },
+      {
+        "name": "lavitrinefrancaise.com",
+        "me": false,
+        "cells": [
+          null,
+          null,
+          null,
+          "https://www.linkedin.com/company/la-vitrine-francaise/",
+          "https://www.facebook.com/LaVitrineFrancaise/",
+          null
+        ],
+        "total": 2
+      },
+      {
+        "name": "tecmag.fr",
+        "me": false,
+        "cells": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "total": 0
+      },
+      {
+        "name": "fmaconcept.com",
+        "me": false,
+        "cells": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "total": 0
+      },
+      {
+        "name": "pousstronic.pro",
+        "me": false,
+        "cells": [
+          null,
+          null,
+          "https://www.instagram.com/pousstronic/?locale=akun%2Bdemo%2Bslot%2Bpg%2Bsoft%E3%80%90666777.ORG%E3%80%91.ucrh&hl=zh-tw",
+          null,
+          "https://www.facebook.com/pousstronic/",
+          "https://maps.app.goo.gl/a65bbJvwyMdEgN1Z7"
+        ],
+        "total": 3
+      }
+    ],
+    "gaps": []
+  }
+}

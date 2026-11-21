@@ -1,0 +1,1694 @@
+{
+ "generated": "2026-11-05",
+ "repos": [
+  {
+   "repo": "anthropics/skills",
+   "stars": 187679,
+   "license": "Pas de licence racine ; Apache-2.0 par skill (LICENSE.txt), docx/pdf/pptx/xlsx en source-available",
+   "last_push": "2026-10-28",
+   "skills": [
+    {
+     "name": "skill-creator",
+     "purpose": "Créer, tester et améliorer un skill, puis optimiser sa description pour qu'il se déclenche au bon moment.",
+     "notable": "Boucle brouillon → 2-3 prompts de test → exécutions avec et sans skill → notation + visionneuse → réécriture ; optimisation de la description sur 20 requêtes (8-10 à déclencher, 8-10 quasi-négatives), 3 exécutions par requête, découpage 60/40 entraînement/test, meilleure description choisie sur le test."
+    },
+    {
+     "name": "skill-creator/agents (grader, comparator, analyzer)",
+     "purpose": "Noter les sorties, comparer deux versions à l'aveugle et expliquer pourquoi la gagnante gagne.",
+     "notable": "Le correcteur critique aussi les assertions trop faciles : un PASS sur une assertion faible crée une fausse confiance."
+    },
+    {
+     "name": "template + spec + quick_validate.py",
+     "purpose": "Gabarit minimal et règles de la spécification Agent Skills.",
+     "notable": "Clés de frontmatter autorisées : name, description, license, allowed-tools, metadata, compatibility ; name en kebab-case ≤ 64 caractères ; description ≤ 1024 caractères, sans chevrons."
+    },
+    {
+     "name": "pdf / mcp-builder / webapp-testing",
+     "purpose": "Skills de référence complexes avec scripts/ et reference/.",
+     "notable": "Divulgation progressive concrète : SKILL.md court, gros documents chargés à la demande, scripts exécutés sans être lus dans le contexte."
+    }
+   ],
+   "design_patterns": [
+    "Trois niveaux de chargement : métadonnées (~100 mots, toujours en contexte), corps du SKILL.md (< 500 lignes, au déclenchement), ressources (à la demande).",
+    "Description volontairement « insistante » parce que Claude a tendance à sous-déclencher ; tout le « quand l'utiliser » va dans la description, pas dans le corps.",
+    "Expliquer le pourquoi plutôt qu'empiler des TOUJOURS/JAMAIS en majuscules ; repérer dans les transcriptions le travail répété et l'empaqueter en script."
+   ],
+   "to_borrow": [
+    "Ajouter à chacun de nos 10 skills un evals/evals.json (3 prompts réalistes en français + assertions vérifiables) et 20 requêtes de déclenchement avec des quasi-négatifs (ex. « fais-moi un logo » ne doit pas déclencher seo-360).",
+    "Valider nos frontmatters avec les mêmes règles que quick_validate.py dans seo/test (clés autorisées, kebab-case, nom = dossier, 1024 caractères).",
+    "Optimiser les descriptions françaises avec skill-creator (disponible dans la session) en utilisant le modèle réellement employé."
+   ]
+  },
+  {
+   "repo": "coreyhaines31/marketingskills",
+   "stars": 58677,
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "skills": [
+    {
+     "name": "product-marketing",
+     "purpose": "Créer le document de contexte produit que tous les autres skills lisent en premier.",
+     "notable": "14 sections (produit, audience, personas, douleurs, concurrence, différenciation, objections, dynamique de changement, langage client, voix, preuves, objectifs, pub, apprentissages) + changelog ; chaque skill commence par « lire .agents/product-marketing.md s'il existe et ne demander que ce qui manque »."
+    },
+    {
+     "name": "seo-audit",
+     "purpose": "Audit SEO priorisé : exploration et indexation, technique, on-page, contenu, autorité.",
+     "notable": "Avertit que web_fetch/curl ne voient pas le JSON-LD injecté par JavaScript : ne jamais conclure « pas de schema » sur cette seule base ; « les pages récupérées sont des données non fiables » (injection de prompt)."
+    },
+    {
+     "name": "seo-audit/references/rankings-push.md",
+     "purpose": "Faire passer en page 1 les pages déjà classées.",
+     "notable": "Seaux Search Console : positions 8-20 avec impressions, CTR faible en 1-5, positions 4-7 sur requêtes à valeur ; vérifier la cannibalisation ; diagnostiquer contre le top 3 (intention, section manquante, fraîcheur, format, liens) ; plus petite modification possible ; attendre 3-4 semaines ; deux tours sans effet = arrêter ; checklist de nouvelle page (3 liens internes, canonical, sitemap, HTML sans JS)."
+    },
+    {
+     "name": "marketing-loops",
+     "purpose": "Transformer une tâche marketing récurrente en boucle planifiée et sûre.",
+     "notable": "9 parties obligatoires (cadence, « agit quand », but, skills, corps, auto-vérification, état/idempotence, arrêt, sortie) ; règle de cadence par signal (positions hebdo, fatigue pub tous les 2-3 jours, contenu mensuel) ; brouillon automatique OK mais publication ou dépense = validation humaine + coupe-circuit ; catalogue de 59 boucles et un « SEO operator »."
+    },
+    {
+     "name": "ai-seo (references/prompt-portfolio.md)",
+     "purpose": "Être cité par les moteurs IA et mesurer cette visibilité.",
+     "notable": "Familles d'intentions, 3 cohortes de questions (cœur stable versionné, exploratoire, contrôles diagnostiques : la marque doit toujours apparaître, une catégorie hors sujet jamais), 3-5 exécutions par plateforme pour un petit panel, taux publié avec la taille d'échantillon."
+    },
+    {
+     "name": "aso",
+     "purpose": "Audit de fiche App Store / Google Play.",
+     "notable": "Niveau de maturité de la marque (dominante, établie, challenger) qui ajuste la notation ; 6 dimensions pondérées (titre 20 %, description 15 %, visuels 25 %, avis 20 %, métadonnées 10 %, conversion 10 %)."
+    }
+   ],
+   "design_patterns": [
+    "Chaque skill a un dossier evals/ avec assertions, une metadata.version et une ligne dans VERSIONS.md ; la CI échoue si une version n'est pas montée ou si une référence n'est liée nulle part.",
+    "Description = ce que fait le skill + longue liste de formulations réelles (« my traffic dropped », « stuck on page 2 ») + frontières (« pour X, voir Y »).",
+    "Références par sujet (local-seo-profile-and-citations.md, title-tags.md…) appelées depuis une table de routage dans SKILL.md."
+   ],
+   "to_borrow": [
+    "Créer un fichier de contexte entreprise partagé (.claude/contexte-entreprise.md) lu en premier par nos 10 skills, pour ne plus reposer les mêmes questions.",
+    "Intégrer la méthode « rankings-push » dans seo-360 et dans l'onglet Search Console (positions 8-20, CTR faible, cannibalisation, attendre 3-4 semaines, arrêter après deux tours sans effet).",
+    "Reprendre l'anatomie des boucles (cadence, auto-vérification, état, arrêt, validation humaine) pour une routine SEO 360 mensuelle planifiable."
+   ]
+  },
+  {
+   "repo": "AgriciDaniel/claude-seo",
+   "stars": 26900,
+   "license": "MIT",
+   "last_push": "2026-11-01",
+   "skills": [
+    {
+     "name": "seo (orchestrateur)",
+     "purpose": "Router vers 26 sous-skills et 19 sous-agents et produire un score de santé SEO.",
+     "notable": "Pondération technique 22 / contenu 23 / on-page 20 / schema 10 / CWV 10 / IA 10 / images 5 ; priorités Critique, Haute (1 semaine), Moyenne (1 mois), Basse ; falsifiabilité et ordre des dépendances pour chaque recommandation ; questions sur les mises à jour Google répondues depuis un registre de sources primaires, pas de mémoire."
+    },
+    {
+     "name": "seo-drift",
+     "purpose": "Capturer une référence puis détecter les régressions SEO (« git pour le SEO »).",
+     "notable": "Capture title, meta, canonical, robots, H1-H3, JSON-LD, Open Graph, CWV, statut HTTP et empreintes du HTML et du schema ; 17 règles sur 3 sévérités (schema supprimé, canonical modifiée ou retirée, noindex ajouté, H1 supprimé ou modifié à moins de 50 % de similarité…) ; normalisation d'URL (UTM, slash final, ports)."
+    },
+    {
+     "name": "seo-sxo",
+     "purpose": "Détecter quand la page n'est pas le bon TYPE de page pour la requête.",
+     "notable": "Lecture de la SERP à rebours : type de page des 10 premiers résultats, consensus > 60 % fort, 40-60 % mixte, < 40 % fragmenté ; questions PAA ; user stories ; note par persona ; wireframe avant/après."
+    },
+    {
+     "name": "seo-local + seo-maps",
+     "purpose": "Audit local, grille géographique de positions, avis multi-plateformes.",
+     "notable": "Références datées avec clé de preuve (Confirmé, Étude, Consensus, Prudence) ; facteurs Whitespark 2026 ; grille haversine de 3×3 à 13×13 points (7×7 sur 5 km par défaut) avec coût estimé ; Overpass/OpenStreetMap gratuit pour lister les concurrents locaux."
+    },
+    {
+     "name": "seo/references/quality-gates.md",
+     "purpose": "Seuils de contenu par type de page et garde-fous.",
+     "notable": "Alerte à 30 pages ville (60 % de contenu unique), arrêt à 50 sans justification (pages satellites) ; FAQPage : rich results retirés (le dépôt indique le 7 mai 2026), à signaler en simple information, sans promettre de gain IA ni recommander la suppression, QAPage pour de vraies questions d'utilisateurs ; jamais HowTo ; INP, jamais FID."
+    }
+   ],
+   "design_patterns": [
+    "Extensions optionnelles par fournisseur de données (DataForSEO, Ahrefs, Bing Webmaster + IndexNow, Matomo, Unlighthouse, Firecrawl) : le cœur fonctionne sans clé.",
+    "Méthode de synthèse en quatre phases (percevoir, analyser, valider, agir) avant de classer les constats.",
+    "En-tête « Updated: AAAA-MM-JJ » sur chaque référence, validation d'URL anti-SSRF, rapport PDF proposé en fin d'audit."
+   ],
+   "to_borrow": [
+    "Ajouter à seo-audit-technique les règles de dérive (noindex ajouté, canonical changée, schema retiré, H1 supprimé) pour les refontes et migrations, et à la plateforme une comparaison d'audits classée par sévérité.",
+    "Ajouter le contrôle SXO (type de page dominant dans la SERP) dans seo-360 avant de recommander un contenu.",
+    "Donner une clé de preuve (Officiel, Étude, Consensus, Prudence) et une date à chaque chiffre de seo/data/research/benchmarks.json."
+   ]
+  },
+  {
+   "repo": "zubair-trabzada/geo-seo-claude",
+   "stars": 11529,
+   "license": "MIT",
+   "last_push": "2026-11-05",
+   "skills": [
+    {
+     "name": "geo-citability",
+     "purpose": "Noter la probabilité qu'un passage soit repris et cité par une IA.",
+     "notable": "Grille 0-100 par bloc : réponse d'abord 30 %, autonomie du passage 25 %, lisibilité 20 %, densité de chiffres 15 %, données originales 10 % ; checklist d'autonomie (sujet nommé, pas de pronom renvoyant plus haut, au moins un fait, 50-200 mots, pas de « Mais » en tête) ; sortie : blocs les plus forts et blocs à réécrire en priorité."
+    },
+    {
+     "name": "geo-brand-mentions",
+     "purpose": "Mesurer la présence de la marque là où les IA puisent.",
+     "notable": "Grilles 0-100 pour YouTube, Reddit, Wikipedia/Wikidata et LinkedIn (abonnés, mentions par des tiers, activité)."
+    },
+    {
+     "name": "geo-compare",
+     "purpose": "Rapport mensuel avant/après pour un client.",
+     "notable": "Delta par catégorie, changements d'accès des robots IA, avancement des gains rapides, moyen terme et stratégiques."
+    },
+    {
+     "name": "geo-proposal + geo-prospect",
+     "purpose": "Proposition commerciale et mini-CRM pour agence.",
+     "notable": "Pipeline Lead → Qualifié → Proposition → Gagné / Perdu avec l'historique des audits."
+    },
+    {
+     "name": "white-label (brand.json)",
+     "purpose": "Rebrander les rapports d'une agence ou d'un revendeur.",
+     "notable": "Un seul fichier (nom, coordonnées, couleurs) fusionné avec les valeurs par défaut, sans toucher au générateur."
+    }
+   ],
+   "design_patterns": [
+    "Score GEO composite pondéré (citabilité 25, autorité de marque 20, contenu et E-E-A-T 20, technique 15, schema 10, plateformes 10).",
+    "Audit délégué à 5 sous-agents en parallèle puis agrégé en un rapport client."
+   ],
+   "to_borrow": [
+    "Citabilité par bloc dans geo-visibilite-ia et dans la plateforme : les 3 blocs à réécrire, avec la raison et une proposition.",
+    "Rapport marque blanche et rapport mensuel avant/après pour les agences et freelances.",
+    "Prudence : leurs chiffres d'études (134-167 mots, +40 % avec statistiques, +115 % avec citations) sont à vérifier à la source avant toute reprise."
+   ]
+  },
+  {
+   "repo": "AgriciDaniel/claude-ads",
+   "stars": 10765,
+   "license": "MIT",
+   "last_push": "2026-11-01",
+   "skills": [
+    {
+     "name": "ads (orchestrateur) + 12 skills plateformes",
+     "purpose": "Auditer et piloter Google, Meta, YouTube, LinkedIn, TikTok, Microsoft, Apple, Amazon, Reddit, Pinterest, Snapchat et X.",
+     "notable": "Sous-skills courts (20-65 lignes) qui chargent une référence d'audit et une référence de formats créatifs par plateforme."
+    },
+    {
+     "name": "ads-math",
+     "purpose": "Modèle financier de la publicité.",
+     "notable": "Formule affichée avec chaque donnée reliée à sa source ; cas bas, central et haut ; ROAS de la plateforme, chiffre d'affaires réel et marge gardés séparés ; ne jamais inventer une donnée financière manquante."
+    },
+    {
+     "name": "ads/references/budget-allocation.md",
+     "purpose": "Répartir un budget et le faire monter.",
+     "notable": "Ne pas partir d'un mix fixe, d'un minimum mensuel ou d'un pas de montée universel ; CPA d'équilibre = contribution par conversion, ROAS d'équilibre = 1 / taux de marge ; CPA et ROAS marginaux ; sans données économiques, le plan est « provisoire »."
+    },
+    {
+     "name": "ads-landing",
+     "purpose": "Audit de la page d'atterrissage d'une annonce.",
+     "notable": "Continuité promesse/offre entre l'annonce et la page, mobile, confiance, formulaire, consentement, suivi ; observations techniques, jugements UX et hypothèses de conversion séparés ; récupération protégée contre le SSRF."
+    },
+    {
+     "name": "ads-setup / ads-launch",
+     "purpose": "Profil client, garde-fous et lancement de campagne.",
+     "notable": "Brouillon par défaut ; application uniquement sur demande explicite et dans les plafonds approuvés par le propriétaire."
+    }
+   ],
+   "design_patterns": [
+    "Chaque référence porte « Vérifié le / À revoir avant le / Statut de preuve ».",
+    "Statut et validation des sorties déterministes (ads-validate, contrat de statut), pas déduits de la prose."
+   ],
+   "to_borrow": [
+    "Ajouter le ROAS d'équilibre, le CPA marginal et trois scénarios à budget-publicite et à seo/engine/ads.js.",
+    "Étiqueter nos règles de concentration (< 600 €/mois → 1 canal) et de montée (+15-20 % tous les 3-7 jours) comme heuristiques, avec leur statut de preuve.",
+    "Créer un contrôle de cohérence annonce → page d'atterrissage dans la plateforme."
+   ]
+  },
+  {
+   "repo": "Ryze-AI-Adgent/open-seo-mcp-skills",
+   "stars": 8857,
+   "license": "MIT",
+   "last_push": "2026-10-27",
+   "skills": [
+    {
+     "name": "seo-vs-ads",
+     "purpose": "Trouver l'argent perdu entre publicité et SEO.",
+     "notable": "Jointure termes de recherche Google Ads × positions Search Console : double paiement (organique ≤ 3 et dépense, surtout sur la marque), défendable (des concurrents enchérissent), payant seul (feuille de route SEO validée par l'argent), organique seul ; économie = dépense × 50-70 %, présentée comme une estimation."
+    },
+    {
+     "name": "rank-tracking",
+     "purpose": "Suivre ses positions sans abonnement, depuis Search Console.",
+     "notable": "28 jours contre 28 jours (ou autour d'une date de mise à jour), gagnants et perdants à partir de 2 places, triés par clics perdus et non par écart ; nouvelles et disparues ; données GSC décalées d'environ 2 jours."
+    },
+    {
+     "name": "ai-visibility",
+     "purpose": "Mesurer le trafic réel envoyé par les IA.",
+     "notable": "GA4 : sessions par moteur, tendance, pages citées = « recette de citation » du site ; pages fortes en organique mais sans trafic IA = à restructurer."
+    },
+    {
+     "name": "seo-audit",
+     "purpose": "Audit sur les données réelles Search Console + GA4.",
+     "notable": "Pages en déclin de plus de 30 %, anomalies de CTR (position ≤ 5 et CTR < 2 %), positions 8-20, cannibalisation, inspection d'URL des 3 à 5 pires pages."
+    }
+   ],
+   "design_patterns": [
+    "Skills de 22 à 34 lignes : données réelles d'abord, verdict en tête, repli explicite qui nomme la connexion manquante au lieu de deviner."
+   ],
+   "to_borrow": [
+    "Ajouter la comparaison de deux périodes à l'import Search Console de la plateforme (gagnants, perdants, pages en déclin).",
+    "Analyse SEO vs SEA dans budget-publicite à partir d'un export CSV des termes de recherche Google Ads."
+   ]
+  },
+  {
+   "repo": "irinabuht12-oss/marketing-skills",
+   "stars": 6868,
+   "license": "Aucune licence : idées seulement, aucune reprise de texte",
+   "last_push": "2026-10-27",
+   "skills": [
+    {
+     "name": "wasted-spend-finder",
+     "purpose": "Repérer les dépenses publicitaires qui ne convertissent pas.",
+     "notable": "Termes, emplacements et audiences avec dépense mais zéro conversion, regroupés en thèmes de mots-clés négatifs avec le montant par thème."
+    },
+    {
+     "name": "brand-answer-monitoring",
+     "purpose": "Surveiller ce que les assistants IA disent de la marque.",
+     "notable": "Panel fixe de questions sur la marque, comparaison d'une période à l'autre, journal des erreurs avec la source probable, plan de correction."
+    },
+    {
+     "name": "citation-source-gap-finder",
+     "purpose": "Trouver les pages que les IA citent dans sa catégorie.",
+     "notable": "URL citées regroupées par type de source (avis, comparatif, forum, presse, documentation), part de citation et facilité d'accès par source."
+    },
+    {
+     "name": "ad-spend-allocator / pacing-monitor / creative-fatigue-detection",
+     "purpose": "Répartition multicanal, rythme de dépense, usure des créations.",
+     "notable": "MER, ROAS marginal, rendements décroissants, règle 70-20-10 ; signaux d'usure (fréquence, CTR, CPM)."
+    }
+   ],
+   "design_patterns": [
+    "Gabarit constant : ce que ça fait, comment, exemple chiffré, ce que vous obtenez, quand l'utiliser, accès aux données."
+   ],
+   "to_borrow": [
+    "Idées seulement (dépôt sans licence) : suivi de ce que disent les IA sur la marque avec comparaison mensuelle, et liste des « dépenses perdues » dans l'onglet budget."
+   ]
+  },
+  {
+   "repo": "ScrapeCreators/social-media-research-skills",
+   "stars": 5759,
+   "license": "MIT",
+   "last_push": "2026-08-26",
+   "skills": [
+    {
+     "name": "outlier-post-finder",
+     "purpose": "Trouver les publications qui font nettement mieux que la normale d'un compte.",
+     "notable": "Au moins 20 posts ; référence = médiane (pas la moyenne) par compte, plateforme et format ; lift = vues / médiane ; énorme ≥ 5×, fort 2-5×, léger 1,5-2× ; moins de 10 posts = confiance faible."
+    },
+    {
+     "name": "comment-mining",
+     "purpose": "Exploiter les commentaires d'une audience.",
+     "notable": "Classement en questions, objections, plaintes, idées produit, intention d'achat et langage client, avec les URL sources."
+    },
+    {
+     "name": "ad-library-teardown",
+     "purpose": "Décortiquer les publicités actives des concurrents.",
+     "notable": "Bibliothèques Meta, Google et LinkedIn : accroches, offres, CTA, formats."
+    },
+    {
+     "name": "social-listening-brief / trend-discovery",
+     "purpose": "Veille de marque et tendances.",
+     "notable": "Ce qui se dit d'une marque ou d'un sujet ; sons, formats et hashtags en hausse dans une niche."
+    }
+   ],
+   "design_patterns": [
+    "Couche de données (API) séparée des skills d'analyse ; chaque skill dit quand l'utiliser et quand passer à un autre."
+   ],
+   "to_borrow": [
+    "Méthode « outlier » et classement des commentaires dans veille-sociale ; même calcul sur ses propres posts importés en CSV dans la plateforme."
+   ]
+  },
+  {
+   "repo": "sergebulaev/linkedin-skills",
+   "stars": 5632,
+   "license": "MIT",
+   "last_push": "2026-11-03",
+   "skills": [
+    {
+     "name": "linkedin-humanizer",
+     "purpose": "Retirer les tics d'écriture d'IA d'un post ou d'un commentaire.",
+     "notable": "Notation par densité plutôt que liste noire, niveaux de preuve dans le texte ([strong], [vendor], [weak]), garde-fou contre la surcorrection, modes forensic, strict et audit ; sortie = diff + densité par paragraphe + « se lit humain / mixte / IA » (estimation de lecteur, pas un détecteur)."
+    },
+    {
+     "name": "linkedin-post-writer",
+     "purpose": "Rédiger un post LinkedIn.",
+     "notable": "20 formules d'accroche nommées (anaphore, ancrage temporel, fossé de curiosité, contre-pied…)."
+    },
+    {
+     "name": "linkedin-profile-optimizer",
+     "purpose": "Réécrire un profil LinkedIn.",
+     "notable": "Titre, À propos en 7 étapes, Sélection, bannière, expériences chiffrées, compétences."
+    },
+    {
+     "name": "linkedin-interviewer",
+     "purpose": "Collecter la matière des futurs posts.",
+     "notable": "« Banque d'histoires » durable : rôles, chiffres, tournants, anecdotes."
+    },
+    {
+     "name": "linkedin-thread-monitor / linkedin-reply-handler",
+     "purpose": "Gérer les commentaires et réponses.",
+     "notable": "Fenêtre de réponse « chaude » de 6 à 24 heures."
+    }
+   ],
+   "design_patterns": [
+    "Section « ce que ce skill ne fait pas » (il ne prétend pas tromper les détecteurs d'IA).",
+    "Même dépôt pour Claude et Codex, références partagées."
+   ],
+   "to_borrow": [
+    "Une checklist française anti-tics d'IA, par densité, pour les légendes de hashtags-reseaux et les futurs contenus.",
+    "Une banque d'histoires (chantiers, chiffres, clients) dans le fichier de contexte entreprise pour nourrir les posts."
+   ]
+  },
+  {
+   "repo": "nowork-studio/notfair-plugin",
+   "stars": 4112,
+   "license": "MIT",
+   "last_push": "2026-10-30",
+   "skills": [
+    {
+     "name": "backlink-audit",
+     "purpose": "Audit des liens entrants sans outil payant.",
+     "notable": "Rapport « Liens » de Search Console (sites référents, pages les plus liées, textes d'ancre) + export Ahrefs/Semrush/Majestic si fourni ; ancres suroptimisées ; pages très liées comparées aux pages qui rapportent ; dit clairement ce qu'il ne peut pas voir."
+    },
+    {
+     "name": "content-planner",
+     "purpose": "Calendrier de contenu tiré de Search Console.",
+     "notable": "Opportunités classées par potentiel de clics réel."
+    },
+    {
+     "name": "google-ads / meta-ads",
+     "purpose": "Pilotage des comptes publicitaires via MCP.",
+     "notable": "Phase d'apprentissage, fréquence, chevauchement d'audiences ; skills de 9 à 40 lignes."
+    },
+    {
+     "name": "paid-ads-chatgpt",
+     "purpose": "Préparer des tests de publicité dans ChatGPT.",
+     "notable": "Expériences prudentes sans supposer l'inventaire ni les fonctions de la plateforme."
+    }
+   ],
+   "design_patterns": [
+    "Champ argument-hint dans le frontmatter pour indiquer ce qu'il faut fournir (URL, export CSV)."
+   ],
+   "to_borrow": [
+    "Importer l'export « Liens » de Search Console dans la plateforme pour un audit de netlinking gratuit."
+   ]
+  },
+  {
+   "repo": "ericosiu/ai-marketing-skills",
+   "stars": 3783,
+   "license": "MIT",
+   "last_push": "2026-11-01",
+   "skills": [
+    {
+     "name": "closed-loop-analytics-upgrade",
+     "purpose": "Juger chaque changement sur les analytics plutôt que sur l'opinion.",
+     "notable": "Ne garder une modification que si elle bat la référence ; sinon continuer le test, revenir en arrière ou la marquer « non prouvée » ; métriques à suivre par surface (site, X, LinkedIn, YouTube…)."
+    },
+    {
+     "name": "content-ops (expert-panel)",
+     "purpose": "Noter et améliorer un contenu avec un panel d'experts simulés.",
+     "notable": "Grilles de notation et experts choisis selon le domaine."
+    },
+    {
+     "name": "seo-ops",
+     "purpose": "Opérations SEO récurrentes.",
+     "notable": "Repérage de tendances et brief « d'attaque » de contenu à partir de Search Console."
+    },
+    {
+     "name": "shortform-idea-grill",
+     "purpose": "Trouver des idées de vidéos courtes.",
+     "notable": "Entretien une question à la fois, à partir des preuves que l'entreprise possède déjà."
+    }
+   ],
+   "design_patterns": [
+    "Scripts Python livrés avec les skills (non exécutés ici) ; plusieurs SKILL.md sans frontmatter, donc mal déclenchés (anti-modèle)."
+   ],
+   "to_borrow": [
+    "Principe de boucle fermée : chaque correctif reçoit une date de revérification et un résultat (amélioré, neutre, non prouvé)."
+   ]
+  },
+  {
+   "repo": "aaron-he-zhu/aaron-marketing-skills",
+   "stars": 3072,
+   "license": "Apache-2.0",
+   "last_push": "2026-11-05",
+   "skills": [
+    {
+     "name": "content-quality-auditor",
+     "purpose": "Audit de qualité et d'E-E-A-T avant publication.",
+     "notable": "Profil CORE-EEAT de 80 items à identifiants stables ; chaque état avec source, date d'observation, type de preuve et confiance ; « inconnu » si non observé ; note comparable seulement à couverture complète ; ne jamais redistribuer les poids autour des inconnus ; vetos ; verdict SHIP / FIX / BLOCK / UNDECIDED."
+    },
+    {
+     "name": "protocol (registres entity, consent, offer-claims…)",
+     "purpose": "Registres partagés entre skills.",
+     "notable": "Entités, consentements, allégations d'offre validées, canaux, créateurs, lancements."
+    },
+    {
+     "name": "share-of-voice-tracker / narrative-drift-monitor",
+     "purpose": "Part de voix et dérive du discours de marque.",
+     "notable": "Suivi dans le temps des écarts par rapport au message validé."
+    },
+    {
+     "name": "search-term-miner / placement-exclusion-manager",
+     "purpose": "Hygiène des comptes publicitaires.",
+     "notable": "Termes à fort intérêt à ajouter et emplacements à exclure."
+    }
+   ],
+   "design_patterns": [
+    "Contrat de skill explicite : ce qu'il lit, ce qu'il écrit, quand il a terminé ; champ when_to_use séparé de la description."
+   ],
+   "to_borrow": [
+    "Dans la plateforme : n'afficher l'évolution d'une note que si la couverture des deux audits est comparable, sans redistribuer le poids des catégories non mesurées.",
+    "Verdict de publication SHIP / FIX / BLOCK pour le futur skill de rédaction."
+   ]
+  },
+  {
+   "repo": "addyosmani/web-quality-skills",
+   "stars": 3042,
+   "license": "MIT",
+   "last_push": "2026-08-24",
+   "skills": [
+    {
+     "name": "core-web-vitals",
+     "purpose": "Optimiser LCP, INP et CLS à partir de preuves terrain et labo.",
+     "notable": "CrUX p75 de la page puis repli sur l'origine clairement étiqueté ; analyser seulement la métrique en échec ; re-mesurer en labo après correctif ; ne jamais annoncer une amélioration terrain immédiate ; avec le seul code source, causes probables sans affirmer l'échec."
+    },
+    {
+     "name": "performance / accessibility (WCAG 2.2) / best-practices / seo",
+     "purpose": "Qualité web dans l'esprit de Lighthouse.",
+     "notable": "Paires de code mauvais/bon et références par métrique (LCP.md, INP.md, CLS.md, MEASUREMENT.md)."
+    },
+    {
+     "name": "web-quality-audit",
+     "purpose": "Audit global fondé sur les preuves.",
+     "notable": "Inclut la navigation par agents (agentic browsing)."
+    }
+   ],
+   "design_patterns": [
+    "Mesurer avant d'optimiser ; une référence par métrique ; même contenu publié pour Claude, Codex et Gemini."
+   ],
+   "to_borrow": [
+    "Dans seo-audit-technique : préciser « donnée de la page » ou « donnée de l'origine » pour CrUX et rappeler que les données terrain se mettent à jour sur 28 jours."
+   ]
+  },
+  {
+   "repo": "zubair-trabzada/ai-marketing-claude",
+   "stars": 2864,
+   "license": "MIT",
+   "last_push": "2026-03-02",
+   "skills": [
+    {
+     "name": "market-audit",
+     "purpose": "Audit marketing complet par 5 sous-agents en parallèle.",
+     "notable": "Détection du type d'activité (SaaS, e-commerce, services, commerce local, créateur, marketplace) ; note pondérée (message 25, conversion 20, SEO 20, concurrence 15, marque 10, croissance 10) ; impact sur le chiffre d'affaires avec niveau de confiance."
+    },
+    {
+     "name": "market-landing",
+     "purpose": "Analyse CRO d'une page.",
+     "notable": "7 sections pondérées (hero 25, proposition de valeur 20, preuves 15, bénéfices 15, objections 10, CTA 10, pied de page 5) + formulaire, mobile, vitesse et tests A/B."
+    },
+    {
+     "name": "market-social",
+     "purpose": "Calendrier social sur 30 jours.",
+     "notable": "Piliers, accroches par plateforme, hashtags, réutilisation 1 → 10, formats tendance."
+    },
+    {
+     "name": "market-competitors",
+     "purpose": "Analyse concurrentielle.",
+     "notable": "Tableau noté sur 10 : clarté du titre, proposition de valeur, preuves, CTA, prix, profondeur."
+    }
+   ],
+   "design_patterns": [
+    "Anti-modèle : SKILL.md sans frontmatter (sans description, le déclenchement devient aléatoire)."
+   ],
+   "to_borrow": [
+    "Grille CRO pondérée pour un skill conversion-site ; tableau noté sur 10 dans benchmark-concurrents."
+   ]
+  },
+  {
+   "repo": "AgriciDaniel/claude-blog",
+   "stars": 2652,
+   "license": "MIT",
+   "last_push": "2026-11-03",
+   "skills": [
+    {
+     "name": "blog-decay",
+     "purpose": "Repérer les pages en déclin entre deux exports Search Console.",
+     "notable": "Seuil de 20 % par trimestre = heuristique de tri, pas une preuve (saisonnalité, mise à jour Google, suivi modifié, petits volumes comme 5 → 3 clics ignorés) ; normalisation d'URL partielle (http/https, www, paramètres) à vérifier avant de comparer."
+    },
+    {
+     "name": "blog-factcheck",
+     "purpose": "Vérifier les chiffres et citations d'un article.",
+     "notable": "Fidélité d'attribution (la source récupérée contient-elle ce chiffre ?) ; NON VÉRIFIÉ si la source n'a pas pu être lue, LIEN MORT ; jamais de note donnée de mémoire."
+    },
+    {
+     "name": "blog-write",
+     "purpose": "Rédiger un article « réponse d'abord » pour Google et les IA.",
+     "notable": "« L'utilisateur n'est jamais le premier relecteur, les portes de contrôle le sont » ; 3 échecs au maximum ; image principale d'au moins 1200×630."
+    },
+    {
+     "name": "blog-analyze",
+     "purpose": "Noter un article sur 100 points.",
+     "notable": "Contenu 30 points sans quota de mots, SEO 25, E-E-A-T 15… ; lisibilité adaptée à l'audience."
+    },
+    {
+     "name": "blog-localize / blog-persona",
+     "purpose": "Adaptation culturelle et voix éditoriale.",
+     "notable": "Exemples, références légales et sources de statistiques du marché visé ; ton sur 4 dimensions (Nielsen Norman Group)."
+    }
+   ],
+   "design_patterns": [
+    "12 gabarits d'articles (comparatif, guide pratique, étude de cas, FAQ, page pilier, avis produit…)."
+   ],
+   "to_borrow": [
+    "Vérification des chiffres et portes de publication dans le futur skill de rédaction ; avertissements de blog-decay dans le diagnostic de baisse de trafic."
+   ]
+  },
+  {
+   "repo": "appeeky/aso-skills",
+   "stars": 2264,
+   "license": "MIT",
+   "last_push": "2026-10-06",
+   "skills": [
+    {
+     "name": "aso-router",
+     "purpose": "Point d'entrée unique pour toute demande ASO.",
+     "notable": "Oriente vers 40 skills (métadonnées, captures, avis, Apple Search Ads, Custom Product Pages, In-App Events…)."
+    },
+    {
+     "name": "metadata-optimization",
+     "purpose": "Rédiger titre, sous-titre, champ mots-clés et descriptions.",
+     "notable": "Tableau limite + indexation par champ (description iOS non indexée, texte promotionnel de 170 caractères modifiable sans revue) ; formules de titre ; toujours 3 options avec le nombre de caractères ; ne jamais répéter dans le sous-titre un mot du titre."
+    },
+    {
+     "name": "seasonal-aso",
+     "purpose": "Adapter la fiche aux saisons et événements.",
+     "notable": "Calendrier des pics (américain) avec mots-clés par événement : à transposer au calendrier français."
+    },
+    {
+     "name": "rating-prompt-strategy / review-management / app-rejection-recovery",
+     "purpose": "Notes, avis et rejets de l'App Review.",
+     "notable": "Moment de la demande d'avis, réponses, diagnostic et nouvelle soumission rapide."
+    },
+    {
+     "name": "app-marketing-context",
+     "purpose": "Contexte d'app partagé.",
+     "notable": "Lu par tous les autres skills ASO."
+    }
+   ],
+   "design_patterns": [
+    "Routeur + contexte partagé + script validate-skills.sh."
+   ],
+   "to_borrow": [
+    "Dans aso-application : 3 options chiffrées par champ, texte promotionnel, ASO saisonnier calé sur le calendrier commercial français."
+   ]
+  },
+  {
+   "repo": "onvoyage-ai/gtm-engineer-skills",
+   "stars": 1354,
+   "license": "MIT",
+   "last_push": "2026-10-11",
+   "skills": [
+    {
+     "name": "audit-website-aeo",
+     "purpose": "Auditer la découvrabilité d'un site par les moteurs IA.",
+     "notable": "50 % : 16 contrôles déterministes à points (un contrôle passe pour le site si 80 % des pages le passent) ; 50 % : 6 dimensions notées 0-5 par le modèle ; « la justification avant la note » ; relire la page si l'écart avec l'indice heuristique dépasse 25 points ; ne noter que ce qui est observé."
+    },
+    {
+     "name": "research-keywords",
+     "purpose": "Produire une liste de mots-clés validée.",
+     "notable": "keywords.csv à schéma imposé (10 colonnes : intention, priorité easy_win/target/content/hard, cluster, pilier, présence d'AI Overview, source…) ; au moins 10 lignes et un pilier par cluster."
+    },
+    {
+     "name": "audit-content",
+     "purpose": "Vérifier un contenu avant publication.",
+     "notable": "Chiffres inventés, URL mortes, sources mal attribuées, affirmations contraires à la fiche de marque."
+    },
+    {
+     "name": "reddit-opportunity-research / build-backlinks",
+     "purpose": "Opportunités Reddit et liens gratuits.",
+     "notable": "Discussions de douleurs, subreddits cibles, vocabulaire réel ; Hacker News, Quora, GitHub et annuaires avec brouillons prêts."
+    },
+    {
+     "name": "create-geo-charts",
+     "purpose": "Graphiques que les IA peuvent citer.",
+     "notable": "SVG + tableau de données + résumé en texte + JSON-LD."
+    }
+   ],
+   "design_patterns": [
+    "Chaîne de skills reliés par des contrats d'artefacts (fiche de marque → keywords.csv → prompts.csv → plan.csv → pages) validés par schéma ; évaluations hors ligne avec fixtures."
+   ],
+   "to_borrow": [
+    "Note hybride déterministe + jugement, avec garde-fou d'écart, pour la citabilité dans la plateforme.",
+    "Un format CSV de mots-clés commun entre la plateforme et les skills (source, intention, priorité, cluster).",
+    "Ne pas reprendre leurs chiffres d'impact non sourcés (×2,8, +156 %, 76 %)."
+   ]
+  },
+  {
+   "repo": "gooseworks-ai/goose-skills",
+   "stars": 1283,
+   "license": "MIT",
+   "last_push": "2026-10-27",
+   "skills": [
+    {
+     "name": "run-organic-social",
+     "purpose": "Stratégie par réseau et deux semaines de posts prêts.",
+     "notable": "Annonce dès le début ce qu'il fera et ne fera pas (il ne publie pas) ; aucune question sauf une seule bloquante ; budget de recherche proportionné (10-15 recherches par plateforme) ; fiche plateforme réutilisée si elle a moins de 30 jours et au moins 8 exemples chiffrés dont 3 de comptes de moins de 10 000 abonnés ; livrable « en bref » avec niveau de certitude et section « ce qu'on n'a pas pu vérifier »."
+    },
+    {
+     "name": "claims-gate",
+     "purpose": "Contrôler chaque allégation d'un texte marketing.",
+     "notable": "Allégation (vérifiable, donc réfutable) contre simple ton promotionnel ; secteurs réglementés en verbatim uniquement ; allégations approuvées avec portée et date de revue."
+    },
+    {
+     "name": "run-paid-campaigns-health-gate",
+     "purpose": "Vérifier qu'on peut dépenser sans gaspiller.",
+     "notable": "Suivi des conversions, page mobile, prix et offre conformes à l'annonce, UTM, stock, refus, compte : chaque ✗ bloque le lancement et la montée en budget."
+    },
+    {
+     "name": "ad-policy-check",
+     "purpose": "Conformité aux règles des régies publicitaires.",
+     "notable": "Meta, TikTok, Google, LinkedIn et mentions de partenariat."
+    },
+    {
+     "name": "work-with-creators",
+     "purpose": "Trouver, évaluer, payer et briefer des créateurs.",
+     "notable": "Évaluation sur les vues médianes des 12-24 derniers posts, fourchette de prix basse et cible."
+    }
+   ],
+   "design_patterns": [
+    "Playbooks découpés en « atomes » de 20 à 60 lignes + skill.meta.json ; gabarit Entrées / Étapes / Terminé quand / Jamais ; mémoire d'exécution partagée (run-memory)."
+   ],
+   "to_borrow": [
+    "Ajouter « Terminé quand » et « Jamais » à nos 10 skills.",
+    "Contrôle avant dépense dans budget-publicite et contrôle d'allégations dans un skill de conformité marketing française."
+   ]
+  },
+  {
+   "repo": "Auriti-Labs/geo-optimizer-skill",
+   "stars": 1280,
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "skills": [
+    {
+     "name": "geo-optimizer",
+     "purpose": "Piloter une CLI d'audit et de correction GEO.",
+     "notable": "Vérification préalable de la version ; tableau « ce que touche chaque commande » (réseau, clés API, disque) ; prévisualiser avant d'écrire (fix sans --apply) ; demander avant toute commande qui consomme des crédits ; commandes logs (passages des robots IA dans les journaux serveur), llms --check-drift, monitor/track (rétention 90 jours), diff, coherence."
+    },
+    {
+     "name": "politique des robots IA (SKILL.md + references/ai-bots-list.md)",
+     "purpose": "Décider quels robots IA autoriser.",
+     "notable": "Trois niveaux : entraînement, recherche, récupération déclenchée par l'utilisateur ; Google-Extended est un jeton robots.txt, pas un robot, et n'agit ni sur la recherche ni sur AI Overviews (gouvernés par Googlebot et nosnippet/max-snippet)."
+    }
+   ],
+   "design_patterns": [
+    "capabilities.json tenu à jour par un test ; bandes de note 0-35 critique, 36-67 fondations, 68-85 bon, 86-100 excellent ; GitHub Action fournie."
+   ],
+   "to_borrow": [
+    "Tableau de transparence des commandes (réseau, clés, fichiers écrits) dans seo/README.md ; analyse des journaux serveur pour les robots IA.",
+    "Corriger geo-visibilite-ia sur le rôle de Google-Extended."
+   ]
+  },
+  {
+   "repo": "kostja94/marketing-skills",
+   "stars": 1084,
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "skills": [
+    {
+     "name": "tiktok-captions",
+     "purpose": "Légendes et scripts TikTok.",
+     "notable": "Légende = accroche de 5-7 mots + contexte en 1-2 phrases + CTA ; vidéo 9:16 en 1080×1920 ; durées selon l'usage ; sous-titres indispensables (beaucoup de vues sans le son)."
+    },
+    {
+     "name": "youtube-seo / linkedin-posts / pinterest-posts / reddit-posts",
+     "purpose": "Un skill par plateforme.",
+     "notable": "Titres, descriptions, tags, miniatures ; place de YouTube dans Google et dans les réponses IA."
+    },
+    {
+     "name": "pages/legal (cookie-policy, privacy, legal, terms, refund, shipping, disclosure)",
+     "purpose": "Générer les pages légales d'un site.",
+     "notable": "Un générateur par page (modèles américains, à adapter au droit français)."
+    },
+    {
+     "name": "seo atomisé (title-tag, canonical, indexnow, entity-seo…)",
+     "purpose": "Un skill par élément SEO.",
+     "notable": "Granularité très fine, utile comme liste de contrôle mais lourde à charger."
+    }
+   ],
+   "design_patterns": [
+    "Arborescence par famille (analytics, channels, pages, paid-ads, platforms, seo) ; « au premier usage, 1-2 phrases d'explication, ensuite droit au livrable »."
+   ],
+   "to_borrow": [
+    "Mettre les recettes par réseau dans des références de nos skills sociaux plutôt que de créer un skill par réseau (éviter l'éparpillement à 170 skills)."
+   ]
+  },
+  {
+   "repo": "rampstackco/claude-skills",
+   "stars": 1037,
+   "license": "MIT",
+   "last_push": "2026-10-27",
+   "skills": [
+    {
+     "name": "SKILL_AUTHORING.md (guide de rédaction)",
+     "purpose": "Norme commune de rédaction des 107 skills.",
+     "notable": "8 sections fixes (Quand utiliser, Quand NE PAS utiliser, Entrées requises, Méthode, Étapes, Pièges, Format de sortie, Références) ; description en 2-4 phrases (quoi + « à utiliser dès que » + déclencheurs avec synonymes et fautes + cas implicites) ; SKILL.md visé < 250 lignes ; tout le dossier lisible en 15 minutes, sinon scinder."
+    },
+    {
+     "name": "seo-traffic-diagnosis",
+     "purpose": "Diagnostiquer une baisse de trafic organique.",
+     "notable": "Cinq couches : la baisse est-elle réelle, la localiser (pays, appareil, section, marque ou non), analyse page (positions, composition de la SERP, CTR), technique, externe ; table « motif → cause probable » ; « on peut perdre du trafic sans perdre de positions »."
+    },
+    {
+     "name": "seo-audit-orchestration / content-refresh-system / seo-content-gap-audit",
+     "purpose": "Orchestration d'audits, rafraîchissement et écarts de contenu.",
+     "notable": "Écarts de contenus et de mots-clés face aux concurrents, politique de mise à jour."
+    }
+   ],
+   "design_patterns": [
+    "Chaque skill livre un gabarit, une checklist et un exemple rempli ; recettes par CMS dans references/<cms>-patterns.md ; pas de version de framework, de prix d'outil ni de nom de mise à jour dans SKILL.md ; catalogue README généré et vérifié par la CI."
+   ],
+   "to_borrow": [
+    "Créer le skill diagnostic-baisse-trafic sur ces 5 couches.",
+    "Adopter les sections fixes (dont « Quand NE PAS utiliser ») et des références par CMS (WordPress, Shopify, Wix, Webflow, PrestaShop)."
+   ]
+  },
+  {
+   "repo": "Bhanunamikaze/Agentic-SEO-Skill",
+   "stars": 1022,
+   "license": "MIT",
+   "last_push": "2026-10-14",
+   "skills": [
+    {
+     "name": "seo (skill racine)",
+     "purpose": "Audit SEO raisonné par le modèle, appuyé par des scripts.",
+     "notable": "Correspondance fixe des formulations (« analyse SEO de <url> » = audit complet) ; FULL-AUDIT-REPORT.md et ACTION-PLAN.md créés dès le début puis complétés ; section « Limites de l'environnement » si un contrôle est bloqué ; poids des catégories définis à un seul endroit."
+    },
+    {
+     "name": "seo-verifier (agent)",
+     "purpose": "Vérifier tous les constats avant le rapport.",
+     "notable": "Sans preuve → hypothèse ou retiré ; doublons fusionnés ; contradictions supprimées avec la raison ; une limite de l'environnement n'est pas un défaut du site ; sortie : constats vérifiés, constats écartés avec raison, compteurs."
+    },
+    {
+     "name": "references/llm-audit-rubric.md",
+     "purpose": "Standard de preuve des rapports.",
+     "notable": "Constat / Preuve / Impact / Correctif ; confiance Confirmé / Probable / Hypothèse ; « inconnu » plutôt que deviner."
+    },
+    {
+     "name": "seo-github + github-ranking-factors",
+     "purpose": "Référencement d'un dépôt GitHub.",
+     "notable": "Jeu fixe de requêtes suivi chaque semaine, archivage du trafic (GitHub ne garde que 14 jours) toutes les 48 heures, une expérience à la fois, CITATION.cff et SECURITY.md."
+    }
+   ],
+   "design_patterns": [
+    "Agents spécialistes + vérificateur global ; tableau de bord HTML en option."
+   ],
+   "to_borrow": [
+    "Étiquettes de confiance et panneau « constats écartés » dans la plateforme.",
+    "Mesure hebdomadaire sur requêtes fixes et archivage du trafic dans github-seo."
+   ]
+  },
+  {
+   "repo": "leopard627/fire-your-seo-agency",
+   "stars": 995,
+   "license": "MIT",
+   "last_push": "2026-11-03",
+   "skills": [
+    {
+     "name": "fire-your-seo-agency",
+     "purpose": "Diagnostiquer puis implémenter 5 voies (SEO, AEO, GEO, LLMO, Naver) et mesurer.",
+     "notable": "Tableau Statut / Preuve par voie avant d'agir (ex. « marque écrite de 3 façons différentes ») ; section « ce qu'il refuse de faire » (achat de liens, groupes d'engagement, promesse de positions, cloaking) ; « l'IA cite des données exactes : devenez la source primaire d'un chiffre » ; « 1 question = 1 page »."
+    },
+    {
+     "name": "references/content.md",
+     "purpose": "Moteur de contenu sans retainer d'agence.",
+     "notable": "Backlog de questions issu des données de recherche ; frontmatter (question, answer, data_asof, sources) qui génère le JSON-LD ; porte de publication (contenu visible sans JS, titres uniques, dateModified réelle, FAQ visible identique au FAQPage, 1 lien vers la page pilier + 2 latéraux, lastmod vérifié, IndexNow, RSS) ; fusion par 301 + canonical, 410 en dernier recours ; revue trimestrielle des contenus à zéro impression."
+    },
+    {
+     "name": "references/measure.md",
+     "purpose": "Boucle de mesure.",
+     "notable": "Re-mesure planifiée : corriger n'est pas la ligne d'arrivée."
+    }
+   ],
+   "design_patterns": [
+    "Références canoniques dans la langue du marché (coréen) + miroir anglais pour les humains ; CI : validate.py + table des robots IA en échec si elle a plus de 100 jours ; liste blanche des domaines contactés."
+   ],
+   "to_borrow": [
+    "Une voie « écosystème français » (PagesJaunes, Apple Plans, Bing, Mistral Le Chat) dans geo-visibilite-ia et seo-local.",
+    "Un test de fraîcheur de la liste des 19 robots dans seo/test ; la porte de publication dans le futur skill de rédaction."
+   ]
+  },
+  {
+   "repo": "JeffLi1993/seo-audit-skill",
+   "stars": 782,
+   "license": "MIT",
+   "last_push": "2026-06-17",
+   "skills": [
+    {
+     "name": "seo-audit (rapide)",
+     "purpose": "Audit SEO de base d'une page.",
+     "notable": "Scripts check-site, check-page, check-schema ; rapport HTML à remplir enregistré dans reports/<hôte>-<slug>-audit.html, jamais de HTML brut dans le terminal ; message final « pour aller plus loin » vers la version complète."
+    },
+    {
+     "name": "seo-audit-full",
+     "purpose": "Audit avancé.",
+     "notable": "PageSpeed, métadonnées sociales et modules avancés quand ils sont disponibles."
+    }
+   ],
+   "design_patterns": [
+    "Règles de concision : contrôle réussi = 1 phrase ; alerte ou échec = 2 puces au plus + 1 correctif ; commencer par l'échec exact ; ne pas expliquer ce qu'est un contrôle ; format obligatoire Constat / Preuve / Impact / Correctif."
+   ],
+   "to_borrow": [
+    "Appliquer ces règles de concision au rapport Markdown de seo/cli.mjs et à la liste « À faire » de l'interface."
+   ]
+  },
+  {
+   "repo": "Affitor/affiliate-skills",
+   "stars": 767,
+   "license": "MIT",
+   "last_push": "2026-10-19",
+   "skills": [
+    {
+     "name": "content-moat-calculator",
+     "purpose": "Estimer le nombre de pages nécessaires pour l'autorité thématique.",
+     "notable": "Comparaison aux concurrents par cluster, faisabilité VERT / JAUNE / ORANGE / ROUGE, décision go/no-go, étape d'auto-validation."
+    },
+    {
+     "name": "compliance-checker",
+     "purpose": "Conformité des contenus d'affiliation.",
+     "notable": "Règles FTC et des plateformes (l'équivalent français est la loi sur l'influence commerciale de 2023)."
+    },
+    {
+     "name": "content-pillar-atomizer / tiktok-script-writer / reddit-post-writer",
+     "purpose": "Contenus natifs par plateforme.",
+     "notable": "Un article → 15 à 30 micro-contenus recréés et non simplement reformatés."
+    },
+    {
+     "name": "skill-finder",
+     "purpose": "Méta-routeur.",
+     "notable": "Répond à « quel skill pour mon objectif ? »."
+    }
+   ],
+   "design_patterns": [
+    "Skills rangés par étape du tunnel ; gabarit avec schémas d'entrée et de sortie, gestion d'erreurs, « alimente / alimenté par / boucle de retour » et porte de qualité ; LICENSE.txt dans chaque skill."
+   ],
+   "to_borrow": [
+    "Section « alimente / alimenté par » dans nos skills pour rendre explicite le chaînage seo-360 → hashtags-reseaux → budget-publicite."
+   ]
+  },
+  {
+   "repo": "sergebulaev/instagram-skills",
+   "stars": 754,
+   "license": "MIT",
+   "last_push": "2026-11-04",
+   "skills": [
+    {
+     "name": "ig-hashtag-strategist",
+     "purpose": "Choisir 3 à 5 hashtags dimensionnés pour qu'un post puisse se classer.",
+     "notable": "Niveaux par nombre de publications : niche < 50 000 (2-3 tags), moyen 50 000-500 000 (1-2), large > 500 000 (0-1) ; taille estimée par la spécificité puis vérifiée dans l'app ; rejet des tags populaires hors sujet ; rotation par sujet ; placement en fin de légende ou en premier commentaire."
+    },
+    {
+     "name": "ig-caption-writer",
+     "purpose": "Rédiger une légende.",
+     "notable": "Accroche dans les 125 premiers caractères, corps facile à survoler, un seul CTA."
+    },
+    {
+     "name": "ig-carousel-planner / ig-profile-optimizer",
+     "purpose": "Carrousel et profil.",
+     "notable": "10 slides dont une première qui ouvre une boucle ; champ NOM du profil indexé, à travailler avec un mot-clé."
+    }
+   ],
+   "design_patterns": [
+    "Même dépôt pour Claude et Codex ; références de stratégie partagées entre skills."
+   ],
+   "to_borrow": [
+    "Étiqueter chaque hashtag généré « niche / moyen / large » dans hashtags.js et dans l'interface, avec l'invitation à vérifier le compteur sur le réseau."
+   ]
+  },
+  {
+   "repo": "AgriciDaniel/claude-youtube",
+   "stars": 676,
+   "license": "MIT",
+   "last_push": "2026-04-10",
+   "skills": [
+    {
+     "name": "youtube (sub-skills/metadata.md)",
+     "purpose": "Paquet d'upload YouTube prêt à coller.",
+     "notable": "3 titres (recherche, navigation, hybride) avec nombre de caractères ; mot-clé dans les 25 premiers mots ; 2 premières lignes avant « Plus » ; chapitres dès 0:00 (au moins 3) ; 10-15 tags sous 500 caractères ; 3-5 hashtags ; brief de miniature (texte de 3-4 mots) ; fiches à 20 % et 70 % ; écran de fin sur les 20 dernières secondes."
+    },
+    {
+     "name": "youtube (audit, script, hook, shorts, thumbnail, strategy…)",
+     "purpose": "Audit de chaîne, scripts de rétention, Shorts, miniatures.",
+     "notable": "15 sous-skills + 9 gabarits de chaîne (éducation, tutoriel, avis, marque personnelle…)."
+    }
+   ],
+   "design_patterns": [
+    "Un seul SKILL.md qui charge des sous-skills en simples fichiers Markdown."
+   ],
+   "to_borrow": [
+    "Le paquet YouTube dans le futur skill contenus-reseaux-video ; YouTube traité aussi comme canal de visibilité IA."
+   ]
+  },
+  {
+   "repo": "iannuttall/seo",
+   "stars": 604,
+   "license": "Apache-2.0",
+   "last_push": "2026-11-05",
+   "skills": [
+    {
+     "name": "seo",
+     "purpose": "Un skill court qui pilote une CLI/MCP branchée sur les vraies données (Search Console, GA4, Bing).",
+     "notable": "Chaque résultat se termine par la commande suivante ; « commencer petit puis demander plus » (site → section → détail) ; liste de constats persistante (issues.json : trouvé, non trouvé, non vérifié + marque « corrigé » ou « ignoré ») : « corrigé est le mot de la personne, la liste dit si le contrôle le trouve encore » ; comparaison avant/après une date ; lint des phrases qui sonnent IA."
+    }
+   ],
+   "design_patterns": [
+    "Un skill et une CLI qui fait le gros du travail, pour garder le contexte propre (même approche que seo/cli.mjs)."
+   ],
+   "to_borrow": [
+    "Statut « fait (déclaré) / encore détecté » dans la plateforme ; une ligne « prochaine étape » à la fin de chaque sortie de la CLI."
+   ]
+  },
+  {
+   "repo": "mathiaschu/meta-ads-analyzer",
+   "stars": 466,
+   "license": "MIT",
+   "last_push": "2026-02-26",
+   "skills": [
+    {
+     "name": "meta-ads-analyzer",
+     "purpose": "Diagnostiquer des campagnes Meta à partir d'exports ou de captures.",
+     "notable": "« Effet de ventilation » : ne jamais couper un segment sur la seule base d'un CPA ou CPM moyen plus élevé dans une ventilation ; justifier par les données, la mécanique du système et l'impact sur l'ensemble ; distinguer « clics (tous) » et « clics sur le lien » ; noms de métriques normalisés."
+    }
+   ],
+   "design_patterns": [
+    "Règles de rapport obligatoires en tête du skill."
+   ],
+   "to_borrow": [
+    "Une section « Lire ses résultats » dans budget-publicite (effet de ventilation, phase d'apprentissage, vocabulaire des clics)."
+   ]
+  },
+  {
+   "repo": "seranking/seo-skills",
+   "stars": 199,
+   "license": "MIT",
+   "last_push": "2026-11-05",
+   "skills": [
+    {
+     "name": "seo-gaps-to-social-campaign",
+     "purpose": "Transformer les manques SEO en campagne sur les réseaux.",
+     "notable": "Mots-clés manquants face aux concurrents + vraies questions (« de l'or pour les accroches ») + pertes de positions → 3 à 6 thèmes → angles → posts."
+    },
+    {
+     "name": "seo-content-brief",
+     "purpose": "Brief prêt pour un rédacteur.",
+     "notable": "Options de titre, meta de 150-160 caractères, plan H1/H2, ce que le top 3 ne couvre pas, comparatif on-page du top 3, plan de maillage, angle IA, potentiel de trafic, données brutes en référence."
+    },
+    {
+     "name": "seo-ai-search-share-of-voice",
+     "purpose": "Part de voix dans les moteurs IA face aux concurrents.",
+     "notable": "ChatGPT, Perplexity, Gemini, AI Overviews."
+    },
+    {
+     "name": "local-gmb-visibility",
+     "purpose": "Visibilité locale par ville.",
+     "notable": "Suivi des positions par ville transformé en contenus locaux."
+    }
+   ],
+   "design_patterns": [
+    "Vérification de santé des connecteurs avant toute action : arrêt immédiat avec le lien de réparation si l'un ne répond pas."
+   ],
+   "to_borrow": [
+    "Relier mots-clés SEO et réseaux : les vraies questions deviennent des accroches de posts (hashtags-reseaux, veille-sociale)."
+   ]
+  },
+  {
+   "repo": "vyralcontent/content-skills",
+   "stars": 198,
+   "license": "MIT",
+   "last_push": "2026-06-22",
+   "skills": [
+    {
+     "name": "viral-hooks",
+     "purpose": "Écrire et critiquer des accroches de vidéos courtes.",
+     "notable": "L'accroche décide en 1,5 à 3 secondes ; rendre un lot de 6 à 10 accroches sur au moins 3 archétypes ; trois couches (image, voix, texte à l'écran) + son ; précis vaut mieux que malin ; la promesse doit correspondre au contenu ; « on augmente les chances, on ne prédit pas la viralité » ; si l'accroche ne s'écrit pas, l'idée est faible."
+    },
+    {
+     "name": "viral-captions-and-ctas / viral-instagram-reels / viral-short-form-ideas",
+     "purpose": "Légendes, Reels et idées en volume.",
+     "notable": "Éviter les pénalités d'appâts à engagement ; diagnostiquer un Reel qui n'a pas marché."
+    }
+   ],
+   "design_patterns": [
+    "Principes en tête, modes selon la demande, références chargées à la demande, mention de l'éditeur au plus une fois et de façon honnête."
+   ],
+   "to_borrow": [
+    "Règles d'accroche (lot, 3 couches, promesse tenue) pour TikTok et Reels dans hashtags-reseaux et le futur skill vidéo."
+   ]
+  },
+  {
+   "repo": "garrettjsmith/localseoskills",
+   "stars": 146,
+   "license": "MIT",
+   "last_push": "2026-10-30",
+   "skills": [
+    {
+     "name": "brief",
+     "purpose": "Garder l'état du travail pour chaque établissement.",
+     "notable": "briefs/{marque}/{lieu}/location.brief.md toujours à jour et court + reports/ (hebdo, mensuel, trimestriel), scans/, drafts/ (en attente d'approbation), alerts/ ; au premier passage : configuration d'abord (questions une à une, environ 2 minutes), puis la demande initiale."
+    },
+    {
+     "name": "gbp-suspension-recovery",
+     "purpose": "Fiche Google suspendue ou en vérification.",
+     "notable": "Types de suspension, causes, checklist de prévention, procédure de réintégration, escalade, délais."
+    },
+    {
+     "name": "service-area-seo",
+     "purpose": "Entreprises sans vitrine (artisans, dépanneurs).",
+     "notable": "Adresse masquée, zones desservies, problème de proximité, pages de zone."
+    },
+    {
+     "name": "geogrid-analysis",
+     "purpose": "Lire une grille de positions locales.",
+     "notable": "ARP (rang moyen de 1 à 20), ATRP (moyenne des 3 meilleurs points), SoLV (part des points où l'on apparaît : 70 % et plus fort, 40-70 % moyen, moins de 40 % faible)."
+    },
+    {
+     "name": "review-management",
+     "purpose": "Avis clients et réputation.",
+     "notable": "Plateformes d'avis par secteur, règles de réponse par secteur (santé…), cadence, faux avis : repérer, faire supprimer, que faire si la suppression échoue."
+    }
+   ],
+   "design_patterns": [
+    "Skill dispatch (quels skills charger ensemble) ; skills « outil » par fournisseur (BrightLocal, Whitespark, Local Falcon, SerpApi, Screaming Frog) séparés des skills métier ; VERSIONS.md."
+   ],
+   "to_borrow": [
+    "Un brief persistant par client ou établissement pour seo-local et seo-360.",
+    "Références « artisan sans vitrine » et « fiche suspendue » dans seo-local ; métriques ARP, ATRP et SoLV."
+   ]
+  }
+ ],
+ "best_practices_skill_authoring": [
+  "La description est le seul texte lu à chaque tour : y mettre ce que fait le skill et son livrable, « à utiliser dès que… », une liste généreuse de formulations réelles (synonymes, tournures familières, fautes courantes en français) et les frontières (« pour une chute de trafic, voir… ») ; la rendre un peu insistante car Claude sous-déclenche ; 1024 caractères maximum, sans chevrons (anthropics/skills, rampstackco/claude-skills, coreyhaines31/marketingskills).",
+  "Frontmatter valide et minimal : name identique au nom du dossier, en kebab-case, 64 caractères au plus ; clés autorisées name, description, license, allowed-tools, metadata, compatibility ; metadata.version montée à chaque changement et reportée dans un VERSIONS.md (anthropics/skills, coreyhaines31/marketingskills, garrettjsmith/localseoskills).",
+  "Ne jamais livrer un SKILL.md sans frontmatter : sans description, le skill ne se déclenche que par hasard (anti-modèle vu dans zubair-trabzada/ai-marketing-claude et ericosiu/ai-marketing-skills).",
+  "Divulgation progressive : SKILL.md visé sous 250 lignes (500 au maximum), détails dans references/ avec une phrase « quand lire ce fichier », table des matières au-delà de 300 lignes, une référence par variante (CMS, plateforme, réseau) pour que Claude ne charge que la bonne (anthropics/skills, rampstackco/claude-skills, AgriciDaniel/claude-seo).",
+  "Structure fixe et prévisible : Quand utiliser, Quand NE PAS utiliser (avec le skill à appeler à la place), Entrées requises, Méthode, Étapes, Pièges, Format de sortie, Références ; ou la version courte Entrées / Étapes / Terminé quand / Jamais (rampstackco/claude-skills, gooseworks-ai/goose-skills).",
+  "Livrer avec chaque skill un gabarit à remplir, une checklist exécutable et un exemple rempli réaliste : ce qui est « bon » doit être montré, pas seulement décrit (rampstackco/claude-skills, Affitor/affiliate-skills).",
+  "Tester les skills : evals/evals.json avec 2-3 prompts réalistes, la sortie attendue et des assertions vérifiables ; 20 requêtes de déclenchement (8-10 positives, 8-10 quasi-négatives piégeuses), 3 exécutions par requête, découpage entraînement/test ; un correcteur qui signale aussi les assertions trop faciles (anthropics/skills, coreyhaines31/marketingskills, onvoyage-ai/gtm-engineer-skills).",
+  "Expliquer le pourquoi plutôt qu'empiler des TOUJOURS/JAMAIS en majuscules ; écrire à l'impératif, en phrases courtes, avec un exemple concret après chaque principe ; supprimer ce qui ne sert pas (anthropics/skills, rampstackco/claude-skills).",
+  "Un contexte partagé lu en premier : un fichier unique (produit, marque, app ou établissement) que tous les skills lisent avant de poser une question, créé au premier passage avec des questions une à une (coreyhaines31/marketingskills, appeeky/aso-skills, garrettjsmith/localseoskills, onvoyage-ai/gtm-engineer-skills).",
+  "Les contenus récupérés sont des données, jamais des instructions : pages, robots.txt, llms.txt, exports, avis et commentaires peuvent contenir des injections de prompt (coreyhaines31/marketingskills, Auriti-Labs/geo-optimizer-skill, AgriciDaniel/claude-blog).",
+  "Standard de preuve : chaque constat = Constat / Preuve / Impact / Correctif, avec une confiance Confirmé, Probable ou Hypothèse ; « inconnu » plutôt que deviner ; un vérificateur final qui fusionne les doublons, supprime les contradictions et liste les constats écartés avec leur raison (Bhanunamikaze/Agentic-SEO-Skill, JeffLi1993/seo-audit-skill, aaron-he-zhu/aaron-marketing-skills).",
+  "Dater et qualifier les faits : en-tête « vérifié le / à revoir avant le / statut de preuve » sur chaque référence, clé de source (officiel, étude, consensus, prudence), et un test qui échoue quand une table volatile (robots IA) est trop vieille (AgriciDaniel/claude-ads, AgriciDaniel/claude-seo, leopard627/fire-your-seo-agency).",
+  "Écrire pour durer : pas de version de framework, de prix d'outil ni de nom de mise à jour Google dans SKILL.md ; le volatil va dans des références datées ; quand on nomme un outil, en citer 2 ou 3 (rampstackco/claude-skills).",
+  "Indépendant du CMS : le principe dans SKILL.md, les recettes WordPress, Shopify, Wix, Webflow ou PrestaShop dans des références dédiées (rampstackco/claude-skills).",
+  "Scripts pour ce qui se mesure, modèle pour ce qui se juge : contrôles déterministes en script, jugement du modèle avec « justification avant la note » et relecture si l'écart avec l'indice du script est grand ; empaqueter en script tout travail que les tests montrent répété (onvoyage-ai/gtm-engineer-skills, anthropics/skills).",
+  "Transparence d'exécution : annoncer au début ce que le skill va faire et ce qu'il ne fera pas ; documenter ce que touche chaque commande (réseau, clés API, fichiers écrits) ; prévisualiser avant d'écrire ; demander avant de consommer des crédits, de publier ou de dépenser (gooseworks-ai/goose-skills, Auriti-Labs/geo-optimizer-skill, coreyhaines31/marketingskills).",
+  "Questions minimales : aucune question sauf une seule vraiment bloquante, sinon des valeurs raisonnables annoncées ; pour une configuration initiale, une question à la fois (gooseworks-ai/goose-skills, garrettjsmith/localseoskills).",
+  "Sorties utiles : verdict d'abord, section « ce qu'on n'a pas pu vérifier », concision stricte (contrôle réussi en une phrase, échec en 2 puces + 1 correctif), et chaque résultat qui se termine par la prochaine commande ou action (Ryze-AI-Adgent/open-seo-mcp-skills, JeffLi1993/seo-audit-skill, iannuttall/seo, gooseworks-ai/goose-skills).",
+  "Dire ce que le skill refuse de faire (achat de liens, promesse de positions, publication sans validation…) et ce qu'il ne sait pas faire (ex. ne prétend pas tromper un détecteur d'IA) (leopard627/fire-your-seo-agency, sergebulaev/linkedin-skills).",
+  "Routage explicite : un skill d'entrée ou une table « quels skills charger ensemble », des renvois « skills liés » et une section « alimente / alimenté par » pour rendre visibles les chaînes (appeeky/aso-skills, garrettjsmith/localseoskills, Affitor/affiliate-skills).",
+  "Chaîner par des artefacts à schéma strict (CSV ou JSON validés) plutôt que par de la prose, pour que la sortie d'un skill soit l'entrée fiable du suivant (onvoyage-ai/gtm-engineer-skills).",
+  "Poids et seuils définis à un seul endroit ; note comparable seulement à couverture égale ; ne jamais redistribuer le poids des éléments non mesurés (Bhanunamikaze/Agentic-SEO-Skill, aaron-he-zhu/aaron-marketing-skills).",
+  "Un fichier LICENSE.txt dans chaque dossier de skill pour qu'il reste réutilisable une fois copié seul (claude.ai, ~/.claude/skills) (anthropics/skills, Affitor/affiliate-skills)."
+ ],
+ "gaps_in_our_pack": [
+  {
+   "skill_name_fr": "contexte-entreprise",
+   "why": "N°1 — Fondation de tout le pack : aujourd'hui chaque skill repose les mêmes questions (secteur, ville, marque, valeur d'un client, concurrents). Les meilleurs dépôts font lire un fichier de contexte partagé avant toute action : réponses plus justes et gain de temps immédiat pour une TPE.",
+   "must_contain": [
+    "Détection du premier passage : si .claude/contexte-entreprise.md n'existe pas, le créer avant de traiter la demande (questions une à une, environ 2 minutes), puis revenir à la demande.",
+    "Sections : activité et offres (prix affichés), secteur (identifiant de seo/data/sectors.js), ville et zone desservie (avec ou sans vitrine), clients cibles et leurs mots, 2 à 5 concurrents, différenciation et preuves (avis, réalisations, labels), ton de la marque, réseaux et comptes, outils connectés (Search Console, GA4, Google Ads), objectif, budget, valeur d'un client, marge, taux de signature.",
+    "Allégations autorisées validées par le dirigeant et banque d'histoires (chantiers, chiffres, anecdotes) réutilisées par les skills de contenu.",
+    "« Inconnu » plutôt qu'une valeur inventée ; date de mise à jour, journal des changements et section « ce qui a marché / pas marché ».",
+    "Ligne à ajouter en tête de chaque skill : « lire le contexte s'il existe, ne demander que ce qui manque » ; un fichier par établissement pour les entreprises multi-sites.",
+    "Aucune donnée sensible : ni mot de passe, ni jeton, ni donnée client nominative."
+   ],
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "appeeky/aso-skills",
+    "garrettjsmith/localseoskills",
+    "onvoyage-ai/gtm-engineer-skills",
+    "gooseworks-ai/goose-skills",
+    "AgriciDaniel/claude-blog"
+   ]
+  },
+  {
+   "skill_name_fr": "avis-clients-reputation",
+   "why": "N°2 — Pour un commerce ou un artisan, les avis pèsent environ 20 % du classement dans le pack local (Whitespark 2026, cité par AgriciDaniel/claude-seo) et décident du clic. Notre seo-local n'y consacre qu'une ligne, alors que les dépôts spécialisés en font un skill entier.",
+   "must_contain": [
+    "Processus de sollicitation : lien direct « laisser un avis », QR code, SMS ou e-mail après la prestation, au bon moment ; jamais de contrepartie ni de tri des clients satisfaits (règles Google).",
+    "Modèles de réponse en français : avis positif, mitigé, négatif, injurieux ou suspect ; délai cible de 48 h ; citer le service et la ville sans donnée personnelle ; prudence propre aux professions réglementées (santé, avocats…).",
+    "Faux avis et avis diffamatoires : les repérer, les signaler à Google, que faire si la suppression échoue (réponse publique factuelle, recours).",
+    "Droit français : informations obligatoires quand on affiche des avis sur son site (article L111-7-2 du Code de la consommation), interdiction des faux avis, à vérifier sur Légifrance et le site de la DGCCRF ; les avis sur sa propre entreprise ne donnent pas d'étoiles Google (LocalBusiness, Organization).",
+    "Plateformes par secteur : Google, PagesJaunes, TripAdvisor et TheFork (restauration), Booking (hébergement), Trustpilot ou avis vérifiés (e-commerce), plateformes métier ; priorités tirées du contexte entreprise.",
+    "Suivi : note, volume, avis par mois, récence, taux et délai de réponse ; objectif chiffré (ex. +10 avis par mois) ; thèmes récurrents des avis (forces, plaintes) réinjectés dans le site et la FAQ.",
+    "Mise en avant sur le site et les réseaux avec l'accord du client, et lien avec ce que disent les IA de la marque."
+   ],
+   "inspired_by": [
+    "garrettjsmith/localseoskills",
+    "AgriciDaniel/claude-seo",
+    "appeeky/aso-skills",
+    "ScrapeCreators/social-media-research-skills",
+    "irinabuht12-oss/marketing-skills"
+   ]
+  },
+  {
+   "skill_name_fr": "diagnostic-baisse-trafic",
+   "why": "N°3 — « Mon trafic a chuté » est une demande urgente et fréquente. Aucun de nos skills ne donne de méthode pour distinguer un vrai recul d'un problème de mesure, d'une saison, d'une mise à jour Google ou de l'effet des AI Overviews.",
+   "must_contain": [
+    "Couche 1, la baisse est-elle réelle : Search Console contre GA4, bandeau cookies et Consent Mode (baisse de mesure), suivi cassé, changement de propriété ou d'URL, saisonnalité (même période l'an passé), jours fériés et ponts.",
+    "Couche 2, localiser : pages et sections, requêtes de marque ou non, appareils, pays (fichiers inclus dans l'export ZIP de Search Console), avec une table « motif → cause probable ».",
+    "Couche 3, pages touchées : positions, CTR et composition de la page de résultats (perte de clics sans perte de positions = AI Overviews ou nouveaux blocs), cannibalisation.",
+    "Couche 4, technique : noindex, robots.txt, canonical, redirections, erreurs 5xx, rendu JavaScript, vitesse, règles de dérive après une refonte.",
+    "Couche 5, externe : mise à jour Google confirmée (status.search.google.com, jamais de mémoire), concurrents, liens perdus.",
+    "Appui sur l'import Search Console en mode comparaison de la plateforme ; seuils présentés comme heuristiques (ex. −20 % sur un trimestre, très petits volumes ignorés).",
+    "Sortie : hypothèses classées avec preuve et confiance (confirmé, probable, hypothèse), actions dans l'ordre et date de revérification."
+   ],
+   "inspired_by": [
+    "rampstackco/claude-skills",
+    "Ryze-AI-Adgent/open-seo-mcp-skills",
+    "AgriciDaniel/claude-blog",
+    "iannuttall/seo",
+    "AgriciDaniel/claude-seo"
+   ]
+  },
+  {
+   "skill_name_fr": "conversion-site",
+   "why": "N°4 — Une TPE achète des contacts, pas du trafic : sans téléphone cliquable, preuves visibles, formulaire court et suivi des appels, le SEO et la publicité ne rapportent rien. Le pack n'a aucune grille de conversion ni de contrôle « annonce → page ».",
+   "must_contain": [
+    "Grille pondérée de la page : promesse visible sans défiler, proposition de valeur, preuves (avis, réalisations, labels et certifications du métier), bénéfices, réponses aux objections (prix, délais, garanties), appel à l'action, pied de page.",
+    "Contact : téléphone cliquable, bouton devis ou rendez-vous toujours visible sur mobile, formulaire réduit au strict nécessaire, message de confirmation, délai de réponse annoncé.",
+    "Cohérence annonce → page (même promesse, même offre, même prix) et fiche Google → site.",
+    "Mesure : clics sur le téléphone, formulaires envoyés, rendez-vous, événements clés GA4, Consent Mode v2, conversions importées dans Google Ads.",
+    "Séparer constats techniques, jugements d'ergonomie et hypothèses à tester ; tests A/B seulement si le volume de visites le permet.",
+    "Correctifs prêts à coller (bouton d'appel, balisage d'événement) dans l'esprit de buildFixes."
+   ],
+   "inspired_by": [
+    "zubair-trabzada/ai-marketing-claude",
+    "AgriciDaniel/claude-ads",
+    "coreyhaines31/marketingskills",
+    "gooseworks-ai/goose-skills",
+    "irinabuht12-oss/marketing-skills"
+   ]
+  },
+  {
+   "skill_name_fr": "contenu-seo-redaction",
+   "why": "N°5 — Après l'audit, la TPE doit écrire ses pages services, ses pages ville et quelques articles. Nos skills disent quoi corriger, pas comment produire une page qui se classe et que les IA citent, ni comment la vérifier avant publication.",
+   "must_contain": [
+    "Brief : requête cible, intention, type de page dominant dans la page de résultats, questions « Autres questions posées », ce que le top 3 ne couvre pas, maillage (1 lien vers la page pilier + 2 liens latéraux), angle pour les IA.",
+    "Gabarits : page service, page ville (garde-fou : alerte dès 30 pages, contenu local réel), comparatif, guide pratique, FAQ, étude de cas ; principe « 1 question = 1 page ».",
+    "Rédaction « réponse d'abord » : réponse directe de 40 à 60 mots sous chaque intertitre-question, passages autonomes, chiffres datés et sourcés, expérience réelle (photos, chantiers, auteur identifié).",
+    "Vérification des chiffres : chaque statistique reliée à une source lue, sinon marquée « non vérifiée » ; jamais de chiffre de mémoire ; viser à devenir la source primaire d'un chiffre.",
+    "Porte de publication : contenu visible sans JavaScript, titre et description uniques, JSON-LD adapté, dateModified réelle, images avec alt et dimensions, sitemap à jour, IndexNow, liens internes ; verdict publier / corriger / bloquer.",
+    "Relecture anti-tics d'IA en français (par densité, pas par liste noire) et voix de la marque tirée du contexte entreprise.",
+    "Politique de mise à jour : pages en déclin, fusion par 301 + canonical, 410 en dernier recours, revue trimestrielle des pages sans impression."
+   ],
+   "inspired_by": [
+    "AgriciDaniel/claude-blog",
+    "leopard627/fire-your-seo-agency",
+    "seranking/seo-skills",
+    "AgriciDaniel/claude-seo",
+    "onvoyage-ai/gtm-engineer-skills",
+    "aaron-he-zhu/aaron-marketing-skills",
+    "coreyhaines31/marketingskills"
+   ]
+  },
+  {
+   "skill_name_fr": "contenus-reseaux-video",
+   "why": "N°6 — hashtags-reseaux fournit les tags, une légende modèle et 3 idées, mais pas les contenus. Les dépôts sociaux les plus suivis montrent qu'une TPE a surtout besoin d'accroches, de scripts vidéo et d'un plan de publication tenable.",
+   "must_contain": [
+    "Accroches en lot (6 à 10 sur au moins 3 archétypes) pensées en 3 couches dans les 1 à 3 premières secondes : image, voix, texte à l'écran ; promesse tenue par la vidéo.",
+    "Scripts Reels, TikTok et Shorts : minutage, texte dit, texte à l'écran, plans à filmer au téléphone, sous-titres (beaucoup de vues se font sans le son).",
+    "Formats par réseau : légende Instagram avec l'accroche dans les 125 premiers caractères, carrousel de 10 slides, post LinkedIn sans tics d'IA, paquet YouTube (3 titres, mot-clé dans les 25 premiers mots de la description, chapitres, tags, brief de miniature).",
+    "Plan de 2 semaines avec piliers, cadence tenable (heures par semaine) et feuille de publication exportable en CSV.",
+    "Apprendre de ce qui marche : posts hors norme de la marque et des concurrents mesurés contre la médiane du compte (1,5×, 2×, 5×), avec veille-sociale.",
+    "Mention « Publicité » ou « Collaboration commerciale » pour tout partenariat (renvoi au skill de conformité) et respect du droit à l'image.",
+    "Renvois : hashtags-reseaux pour les tags, calendrier-marketing-fr pour les dates, contexte entreprise pour la voix et la banque d'histoires."
+   ],
+   "inspired_by": [
+    "vyralcontent/content-skills",
+    "sergebulaev/linkedin-skills",
+    "sergebulaev/instagram-skills",
+    "AgriciDaniel/claude-youtube",
+    "gooseworks-ai/goose-skills",
+    "kostja94/marketing-skills",
+    "ScrapeCreators/social-media-research-skills"
+   ]
+  },
+  {
+   "skill_name_fr": "conformite-marketing-fr",
+   "why": "N°7 — Aucun dépôt étudié ne couvre le droit français (ils citent la FTC ou le CAN-SPAM). Une TPE peut pourtant être sanctionnée pour une réduction mal affichée, un partenariat non signalé, des avis truqués ou une prospection sans consentement : vrai différenciateur pour un pack français.",
+   "must_contain": [
+    "Contrôle des allégations d'un texte (site, pub, post) : affirmation vérifiable ou simple ton promotionnel, preuve disponible, secteurs encadrés (santé, alimentaire, alcool avec la loi Évin, finance).",
+    "Influence commerciale (loi n° 2023-451 du 9 juin 2023) : mention « Publicité » ou « Collaboration commerciale », images retouchées ou virtuelles, produits et services interdits ou encadrés.",
+    "Prix et promotions : prix de référence d'une réduction = prix le plus bas des 30 derniers jours (article L112-1-1 du Code de la consommation), soldes aux seules dates réglementées.",
+    "Avis en ligne : informations obligatoires sur le contrôle des avis, interdiction des faux avis.",
+    "Prospection et données : règles CNIL pour l'e-mail et le SMS (consentement préalable en B2C, exceptions client existant et B2B), démarchage téléphonique (vérifier les règles de consentement en vigueur), bandeau cookies (refuser aussi simplement qu'accepter).",
+    "Mentions obligatoires du site : mentions légales (LCEN), politique de confidentialité, CGV et médiateur de la consommation pour la vente aux particuliers.",
+    "Allégations environnementales encadrées (lois AGEC et Climat et résilience, directive (UE) 2024/825), à vérifier.",
+    "Chaque règle citée avec sa source officielle (Légifrance, CNIL, DGCCRF, economie.gouv.fr) et sa date de vérification ; le skill signale un risque et ne remplace pas un avocat."
+   ],
+   "inspired_by": [
+    "gooseworks-ai/goose-skills",
+    "Affitor/affiliate-skills",
+    "AgriciDaniel/claude-ads",
+    "coreyhaines31/marketingskills",
+    "kostja94/marketing-skills"
+   ]
+  },
+  {
+   "skill_name_fr": "calendrier-marketing-fr",
+   "why": "N°8 — Les calendriers saisonniers trouvés sont américains (Thanksgiving, fête des mères en mai). Une TPE française a besoin de ses temps forts (soldes, fête des mères, rentrée, Black Friday, Noël) et de ses jours fériés pour planifier posts, pub, fiche Google et ASO.",
+   "must_contain": [
+    "Dates de l'année calculées par script plutôt qu'écrites en dur : fêtes mobiles (Pâques, Ascension, Pentecôte), fête des mères (dernier dimanche de mai, ou premier dimanche de juin si c'est la Pentecôte), fête des pères (3e dimanche de juin), Black Friday (lendemain du 4e jeudi de novembre).",
+    "Soldes d'hiver et d'été aux dates fixées par arrêté, avec dérogations départementales à vérifier sur economie.gouv.fr ; jours fériés (dont ceux d'Alsace-Moselle) et ponts.",
+    "Temps forts par secteur (commerce, restauration, BTP et rénovation, tourisme, B2B avec salons et fin d'exercice) rattachés à seo/data/sectors.js.",
+    "Fenêtres de préparation : contenu à J-30, publicité à J-14, posts à J-7, horaires exceptionnels de la fiche Google avant chaque jour férié.",
+    "Liens avec budget-publicite (hausse saisonnière des CPC), aso-application (In-App Events, mots-clés saisonniers) et hashtags-reseaux.",
+    "Sortie : planning mensuel multi-réseaux exportable en CSV et en .ics."
+   ],
+   "inspired_by": [
+    "appeeky/aso-skills",
+    "gooseworks-ai/goose-skills",
+    "coreyhaines31/marketingskills",
+    "AgriciDaniel/claude-blog",
+    "zubair-trabzada/ai-marketing-claude"
+   ]
+  },
+  {
+   "skill_name_fr": "suivi-performance-mensuel",
+   "why": "N°9 — Les dépôts matures ferment la boucle (référence, re-mesure, écart, décision) et livrent un rapport mensuel. La plateforme compare deux audits, mais aucun skill n'organise la routine ni ne prouve l'effet des corrections au dirigeant ou au client d'une agence.",
+   "must_contain": [
+    "Indicateurs par objectif : contacts (appels, formulaires), local (appels et itinéraires de la fiche Google, avis), SEO (clics hors marque, requêtes en positions 4-20), IA (sessions venues des assistants), pub (CPA réel contre CPA maximal rentable).",
+    "Référence datée puis cadence par signal : positions chaque semaine, contenus chaque mois, audit complet chaque trimestre ; attendre 3 à 4 semaines avant de juger une modification ; une modification à la fois quand c'est possible ; arrêter après deux tours sans effet.",
+    "Statut des actions : « fait (déclaré) » contre « encore détecté » au contrôle suivant ; résultat par action (amélioré, neutre, non prouvé).",
+    "Rapport mensuel court : verdict, ce qui a été fait, évolution des indicateurs, 3 prochaines actions ; version marque blanche pour agences et freelances.",
+    "Planification de la re-mesure (tâches planifiées de Claude Code ou /loop), avec validation humaine avant toute publication ou dépense."
+   ],
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "zubair-trabzada/geo-seo-claude",
+    "iannuttall/seo",
+    "ericosiu/ai-marketing-skills",
+    "leopard627/fire-your-seo-agency",
+    "garrettjsmith/localseoskills"
+   ]
+  },
+  {
+   "skill_name_fr": "netlinking-mentions-locales",
+   "why": "N°10 — Les liens et les mentions par des tiers restent un levier de classement et de citation par les IA, mais une TPE n'a pas d'outil payant : l'export « Liens » de Search Console et les partenaires locaux suffisent pour démarrer, sans acheter de liens.",
+   "must_contain": [
+    "Audit gratuit à partir de l'export « Liens » de Search Console : sites référents, pages les plus liées, ancres ; pages très liées comparées aux pages qui rapportent (maillage interne).",
+    "Sources françaises : annuaires de qualité (PagesJaunes, annuaires métier, CCI et CMA, fédérations professionnelles), fournisseurs et partenaires, clubs et associations soutenus, presse locale, mairie et office de tourisme, salons.",
+    "Mentions qui comptent pour les IA : comparatifs, forums, Reddit, vidéos YouTube, Wikipédia et Wikidata quand c'est légitime.",
+    "Modèles de demande en français (e-mail court qui dit ce que le partenaire y gagne) et tableau de suivi.",
+    "Interdits explicites : achat de liens, réseaux de sites, échanges massifs, ancres suroptimisées.",
+    "Cohérence avec les citations NAP de seo-local et mesure dans le temps (domaines référents, mentions)."
+   ],
+   "inspired_by": [
+    "nowork-studio/notfair-plugin",
+    "AgriciDaniel/claude-seo",
+    "coreyhaines31/marketingskills",
+    "garrettjsmith/localseoskills",
+    "onvoyage-ai/gtm-engineer-skills",
+    "leopard627/fire-your-seo-agency"
+   ]
+  }
+ ],
+ "improvements_existing": [
+  {
+   "our_skill": "seo-360",
+   "change": "Commencer par lire (ou créer) .claude/contexte-entreprise.md et n'interroger que sur ce qui manque ; enregistrer dans ce fichier les réponses données pendant le cadrage.",
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "garrettjsmith/localseoskills"
+   ]
+  },
+  {
+   "our_skill": "seo-360",
+   "change": "Livrer « verdict d'abord » puis ajouter deux sections : « Ce qu'on n'a pas pu vérifier » (sources bloquées, données non publiques) et « Constats écartés » ; étiqueter chaque correction Confirmé, Probable ou Hypothèse.",
+   "inspired_by": [
+    "Bhanunamikaze/Agentic-SEO-Skill",
+    "gooseworks-ai/goose-skills",
+    "Ryze-AI-Adgent/open-seo-mcp-skills"
+   ]
+  },
+  {
+   "our_skill": "seo-360",
+   "change": "Avant de recommander un contenu pour le mot-clé principal, vérifier le type de page dominant dans les résultats (fiche service, comparatif, guide, page locale) et signaler quand la page actuelle n'est pas du bon type.",
+   "inspired_by": [
+    "AgriciDaniel/claude-seo"
+   ]
+  },
+  {
+   "our_skill": "seo-360",
+   "change": "Enrichir la description de formulations réelles (« mon site n'apparaît pas sur Google », « être en première page », « référencement naturel », fautes comme « referencement ») et de frontières (« pour une chute de trafic, voir diagnostic-baisse-trafic ») ; ajouter evals/evals.json et un jeu de 20 requêtes de déclenchement.",
+   "inspired_by": [
+    "anthropics/skills",
+    "rampstackco/claude-skills",
+    "coreyhaines31/marketingskills"
+   ]
+  },
+  {
+   "our_skill": "seo-360",
+   "change": "Intégrer la méthode « rankings-push » à l'étape Search Console : positions 8-20 avec impressions, CTR faible en positions 1-5, cannibalisation ; plus petite modification, attendre 3-4 semaines, arrêter après deux tours sans effet.",
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "Ryze-AI-Adgent/open-seo-mcp-skills"
+   ]
+  },
+  {
+   "our_skill": "seo-audit-technique",
+   "change": "Remplacer « rich results FAQ plus affichés par Google (utile malgré tout pour les IA) » par une consigne neutre : FAQPage signalé en simple information, aucun gain IA promis, pas de suppression recommandée, QAPage pour de vraies questions d'utilisateurs, jamais HowTo, INP et jamais FID.",
+   "inspired_by": [
+    "AgriciDaniel/claude-seo"
+   ]
+  },
+  {
+   "our_skill": "seo-audit-technique",
+   "change": "Ajouter un mode « refonte / migration » : capturer une référence avant la mise en ligne puis comparer avec des règles classées (noindex ajouté, canonical modifiée ou retirée, JSON-LD supprimé, title ou H1 supprimé, H1 modifié à moins de 50 % de similarité, statut HTTP changé).",
+   "inspired_by": [
+    "AgriciDaniel/claude-seo",
+    "Auriti-Labs/geo-optimizer-skill"
+   ]
+  },
+  {
+   "our_skill": "seo-audit-technique",
+   "change": "Préciser pour chaque Core Web Vital « donnée de la page » ou « repli sur l'origine », n'analyser que la métrique en échec, re-mesurer en labo après correctif et rappeler que les données terrain mettent 28 jours à refléter un changement.",
+   "inspired_by": [
+    "addyosmani/web-quality-skills"
+   ]
+  },
+  {
+   "our_skill": "seo-audit-technique",
+   "change": "Quand le JSON-LD est absent du HTML brut mais présent après JavaScript (bouton-favori), écrire « injecté par JavaScript : vu par Google, pas par la plupart des robots IA » au lieu de « absent ».",
+   "inspired_by": [
+    "coreyhaines31/marketingskills"
+   ]
+  },
+  {
+   "our_skill": "seo-audit-technique",
+   "change": "Repères de longueur par type de page (accueil, service, page ville, article, produit) présentés comme repères et non comme quotas, et garde-fou pages ville : alerte à 30 pages, arrêt à 50 sans contenu local réel.",
+   "inspired_by": [
+    "AgriciDaniel/claude-seo",
+    "AgriciDaniel/claude-blog"
+   ]
+  },
+  {
+   "our_skill": "geo-visibilite-ia",
+   "change": "Classer les robots en trois niveaux (entraînement, recherche, récupération déclenchée par l'utilisateur) et corriger le rôle de Google-Extended : c'est un jeton qui n'agit ni sur la recherche Google ni sur AI Overviews (contrôlés par Googlebot, nosnippet et max-snippet).",
+   "inspired_by": [
+    "Auriti-Labs/geo-optimizer-skill"
+   ]
+  },
+  {
+   "our_skill": "geo-visibilite-ia",
+   "change": "Noter chaque bloc H2/H3 (réponse d'abord, sujet nommé sans pronom, au moins un fait, 50 à 200 mots, pas de « Mais » en tête) et livrer les 3 blocs à réécrire avec une proposition.",
+   "inspired_by": [
+    "zubair-trabzada/geo-seo-claude",
+    "onvoyage-ai/gtm-engineer-skills"
+   ]
+  },
+  {
+   "our_skill": "geo-visibilite-ia",
+   "change": "Structurer le protocole mensuel en 3 cohortes (cœur stable et versionné, questions exploratoires, contrôles : la marque doit apparaître, une catégorie hors sujet jamais), 3 à 5 exécutions par moteur, taux publié avec la taille d'échantillon, et suivi des affirmations erronées sur la marque d'un mois à l'autre.",
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "irinabuht12-oss/marketing-skills",
+    "seranking/seo-skills"
+   ]
+  },
+  {
+   "our_skill": "geo-visibilite-ia",
+   "change": "Ajouter la cohérence de l'entité (nom de marque écrit de la même façon partout, mêmes coordonnées) et l'objectif « devenir la source primaire d'un chiffre » (étude locale, baromètre de prix, données de chantiers).",
+   "inspired_by": [
+    "leopard627/fire-your-seo-agency"
+   ]
+  },
+  {
+   "our_skill": "seo-local",
+   "change": "Ajouter un volet « entreprise sans vitrine » (artisans : adresse masquée, zones desservies, pages de zone) et une procédure « fiche suspendue » (causes, prévention, demande de réintégration, délais).",
+   "inspired_by": [
+    "garrettjsmith/localseoskills"
+   ]
+  },
+  {
+   "our_skill": "seo-local",
+   "change": "Remplacer « positions dans le pack local (grille de points) » par une méthode chiffrée : grille de points autour de l'adresse, ARP, ATRP et SoLV (70 % et plus = fort), variante gratuite par vérification manuelle depuis 5 à 9 adresses ; lister gratuitement les concurrents proches avec OpenStreetMap (Overpass).",
+   "inspired_by": [
+    "garrettjsmith/localseoskills",
+    "AgriciDaniel/claude-seo"
+   ]
+  },
+  {
+   "our_skill": "hashtags-reseaux",
+   "change": "Étiqueter chaque hashtag niche (< 50 000 publications), moyen (50 000 à 500 000) ou large (> 500 000) avec le mélange 2-3 niche, 1-2 moyen, 0-1 large ; demander de vérifier le compteur via le lien ; rejeter un tag populaire hors sujet ; varier la réserve selon le sujet.",
+   "inspired_by": [
+    "sergebulaev/instagram-skills"
+   ]
+  },
+  {
+   "our_skill": "hashtags-reseaux",
+   "change": "Placer l'accroche de la légende Instagram dans les 125 premiers caractères ; pour TikTok et Reels, livrer un lot de 6 à 10 accroches en 3 couches (image, voix, texte) ; relire les légendes avec une checklist française anti-tics d'IA par densité.",
+   "inspired_by": [
+    "sergebulaev/instagram-skills",
+    "vyralcontent/content-skills",
+    "sergebulaev/linkedin-skills"
+   ]
+  },
+  {
+   "our_skill": "budget-publicite",
+   "change": "Ajouter le ROAS d'équilibre (1 / taux de marge), le CPA marginal et trois scénarios (bas, central, haut) ; présenter la règle de concentration et le pas de montée (+15-20 %) comme des heuristiques à valider sur les données du compte.",
+   "inspired_by": [
+    "AgriciDaniel/claude-ads"
+   ]
+  },
+  {
+   "our_skill": "budget-publicite",
+   "change": "Ajouter un contrôle avant dépense (✓ / ✗ / inconnu) : conversion suivie, Consent Mode v2, page mobile rapide, prix et offre identiques à l'annonce, UTM, numéro d'appel suivi ; un ✗ suspend le verdict « rentable ».",
+   "inspired_by": [
+    "gooseworks-ai/goose-skills",
+    "AgriciDaniel/claude-ads"
+   ]
+  },
+  {
+   "our_skill": "budget-publicite",
+   "change": "Ajouter l'analyse SEO vs SEA (termes payés alors que la page est déjà dans le top 3, termes payants qui convertissent sans page organique) et une section « Lire ses résultats » (effet de ventilation, phase d'apprentissage, clics tous contre clics sur le lien).",
+   "inspired_by": [
+    "Ryze-AI-Adgent/open-seo-mcp-skills",
+    "mathiaschu/meta-ads-analyzer"
+   ]
+  },
+  {
+   "our_skill": "benchmark-concurrents",
+   "change": "Ajouter les bibliothèques publicitaires (Meta Ad Library, centre de transparence des annonces Google) pour voir les pubs actives, les posts hors norme des concurrents (médiane du compte) et un tableau noté sur 10 (clarté de la promesse, preuves, CTA, prix affichés).",
+   "inspired_by": [
+    "ScrapeCreators/social-media-research-skills",
+    "zubair-trabzada/ai-marketing-claude",
+    "AgriciDaniel/claude-ads"
+   ]
+  },
+  {
+   "our_skill": "aso-application",
+   "change": "Ajuster la notation selon la maturité de la marque (dominante, établie, challenger) ; fournir 3 options par champ avec le nombre de caractères ; ajouter le texte promotionnel (170 caractères, modifiable sans revue) et l'ASO saisonnier calé sur le calendrier français.",
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "appeeky/aso-skills"
+   ]
+  },
+  {
+   "our_skill": "github-seo",
+   "change": "Ajouter la mesure : jeu fixe de 5 à 10 requêtes GitHub suivi chaque semaine, archivage du trafic toutes les 48 h (GitHub ne garde que 14 jours), une expérience à la fois, conversion vues → étoiles ; fichiers CITATION.cff et SECURITY.md.",
+   "inspired_by": [
+    "Bhanunamikaze/Agentic-SEO-Skill"
+   ]
+  },
+  {
+   "our_skill": "veille-sociale",
+   "change": "Calculer les publications hors norme (médiane par compte et par format, seuils 1,5× / 2× / 5×, confiance faible sous 10 posts) et classer les commentaires (questions, objections, plaintes, intentions d'achat, langage client).",
+   "inspired_by": [
+    "ScrapeCreators/social-media-research-skills"
+   ]
+  },
+  {
+   "our_skill": "tous les skills",
+   "change": "Ajouter dans chaque SKILL.md « Quand NE PAS utiliser », « Terminé quand » et « Jamais », un dossier evals/, une metadata.version, un VERSIONS.md et un test qui vérifie le frontmatter, nom = dossier, la longueur de la description et que chaque référence est liée.",
+   "inspired_by": [
+    "rampstackco/claude-skills",
+    "gooseworks-ai/goose-skills",
+    "coreyhaines31/marketingskills",
+    "anthropics/skills"
+   ]
+  },
+  {
+   "our_skill": "tous les skills (données)",
+   "change": "Dater chaque fichier de seo/data/research (vérifié le, à revoir avant le, statut de preuve) et faire échouer un test si la liste des robots IA a plus de 100 jours.",
+   "inspired_by": [
+    "AgriciDaniel/claude-ads",
+    "leopard627/fire-your-seo-agency",
+    "AgriciDaniel/claude-seo"
+   ]
+  }
+ ],
+ "platform_features": [
+  {
+   "feature": "Import Search Console en mode comparaison (deux périodes)",
+   "why": "L'import lit aujourd'hui un seul export. Comparer deux périodes donne gagnants et perdants (au moins 2 places, triés par clics perdus), pages en déclin (seuil réglable, petits volumes ignorés), requêtes nouvelles ou disparues, marque contre hors marque et, grâce aux fichiers Appareils et Pays du ZIP, la localisation d'une baisse.",
+   "inspired_by": [
+    "Ryze-AI-Adgent/open-seo-mcp-skills",
+    "AgriciDaniel/claude-blog",
+    "rampstackco/claude-skills",
+    "iannuttall/seo"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Import du rapport « Liens » de Search Console",
+   "why": "Audit de netlinking gratuit : sites référents, pages les plus liées, ancres suroptimisées, pages très liées contre pages qui rapportent (suggestions de maillage). Comble en partie la limite « pas de base de backlinks » du README.",
+   "inspired_by": [
+    "nowork-studio/notfair-plugin"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Comparaison d'audits classée par sévérité (dérive après refonte)",
+   "why": "La plateforme compare déjà deux audits (corrigés, nouveaux, note). Des règles CRITIQUE / ALERTE / INFO (noindex ajouté, canonical modifiée ou retirée, JSON-LD supprimé, H1 modifié, statut changé) et une normalisation d'URL (UTM, slash) la rendent décisive après une refonte ou une migration.",
+   "inspired_by": [
+    "AgriciDaniel/claude-seo",
+    "Auriti-Labs/geo-optimizer-skill"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Statut « fait (déclaré) / encore détecté »",
+   "why": "Les statuts « fait » existent déjà. Au contrôle suivant, signaler les constats marqués faits mais toujours détectés, et ceux qui ont réellement disparu : la parole de l'utilisateur et la mesure restent distinctes.",
+   "inspired_by": [
+    "iannuttall/seo"
+   ],
+   "effort": "1"
+  },
+  {
+   "feature": "Évolution de note seulement à couverture comparable",
+   "why": "Si deux audits n'ont pas mesuré les mêmes catégories, afficher « évolution non comparable » pour ces catégories et ne pas redistribuer leur poids : sinon un simple changement de couverture passe pour un progrès.",
+   "inspired_by": [
+    "aaron-he-zhu/aaron-marketing-skills"
+   ],
+   "effort": "1"
+  },
+  {
+   "feature": "Étiquettes de confiance et panneau « constats écartés »",
+   "why": "Chaque constat porte Confirmé, Probable ou Hypothèse ; un vérificateur fusionne les doublons de même cause, supprime ceux qu'une mesure contredit et affiche les constats écartés avec leur raison et les compteurs.",
+   "inspired_by": [
+    "Bhanunamikaze/Agentic-SEO-Skill",
+    "JeffLi1993/seo-audit-skill"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Citabilité par bloc (onglet IA)",
+   "why": "Découper la page en blocs H2/H3, noter chaque bloc par des règles déterministes (réponse d'abord, autonomie, faits, longueur) et afficher les 3 blocs à réécrire avec la raison : l'action GEO la plus concrète pour une TPE.",
+   "inspired_by": [
+    "zubair-trabzada/geo-seo-claude",
+    "onvoyage-ai/gtm-engineer-skills"
+   ],
+   "effort": "3"
+  },
+  {
+   "feature": "Suivi des réponses IA (portefeuille de questions)",
+   "why": "Saisir chaque mois 10 à 20 questions en 3 cohortes et, par moteur, cité ou non, position, concurrents cités, sources ; taux avec taille d'échantillon et liste des affirmations fausses sur la marque d'un mois à l'autre (stockage local + export JSON, sans serveur).",
+   "inspired_by": [
+    "coreyhaines31/marketingskills",
+    "irinabuht12-oss/marketing-skills",
+    "seranking/seo-skills"
+   ],
+   "effort": "3"
+  },
+  {
+   "feature": "Analyse des journaux serveur",
+   "why": "Importer un access.log Apache ou Nginx pour voir quelles pages Googlebot, Bingbot et les robots IA visitent réellement, à quelle fréquence et avec quels codes HTTP : seule preuve directe d'exploration, utile pour le SEO comme pour le GEO.",
+   "inspired_by": [
+    "Auriti-Labs/geo-optimizer-skill"
+   ],
+   "effort": "3"
+  },
+  {
+   "feature": "Contrôle avant dépense publicitaire",
+   "why": "Checklist ✓ / ✗ / inconnu (conversion suivie, Consent Mode v2, page mobile, prix et offre identiques à l'annonce, UTM, numéro suivi) affichée avant le verdict « rentable » ; un ✗ le suspend tant qu'il n'est pas corrigé.",
+   "inspired_by": [
+    "gooseworks-ai/goose-skills",
+    "AgriciDaniel/claude-ads"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "SEO vs SEA à partir des exports",
+   "why": "Importer le rapport des termes de recherche Google Ads (CSV) avec l'export Search Console : double paiement sur des requêtes déjà dans le top 3 (surtout la marque), termes payants qui convertissent sans page organique (feuille de route contenu), dépenses sans conversion groupées en mots-clés négatifs, économie estimée et présentée comme telle.",
+   "inspired_by": [
+    "Ryze-AI-Adgent/open-seo-mcp-skills",
+    "irinabuht12-oss/marketing-skills"
+   ],
+   "effort": "3"
+  },
+  {
+   "feature": "Grille de positions locales (geo-grid)",
+   "why": "Générer une grille de points autour de l'adresse (formule haversine), saisir ou importer les positions par point, afficher une carte de chaleur et ARP / ATRP / SoLV ; version gratuite par vérification manuelle depuis quelques adresses.",
+   "inspired_by": [
+    "garrettjsmith/localseoskills",
+    "AgriciDaniel/claude-seo"
+   ],
+   "effort": "3"
+  },
+  {
+   "feature": "Rapport mensuel et marque blanche",
+   "why": "Rapport PDF mensuel avant/après (note, actions faites et vérifiées, indicateurs, 3 prochaines actions) aux couleurs, logo et coordonnées de l'agence ou du freelance, réglés dans un petit fichier de configuration.",
+   "inspired_by": [
+    "zubair-trabzada/geo-seo-claude",
+    "garrettjsmith/localseoskills"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Calendrier des temps forts français",
+   "why": "Dates calculées pour l'année (soldes, fête des mères, rentrée, Black Friday, Noël, jours fériés) dans l'onglet réseaux et dans le plan : idées de posts, rappel des horaires exceptionnels de la fiche Google, hausse saisonnière du budget.",
+   "inspired_by": [
+    "appeeky/aso-skills",
+    "gooseworks-ai/goose-skills"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Posts hors norme à partir de ses statistiques",
+   "why": "Importer les statistiques CSV (Meta Business Suite, LinkedIn, TikTok) pour repérer les posts au-dessus de 1,5×, 2× et 5× la médiane par format et en tirer les thèmes et formats gagnants.",
+   "inspired_by": [
+    "ScrapeCreators/social-media-research-skills"
+   ],
+   "effort": "2"
+  },
+  {
+   "feature": "Fraîcheur des données de référence",
+   "why": "Afficher « données vérifiées le … » dans l'interface et faire échouer un test quand benchmarks.json ou la liste des 19 robots dépasse son échéance de revue (ex. 100 jours).",
+   "inspired_by": [
+    "AgriciDaniel/claude-ads",
+    "leopard627/fire-your-seo-agency",
+    "AgriciDaniel/claude-seo"
+   ],
+   "effort": "1"
+  },
+  {
+   "feature": "Prochaine étape et rapport plus concis",
+   "why": "Terminer chaque sortie de la CLI et chaque onglet par la prochaine commande ou action ; contrôles réussis en une phrase, échecs en 2 puces + 1 correctif.",
+   "inspired_by": [
+    "iannuttall/seo",
+    "JeffLi1993/seo-audit-skill"
+   ],
+   "effort": "1"
+  },
+  {
+   "feature": "Hashtags dimensionnés",
+   "why": "Afficher pour chaque hashtag son niveau attendu (niche, moyen, large) et un champ pour noter le compteur vérifié, afin de respecter le mélange 2-3 niche / 1-2 moyen / 0-1 large.",
+   "inspired_by": [
+    "sergebulaev/instagram-skills"
+   ],
+   "effort": "1"
+  }
+ ]
+}
