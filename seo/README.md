@@ -94,6 +94,7 @@ Cinq experts indépendants (dirigeant de PME, designer produit, consultant SEO/S
 Et en plus de l’audit :
 - **Plan d’action** : gains rapides de la semaine, puis 30, 60 et 90 jours, avec les indicateurs à suivre.
 - **Mots-clés** classés par intention (transactionnelle, locale, commerciale, informationnelle), **demande réelle** (autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur une quarantaine de variantes : questions, a…z ; chaque idée garde ses sources, aucun volume inventé), tendances Google du jour en France, et liens vers les outils de volume. Seule : `node seo/cli.mjs demande "vitrine réfrigérée"` (le .json s'importe dans l'onglet). Dans le navigateur, seules Google et YouTube répondent ; Amazon, DuckDuckGo et les tendances passent par la ligne de commande.
+- **Empreinte marketing** (avec `--concurrents`, sans clé) : pour vous et chaque concurrent, régies publicitaires dont un pixel est présent (page d’accueil et conteneur Google Tag Manager, avec la preuve), âge du site et titres d’accueil au fil des ans (Wayback Machine), pages vues par Common Crawl. Constats comparatifs (« ce concurrent a un pixel Meta, pas vous »). Lecture en ligne de commande, affichage dans l’onglet Concurrents. `--sans-empreinte` pour l’éviter.
 - **Hashtags observés sur Mastodon** (API publique, sans clé) : pour chaque tag de départ, publications lues, comptes distincts, période, et hashtags employés avec lui par 2 comptes ou plus (français, moins de 2 ans, robots exclus). Ils passent en tête des réseaux, marqués « observé ».
 - **Hashtags** pour 10 réseaux selon les limites 2026 (Instagram : 5 au maximum, Threads : 1, etc.), avec une réserve à faire tourner, un modèle de légende, les créneaux et la liste des hashtags à bannir.
 - **Budget publicitaire** : répartition entre les canaux, clics, conversions, CPA et ROAS estimés, budget nécessaire pour un objectif, minimums et phases d’apprentissage, montée en charge, part SEO / SEA.
@@ -210,6 +211,7 @@ seo/
     psi.js         PageSpeed Insights (CrUX + Lighthouse)
     plan.js        plan 30/60/90 + KPI
     keywords.js    intentions, gabarits de mots-clés
+    empreinte.js   empreinte marketing : pixels pub (page + GTM), historique Wayback, pages Common Crawl
     mastodon.js    hashtags réellement employés (Mastodon, cooccurrences par comptes distincts)
     demande.js     demande réelle : 4 autocomplétions, variantes, tendances Google du jour
     hashtags.js    hashtags par réseau

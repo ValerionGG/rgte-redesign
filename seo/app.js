@@ -21,6 +21,7 @@ import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmar
 import { extract } from './engine/html.js'
 import { gloss, glossReset, GLOSSARY } from './engine/glossary.js'
 import { observedForHashtags } from './engine/veille.js'
+import { sanitizeFootprint, titleRuns } from './engine/empreinte.js'
 import { collectMastodon, seedTags, observedFromMastodon, sanitizeMastodon, DEFAULT_INSTANCE } from './engine/mastodon.js'
 import { collectDemand, sanitizeDemande, sanitizeTrends, googleList, SOURCES as DEMAND_SOURCES, INTENT_LABELS, BROWSER_SOURCES } from './engine/demande.js'
 import { SECTORS, sectorById } from './data/sectors.js'
@@ -418,7 +419,8 @@ function diagnosis(r) {
 
 // Historique : chaque audit d'une même adresse est comparé au précédent.
 function remember(rep) {
-  store.set('last', slimForShare(rep))
+  // Le lien de partage reste léger ; la mémoire locale garde aussi les données réelles (demande, Mastodon, empreinte)
+  store.set('last', { ...slimForShare(rep), demande: rep.demande, tendances: rep.tendances, mastodon: rep.mastodon, empreinte: rep.empreinte })
   const R = rep.result
   if (!R || R.global == null) return
   const k = 'hist:' + targetKey(rep.target)
@@ -1117,8 +1119,26 @@ function concurrents() {
     <div class="card"><h3>Ce qu’ils font mieux</h3><ul class="clean">${!comps.some((x) => x.comparable) ? '<li>Aucun concurrent n’a pu être lu : comparaison impossible. Essayez la ligne de commande ou un autre mode de collecte.</li>' : better.map((b) => `<li>• ${b}</li>`).join('') || '<li>Rien de mesurable : vous êtes devant ou à égalité sur les axes comparés.</li>'}</ul></div>
     <div class="card"><h3>Sujets qu’ils traitent et pas vous</h3>${gapTerms.length ? `<div class="tags">${gapTerms.map((t) => `<span class="chip tag">${esc(t)}</span>`).join('')}</div><p class="note">Termes fréquents chez vos concurrents, absents de votre page : pistes de contenu.</p>` : '<p class="note">Pas d’écart net détecté.</p>'}</div>
   </div>
+  ${footprintCard(r)}
   ${presenceMatrix(r)}
   ${r.presence ? `<div style="margin-top:16px">${presenceCard(r)}</div>` : ''}`
+}
+
+// Empreinte marketing (ligne de commande) : régies publicitaires, historique Wayback, pages vues par Common Crawl
+function footprintCard(r) {
+  const f = r.empreinte
+  if (!f?.sites?.length) return `<div class="card" style="margin-top:16px"><h3>Empreinte marketing : publicité, historique, taille</h3><p class="note">Qui fait de la publicité (pixels Meta, Google Ads, TikTok, LinkedIn… y compris cachés dans Google Tag Manager), depuis quand chaque site existe et comment son titre a changé (Wayback Machine), combien de pages un robot public a vues (Common Crawl). Ces sources refusent les navigateurs : lancez</p><div class="code"><pre>node seo/cli.mjs ${esc(r.target)} --concurrents ${esc((r.competitors || []).map((c) => c.url).join(',') || 'concurrent1.fr,concurrent2.fr')}</pre><button class="btn sm" data-copy="">Copier</button></div><p class="note">puis importez le rapport .json.</p></div>`
+  const pub = (x) => { const r2 = Object.values(x.pub?.regies || {}); const unread = (x.pub?.conteneurs || []).filter((c) => !c.ok); return (r2.length ? r2.map((v) => `<span class="chip tag" title="${esc(v.preuves.join(' ; '))}">${esc(v.label)}</span>`).join(' ') : '<span class="note">aucun pixel</span>') + (unread.length ? ` <span class="note">(GTM non lu : à vérifier)</span>` : '') }
+  const wb = (x) => x.wayback?.ok ? (x.wayback.captures ? `depuis <b>${esc(x.wayback.premiere?.slice(0, 4))}</b><br><span class="note">${fmt(x.wayback.captures)} mois archivés</span>` : 'jamais archivé') : `<span class="note">non vérifié (${esc(x.wayback?.erreur)})</span>`
+  const cc = (x) => x.commoncrawl?.ok ? (x.commoncrawl.pages ? `${fmt(x.commoncrawl.pages)}${x.commoncrawl.plafond ? '+' : ''}` : '<span class="note">absent de ce passage</span>') : `<span class="note">non vérifié</span>`
+  const idx = f.sites.find((x) => x.commoncrawl?.ok)?.commoncrawl
+  const titles = f.sites.filter((x) => x.wayback?.ok && x.wayback.titres?.length)
+  return `<div class="card" style="margin-top:16px"><h3>Empreinte marketing : publicité, historique, taille</h3>
+    <p class="note">Lu le ${esc(isoDay(f.generatedAt))}. Un pixel de régie = la marque fait ou prépare de la publicité (pas un budget). Pages : ${idx ? `Common Crawl, ${esc(idx.nom)}` : 'Common Crawl'}, un échantillon de ce robot public, pas le total du site.</p>
+    <div class="table-wrap"><table><thead><tr><th>Site</th><th>Régies publicitaires</th><th>Historique (Wayback)</th><th class="num">Pages vues (Common Crawl)</th></tr></thead><tbody>
+    ${f.sites.map((x) => `<tr class="${x.me ? 'us' : ''}"><td>${esc(x.site)}${x.me ? ' (vous)' : ''}</td><td>${pub(x)}</td><td>${wb(x)}</td><td class="num">${cc(x)}</td></tr>`).join('')}</tbody></table></div>
+    ${f.constats.length ? `<h4 style="margin-top:12px">Ce que ça dit</h4><ul class="clean">${f.constats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}
+    ${titles.length ? `<details style="margin-top:8px"><summary class="note">Titre de la page d’accueil au fil des ans (Wayback Machine)</summary><ul class="clean">${titles.map((x) => `<li><b>${esc(x.site)}</b> : ${titleRuns(x.wayback.titres).map((t) => `${esc(t.debut === t.fin ? t.debut : `${t.debut}–${t.fin}`)} « ${esc(t.titre)} »`).join(' → ')}</li>`).join('')}</ul></details>` : ''}</div>`
 }
 
 // ───────── Ressources ─────────
@@ -1231,6 +1251,7 @@ function sanitizeReport(r, provenance = null) {
   } : undefined
   out.demande = sanitizeDemande(r.demande) || undefined
   out.mastodon = sanitizeMastodon(r.mastodon) || undefined
+  out.empreinte = sanitizeFootprint(r.empreinte) || undefined
   out.tendances = sanitizeTrends(r.tendances) || undefined
   out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null, presence: (x.presence || []).filter((y) => PL.has(y?.platform)).slice(0, 60).map((y) => ({ platform: y.platform, url: safeUrl(y.url) })) })) : undefined
   return out

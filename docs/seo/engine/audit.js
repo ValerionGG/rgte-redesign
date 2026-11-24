@@ -390,6 +390,8 @@ export function audit(ctx) {
   // ───────────────────────── Mesure, RGPD, accessibilité ─────────────────────────
   if (p) {
     for (const [name, re] of TRACKERS) if (re.test(allHtmlText)) meta.trackers.push(name)
+    // Identifiants Google Tag Manager : le conteneur est lu à part (empreinte.js), les pixels s'y cachent souvent
+    meta.gtm = [...new Set(allHtmlText.match(/GTM-[A-Z0-9]{4,10}/g) || [])].slice(0, 3)
     for (const [name, re] of CMPS) if (re.test(allHtmlText)) meta.cmp.push(name)
     for (const [name, re] of CMS) if (re.test(allHtmlText + ' ' + (ctx.rawHead || ''))) meta.cms.push(name)
     if (!meta.trackers.some((t) => /Analytics|Matomo|Plausible|Fathom|Piano|Tag Manager|Clarity/.test(t))) add('conformite', 'important', 'analytics', 'Aucun outil de mesure d’audience détecté', 'Impossible de piloter le SEO et la publicité sans mesure (trafic, conversions, sources).', 'Installez GA4 + Search Console (ou Matomo/Plausible, exemptables de consentement CNIL), et suivez les conversions.', { effort: 2 })

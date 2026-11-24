@@ -13,6 +13,7 @@ import { collectDemand, trendsFR, googleList } from './engine/demande.js'
 import { sectorById } from './data/sectors.js'
 import { collectMastodon, seedTags, observedFromMastodon, DEFAULT_INSTANCE } from './engine/mastodon.js'
 import { generateHashtags } from './engine/hashtags.js'
+import { footprint } from './engine/empreinte.js'
 import { makeNodeFetcher } from './node-fetch.mjs'
 import { SECTORS } from './data/sectors.js'
 import { GOALS, defaultGoal } from './engine/ads.js'
@@ -38,7 +39,7 @@ if (SUB[args[0]]) {
   process.exit(process.exitCode || 0)
 }
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
-const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national', '--sans-demande', '--sans-mastodon'].includes(args[i - 1])))
+const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national', '--sans-demande', '--sans-mastodon', '--sans-empreinte'].includes(args[i - 1])))
 
 if (!target || opt(['help', 'aide'])) {
   console.log(`SEO 360 — audit SEO, GEO, ASO, hashtags et budget pub
@@ -66,6 +67,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --signature <%>       part des contacts qui deviennent clients (leads)
   --cpc <€>             votre CPC réel Google (Keyword Planner)
   --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
+  --sans-empreinte      ne pas lire l'empreinte marketing (pixels pub et conteneur GTM, historique Wayback, pages Common Crawl)
   --sans-mastodon       ne pas lire les hashtags réellement employés sur Mastodon (--instance piaille.fr pour une autre instance)
   --sans-demande        ne pas interroger les autocomplétions (Google, YouTube, Amazon, DuckDuckGo) ni les tendances
   --veille [sources]    ajoute la veille sociale Agent Reach sur le mot-clé (défaut : reddit,youtube,web)
@@ -144,6 +146,11 @@ if (comps.length) {
     const rep = await analyze(c, { ...common, input, crawl: 0, kind: 'site' })
     report.competitors.push(competitorSummary(c, rep))
   }
+}
+// Empreinte marketing (vous et vos concurrents) : régies publicitaires (page + conteneur GTM), historique Wayback, pages Common Crawl
+if (report.kind === 'site' && report.result && !opt('sans-empreinte')) {
+  const sites = [{ url: target, me: true, trackers: report.result.meta?.trackers || [], gtm: report.result.meta?.gtm || [] }, ...(report.competitors || []).map((c) => ({ url: c.url, trackers: c.trackers || [], gtm: c.gtm || [] }))]
+  report.empreinte = await footprint(sites, { fetchImpl: fetch, onProgress: (m) => log('  · ' + m) })
 }
 
 const out = opt('sortie', 'rapports-seo')

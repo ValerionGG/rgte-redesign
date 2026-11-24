@@ -5,6 +5,7 @@ import { recommendTools, toolsMarkdown } from './outils.js'
 import { CHANNELS } from './ads.js'
 import { demandeMarkdown } from './demande.js'
 import { mastodonMarkdown } from './mastodon.js'
+import { footprintMarkdown } from './empreinte.js'
 import research from '../data/research/benchmarks.js'
 // Données datées (prix, CPC, règles) : signalées dès que leur date de revérification est passée.
 export function staleNote(now = new Date()) {
@@ -104,6 +105,7 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
     for (const c of r.competitors) L.push(`| ${c.url} | ${c.global ?? (c.error ? 'non comparable' : '—')} | ${c.perf ?? '—'} | ${c.words ?? '—'} |`)
     L.push('')
   }
+  if (r.empreinte) L.push(footprintMarkdown(r.empreinte))
   L.push('---', '_Estimations indicatives : benchmarks publics 2025–2026 (seo/data/research). À recaler sur vos données (Search Console, GA4, comptes publicitaires)._')
   return L.join('\n')
 }

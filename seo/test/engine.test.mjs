@@ -882,3 +882,69 @@ test('Mastodon : fichier importé assaini (tags, instance, nombres)', async () =
   assert.deepEqual(m.tags[0].cooccurrents, [{ tag: 'paris', camel: 'paris', comptes: 4, publications: 5 }])
   assert.equal(sanitizeMastodon({ tags: 'non' }), null)
 })
+
+// ───────── Empreinte marketing : pixels pub (page + GTM), Wayback, Common Crawl ─────────
+test('empreinte : régies lues dans la page et dans le conteneur GTM, avec preuve', async () => {
+  const { scanGtm, gtmIds, adsFootprint } = await import('../engine/empreinte.js')
+  assert.deepEqual(gtmIds(['<script>(window,"GTM-ABC123")</script>', 'GTM-ABC123 GTM-ZZZZ9']), ['GTM-ABC123', 'GTM-ZZZZ9'])
+  const js = 'var x={"function":"__awct","vtp_conversionId":"123"};x="https:\\/\\/connect.facebook.net\\/en_US\\/fbevents.js";y="https://bat.bing.com/bat.js"'
+  assert.deepEqual(Object.keys(scanGtm(js)).sort(), ['google', 'meta', 'microsoft'])
+  assert.deepEqual(scanGtm('gtag("config","G-ABCDEF1234")'), {}, 'GA4 seul n’est pas une régie publicitaire')
+  const asked = []
+  const fake = async (u) => { asked.push(u); return u.includes('GTM-OK12') ? { ok: true, status: 200, text: async () => js } : { ok: false, status: 404, text: async () => '' } }
+  const a = await adsFootprint({ trackers: ['Pixel TikTok', 'Google Analytics 4'], gtm: ['GTM-OK12', 'GTM-BAD2'] }, { fetchImpl: fake })
+  assert.deepEqual(Object.keys(a.regies).sort(), ['google', 'meta', 'microsoft', 'tiktok'])
+  assert.deepEqual(a.regies.tiktok.preuves, ['page : Pixel TikTok']); assert.match(a.regies.meta.preuves[0], /^GTM-OK12 : « connect\.facebook\.net/)
+  assert.equal(a.verifie, false, 'un conteneur illisible = non vérifié'); assert.deepEqual(a.conteneurs[1], { id: 'GTM-BAD2', ok: false, erreur: 'HTTP 404' })
+  assert.ok(asked.every((u) => u.startsWith('https://www.googletagmanager.com/gtm.js?id=GTM-')))
+})
+
+test('empreinte : historique Wayback (captures, titres) et Common Crawl (pages, plafond, nouvel essai)', async () => {
+  const { parseCdx, waybackHistory, countCrawl, commonCrawl, titleRuns } = await import('../engine/empreinte.js')
+  const cdx = [['timestamp', 'statuscode', 'digest'], ['20191117003303', '200', 'A'], ['20191216014831', '200', 'B'], ['20201218051943', '200', 'B'], ['20221007082252', '200', 'C']]
+  const c = parseCdx(JSON.stringify(cdx))
+  assert.equal(c.captures, 4); assert.equal(c.premiere, '2019-11-17'); assert.equal(c.derniere, '2022-10-07'); assert.deepEqual(c.annees, ['2019', '2020', '2022']); assert.equal(c.versions, 3)
+  assert.equal(parseCdx('[]').captures, 0); assert.equal(parseCdx('pas du json'), null)
+  const titles = { '2019': 'Vitrines', '2020': 'Vitrines', '2022': 'Vitrines &amp; agencement' }
+  const fake = async (u) => {
+    if (u.includes('/cdx/')) return { ok: true, status: 200, text: async () => JSON.stringify(cdx) }
+    const y = u.match(/web\/(\d{4})/)[1]
+    return { ok: true, status: 200, text: async () => `<html><title>${titles[y]}</title></html>` }
+  }
+  const w = await waybackHistory('https://www.exemple.fr/page', { fetchImpl: fake, pause: 0 })
+  assert.equal(w.ok, true); assert.equal(w.site, 'exemple.fr')
+  assert.deepEqual(w.titres.map((t) => t.titre), ['Vitrines', 'Vitrines', 'Vitrines & agencement']); assert.deepEqual(w.changementsDeTitre, ['2022-10-07'])
+  assert.match(w.titres[0].url, /^https:\/\/web\.archive\.org\/web\/20191216014831\/https:\/\/exemple\.fr\/$/)
+  assert.deepEqual(titleRuns(w.titres).map((r) => [r.debut, r.fin, r.titre]), [['2019', '2020', 'Vitrines'], ['2022', '2022', 'Vitrines & agencement']])
+  assert.equal((await waybackHistory('x.fr', {})).ok, false, 'sans réseau : non vérifié')
+  const lines = ['{"url":"https://www.a.fr/","status":"200"}', '{"url":"https://a.fr/","status":"200"}', '{"url":"https://a.fr/b?x=1","status":"200"}', '{"url":"https://a.fr/c","status":"404"}', '{"url":"https://a.fr/logo.png","status":"200"}', 'cassé'].join('\n')
+  assert.deepEqual(countCrawl(lines), { pages: 2, lignes: 5 })
+  let calls = 0
+  const flaky = async () => { calls++; return calls === 1 ? { ok: false, status: 504, text: async () => '' } : { ok: true, status: 200, text: async () => lines } }
+  const cc = await commonCrawl('a.fr', { fetchImpl: flaky, index: { id: 'CC-MAIN-2026-47', name: 'November 2026 Index', from: '2026-11-06T12:00:00', to: '2026-11-19T07:00:00' }, retryPause: 0, limit: 5 })
+  assert.equal(calls, 2, 'une seconde tentative après un 504'); assert.equal(cc.pages, 2); assert.equal(cc.plafond, true); assert.equal(cc.periode, '2026-11-06 → 2026-11-19')
+  const none = await commonCrawl('a.fr', { fetchImpl: async () => ({ ok: false, status: 404, text: async () => '' }), index: { id: 'X' } })
+  assert.equal(none.ok, true); assert.equal(none.pages, 0)
+})
+
+test('empreinte : constats comparatifs, Markdown, fichier importé assaini', async () => {
+  const { footprintFindings, footprintMarkdown, sanitizeFootprint } = await import('../engine/empreinte.js')
+  const sites = [
+    { site: 'moi.fr', me: true, pub: { regies: {}, conteneurs: [] }, wayback: { ok: true, captures: 20, premiere: '2019-11-17', titres: [] }, commoncrawl: { ok: true, pages: 10 } },
+    { site: 'eux.fr', pub: { regies: { meta: { label: 'Meta (Facebook, Instagram)', preuves: ['page : Pixel Meta'] } }, conteneurs: [{ id: 'GTM-X1Y2', ok: false, erreur: 'HTTP 404' }] }, wayback: { ok: true, captures: 300, premiere: '1998-12-02', titres: [], changementsDeTitre: ['2023-05-01'] }, commoncrawl: { ok: true, pages: 102, plafond: false } },
+    { site: 'autre.fr', pub: { regies: {} }, wayback: { ok: false, erreur: 'HTTP 503' }, commoncrawl: { ok: false, erreur: 'HTTP 504' } },
+  ]
+  const k = footprintFindings(sites)
+  assert.ok(k.some((x) => /eux\.fr a un pixel Meta/.test(x))); assert.ok(k.some((x) => /depuis 1998, vous depuis 2019/.test(x)))
+  assert.ok(k.some((x) => /titre .*2023/.test(x))); assert.ok(k.some((x) => /102 pages chez eux\.fr contre 10/.test(x)))
+  assert.ok(!k.some((x) => /autre\.fr/.test(x)), 'rien d’affirmé sur un site non vérifié')
+  const md = footprintMarkdown({ generatedAt: '2026-11-24T10:00:00Z', sites, constats: k })
+  assert.match(md, /\| moi\.fr \(vous\) \| aucun pixel publicitaire \| depuis 2019 · 20 mois archivés \| 10 \|/)
+  assert.match(md, /GTM-X1Y2 non lu : à vérifier/); assert.match(md, /\| autre\.fr \| aucun pixel publicitaire \| non vérifié \(HTTP 503\) \| non vérifié \(HTTP 504\) \|/)
+  const s = sanitizeFootprint({ generatedAt: 'x', sites: [{ site: 'eux.fr"><script>', pub: { regies: { meta: { preuves: ['ok'] }, pirate: {} }, conteneurs: [{ id: '"><x', ok: true }] }, wayback: { ok: true, premiere: 'pas une date', titres: [{ date: '2020-01-01', titre: 'T', url: 'javascript:alert(1)' }] }, commoncrawl: { ok: true, pages: '12' } }] })
+  assert.equal(s.sites[0].site, 'eux.frscript'); assert.deepEqual(Object.keys(s.sites[0].pub.regies), ['meta']); assert.deepEqual(s.sites[0].pub.conteneurs, [])
+  assert.equal(s.sites[0].wayback.premiere, null); assert.equal(s.sites[0].wayback.titres[0].url, ''); assert.equal(s.sites[0].commoncrawl.pages, 12)
+  assert.equal(sanitizeFootprint({ sites: 'non' }), null)
+  const rep = toMarkdown({ target: 'https://moi.fr', kind: 'site', input: {}, competitors: [{ url: 'eux.fr', global: 70 }], empreinte: { generatedAt: '2026-11-24T10:00:00Z', sites, constats: k } })
+  assert.match(rep, /## Empreinte marketing : publicité, historique, taille/)
+})
