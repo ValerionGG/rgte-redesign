@@ -2117,3 +2117,16 @@ L'export marche (146 Ko), mais il manque deux choses : tes réponses à mes ques
 
 
 
+
+
+## 24/11/2026
+
+### 🧑 Nadir
+
+> relance en ligne et en local deja
+
+> utilise ce dossier (D:\Claude\SEO)
+
+**🤖 Claude**
+
+En ligne : dernière publication GitHub Pages réussie (21/11), la page répond 200 depuis le PC. En local : dépôt cloné dans D:\Claude\SEO\rgte-redesign (git 2.56.1, Node 22.23.5), serveur sur http://localhost:8000/seo/, audit rgte.eu 71/100 (B) sur 15 pages : technique 70, contenu 58, vitesse 74 (estimée), données structurées 88, IA 88, partage 78, mesure/RGPD 58. 43 tests sur 51 sous Windows : chemins `new URL().pathname` (→ `/D:/…`) et fins de ligne CRLF ; correctif en PR.

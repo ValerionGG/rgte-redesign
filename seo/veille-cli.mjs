@@ -38,7 +38,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 export function runReach(bin, argv, timeout = 180000) {
   return new Promise((resolve) => {
-    execFile(bin, argv, { timeout, maxBuffer: 32 * 1024 * 1024, windowsHide: true }, (err, stdout, stderr) => {
+    // Un script .mjs/.js ne s'exécute pas seul sous Windows (spawn EFTYPE) : on le passe à Node.
+    const js = /\.[cm]?js$/i.test(bin)
+    execFile(js ? process.execPath : bin, js ? [bin, ...argv] : argv, { timeout, maxBuffer: 32 * 1024 * 1024, windowsHide: true }, (err, stdout, stderr) => {
       if (err && err.code === 'ENOENT') return resolve({ missing: true })
       const text = String(stdout || '').trim()
       const start = text.indexOf('{')
