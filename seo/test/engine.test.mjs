@@ -503,7 +503,7 @@ test('topTerms ignore les mots vides', () => {
 test('plugin : chaque sous-commande se charge depuis la copie du plugin', async () => {
   const { spawnSync } = await import('node:child_process')
   const cli = fileURLToPath(new URL('../../plugins/seo360/seo/cli.mjs', import.meta.url))
-  for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils']) {
+  for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils', 'demande']) {
     const r = spawnSync(process.execPath, [cli, sub, '--aide'], { encoding: 'utf8', timeout: 20000, env: { ...process.env, NO_PROXY: '127.0.0.1' } })
     assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module/.test(r.stdout + r.stderr), `${sub} : module manquant dans le plugin`)
     assert.ok((r.stdout + r.stderr).trim().length > 20, `${sub} : aucune sortie`)
@@ -814,4 +814,71 @@ test('demande réelle : fichier importé assaini, rapport Markdown', async () =>
   assert.equal(t.items[0].news[0].url, '', 'lien non http retiré'); assert.equal(sanitizeTrends({ ok: false }).erreur, 'indisponible')
   const md = toMarkdown({ target: 'https://exemple.fr', kind: 'site', input: {}, keywords: { groups: {} }, demande: sanitizeDemande({ seed: 'vitrine', queries: 2, sources: { google: { ok: true, suggestions: 1 } }, items: [{ keyword: 'vitrine boucherie', sources: ['google', 'duckduckgo'] }] }), tendances: { ok: true, generatedAt: '2026-11-24T00:00:00Z', items: [{ title: 'match', traffic: '500+', news: [] }], related: [] } })
   assert.match(md, /## Demande réelle autour de « vitrine »/); assert.match(md, /vitrine boucherie — Google, DuckDuckGo/); assert.match(md, /## Tendances Google du jour/)
+})
+
+// ───────── Hashtags réellement employés : Mastodon (API publique) ─────────
+const post = (id, acct, tags, { lang = 'fr', date = '2026-11-01T10:00:00Z', bot = false, html = '' } = {}) => ({ id: String(id), uri: 'u' + id, created_at: date, language: lang, account: { acct, bot }, tags: tags.map((name) => ({ name })), content: html })
+
+test('Mastodon : cooccurrences comptées par comptes distincts, robots, langue et ancienneté filtrés', async () => {
+  const { analyzeTagPosts, seedTags } = await import('../engine/mastodon.js')
+  const now = Date.parse('2026-11-24T00:00:00Z')
+  const posts = [
+    post(1, 'a', ['painaulevain', 'levain', 'boulangerie'], { html: '<p><a>#<span>PainAuLevain</span></a> <a>#<span>Levain</span></a></p>' }),
+    post(2, 'b', ['painaulevain', 'levain']),
+    post(3, 'a', ['painaulevain', 'levain', 'boulangerie']), // même compte : ne compte qu'une fois
+    post(4, 'c', ['painaulevain', 'coffee'], { lang: 'en' }), // anglais : pas de cooccurrence
+    post(5, 'd', ['painaulevain', 'vieux'], { date: '2020-01-01T00:00:00Z' }), // trop ancien
+    post(6, 'e', ['painaulevain', 'spam'], { bot: true }), // robot ignoré
+    { reblog: post(2, 'b', ['painaulevain', 'levain']) }, // partage d'une publication déjà vue
+    post(7, 'f', ['painaulevain', 'followback', '2026']), // banni et nombre seul ignorés
+  ]
+  const a = analyzeTagPosts('PainAuLevain', posts, { now })
+  assert.equal(a.tag, 'painaulevain'); assert.equal(a.publications, 6); assert.equal(a.retenues, 4); assert.equal(a.comptes, 5); assert.equal(a.robots, 1)
+  assert.deepEqual(a.cooccurrents.map((c) => [c.tag, c.comptes, c.publications]), [['levain', 2, 3], ['boulangerie', 1, 2]])
+  assert.equal(a.cooccurrents[0].camel, 'Levain', 'la casse d’origine est reprise du HTML')
+  assert.equal(a.plusAncienne, '2020-01-01T00:00:00.000Z')
+  assert.deepEqual(seedTags({ keyword: 'Vitrine réfrigérée', sectorTags: ['#surmesure', 'surmesure', 'followback', 'x'] }), ['vitrinerefrigeree', 'surmesure'])
+})
+
+test('Mastodon : collecte (pages, erreurs, instance), fusion et hashtags observés en tête', async () => {
+  const { collectMastodon, summarizeMastodon, observedFromMastodon, mastodonMarkdown } = await import('../engine/mastodon.js')
+  const asked = []
+  const now = new Date().toISOString()
+  const fakeFetch = async (url) => {
+    asked.push(url)
+    const ok = (body, link = '') => ({ ok: true, status: 200, headers: { get: (h) => (h === 'link' ? link : null) }, text: async () => JSON.stringify(body) })
+    if (url.includes('/tag/croissant') && !url.includes('max_id')) return ok(Array.from({ length: 40 }, (_, i) => post(i, 'c' + (i % 5), ['croissant', 'boulangerie', 'paris'], { date: now })), '<https://mastodon.social/api/v1/timelines/tag/croissant?limit=40&max_id=1>; rel="next"')
+    if (url.includes('max_id')) return ok([post(99, 'z', ['croissant', 'boulangerie'], { date: now })])
+    if (url.includes('/tag/painaulevain')) return ok([post(200, 'x', ['painaulevain', 'boulangerie'], { date: now }), post(201, 'y', ['painaulevain', 'boulangerie'], { date: now })])
+    if (url.includes('/tag/entremets')) return ok([])
+    return { ok: false, status: 429, headers: { get: () => null }, text: async () => '' }
+  }
+  const m = await collectMastodon(['croissant', 'painaulevain', 'entremets', 'patissier'], { fetchImpl: fakeFetch })
+  assert.equal(asked.filter((u) => u.includes('croissant')).length, 2, 'page suivante lue'); assert.ok(asked.every((u) => u.startsWith('https://mastodon.social/')))
+  assert.deepEqual(m.errors, [{ tag: 'patissier', erreur: 'HTTP 429' }]); assert.deepEqual(m.vides, ['entremets']); assert.deepEqual(m.vivants, ['croissant', 'painaulevain'])
+  const boul = m.observes.find((x) => x.tag === 'boulangerie')
+  assert.equal(boul.comptes, 6); assert.deepEqual(boul.avec, ['croissant', 'painaulevain'])
+  assert.equal(m.observes[0].tag, 'boulangerie')
+  const obs = observedFromMastodon(m)
+  assert.deepEqual(obs.map((o) => o.tag), ['croissant', 'painaulevain', 'boulangerie', 'paris'])
+  assert.ok(obs.every((o) => o.src === 'mastodon' && o.comptes > 0))
+  const h = generateHashtags({ sector: 'boulangerie', observed: obs })
+  assert.equal(h.networks.instagram.tags[0].tag, 'croissant'); assert.equal(h.networks.instagram.tags[0].src, 'mastodon'); assert.equal(h.networks.instagram.tags[0].comptes, 6)
+  const md = mastodonMarkdown(m)
+  assert.match(md, /\| #entremets \| 0 \| 0 \| 0 \| aucune publication \|/); assert.match(md, /#boulangerie \(6 comptes\)/); assert.match(md, /pas une mesure de popularité/)
+  assert.match(mastodonMarkdown(summarizeMastodon({ tags: [] })), /indisponibles/)
+  assert.equal((await collectMastodon(['x'], { instance: 'evil.com/../x' })).ok, false, 'instance invalide refusée')
+  const md2 = toMarkdown({ target: 'https://exemple.fr', kind: 'site', input: {}, mastodon: m, hashtags: h })
+  assert.match(md2, /## Hashtags observés sur Mastodon/); assert.match(md2, /#croissant observé sur Mastodon \(6 comptes\)/)
+})
+
+test('Mastodon : fichier importé assaini (tags, instance, nombres)', async () => {
+  const { sanitizeMastodon } = await import('../engine/mastodon.js')
+  const m = sanitizeMastodon({ instance: 'javascript:alert(1)', generatedAt: 'x', tags: [
+    { tag: 'croissant', publications: '12', comptes: -3, plusRecente: 'pas une date', cooccurrents: [{ tag: 'paris', camel: '<b>x</b>', comptes: 4, publications: 5 }, { tag: '"><img>', comptes: 9 }] },
+    { tag: '<script>', publications: 1 },
+  ] })
+  assert.equal(m.instance, 'mastodon.social'); assert.equal(m.tags.length, 1); assert.equal(m.tags[0].publications, 12); assert.equal(m.tags[0].comptes, 0); assert.equal(m.tags[0].plusRecente, null)
+  assert.deepEqual(m.tags[0].cooccurrents, [{ tag: 'paris', camel: 'paris', comptes: 4, publications: 5 }])
+  assert.equal(sanitizeMastodon({ tags: 'non' }), null)
 })

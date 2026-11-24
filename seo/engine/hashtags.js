@@ -52,14 +52,14 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
   const pools = { observe: [], marque: [], niche: [], mot: [], local: [], sectoriel: [], large: [] }
   // Niveau attendu (à confirmer avec le compteur du réseau) : niche < 50 000 publications, moyen 50 000–500 000, large au-delà.
   // Mélange conseillé : 2–3 niche, 1–2 moyen, 0–1 large.
-  const push = (g, phrase, display, niveau = NIVEAU[g]) => {
+  const push = (g, phrase, display, niveau = NIVEAU[g], extra = null) => {
     const t = toTag(phrase)
     if (!t || t.length < 3 || t.length > 30 || BAN.has(t) || /^\d+$/.test(t)) return
     if (Object.values(pools).some((p) => p.some((x) => x.tag === t))) return
-    pools[g].push({ tag: t, camel: display || camel(phrase) || t, niveau })
+    pools[g].push({ tag: t, camel: display || camel(phrase) || t, niveau, ...extra })
   }
-  // Hashtags réellement observés dans des publications (veille Agent Reach) : prioritaires
-  for (const o of observed.slice(0, 15)) push('observe', typeof o === 'string' ? o : o.tag, typeof o === 'string' ? camel(o) || o : o.camel)
+  // Hashtags réellement observés dans des publications (veille Agent Reach, Mastodon) : prioritaires, avec leur source
+  for (const o of observed.slice(0, 15)) push('observe', typeof o === 'string' ? o : o.tag, typeof o === 'string' ? camel(o) || o : o.camel, undefined, typeof o === 'object' && o.src ? { src: String(o.src), ...(o.comptes ? { comptes: +o.comptes } : {}) } : null)
   if (brand) { push('marque', brand); push('marque', brand + ' ' + (lang === 'en' ? 'team' : 'officiel')) }
   const langs = lang === 'both' ? ['fr', 'en'] : [lang]
   for (const L of langs) {
@@ -93,7 +93,7 @@ export function generateHashtags({ sector: sid, keywords = [], city = '', region
     const rules = rulesFor(id)
     const picked = []
     const take = (g, n) => { for (const x of pools[g]) { if (n <= 0) break; if (!picked.includes(x)) { picked.push(x); n-- } } }
-    if (['instagram', 'tiktok', 'youtube', 'x', 'threads', 'bluesky', 'linkedin'].includes(id)) take('observe', id === 'threads' ? 1 : 1)
+    if (['instagram', 'tiktok', 'youtube', 'x', 'threads', 'bluesky', 'linkedin'].includes(id)) take('observe', ['instagram', 'tiktok'].includes(id) ? 2 : 1) // observés en tête : 2 sur Instagram et TikTok
     for (const [g, n] of Object.entries(net.mix)) take(g, n)
     for (const g of ['niche', 'mot', 'observe', 'sectoriel', 'local', 'large', 'marque']) if (picked.length < net.max) take(g, net.max - picked.length)
     out[id] = {

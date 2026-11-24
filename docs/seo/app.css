@@ -340,6 +340,10 @@ a.htag:hover { border-color: var(--text); transform: translateY(-1px); }
 .htag.res { color: var(--muted); }
 .htag.lvl-niche::before, .htag.lvl-moyen::before, .htag.lvl-large::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .htag.lvl-niche::before { background: var(--mint); } .htag.lvl-moyen::before { background: var(--c-performance); } .htag.lvl-large::before { background: var(--field-line); }
+/* Hashtag réellement employé (Mastodon) : contour plein, pastille verte « observé » */
+.htag.obs { border-color: var(--mint); }
+.htag.obs::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--mint); box-shadow: 0 0 0 2px color-mix(in srgb, var(--mint) 30%, transparent); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .htag .lvl { font-family: var(--font); font-size: .7rem; font-weight: 700; color: var(--muted); }
 .net { --net: var(--accent); }
 .net > summary { list-style: none; display: grid; gap: 10px; position: relative; padding-right: 26px; }

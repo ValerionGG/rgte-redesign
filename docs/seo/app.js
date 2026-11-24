@@ -21,6 +21,7 @@ import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmar
 import { extract } from './engine/html.js'
 import { gloss, glossReset, GLOSSARY } from './engine/glossary.js'
 import { observedForHashtags } from './engine/veille.js'
+import { collectMastodon, seedTags, observedFromMastodon, sanitizeMastodon, DEFAULT_INSTANCE } from './engine/mastodon.js'
 import { collectDemand, sanitizeDemande, sanitizeTrends, googleList, SOURCES as DEMAND_SOURCES, INTENT_LABELS, BROWSER_SOURCES } from './engine/demande.js'
 import { SECTORS, sectorById } from './data/sectors.js'
 import EXEMPLE from './data/exemple.js'
@@ -372,7 +373,7 @@ async function run({ bundle } = {}) {
     if (rep.input?.sectorGuessed) form.elements.sector.value = rep.input.sector
     if (rep.input?.goal && !goalTouched) form.elements.goal.value = rep.input.goal
     st.lecture = rep.result?.global == null && rep.result?.incomplete ? 'fail' : 'done'; if (st.vitesse !== 'skip') st.vitesse = !rep.ctx?.psi || rep.ctx.psi.error ? 'fail' : 'done'; st.diagnostic = 'done'; paintSteps(st); setTimeout(() => paintSteps(null), 2500)
-    S.report = rep; S.suggestions = []; S.demande = null; S.cat = ''; S.shared = false
+    S.report = rep; S.suggestions = []; S.demande = null; S.mastodon = null; S.cat = ''; S.shared = false
     refreshDerived()
     remember(rep)
     const psiErr = rep.ctx?.psi?.error
@@ -384,7 +385,7 @@ async function run({ bundle } = {}) {
     if (!rep.error && /429|quota/i.test(psiErr || '')) $('#progress').insertAdjacentHTML('beforeend', ' <button class="linkish" type="button" data-psi-key>Ajouter ma clé</button>')
     collapseHero(true)
     go('synthese')
-    autoSuggest()
+    autoSuggest(); autoMastodon()
   } catch (err) {
     console.error(err)
     st.lecture = st.lecture === 'run' ? 'fail' : st.lecture; st.diagnostic = st.diagnostic === 'run' ? 'fail' : st.diagnostic; paintSteps(st)
@@ -793,7 +794,7 @@ function visibilite() {
   const seed = v.keyword || terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
   const k = keywordIdeas({ seed, sector: v.sector, city: v.city, local: v.local })
   const extra = store.get('hkw', '')
-  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: observedForHashtags(S.veille) })
+  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: [...observedForHashtags(S.veille), ...observedFromMastodon(currentMastodon())] })
   const nets = Object.values(h.networks).sort((a, b) => (h.priority.indexOf(a.id) + 1 || 99) - (h.priority.indexOf(b.id) + 1 || 99))
   // Sans données branchées, les épingles (hashtags) passent devant et les imports vides sont repliés en bas de page
   const hasData = !!(gscAnalysis() || S.veille)
@@ -805,7 +806,7 @@ function visibilite() {
     ${trendsPanel(S.report?.tendances || S.trends)}
     ${terms ? `<p class="note" style="margin-top:12px"><b>Sujets que Google lit sur votre page :</b> ${esc([...terms.phrases, ...terms.words].slice(0, 12).map((t) => t.term).join(' · '))}</p>` : ''}
     <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>`
-  const tagsBlock = `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
+  const tagsBlock = mastodonCard(v) + `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
     <label style="min-width:260px">Mots-clés en plus (séparés par des virgules)<input id="hkw" value="${esc(extra)}" placeholder="ex. vitrine pâtissière"></label></div>
   ${aiOn() && S.report ? `<div class="card"><h3>Idées de publications</h3><p class="note">Claude propose 5 publications pour vos 2 réseaux prioritaires, avec l’accroche, la légende et les hashtags de cette page.</p><div class="actions">${aiBtn('posts', 'Proposer 5 publications')}</div>${aiBox('posts')}</div>` : ''}
   <div class="masonry">${nets.map((n, idx) => { const all = n.tags.map((t) => '#' + t.camel).join(' '); return `<details class="card net" style="--net: ${NET_COLOR[n.id] || 'var(--accent)'}" ${idx < 2 ? 'open' : ''}><summary><h3><span class="mono" aria-hidden="true">${esc(n.label[0])}</span>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
@@ -824,6 +825,7 @@ after.visibilite = () => {
   $('#veille-clear')?.addEventListener('click', () => { S.veille = null; store.del('veille'); render() })
   $('#hkw')?.addEventListener('change', (e) => { store.set('hkw', e.target.value); render() })
   $('#suggest')?.addEventListener('click', autoSuggest)
+  $('#mastodon')?.addEventListener('click', autoMastodon)
   const readAll = async (list) => { const all = []; for (const f of list) all.push(...await readGscFiles(await f.arrayBuffer(), f.name)); return parseGscFiles(all) }
   const saveGsc = () => { if (S.report) store.set('gsc:' + targetKey(S.report.target), S.gsc); render() }
   $('#gsc-file')?.addEventListener('change', async (e) => {
@@ -936,6 +938,31 @@ function demandPanel(d) {
     ${d.foreign?.length ? `<p class="note">Mises de côté, recherches d’un autre pays : ${esc(d.foreign.slice(0, 8).map((x) => `${x.keyword} (${x.pays})`).join(' · '))}</p>` : ''}
     <div class="actions"><button class="btn sm" data-copy="${esc(core.map((x) => x.keyword).join('\n'))}">Copier les ${fmt(core.length)} idées</button><button class="btn sm" data-copy="${esc(d.questions.map((x) => x.keyword).join('\n'))}">Copier les questions</button></div>`
 }
+// Hashtags réellement employés : lus sur Mastodon (API publique, lisible depuis le navigateur)
+const currentMastodon = () => S.mastodon || S.report?.mastodon || null
+const mastodonSeeds = (v) => seedTags({ keyword: v.keyword, keywords: (store.get('hkw', '') || '').split(','), sectorTags: sectorById(v.sector).hashtags?.[v.lang === 'en' ? 'en' : 'fr']?.niche || [] })
+async function autoMastodon(ev) {
+  if (!ev && S.report?.mastodon?.ok) return
+  if (ARTIFACT) { if (ev) toast('Lecture de Mastodon indisponible ici : utilisez la version complète ou « node seo/cli.mjs hashtags ».'); return }
+  const btn = $('#mastodon'); if (btn) { btn.disabled = true; btn.textContent = 'Lecture de Mastodon…' }
+  const m = await collectMastodon(mastodonSeeds(vals())).catch(() => null)
+  S.mastodon = m?.ok ? m : null
+  if (S.report && S.mastodon) S.report.mastodon = S.mastodon
+  if (!S.mastodon && ev) toast('Mastodon n’a pas répondu (réseau ou bloqueur ?). Réessayez plus tard.')
+  if (S.tab === 'visibilite') render()
+}
+function mastodonCard(v) {
+  const m = currentMastodon()
+  const head = `<div class="section-head"><h3>Hashtags réellement employés (Mastodon)</h3><button class="btn" id="mastodon" type="button">${m ? 'Relire' : 'Lire'} Mastodon</button></div>`
+  if (!m) return `<div class="card" style="margin-top:16px">${head}<p class="note">Lit les dernières publications publiques de ${esc(mastodonSeeds(v).map((t) => '#' + t).join(' '))} et relève les hashtags employés avec eux par plusieurs comptes. Sans clé ni connexion.</p></div>`
+  const row = (t) => `<tr><td>#${esc(t.tag)}</td><td class="num">${fmt(t.publications)}</td><td class="num">${fmt(t.comptes)}</td><td>${t.publications ? `${esc(isoDay(t.plusAncienne))} → ${esc(isoDay(t.plusRecente))}` : 'aucune publication'}</td></tr>`
+  return `<div class="card" style="margin-top:16px">${head}
+    <p class="note">${esc(m.instance)}, ${esc(isoDay(m.generatedAt))}. « Comptes » = comptes différents, robots exclus. Preuve d’usage réel en français, <b>pas</b> une mesure de popularité sur Instagram ou TikTok. Les hashtags « observé » sont placés en tête des réseaux ci-dessous.</p>
+    <div class="table-wrap"><table><thead><tr><th>Tag de départ</th><th class="num">Publications lues</th><th class="num">Comptes</th><th>Période</th></tr></thead><tbody>${m.tags.map(row).join('')}</tbody></table></div>
+    ${m.observes.length ? `<h4 style="margin-top:12px">Employés avec eux par 2 comptes ou plus</h4><div class="tags">${m.observes.slice(0, 30).map((x) => `<a class="htag obs" href="https://${esc(m.instance)}/tags/${esc(x.tag)}" target="_blank" rel="noopener" title="${esc(`${x.comptes} comptes, ${x.publications} publications, avec ${x.avec.map((a) => '#' + a).join(' ')}`)}">#${esc(x.camel)}<span class="lvl">${fmt(x.comptes)}</span></a>`).join('')}</div><button class="btn sm" data-copy="${esc(m.observes.slice(0, 30).map((x) => '#' + x.camel).join(' '))}">Copier</button>` : '<p class="note">Aucun hashtag ne revient chez 2 comptes différents : sujet trop rare sur Mastodon. Les hashtags ci-dessous restent des suggestions à vérifier.</p>'}
+    ${m.vides.length ? `<p class="note">Personne ne s’en sert sur Mastodon : ${esc(m.vides.map((t) => '#' + t).join(' '))}.</p>` : ''}
+    ${m.errors.length ? `<p class="note">Illisibles : ${esc(m.errors.map((e) => `#${e.tag} (${e.erreur})`).join(', '))}.</p>` : ''}</div>`
+}
 function trendsPanel(t) {
   if (!t) return ''
   if (!t.ok) return `<p class="note" style="margin-top:12px">Tendances Google du jour indisponibles (${esc(t.erreur)}).</p>`
@@ -984,7 +1011,7 @@ const TAG_URL = { instagram: (t) => `https://www.instagram.com/explore/tags/${t}
 // Une teinte par réseau (pas de logo de marque) : le monogramme et la pastille de couleur suffisent à s'y retrouver
 const NET_COLOR = { instagram: 'var(--c-social)', tiktok: 'var(--text)', linkedin: 'var(--c-technique)', youtube: 'var(--pop)', facebook: 'var(--c-technique)', pinterest: 'var(--pop)', x: 'var(--text)', threads: 'var(--text)', bluesky: 'var(--c-ia)', snapchat: 'var(--c-performance)' }
 const NIV = { niche: 'niche (moins de 50 000 publications)', moyen: 'moyen (50 000 à 500 000)', large: 'large (plus de 500 000)' }
-const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
+const tagLink = (net, t) => { const obs = t.src === 'mastodon', lv = obs ? ' obs' : t.niveau ? ` lvl-${t.niveau}` : '', tt = obs ? `Observé sur Mastodon : employé par ${t.comptes || '?'} comptes différents. Vérifiez aussi le compteur sur ce réseau.` : t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = obs ? '<span class="lvl">observé</span>' : t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
 const CH_COLORS = ['#4338ca', '#0f766e', '#b45309', '#be185d', '#0369a1', '#4d7c0f', '#7e22ce']
 // En-têtes courts et complets pour le tableau Concurrents (avant : « Mesure, » et deux colonnes « Vitesse »).
 const CAT_SHORT = { technique: 'Technique', contenu: 'Contenu', donnees: 'Données', ia: 'IA', social: 'Partage', conformite: 'Mesure et RGPD', local: 'Local', performance: 'Vitesse', decouverte: 'Découverte' }
@@ -1203,6 +1230,7 @@ function sanitizeReport(r, provenance = null) {
     sameAsSnippet: r.presence.sameAsSnippet ? str(r.presence.sameAsSnippet, 4000) : null, sirenSeen: /^\d{9}$/.test(r.presence.sirenSeen || '') ? r.presence.sirenSeen : null,
   } : undefined
   out.demande = sanitizeDemande(r.demande) || undefined
+  out.mastodon = sanitizeMastodon(r.mastodon) || undefined
   out.tendances = sanitizeTrends(r.tendances) || undefined
   out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null, presence: (x.presence || []).filter((y) => PL.has(y?.platform)).slice(0, 60).map((y) => ({ platform: y.platform, url: safeUrl(y.url) })) })) : undefined
   return out

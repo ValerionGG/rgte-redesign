@@ -11,6 +11,8 @@ import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
 import { collectDemand, trendsFR, googleList } from './engine/demande.js'
 import { sectorById } from './data/sectors.js'
+import { collectMastodon, seedTags, observedFromMastodon, DEFAULT_INSTANCE } from './engine/mastodon.js'
+import { generateHashtags } from './engine/hashtags.js'
 import { makeNodeFetcher } from './node-fetch.mjs'
 import { SECTORS } from './data/sectors.js'
 import { GOALS, defaultGoal } from './engine/ads.js'
@@ -36,7 +38,7 @@ if (SUB[args[0]]) {
   process.exit(process.exitCode || 0)
 }
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
-const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national', '--sans-demande'].includes(args[i - 1])))
+const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national', '--sans-demande', '--sans-mastodon'].includes(args[i - 1])))
 
 if (!target || opt(['help', 'aide'])) {
   console.log(`SEO 360 — audit SEO, GEO, ASO, hashtags et budget pub
@@ -64,6 +66,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --signature <%>       part des contacts qui deviennent clients (leads)
   --cpc <€>             votre CPC réel Google (Keyword Planner)
   --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
+  --sans-mastodon       ne pas lire les hashtags réellement employés sur Mastodon (--instance piaille.fr pour une autre instance)
   --sans-demande        ne pas interroger les autocomplétions (Google, YouTube, Amazon, DuckDuckGo) ni les tendances
   --veille [sources]    ajoute la veille sociale Agent Reach sur le mot-clé (défaut : reddit,youtube,web)
   --ua auto|seo360|navigateur  identité du robot (défaut auto : SEO360-Audit, puis navigateur si le site refuse)
@@ -125,6 +128,14 @@ if (report.kind === 'site' && (input.keyword || report.keywords?.base) && !opt('
   report.tendances = t
   if (!d.items?.length) log('  ⚠ Autocomplétions indisponibles : les idées de mots-clés ci-dessous sont des gabarits, sans preuve de demande.')
 }
+// Hashtags réellement employés (Mastodon, API publique) : les hashtags proposés partent de ce qui est observé
+if (report.hashtags && !opt('sans-mastodon')) {
+  const sec = sectorById(input.sector)
+  const seeds = seedTags({ keyword: input.keyword, sectorTags: sec.hashtags?.[input.lang === 'en' ? 'en' : 'fr']?.niche || [] })
+  log(`  · Hashtags employés sur Mastodon (${seeds.map((t) => '#' + t).join(' ')})…`)
+  report.mastodon = await collectMastodon(seeds, { fetchImpl: fetch, instance: opt('instance', DEFAULT_INSTANCE), onProgress: (m) => log('    ' + m) })
+  if (report.mastodon.ok) report.hashtags = generateHashtags({ sector: input.sector, keywords: [input.keyword].filter(Boolean), terms: report.result?.meta?.terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: input.city, brand: input.brand, lang: input.lang, observed: observedFromMastodon(report.mastodon) })
+}
 const comps = String(opt('concurrents', '') || '').split(',').map((s) => s.trim()).filter(Boolean)
 if (comps.length) {
   report.competitors = []
@@ -142,7 +153,6 @@ const slug = String(target).replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, 
 if (opt('veille')) {
   const { collectVeille, INSTALL_HELP } = await import('./veille-cli.mjs')
   const { analyzeVeille, observedForHashtags } = await import('./engine/veille.js')
-  const { generateHashtags } = await import('./engine/hashtags.js')
   const sujet = input.keyword || report.keywords?.base || ''
   const srcOpt = opt('veille')
   const got = await collectVeille({ sujet, sources: typeof srcOpt === 'string' ? srcOpt.split(',') : undefined, marque: input.brand, bin: opt('agent-reach', process.env.AGENT_REACH_BIN || 'agent-reach'), log })
@@ -150,7 +160,7 @@ if (opt('veille')) {
   else {
     report.veille = analyzeVeille(got.results, { sujet, marque: input.brand })
     const terms = report.result?.meta?.terms?.phrases?.map((t) => t.term).slice(0, 5) || []
-    report.hashtags = generateHashtags({ sector: input.sector, keywords: [input.keyword].filter(Boolean), terms, city: input.city, brand: input.brand, lang: input.lang, observed: observedForHashtags(report.veille) })
+    report.hashtags = generateHashtags({ sector: input.sector, keywords: [input.keyword].filter(Boolean), terms, city: input.city, brand: input.brand, lang: input.lang, observed: [...observedForHashtags(report.veille), ...observedFromMastodon(report.mastodon)] })
   }
 }
 if (opt('cpc') || opt('volume')) {
