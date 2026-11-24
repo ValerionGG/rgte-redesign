@@ -1,0 +1,11 @@
+# Fins de ligne LF pour le moteur, les skills et le plugin, y compris sous Windows
+# (core.autocrlf=true) : le frontmatter des skills et les tests en dépendent.
+*.md text eol=lf
+*.mjs text eol=lf
+.claude/** text eol=lf
+seo/**/*.js text eol=lf
+seo/**/*.json text eol=lf
+plugins/** text eol=lf
+*.zip binary
+*.png binary
+*.woff2 binary

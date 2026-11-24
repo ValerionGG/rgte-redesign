@@ -28,6 +28,7 @@ import { execFileSync, spawnSync, execFile } from 'node:child_process'
 import { mkdtempSync, readdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // ───────── Faux site servi en HTTP local ─────────
 const root = new URL('./fixtures/site/', import.meta.url)
@@ -276,7 +277,7 @@ test('Search Console : ZIP complet, marque, comparaison, chute datée, liens', a
   assert.equal(detectDrop([{ key: '2026-01-01', clicks: 5 }]), null)
   // Ligne de commande
   const out = mkdtempSync(join(tmpdir(), 'gsc-'))
-  const r = spawnSync(process.execPath, [new URL('../cli.mjs', import.meta.url).pathname, 'gsc', new URL('./fixtures/gsc-complet.zip', import.meta.url).pathname, '--avant', new URL('./fixtures/gsc-precedent.zip', import.meta.url).pathname, '--sortie', out], { encoding: 'utf8' })
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('../cli.mjs', import.meta.url)), 'gsc', fileURLToPath(new URL('./fixtures/gsc-complet.zip', import.meta.url)), '--avant', fileURLToPath(new URL('./fixtures/gsc-precedent.zip', import.meta.url)), '--sortie', out], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /## Chute détectée/); assert.match(r.stdout, /maison-exemple\.fr/); assert.match(r.stderr, /Prochaine étape/)
 })
 test('calendrier : dates calculées (Pâques, fête des mères, soldes, ponts), CSV et .ics', () => {
@@ -297,7 +298,7 @@ test('calendrier : dates calculées (Pâques, fête des mères, soldes, ponts), 
   assert.ok(calendarCsv(c28).startsWith('\uFEFFdate;temps_fort;action;canal;responsable;statut;notes\r\n'))
   const up = upcoming(new Date('2026-11-05T12:00:00Z'), { days: 60, sector: 'boulangerie' })
   assert.equal(up.filter((m) => m.label === 'Noël').length, 1); assert.ok(up.find((m) => m.label === 'Noël').ferie)
-  const r = spawnSync(process.execPath, [new URL('../cli.mjs', import.meta.url).pathname, 'calendrier', '2027', '--secteur', 'restaurant'], { encoding: 'utf8' })
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('../cli.mjs', import.meta.url)), 'calendrier', '2027', '--secteur', 'restaurant'], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /Beaujolais nouveau/); assert.match(r.stdout, /jeu\. 18 nov\./)
 })
 test('dérive après refonte : noindex, canonical, données structurées, contenu, pages en erreur', () => {
@@ -358,7 +359,7 @@ test('boîte à outils : choix selon l’audit, ordre d’installation, guides e
   const base = recommendTools({ kind: 'site', input: { sector: 'saas' }, result: { issues: [], meta: {} } })
   assert.ok(!base.essentiel.some((x) => x.id === 'gbp')); assert.ok(base.essentiel.some((x) => x.id === 'linkedin-insight' || x.id === 'search-console'))
   for (const x of Object.values(TOOLS)) { assert.match(x.url, /^https:\/\//, x.id); assert.ok(['essentiel', 'recommande', 'pro'].includes(x.niveau), x.id); if (x.niveau === 'essentiel') assert.ok(x.gratuit, `${x.id} : un essentiel doit être gratuit`) }
-  const r = spawnSync(process.execPath, [new URL('../cli.mjs', import.meta.url).pathname, 'outils', '--secteur', 'restaurant', '--local'], { encoding: 'utf8' })
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('../cli.mjs', import.meta.url)), 'outils', '--secteur', 'restaurant', '--local'], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /Google Business Profile/)
 })
 test('skills : frontmatter, sections obligatoires, références liées, 3 évaluations dont 1 négative, plugin à jour', () => {
@@ -382,7 +383,7 @@ test('skills : frontmatter, sections obligatoires, références liées, 3 évalu
     assert.ok(ev.some((e) => existsSync(new URL(`plugins/seo360/evals/${e}/graders/ne-declenche-pas.md`, root))), `${n} : pas de cas négatif`)
     for (const e of ev) for (const f of ['prompt.md', 'graders/resultat.md']) assert.ok(existsSync(new URL(`plugins/seo360/evals/${e}/${f}`, root)), `${e} : ${f}`)
   }
-  const r = spawnSync(process.execPath, [new URL('../plugin.mjs', import.meta.url).pathname, '--check'], { encoding: 'utf8' })
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('../plugin.mjs', import.meta.url)), '--check'], { encoding: 'utf8' })
   assert.equal(r.status, 0, r.stderr)
 })
 test('partage : aller-retour compressé, lien trop long refusé', async () => {
@@ -465,8 +466,8 @@ test('veille : questions, hashtags observés, mentions, sources bloquées', () =
   assert.ok(h.networks.instagram.tags.some((t) => t.tag === 'piecemontee'), 'hashtag observé repris')
 })
 test('veille en ligne de commande : appelle Agent Reach, s’arrête sur « connexion requise », explique l’installation', () => {
-  const cli = new URL('../cli.mjs', import.meta.url).pathname
-  const stub = new URL('./fixtures/agent-reach/agent-reach.mjs', import.meta.url).pathname
+  const cli = fileURLToPath(new URL('../cli.mjs', import.meta.url))
+  const stub = fileURLToPath(new URL('./fixtures/agent-reach/agent-reach.mjs', import.meta.url))
   const out = mkdtempSync(join(tmpdir(), 'veille-'))
   const env = { ...process.env, AGENT_REACH_PAUSE_MS: '0', NO_PROXY: '127.0.0.1', no_proxy: '127.0.0.1' }
   execFileSync(process.execPath, [cli, 'veille', 'pâtisserie lyon', '--sources', 'reddit,youtube,twitter,tiktok', '--marque', 'Maison Exemple', '--agent-reach', stub, '--sortie', out], { stdio: 'pipe', env })
@@ -485,7 +486,7 @@ test('veille en ligne de commande : appelle Agent Reach, s’arrête sur « conn
   assert.equal(miss.status, 2); assert.match(miss.stderr, /GitHub UNIQUEMENT/); assert.match(miss.stderr, /releases\/latest\/download\/agent-reach\.zip/)
 })
 test('veille : pause entre deux recherches sur une même plateforme, aucune entre plateformes', async () => {
-  const stub = new URL('./fixtures/agent-reach/agent-reach.mjs', import.meta.url).pathname
+  const stub = fileURLToPath(new URL('./fixtures/agent-reach/agent-reach.mjs', import.meta.url))
   const t0 = Date.now()
   const got = await collectVeille({ sujet: 'pâtisserie lyon', sources: ['reddit', 'x', 'linkedin'], marque: 'Maison Exemple', bin: stub, pause: 400 })
   const dt = Date.now() - t0
@@ -501,7 +502,7 @@ test('topTerms ignore les mots vides', () => {
 // ───────── Conseil v3 : chaque faille prouvée par un audit a son test ─────────
 test('plugin : chaque sous-commande se charge depuis la copie du plugin', async () => {
   const { spawnSync } = await import('node:child_process')
-  const cli = new URL('../../plugins/seo360/seo/cli.mjs', import.meta.url).pathname
+  const cli = fileURLToPath(new URL('../../plugins/seo360/seo/cli.mjs', import.meta.url))
   for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils']) {
     const r = spawnSync(process.execPath, [cli, sub, '--aide'], { encoding: 'utf8', timeout: 20000, env: { ...process.env, NO_PROXY: '127.0.0.1' } })
     assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module/.test(r.stdout + r.stderr), `${sub} : module manquant dans le plugin`)
@@ -620,7 +621,7 @@ test('« Mentions légales » écrit en pied de page sans lien : signalé comme 
 })
 
 test('CLI : page et robots.txt fournis en fichiers, puis site injoignable lu par Jina (vrai code HTTP, en-têtes non jugés)', async () => {
-  const cli = new URL('../cli.mjs', import.meta.url).pathname, dir = mkdtempSync(join(tmpdir(), 'seo360-'))
+  const cli = fileURLToPath(new URL('../cli.mjs', import.meta.url)), dir = mkdtempSync(join(tmpdir(), 'seo360-'))
   const html = `<!doctype html><html lang="fr"><head><title>Vitrines réfrigérées sur mesure | Test</title><meta name="description" content="Fabricant de vitrines réfrigérées sur mesure pour les métiers de bouche."></head><body><h1>Vitrines réfrigérées</h1><p>${'Fabricant de vitrines réfrigérées pour boulangeries et traiteurs. '.repeat(40)}</p><footer><a href="/mentions-legales">Mentions légales</a> <a href="/confidentialite">Confidentialité</a></footer></body></html>`
   writeFileSync(join(dir, 'page.html'), html); writeFileSync(join(dir, 'robots.txt'), 'User-agent: *\nAllow: /')
   const run = (args, env) => new Promise((ok) => execFile(process.execPath, [cli, ...args], { encoding: 'utf8', maxBuffer: 50e6, env: { ...process.env, ...env } }, (err, stdout, stderr) => ok({ err, stdout, stderr })))

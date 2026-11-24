@@ -4,7 +4,7 @@
 >
 > **Pour Nadir** : ce fichier résume trois semaines de travail (3 → 21 novembre 2026). Les échanges complets sont dans [ECHANGES.md](ECHANGES.md).
 
-Dernière mise à jour : **21/11/2026**. État du code : branche `main` de `ValerionGG/rgte-redesign`, après la PR #8 (version 3.12 de SEO 360, plugin 3.4.0).
+Dernière mise à jour : **24/11/2026**. État du code : branche `main` de `ValerionGG/rgte-redesign`, après la PR #9 (version 3.12 de SEO 360, plugin 3.4.0, dossier `reprise/`).
 
 ---
 
@@ -110,7 +110,8 @@ GitHub Pages publie la branche `main` (dossier `docs/`) en 1 à 2 minutes après
 | 12/11 | Intégrer les conseils et skills de la session « audit SEO RaceLink » et tout installer. | Leçons RaceLink dans les skills, 3 nouveaux contrôles (liens vers un site de test, og:url sur un autre domaine, boutons Télécharger sans store), contrôle des fiches de stores en octets, correction d'un faux positif qui plafonnait à tort des notes à 40 (PR #6). |
 | 17/11 | « Continue. » | Onglet « À faire » allégé (PR #7). |
 | 17/11 | Un outil de profiling qui trouve les réseaux, les apps, absolument tout ; un benchmark et une étude concurrentielle pour faire mieux. | **Profil de présence** : 47 plateformes, SIREN croisé avec le registre, bloc sameAs, matrice « qui est où », benchmark de 12 outils (PR #8). |
-| 21/11 | Tout mettre sur GitHub avec un fichier qui contient absolument tout, pour reprendre sur un autre PC. | Ce dossier `reprise/`. |
+| 21/11 | Tout mettre sur GitHub avec un fichier qui contient absolument tout, pour reprendre sur un autre PC. | Ce dossier `reprise/` (PR #9). |
+| 24/11 | « Relance en ligne et en local. » | En ligne : publication du 21/11 réussie, la page répond 200. En local sur le PC Windows (`D:\Claude\SEO\rgte-redesign`) : serveur sur http://localhost:8000/seo/, audit de rgte.eu à **71/100** (15 pages). 8 tests sur 51 échouaient sous Windows (chemins `/D:/…`, fins de ligne CRLF) : corrigé par `fileURLToPath` et un `.gitattributes`. |
 
 ### Les PR fusionnées
 
