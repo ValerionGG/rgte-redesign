@@ -113,6 +113,7 @@ GitHub Pages publie la branche `main` (dossier `docs/`) en 1 à 2 minutes après
 | 21/11 | Tout mettre sur GitHub avec un fichier qui contient absolument tout, pour reprendre sur un autre PC. | Ce dossier `reprise/` (PR #9). |
 | 24/11 | « Relance en ligne et en local. » | En ligne : publication du 21/11 réussie, la page répond 200. En local sur le PC Windows (`D:\Claude\SEO\rgte-redesign`) : serveur sur http://localhost:8000/seo/, audit de rgte.eu à **71/100** (15 pages). 8 tests sur 51 échouaient sous Windows (chemins `/D:/…`, fins de ligne CRLF) : corrigé par `fileURLToPath` et un `.gitattributes`. |
 | 24/11 | La plateforme est « trop faible et pauvre en propositions » : chercher skills, outils et dépôts GitHub pour l'enrichir ; installer Agent Reach. | Liste priorisée `annexes/recherches/enrichissement-plateforme-2026-11-24.md` : 9 sources gratuites testées depuis le PC (YouTube, Amazon, DuckDuckGo, Google Tendances, hashtags Mastodon, Wayback, Common Crawl…), 6 dépôts d'inspiration, 3 packs à relire. Agent Reach 1.6.1 installé depuis GitHub (programme seulement : `agent-reach setup` reste à lancer par Nadir). |
+| 24/11 | « Brancher les sources. » | Nouveau module `seo/engine/demande.js` : **demande réelle** tirée des autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur 39 variantes (questions, a…z), fusionnées avec leurs sources ; recherches d'autres pays et voisines mises à part ; tendances Google du jour (France). Sur « vitrine réfrigérée » : 275 idées, 57 confirmées par 2 sources ou plus, 3 vraies questions, en 2,4 s. Commande `node seo/cli.mjs demande "<mot>"`, intégrée à l'audit (`--sans-demande` pour l'éviter), au rapport Markdown et à l'onglet « Mots-clés & réseaux » (le navigateur n'interroge que Google et YouTube). 55 tests sur 55. |
 
 ### Les PR fusionnées
 
@@ -192,7 +193,7 @@ Rapports complets : `annexes/rgte/`.
 | 8 | Fiabilité de lecture permanente : déployer le proxy Cloudflare (`seo/proxy/`) | Nadir | facultatif |
 | 9 | Vérifier à la main que chaque profil social renvoie bien au site | Claude dans le navigateur | les réseaux refusent la lecture automatique |
 | 10 | Lancer `agent-reach setup` (installe le skill officiel pour Claude Code) | Nadir | le contrôle de sécurité de la session l'a refusé à Claude le 24/11 |
-| 11 | Brancher les sources gratuites de la priorité 1 dans le moteur (suggestions YouTube, Amazon, DuckDuckGo, tendances, hashtags observés, benchmark pixels et Wayback) | Claude | voir `annexes/recherches/enrichissement-plateforme-2026-11-24.md` §5 |
+| 11 | Sources gratuites : **faites** le 24/11 pour les sources 1 à 5 (YouTube, Amazon, DuckDuckGo, variantes, tendances). **Restent** : hashtags observés sur Mastodon (source 6), benchmark concurrent avec pixels pub, Wayback et Common Crawl (sources 7 à 9) | Claude | voir `annexes/recherches/enrichissement-plateforme-2026-11-24.md` §5 |
 
 ---
 

@@ -93,7 +93,7 @@ Cinq experts indépendants (dirigeant de PME, designer produit, consultant SEO/S
 
 Et en plus de l’audit :
 - **Plan d’action** : gains rapides de la semaine, puis 30, 60 et 90 jours, avec les indicateurs à suivre.
-- **Mots-clés** classés par intention (transactionnelle, locale, commerciale, informationnelle), suggestions Google en temps réel et liens vers les outils de volume.
+- **Mots-clés** classés par intention (transactionnelle, locale, commerciale, informationnelle), **demande réelle** (autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur une quarantaine de variantes : questions, a…z ; chaque idée garde ses sources, aucun volume inventé), tendances Google du jour en France, et liens vers les outils de volume. Seule : `node seo/cli.mjs demande "vitrine réfrigérée"` (le .json s'importe dans l'onglet). Dans le navigateur, seules Google et YouTube répondent ; Amazon, DuckDuckGo et les tendances passent par la ligne de commande.
 - **Hashtags** pour 10 réseaux selon les limites 2026 (Instagram : 5 au maximum, Threads : 1, etc.), avec une réserve à faire tourner, un modèle de légende, les créneaux et la liste des hashtags à bannir.
 - **Budget publicitaire** : répartition entre les canaux, clics, conversions, CPA et ROAS estimés, budget nécessaire pour un objectif, minimums et phases d’apprentissage, montée en charge, part SEO / SEA.
 - **Benchmark concurrents** : la même grille appliquée à 5 concurrents au plus, et la liste de ce qu’ils font mieux que vous.
@@ -208,7 +208,8 @@ seo/
     robots.js      robots.txt (RFC 9309), robots IA en 3 niveaux, Content-Signal
     psi.js         PageSpeed Insights (CrUX + Lighthouse)
     plan.js        plan 30/60/90 + KPI
-    keywords.js    intentions, suggestions Google
+    keywords.js    intentions, gabarits de mots-clés
+    demande.js     demande réelle : 4 autocomplétions, variantes, tendances Google du jour
     hashtags.js    hashtags par réseau
     ads.js         budget publicitaire
     github.js      audit de dépôt

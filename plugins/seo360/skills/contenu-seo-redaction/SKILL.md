@@ -26,14 +26,14 @@ Annoncer au début : « Je fais le brief, puis le texte, puis le contrôle avant
 | Requête cible | ex. « pose pompe à chaleur rennes » |
 | Intention | information, comparaison, achat, local |
 | Type de page dominant | vérifié le … (ou « non vérifié ») |
-| Vraies questions | « Autres questions posées », suggestions Google, Search Console, veille sociale |
+| Vraies questions | « Autres questions posées », demande réelle (`node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" demande "<sujet>"` : Google, YouTube, Amazon, DuckDuckGo), Search Console, veille sociale |
 | Ce que le top 3 ne couvre pas | l'angle à prendre |
 | Preuves disponibles | chiffres, photos, avis, réalisations |
 | Maillage | 1 lien vers la page pilier, 2 liens vers des pages voisines, 2 liens entrants à ajouter depuis des pages existantes |
 | Appel à l'action | devis, appel, réservation, achat |
 | Données structurées | selon le gabarit |
 
-Sources des vraies questions : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" veille "<sujet>"` (skill veille-sociale), les suggestions Google de l'interface (onglet Mots-clés & réseaux), les requêtes de Search Console (`node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" gsc export.zip`).
+Sources des vraies questions : `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" demande "<sujet>"` (questions tirées de 4 autocomplétions, chacune avec ses sources), `node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" veille "<sujet>"` (skill veille-sociale), la demande réelle de l'interface (onglet Mots-clés & réseaux), les requêtes de Search Console (`node "${CLAUDE_SKILL_DIR}/../../seo/cli.mjs" gsc export.zip`).
 
 ## Étape 2 — Choisir le gabarit
 

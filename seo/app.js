@@ -5,7 +5,7 @@ import { analyze, competitorSummary, detectKind, SEVERITY, GOALS } from './engin
 import { toMarkdown, staleNote } from './engine/report.js'
 import { generateHashtags } from './engine/hashtags.js'
 import { planBudget, preSpendChecks, defaultGoal } from './engine/ads.js'
-import { keywordIdeas, googleSuggest, classify, INTENTS } from './engine/keywords.js'
+import { keywordIdeas, INTENTS } from './engine/keywords.js'
 import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts, whereToApply } from './engine/fixes.js'
@@ -21,6 +21,7 @@ import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmar
 import { extract } from './engine/html.js'
 import { gloss, glossReset, GLOSSARY } from './engine/glossary.js'
 import { observedForHashtags } from './engine/veille.js'
+import { collectDemand, sanitizeDemande, sanitizeTrends, googleList, SOURCES as DEMAND_SOURCES, INTENT_LABELS, BROWSER_SOURCES } from './engine/demande.js'
 import { SECTORS, sectorById } from './data/sectors.js'
 import EXEMPLE from './data/exemple.js'
 import market from './data/research/competitors.js'
@@ -371,7 +372,7 @@ async function run({ bundle } = {}) {
     if (rep.input?.sectorGuessed) form.elements.sector.value = rep.input.sector
     if (rep.input?.goal && !goalTouched) form.elements.goal.value = rep.input.goal
     st.lecture = rep.result?.global == null && rep.result?.incomplete ? 'fail' : 'done'; if (st.vitesse !== 'skip') st.vitesse = !rep.ctx?.psi || rep.ctx.psi.error ? 'fail' : 'done'; st.diagnostic = 'done'; paintSteps(st); setTimeout(() => paintSteps(null), 2500)
-    S.report = rep; S.suggestions = []; S.cat = ''; S.shared = false
+    S.report = rep; S.suggestions = []; S.demande = null; S.cat = ''; S.shared = false
     refreshDerived()
     remember(rep)
     const psiErr = rep.ctx?.psi?.error
@@ -537,10 +538,10 @@ const slug = () => String(S.report?.target || 'rapport').replace(/^https?:\/\//,
 async function action(a) {
   const r = S.report
   if (!r) return
-  if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
+  if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
   if (a === 'json') download(`seo360-${slug()}.json`, JSON.stringify(r, null, 1), 'application/json')
-  if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }))
-  if (a === 'md-dl') saveFile(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() })).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici : utilisez « Copier ».') })
+  if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() }))
+  if (a === 'md-dl') saveFile(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() })).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici : utilisez « Copier ».') })
   if (a === 'json-dl') saveFile(`seo360-${slug()}.json`, JSON.stringify(r, null, 1)).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici.') })
   if (a === 'live-save') saveReport(r).then(() => toast('Rapport enregistré : il apparaît sur tous vos appareils.'), (e) => toast(e?.code === 'quota_exceeded' ? 'Espace plein : supprimez d’anciens rapports.' : 'Enregistrement impossible pour l’instant.'))
   if (a === 'json-copy') copy(JSON.stringify(r))
@@ -797,9 +798,11 @@ function visibilite() {
   // Sans données branchées, les épingles (hashtags) passent devant et les imports vides sont repliés en bas de page
   const hasData = !!(gscAnalysis() || S.veille)
   const head = `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>${hasData ? 'Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.' : 'Vos hashtags par réseau, vos idées de mots-clés et vos temps forts. Pour vos vraies requêtes Google, branchez Search Console en bas de page.'}</p></div></div>`
-  const kwCard = `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
-    ${S.suggestions.length ? `<p><b>Suggestions Google réelles</b> (ce que les gens tapent) :</p><div class="tags">${S.suggestions.map((s) => `<span class="chip tag" title="${esc(classify(s))}">${esc(s)}</span>`).join('')}</div><button class="btn sm" data-copy="${esc(S.suggestions.join('\n'))}">Copier</button>` : ''}
-    <div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>
+  const dm = currentDemand()
+  const templates = `<div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>`
+  const kwCard = `<div class="card" style="margin-top:16px"><div class="section-head"><h3>${dm ? `Demande réelle autour de « ${esc(dm.seed)} »` : `Idées de mots-clés autour de « ${esc(seed)} »`}</h3><button class="btn" id="suggest" type="button">${dm ? 'Relancer' : 'Chercher'} la demande réelle</button></div>
+    ${dm ? demandPanel(dm) + `<details style="margin-top:12px"><summary class="note">Gabarits par intention (sans preuve de demande : à confronter à la liste ci-dessus)</summary>${templates}</details>` : `<p class="note">Les idées ci-dessous sont des gabarits. « Chercher la demande réelle » interroge les autocomplétions de Google et YouTube sur une quarantaine de variantes.</p>${templates}`}
+    ${trendsPanel(S.report?.tendances || S.trends)}
     ${terms ? `<p class="note" style="margin-top:12px"><b>Sujets que Google lit sur votre page :</b> ${esc([...terms.phrases, ...terms.words].slice(0, 12).map((t) => t.term).join(' · '))}</p>` : ''}
     <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>`
   const tagsBlock = `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
@@ -900,13 +903,46 @@ function calendarPanel(v) {
     <div class="actions"><button class="btn sm" type="button" data-cal-csv>${ARTIFACT && !live.downloads ? 'Copier le calendrier de l’année (tableur)' : 'Télécharger le calendrier de l’année (.csv)'}</button></div>
     <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
+// Demande réelle : celle du rapport (ligne de commande : 4 sources) ou celle cherchée ici (Google et YouTube).
+const isoDay = (iso) => (/^\d{4}-\d{2}-\d{2}/.test(iso || '') ? frShort(iso.slice(0, 10)) : 'date inconnue')
+const currentDemand = () => S.demande || S.report?.demande || null
 async function autoSuggest(ev) {
-  if (ARTIFACT) { if (ev) toast('Suggestions Google indisponibles ici : utilisez la version complète ou la ligne de commande.'); return }
+  // Rapport venu de la ligne de commande avec ses 4 sources : on ne l'écrase pas sans un clic
+  if (!ev && S.report?.demande?.items?.length) return
+  if (ARTIFACT) { if (ev) toast('Demande réelle indisponible ici : utilisez la version complète ou « node seo/cli.mjs demande ».'); return }
   const v = vals(), seed = v.keyword || S.report?.result?.meta?.terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
-  const btn = $('#suggest'); if (btn) { btn.disabled = true; btn.textContent = 'Interrogation de Google…' }
-  S.suggestions = await googleSuggest(seed).catch(() => [])
-  if (S.report) S.report.suggestions = S.suggestions
+  const btn = $('#suggest'); if (btn) { btn.disabled = true; btn.textContent = 'Interrogation de Google et YouTube…' }
+  const d = await collectDemand(seed).catch(() => null)
+  S.demande = d?.items?.length ? d : null
+  S.suggestions = googleList(S.demande)
+  if (S.report) { S.report.suggestions = S.suggestions; if (S.demande) S.report.demande = S.demande }
+  if (!S.demande && ev) toast('Aucune réponse de Google ni de YouTube : réseau ou bloqueur de publicité ? La ligne de commande interroge aussi Amazon et DuckDuckGo.')
   if (S.tab === 'visibilite') render()
+}
+const srcBadges = (x) => x.sources.map((k) => `<abbr class="src src-${esc(k)}" title="${esc(DEMAND_SOURCES[k]?.label || k)}">${esc((DEMAND_SOURCES[k]?.label || k)[0])}</abbr>`).join('')
+const kwChip = (x) => `<span class="chip tag dm" title="${esc(x.sources.map((k) => DEMAND_SOURCES[k]?.label).join(', '))}">${esc(x.keyword)}${srcBadges(x)}</span>`
+function demandPanel(d) {
+  const core = d.items.filter((x) => !x.pays && !x.voisine)
+  const srcLine = Object.entries(d.sources).map(([, s]) => s.ok ? `<b>${esc(s.label)}</b> ${fmt(s.suggestions)}` : `${esc(s.label)} : indisponible`).join(' · ')
+  const cli = `node seo/cli.mjs demande "${d.seed}"`
+  const skipped = d.skipped?.length ? `<p class="note">${esc(d.skipped.map((k) => DEMAND_SOURCES[k].label).join(', '))} ne répondent pas à un navigateur : pour les 4 sources et les tendances du jour, lancez <code>${esc(cli)}</code> puis importez le fichier .json (bouton « Importer »).</p>` : ''
+  const only = (k) => core.filter((x) => x.sources.includes(k)).slice(0, 18)
+  return `<p class="note">${fmt(core.length)} idées tirées de ${fmt(d.queries)} variantes de recherche (${esc(isoDay(d.generatedAt))}). ${srcLine}. <b>Aucun volume</b> : une idée vue par plusieurs sources est plus sûre, pas forcément plus cherchée.</p>${skipped}
+    ${d.confirmed.length ? `<h4>Confirmées par 2 sources ou plus (${fmt(d.confirmed.length)})</h4><div class="tags">${d.confirmed.slice(0, 30).map(kwChip).join('')}</div>` : ''}
+    ${d.questions.length ? `<h4 style="margin-top:12px">Vraies questions : pour la FAQ, les guides et les vidéos</h4><ul class="clean">${d.questions.slice(0, 15).map((x) => `<li>${esc(x.keyword)} ${srcBadges(x)}</li>`).join('')}</ul>` : ''}
+    ${['youtube', 'amazon'].filter((k) => only(k).length).map((k) => `<h4 style="margin-top:12px">Sur ${esc(DEMAND_SOURCES[k].label)} : ${esc(DEMAND_SOURCES[k].why)}</h4><div class="tags">${only(k).map(kwChip).join('')}</div>`).join('')}
+    <div class="cols" style="margin-top:12px">${Object.keys(INTENT_LABELS).filter((i) => d.byIntent[i]?.length).map((i) => `<div><h4>${esc(i[0].toUpperCase() + i.slice(1))} (${fmt(d.byIntent[i].length)})</h4><p class="note">${esc(INTENT_LABELS[i])}</p><div class="tags">${d.byIntent[i].slice(0, 24).map(kwChip).join('')}</div></div>`).join('')}</div>
+    ${d.nearby?.length ? `<details><summary class="note">Recherches voisines, sans tous les mots du sujet (${fmt(d.nearby.length)}) : à trier à la main</summary><div class="tags">${d.nearby.slice(0, 40).map(kwChip).join('')}</div></details>` : ''}
+    ${d.foreign?.length ? `<p class="note">Mises de côté, recherches d’un autre pays : ${esc(d.foreign.slice(0, 8).map((x) => `${x.keyword} (${x.pays})`).join(' · '))}</p>` : ''}
+    <div class="actions"><button class="btn sm" data-copy="${esc(core.map((x) => x.keyword).join('\n'))}">Copier les ${fmt(core.length)} idées</button><button class="btn sm" data-copy="${esc(d.questions.map((x) => x.keyword).join('\n'))}">Copier les questions</button></div>`
+}
+function trendsPanel(t) {
+  if (!t) return ''
+  if (!t.ok) return `<p class="note" style="margin-top:12px">Tendances Google du jour indisponibles (${esc(t.erreur)}).</p>`
+  const li = (x) => `${esc(x.title)} <span class="note">${esc(x.traffic)}</span>`
+  return `<details style="margin-top:12px"${t.related.length ? ' open' : ''}><summary><b>Tendances Google du jour en France</b> <span class="note">(${esc(isoDay(t.generatedAt))}) : ${t.related.length ? `${fmt(t.related.length)} liée(s) à votre sujet` : 'aucune liée à votre sujet'}</span></summary>
+    ${t.related.length ? `<p><b>Liées à votre sujet :</b></p><ul class="clean">${t.related.map((x) => `<li>${li(x)}${x.news[0]?.url ? ` · <a href="${esc(x.news[0].url)}" target="_blank" rel="noopener">${esc(x.news[0].source || 'article')}</a>` : ''}</li>`).join('')}</ul>` : '<p class="note">Normal pour un métier de niche : ces sujets servent à réagir vite sur les réseaux, pas au référencement.</p>'}
+    <div class="tags">${t.items.slice(0, 15).map((x) => `<span class="chip tag">${li(x)}</span>`).join('')}</div></details>`
 }
 
 // ───────── Veille sociale (Agent Reach) ─────────
@@ -1166,6 +1202,8 @@ function sanitizeReport(r, provenance = null) {
     candidates: (r.presence.candidates || []).slice(0, 10).map((c) => ({ platform: str(c.platform, 40), label: str(c.label, 60), url: safeUrl(c.url), search: safeUrl(c.search) })),
     sameAsSnippet: r.presence.sameAsSnippet ? str(r.presence.sameAsSnippet, 4000) : null, sirenSeen: /^\d{9}$/.test(r.presence.sirenSeen || '') ? r.presence.sirenSeen : null,
   } : undefined
+  out.demande = sanitizeDemande(r.demande) || undefined
+  out.tendances = sanitizeTrends(r.tendances) || undefined
   out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null, presence: (x.presence || []).filter((y) => PL.has(y?.platform)).slice(0, 60).map((y) => ({ platform: y.platform, url: safeUrl(y.url) })) })) : undefined
   return out
 }
@@ -1181,6 +1219,13 @@ $('#f-import').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return
   try {
     const data = JSON.parse(await f.text())
+    if (data?.type === 'seo360-demande') {
+      const d = sanitizeDemande(data); if (!d) throw new Error('format')
+      S.demande = d; S.suggestions = googleList(d)
+      if (S.report) { S.report.demande = d; S.report.suggestions = S.suggestions; const t = sanitizeTrends(data.tendances); if (t) S.report.tendances = t }
+      else if (data.tendances) S.trends = sanitizeTrends(data.tendances)
+      progress(`Demande réelle importée : « ${d.seed} » (${d.items.length} idées)`, 'ok'); go('visibilite'); return
+    }
     if (data?.type === 'seo360-veille') { S.veille = sanitizeVeille(data); store.set('veille', S.veille); progress(`Veille importée : ${S.veille.sujet} (${S.veille.total} publications)`, 'ok'); go('visibilite'); return }
     if (data?.type === 'seo360-bm') { if (!validateBundle(data)) throw new Error('format'); form.elements.url.value = data.url; updateKind(); run({ bundle: data }); return }
     const rep = sanitizeReport(data, 'import')

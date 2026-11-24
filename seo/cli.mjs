@@ -9,7 +9,8 @@ import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { analyze, competitorSummary, detectKind } from './engine/index.js'
 import { toMarkdown } from './engine/report.js'
-import { googleSuggest } from './engine/keywords.js'
+import { collectDemand, trendsFR, googleList } from './engine/demande.js'
+import { sectorById } from './data/sectors.js'
 import { makeNodeFetcher } from './node-fetch.mjs'
 import { SECTORS } from './data/sectors.js'
 import { GOALS, defaultGoal } from './engine/ads.js'
@@ -29,18 +30,19 @@ import { GOALS, defaultGoal } from './engine/ads.js'
 const args = process.argv.slice(2)
 
 // ───────── Sous-commandes : veille sociale (Agent Reach), Search Console, calendrier ─────────
-const SUB = { veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs', fiche: './fiche-cli.mjs', presence: './presence-cli.mjs' }
+const SUB = { demande: './demande-cli.mjs', veille: './veille-cli.mjs', gsc: './gsc-cli.mjs', calendrier: './calendrier-cli.mjs', budget: './budget-cli.mjs', hashtags: './hashtags-cli.mjs', outils: './outils-cli.mjs', fiche: './fiche-cli.mjs', presence: './presence-cli.mjs' }
 if (SUB[args[0]]) {
   await import(SUB[args[0]]).then((m) => m.main(args.slice(1)))
   process.exit(process.exitCode || 0)
 }
 const opt = (names, def) => { for (const n of [].concat(names)) { const i = args.indexOf('--' + n); if (i >= 0) return args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true } return def }
-const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national'].includes(args[i - 1])))
+const target = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--no-psi', '--json', '--quiet', '--local', '--national', '--sans-demande'].includes(args[i - 1])))
 
 if (!target || opt(['help', 'aide'])) {
   console.log(`SEO 360 — audit SEO, GEO, ASO, hashtags et budget pub
 
 Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
+        node seo/cli.mjs demande "<mot-clé>" [--sources google,youtube,amazon,duckduckgo]   (ce que les gens tapent vraiment + tendances du jour)
         node seo/cli.mjs veille "<sujet>" [--sources reddit,youtube,web] [--marque X]   (veille via Agent Reach)
         node seo/cli.mjs gsc <export.zip> [--avant <export-precedent.zip>] [--marque X]   (diagnostic Search Console)
         node seo/cli.mjs calendrier [année] [--secteur <id>] [--alsace] [--sortie dossier]   (temps forts français)
@@ -62,6 +64,7 @@ Usage : node seo/cli.mjs <url | lien App Store/Play | owner/repo> [options]
   --signature <%>       part des contacts qui deviennent clients (leads)
   --cpc <€>             votre CPC réel Google (Keyword Planner)
   --volume <n>          recherches mensuelles de vos mots-clés (plafonne Google Search)
+  --sans-demande        ne pas interroger les autocomplétions (Google, YouTube, Amazon, DuckDuckGo) ni les tendances
   --veille [sources]    ajoute la veille sociale Agent Reach sur le mot-clé (défaut : reddit,youtube,web)
   --ua auto|seo360|navigateur  identité du robot (défaut auto : SEO360-Audit, puis navigateur si le site refuse)
   --local / --national  forcer le mode local
@@ -109,10 +112,18 @@ const report = await analyze(target, { ...common, input, crawl: +opt('crawl', 15
 Object.assign(input, { sector: report.input.sector, goal: report.input.goal })
 if (report.input.sectorGuessed) log(`  · Secteur deviné : ${report.input.sectorGuessed} (--secteur pour le changer)`)
 else if (report.input.sectorUnknown) log('  · Secteur non reconnu : « autre » par défaut (précisez --secteur pour des mots-clés, hashtags et budgets plus justes)')
-if (report.kind === 'site' && (input.keyword || report.keywords?.base)) {
-  log('  · Suggestions Google…')
-  report.suggestions = await googleSuggest(input.keyword || report.keywords.base, { fetchImpl: fetch }).catch((e) => { report.suggestionsError = String(e?.message || e).slice(0, 120); return [] })
-  if (report.suggestionsError) log('  ⚠ Suggestions Google indisponibles : les idées de mots-clés ci-dessous sont des gabarits, sans preuve de demande.')
+// Demande réelle : 4 autocomplétions sur une quarantaine de variantes, et les tendances Google du jour
+if (report.kind === 'site' && (input.keyword || report.keywords?.base) && !opt('sans-demande')) {
+  const seed = input.keyword || report.keywords.base
+  log(`  · Demande réelle autour de « ${seed} » (Google, YouTube, Amazon, DuckDuckGo, tendances)…`)
+  const [d, t] = await Promise.all([
+    collectDemand(seed, { fetchImpl: fetch, onProgress: (m) => log('    ' + m) }).catch((e) => ({ error: String(e?.message || e).slice(0, 120) })),
+    trendsFR({ fetchImpl: fetch, words: [seed, ...sectorById(input.sector).keywords.slice(0, 6)] }),
+  ])
+  if (d.items) { report.demande = d; report.suggestions = googleList(d) }
+  if (!d.items || !d.sources.google?.ok) report.suggestionsError = d.error || d.sources?.google?.erreur || 'aucune réponse'
+  report.tendances = t
+  if (!d.items?.length) log('  ⚠ Autocomplétions indisponibles : les idées de mots-clés ci-dessous sont des gabarits, sans preuve de demande.')
 }
 const comps = String(opt('concurrents', '') || '').split(',').map((s) => s.trim()).filter(Boolean)
 if (comps.length) {

@@ -3,6 +3,7 @@ import { SEVERITY } from './audit.js'
 import { driftMarkdown } from './drift.js'
 import { recommendTools, toolsMarkdown } from './outils.js'
 import { CHANNELS } from './ads.js'
+import { demandeMarkdown } from './demande.js'
 import research from '../data/research/benchmarks.js'
 // Données datées (prix, CPC, règles) : signalées dès que leur date de revérification est passée.
 export function staleNote(now = new Date()) {
@@ -79,10 +80,12 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   }
   if (r.keywords) {
     L.push('## Mots-clés', '')
-    if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
+    if (r.demande?.items?.length) L.push('_La demande réelle (Google, YouTube, Amazon, DuckDuckGo) est détaillée dans la section suivante ; les idées ci-dessous sont des gabarits à confronter à cette liste._', '')
+    else if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
     else if (r.suggestionsError) L.push('_Suggestions Google indisponibles pendant cet audit : les idées ci-dessus sont des gabarits, sans preuve de demande. Vérifiez-les dans Search Console ou Keyword Planner avant d’y consacrer une page._', '')
     for (const [intent, list] of Object.entries(r.keywords.groups)) L.push(`**${intent}** : ${list.map((k) => k.keyword).join(' · ')}`, '')
   }
+  if (r.demande?.items || r.tendances) L.push(demandeMarkdown(r.demande?.items ? r.demande : null, r.tendances))
   if (r.hashtags) {
     L.push('## Hashtags par réseau', '')
     for (const n of Object.values(r.hashtags.networks)) {
