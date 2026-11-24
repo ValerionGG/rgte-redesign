@@ -2130,3 +2130,12 @@ L'export marche (146 Ko), mais il manque deux choses : tes réponses à mes ques
 **🤖 Claude**
 
 En ligne : dernière publication GitHub Pages réussie (21/11), la page répond 200 depuis le PC. En local : dépôt cloné dans D:\Claude\SEO\rgte-redesign (git 2.56.1, Node 22.23.5), serveur sur http://localhost:8000/seo/, audit rgte.eu 71/100 (B) sur 15 pages : technique 70, contenu 58, vitesse 74 (estimée), données structurées 88, IA 88, partage 78, mesure/RGPD 58. 43 tests sur 51 sous Windows : chemins `new URL().pathname` (→ `/D:/…`) et fins de ligne CRLF ; correctif en PR.
+
+### 🧑 Nadir (par le coordinateur)
+
+> La plateforme SEO est trop faible et pauvre en propositions. Chercher des skills, outils et dépôts GitHub utiles (SEO, hashtags, benchmark, audit) avec une liste priorisée ; installer le skill Agent Reach depuis la source officielle ; travailler en local dans D:\Claude\SEO.
+
+**🤖 Claude**
+
+Cause trouvée dans le moteur : hashtags générés par des règles, sans données d'usage ; mots-clés issus des seules suggestions Google. Liste priorisée dans `annexes/recherches/enrichissement-plateforme-2026-11-24.md` : 9 sources gratuites testées depuis le PC (YouTube, Amazon.fr, DuckDuckGo, Google Tendances FR, hashtags Mastodon, Wayback, Common Crawl : 200 ; Bluesky, Reddit, bibliothèque pub Meta, TikTok Creative Center : refusés), 6 dépôts d'inspiration (dont reverse-engineer-marketing pour le benchmark), 3 packs à relire, dépôts écartés et pourquoi. Agent Reach : source officielle vérifiée (Panniantong/Agent-Reach, MIT, 114 398 ★), programme 1.6.1 installé avec uv ; `agent-reach setup` refusé par le contrôle de sécurité, à lancer par Nadir.
+
