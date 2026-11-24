@@ -6,6 +6,7 @@
 seo/**/*.js text eol=lf
 seo/**/*.json text eol=lf
 plugins/** text eol=lf
+.claude-plugin/** text eol=lf
 *.zip binary
 *.png binary
 *.woff2 binary
