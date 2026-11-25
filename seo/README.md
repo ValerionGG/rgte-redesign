@@ -93,7 +93,9 @@ Cinq experts indépendants (dirigeant de PME, designer produit, consultant SEO/S
 
 Et en plus de l’audit :
 - **Plan d’action** : gains rapides de la semaine, puis 30, 60 et 90 jours, avec les indicateurs à suivre.
-- **Mots-clés** classés par intention (transactionnelle, locale, commerciale, informationnelle), suggestions Google en temps réel et liens vers les outils de volume.
+- **Mots-clés** classés par intention (transactionnelle, locale, commerciale, informationnelle), **demande réelle** (autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur une quarantaine de variantes : questions, a…z ; chaque idée garde ses sources, aucun volume inventé), tendances Google du jour en France, et liens vers les outils de volume. Seule : `node seo/cli.mjs demande "vitrine réfrigérée"` (le .json s'importe dans l'onglet). Dans le navigateur, seules Google et YouTube répondent ; Amazon, DuckDuckGo et les tendances passent par la ligne de commande.
+- **Empreinte marketing** (avec `--concurrents`, sans clé) : pour vous et chaque concurrent, régies publicitaires dont un pixel est présent (page d’accueil et conteneur Google Tag Manager, avec la preuve), âge du site et titres d’accueil au fil des ans (Wayback Machine), pages vues par Common Crawl. Constats comparatifs (« ce concurrent a un pixel Meta, pas vous »). Lecture en ligne de commande, affichage dans l’onglet Concurrents. `--sans-empreinte` pour l’éviter.
+- **Hashtags observés sur Mastodon** (API publique, sans clé) : pour chaque tag de départ, publications lues, comptes distincts, période, et hashtags employés avec lui par 2 comptes ou plus (français, moins de 2 ans, robots exclus). Ils passent en tête des réseaux, marqués « observé ».
 - **Hashtags** pour 10 réseaux selon les limites 2026 (Instagram : 5 au maximum, Threads : 1, etc.), avec une réserve à faire tourner, un modèle de légende, les créneaux et la liste des hashtags à bannir.
 - **Budget publicitaire** : répartition entre les canaux, clics, conversions, CPA et ROAS estimés, budget nécessaire pour un objectif, minimums et phases d’apprentissage, montée en charge, part SEO / SEA.
 - **Benchmark concurrents** : la même grille appliquée à 5 concurrents au plus, et la liste de ce qu’ils font mieux que vous.
@@ -142,7 +144,7 @@ node seo/cli.mjs https://www.exemple.fr --avant rapports-seo/www-exemple-fr.json
 node seo/cli.mjs gsc export.zip liens.zip --avant export-precedent.zip --marque RGTE   # Search Console
 node seo/cli.mjs calendrier 2027 --secteur restaurant --sortie rapports-seo          # temps forts (.md, .csv, .ics)
 node seo/cli.mjs budget --secteur btp --budget 1500 --valeur 2500 --marge 40        # budget pub sans audit
-node seo/cli.mjs hashtags --secteur boulangerie --mot-cle "entremets" --ville Lyon  # hashtags sans audit
+node seo/cli.mjs hashtags --secteur boulangerie --mot-cle "entremets" --ville Lyon  # hashtags sans audit (observés sur Mastodon en tête ; --sans-mastodon)
 node seo/cli.mjs veille "pâtisserie lyon" --marque "Maison Exemple"                 # demande réelle (Agent Reach)
 node seo/cli.mjs outils --rapport rapports-seo/www-exemple-fr.json                  # outils gratuits et payants + guides
 node seo/cli.mjs --aide
@@ -208,7 +210,10 @@ seo/
     robots.js      robots.txt (RFC 9309), robots IA en 3 niveaux, Content-Signal
     psi.js         PageSpeed Insights (CrUX + Lighthouse)
     plan.js        plan 30/60/90 + KPI
-    keywords.js    intentions, suggestions Google
+    keywords.js    intentions, gabarits de mots-clés
+    empreinte.js   empreinte marketing : pixels pub (page + GTM), historique Wayback, pages Common Crawl
+    mastodon.js    hashtags réellement employés (Mastodon, cooccurrences par comptes distincts)
+    demande.js     demande réelle : 4 autocomplétions, variantes, tendances Google du jour
     hashtags.js    hashtags par réseau
     ads.js         budget publicitaire
     github.js      audit de dépôt

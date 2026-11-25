@@ -503,7 +503,7 @@ test('topTerms ignore les mots vides', () => {
 test('plugin : chaque sous-commande se charge depuis la copie du plugin', async () => {
   const { spawnSync } = await import('node:child_process')
   const cli = fileURLToPath(new URL('../../plugins/seo360/seo/cli.mjs', import.meta.url))
-  for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils']) {
+  for (const sub of ['veille', 'gsc', 'calendrier', 'budget', 'hashtags', 'outils', 'demande']) {
     const r = spawnSync(process.execPath, [cli, sub, '--aide'], { encoding: 'utf8', timeout: 20000, env: { ...process.env, NO_PROXY: '127.0.0.1' } })
     assert.ok(!/ERR_MODULE_NOT_FOUND|Cannot find module/.test(r.stdout + r.stderr), `${sub} : module manquant dans le plugin`)
     assert.ok((r.stdout + r.stderr).trim().length > 20, `${sub} : aucune sortie`)
@@ -730,4 +730,221 @@ test('profil de présence : instantané comparé (--avant) et rapport Markdown',
   assert.deepEqual(cur.changes.list.map((x) => [x.name, x.added, x.lost]), [['moi.fr (vous)', ['LinkedIn'], []], ['a.fr', ['TikTok'], []]])
   const md = toMarkdown(cur)
   assert.match(md, /apparu LinkedIn/); assert.match(md, /Probablement vous : R G T E, SIREN 501609507/); assert.match(md, /Aucun SIREN ou SIRET lu/)
+})
+
+// ───────── Demande réelle : 4 autocomplétions gratuites + tendances Google du jour ─────────
+test('demande réelle : formats des 4 sources, variantes, fusion, intentions, pays et voisines', async () => {
+  const D = await import('../engine/demande.js')
+  assert.deepEqual(D.parseSuggest('google', '["vitrine",["vitrine a","vitrine b"],[],{}]'), ['vitrine a', 'vitrine b'])
+  assert.deepEqual(D.parseSuggest('youtube', ['x', [['vitrine y', 0, [512]]]]), ['vitrine y'])
+  assert.deepEqual(D.parseSuggest('amazon', '{"suggestions":[{"value":"vitrine à poser"},{"value":3}]}'), ['vitrine à poser'])
+  assert.deepEqual(D.parseSuggest('duckduckgo', '[{"phrase":"vitrine pâtisserie"}]'), ['vitrine pâtisserie'])
+  assert.deepEqual(D.parseSuggest('google', 'pas du json'), [])
+  const q = D.variantQueries('  vitrine   réfrigérée ')
+  assert.equal(q[0], 'vitrine réfrigérée'); assert.ok(q.includes('comment choisir vitrine réfrigérée') && q.includes('vitrine réfrigérée z'))
+  assert.equal(new Set(q).size, q.length); assert.deepEqual(D.variantQueries(''), [])
+  assert.equal(D.variantQueries('a', { letters: false, questions: false }).length, 1)
+  const items = D.mergeSuggestions({
+    google: ['vitrine refrigeree a poser', 'prix vitrine réfrigérée', 'vitrine réfrigérée', 'prix vitrine réfrigérée tunisie', 'combien coûte un site vitrine'],
+    duckduckgo: ['vitrine réfrigérée à poser', 'quelle température pour une vitrine réfrigérée'],
+    amazon: ['Vitrine Réfrigérée à poser'],
+  }, 'vitrine réfrigérée')
+  const poser = items[0]
+  assert.equal(poser.keyword, 'vitrine réfrigérée à poser', 'la graphie la plus accentuée gagne (à égalité : la première vue)'); assert.deepEqual([...poser.sources].sort(), ['amazon', 'duckduckgo', 'google'])
+  assert.equal(poser.intent, 'variante')
+  assert.ok(!items.some((x) => D.fold(x.keyword) === 'vitrine refrigeree'), 'le sujet lui-même est retiré')
+  assert.equal(items.find((x) => /tunisie/.test(x.keyword)).pays, 'Tunisie'); assert.equal(items.at(-1).pays, 'Tunisie', 'autres pays à la fin')
+  assert.equal(items.find((x) => /site vitrine/.test(x.keyword)).voisine, true)
+  assert.equal(items.find((x) => /^prix/.test(x.keyword) && !x.pays).intent, 'transactionnel')
+  const t = items.find((x) => /température/.test(x.keyword)); assert.equal(t.question, true); assert.equal(t.intent, 'informationnel')
+  const sum = D.summarizeDemand({ seed: 'vitrine réfrigérée', queries: 3, sources: {}, items })
+  assert.equal(sum.confirmed.length, 1); assert.deepEqual(sum.questions.map((x) => x.keyword), ['quelle température pour une vitrine réfrigérée'])
+  assert.equal(sum.foreign.length, 1); assert.equal(sum.nearby.length, 1)
+  assert.ok(!Object.values(sum.byIntent).flat().some((x) => x.pays || x.voisine), 'ni autres pays ni voisines dans les groupes')
+  assert.ok(D.googleList(sum).includes('vitrine réfrigérée à poser') && !D.googleList(sum).includes('quelle température pour une vitrine réfrigérée'), 'liste Google : seulement les idées données par Google')
+})
+
+test('demande réelle : collecte avec un faux réseau (source en panne signalée, pas de chiffre inventé)', async () => {
+  const { collectDemand, demandeMarkdown } = await import('../engine/demande.js')
+  const seen = []
+  const fakeFetch = async (url) => {
+    seen.push(url)
+    const ok = (body) => ({ ok: true, status: 200, text: async () => body })
+    if (url.includes('amazon')) return { ok: false, status: 503, text: async () => '' }
+    if (url.includes('duckduckgo')) return ok('[{"phrase":"vitrine boucherie"},{"phrase":"comment choisir une vitrine"}]')
+    if (url.includes('ds=yt')) return ok('["v",["vitrine fabrication"]]')
+    return ok('["v",["vitrine boucherie","vitrine prix"]]')
+  }
+  const d = await collectDemand('vitrine', { fetchImpl: fakeFetch, letters: false })
+  assert.equal(d.type, 'seo360-demande'); assert.equal(d.queries, 13)
+  assert.equal(seen.filter((u) => u.includes('amazon')).length, 13, 'chaque variante est demandée à chaque source')
+  assert.equal(d.sources.amazon.ok, false); assert.equal(d.sources.amazon.erreur, 'HTTP 503'); assert.equal(d.sources.google.ok, true)
+  assert.deepEqual(d.confirmed.map((x) => x.keyword), ['vitrine boucherie'])
+  assert.deepEqual(d.questions.map((x) => x.keyword), ['comment choisir une vitrine'])
+  const md = demandeMarkdown(d, { ok: false, erreur: 'HTTP 429' })
+  assert.match(md, /Amazon\.fr : indisponible \(HTTP 503\)/); assert.match(md, /aucun volume/i); assert.match(md, /Tendances indisponible : HTTP 429/)
+  assert.doesNotMatch(md, /\d+ recherches/, 'aucun volume de recherche affiché')
+})
+
+test('tendances Google du jour : flux RSS lu, tendances liées au sujet, entités décodées', async () => {
+  const { parseTrendsRss, relatedTrends, trendsFR } = await import('../engine/demande.js')
+  const rss = `<rss><channel><item><title>forces armées de l&apos;ukraine</title><ht:approx_traffic>1000+</ht:approx_traffic><pubDate>Tue, 24 Nov 2026 07:30:00 -0800</pubDate>
+    <ht:news_item><ht:news_item_title>Guerre &amp; paix</ht:news_item_title><ht:news_item_url>https://www.lemonde.fr/a</ht:news_item_url><ht:news_item_source>Le Monde</ht:news_item_source></ht:news_item></item>
+    <item><title>Salon des métiers de bouche</title><ht:approx_traffic>200+</ht:approx_traffic><pubDate>x</pubDate></item></channel></rss>`
+  const items = parseTrendsRss(rss)
+  assert.equal(items.length, 2); assert.equal(items[0].title, 'forces armées de l’ukraine'.replace('’', "'")); assert.equal(items[0].news[0].title, 'Guerre & paix')
+  assert.equal(items[0].date, '2026-11-24T15:30:00.000Z'); assert.equal(items[1].date, '')
+  const rel = relatedTrends(items, ['boucherie', 'métiers de bouche'])
+  assert.deepEqual(rel.map((x) => x.title), ['Salon des métiers de bouche']); assert.deepEqual(rel[0].match, ['metiers', 'bouche'])
+  assert.deepEqual(relatedTrends(items, ['de', 'la']), [], 'les petits mots ne lient rien')
+  assert.equal((await trendsFR({})).ok, false, 'sans réseau Node : indisponible, pas de liste inventée')
+  const t = await trendsFR({ fetchImpl: async () => ({ ok: true, status: 200, text: async () => rss }), words: ['bouche'] })
+  assert.equal(t.ok, true); assert.equal(t.related.length, 1)
+})
+
+test('demande réelle : fichier importé assaini, rapport Markdown', async () => {
+  const { sanitizeDemande, sanitizeTrends } = await import('../engine/demande.js')
+  const evil = { seed: 'x'.repeat(500), queries: 'abc', generatedAt: 'pas une date', sources: { google: { ok: 1, suggestions: 2 }, pirate: { ok: true } },
+    items: [{ keyword: '<img src=x onerror=alert(1)>', sources: ['google', 'pirate'] }, { keyword: 'sans source', sources: ['pirate'] }, { keyword: 42, sources: ['google'] }, null] }
+  const d = sanitizeDemande(evil)
+  assert.equal(d.seed.length, 120); assert.equal(d.queries, 0); assert.ok(!isNaN(Date.parse(d.generatedAt)))
+  assert.deepEqual(Object.keys(d.sources), ['google']); assert.equal(d.items.length, 1); assert.deepEqual(d.items[0].sources, ['google'])
+  assert.equal(sanitizeDemande({ items: 'non' }), null); assert.equal(sanitizeDemande(null), null)
+  const t = sanitizeTrends({ ok: true, items: [{ title: 'a', news: [{ title: 'b', url: 'javascript:alert(1)' }] }], related: [] })
+  assert.equal(t.items[0].news[0].url, '', 'lien non http retiré'); assert.equal(sanitizeTrends({ ok: false }).erreur, 'indisponible')
+  const md = toMarkdown({ target: 'https://exemple.fr', kind: 'site', input: {}, keywords: { groups: {} }, demande: sanitizeDemande({ seed: 'vitrine', queries: 2, sources: { google: { ok: true, suggestions: 1 } }, items: [{ keyword: 'vitrine boucherie', sources: ['google', 'duckduckgo'] }] }), tendances: { ok: true, generatedAt: '2026-11-24T00:00:00Z', items: [{ title: 'match', traffic: '500+', news: [] }], related: [] } })
+  assert.match(md, /## Demande réelle autour de « vitrine »/); assert.match(md, /vitrine boucherie — Google, DuckDuckGo/); assert.match(md, /## Tendances Google du jour/)
+})
+
+// ───────── Hashtags réellement employés : Mastodon (API publique) ─────────
+const post = (id, acct, tags, { lang = 'fr', date = '2026-11-01T10:00:00Z', bot = false, html = '' } = {}) => ({ id: String(id), uri: 'u' + id, created_at: date, language: lang, account: { acct, bot }, tags: tags.map((name) => ({ name })), content: html })
+
+test('Mastodon : cooccurrences comptées par comptes distincts, robots, langue et ancienneté filtrés', async () => {
+  const { analyzeTagPosts, seedTags } = await import('../engine/mastodon.js')
+  const now = Date.parse('2026-11-24T00:00:00Z')
+  const posts = [
+    post(1, 'a', ['painaulevain', 'levain', 'boulangerie'], { html: '<p><a>#<span>PainAuLevain</span></a> <a>#<span>Levain</span></a></p>' }),
+    post(2, 'b', ['painaulevain', 'levain']),
+    post(3, 'a', ['painaulevain', 'levain', 'boulangerie']), // même compte : ne compte qu'une fois
+    post(4, 'c', ['painaulevain', 'coffee'], { lang: 'en' }), // anglais : pas de cooccurrence
+    post(5, 'd', ['painaulevain', 'vieux'], { date: '2020-01-01T00:00:00Z' }), // trop ancien
+    post(6, 'e', ['painaulevain', 'spam'], { bot: true }), // robot ignoré
+    { reblog: post(2, 'b', ['painaulevain', 'levain']) }, // partage d'une publication déjà vue
+    post(7, 'f', ['painaulevain', 'followback', '2026']), // banni et nombre seul ignorés
+  ]
+  const a = analyzeTagPosts('PainAuLevain', posts, { now })
+  assert.equal(a.tag, 'painaulevain'); assert.equal(a.publications, 6); assert.equal(a.retenues, 4); assert.equal(a.comptes, 5); assert.equal(a.robots, 1)
+  assert.deepEqual(a.cooccurrents.map((c) => [c.tag, c.comptes, c.publications]), [['levain', 2, 3], ['boulangerie', 1, 2]])
+  assert.equal(a.cooccurrents[0].camel, 'Levain', 'la casse d’origine est reprise du HTML')
+  assert.equal(a.plusAncienne, '2020-01-01T00:00:00.000Z')
+  assert.deepEqual(seedTags({ keyword: 'Vitrine réfrigérée', sectorTags: ['#surmesure', 'surmesure', 'followback', 'x'] }), ['vitrinerefrigeree', 'surmesure'])
+})
+
+test('Mastodon : collecte (pages, erreurs, instance), fusion et hashtags observés en tête', async () => {
+  const { collectMastodon, summarizeMastodon, observedFromMastodon, mastodonMarkdown } = await import('../engine/mastodon.js')
+  const asked = []
+  const now = new Date().toISOString()
+  const fakeFetch = async (url) => {
+    asked.push(url)
+    const ok = (body, link = '') => ({ ok: true, status: 200, headers: { get: (h) => (h === 'link' ? link : null) }, text: async () => JSON.stringify(body) })
+    if (url.includes('/tag/croissant') && !url.includes('max_id')) return ok(Array.from({ length: 40 }, (_, i) => post(i, 'c' + (i % 5), ['croissant', 'boulangerie', 'paris'], { date: now })), '<https://mastodon.social/api/v1/timelines/tag/croissant?limit=40&max_id=1>; rel="next"')
+    if (url.includes('max_id')) return ok([post(99, 'z', ['croissant', 'boulangerie'], { date: now })])
+    if (url.includes('/tag/painaulevain')) return ok([post(200, 'x', ['painaulevain', 'boulangerie'], { date: now }), post(201, 'y', ['painaulevain', 'boulangerie'], { date: now })])
+    if (url.includes('/tag/entremets')) return ok([])
+    return { ok: false, status: 429, headers: { get: () => null }, text: async () => '' }
+  }
+  const m = await collectMastodon(['croissant', 'painaulevain', 'entremets', 'patissier'], { fetchImpl: fakeFetch })
+  assert.equal(asked.filter((u) => u.includes('croissant')).length, 2, 'page suivante lue'); assert.ok(asked.every((u) => u.startsWith('https://mastodon.social/')))
+  assert.deepEqual(m.errors, [{ tag: 'patissier', erreur: 'HTTP 429' }]); assert.deepEqual(m.vides, ['entremets']); assert.deepEqual(m.vivants, ['croissant', 'painaulevain'])
+  const boul = m.observes.find((x) => x.tag === 'boulangerie')
+  assert.equal(boul.comptes, 6); assert.deepEqual(boul.avec, ['croissant', 'painaulevain'])
+  assert.equal(m.observes[0].tag, 'boulangerie')
+  const obs = observedFromMastodon(m)
+  assert.deepEqual(obs.map((o) => o.tag), ['croissant', 'painaulevain', 'boulangerie', 'paris'])
+  assert.ok(obs.every((o) => o.src === 'mastodon' && o.comptes > 0))
+  const h = generateHashtags({ sector: 'boulangerie', observed: obs })
+  assert.equal(h.networks.instagram.tags[0].tag, 'croissant'); assert.equal(h.networks.instagram.tags[0].src, 'mastodon'); assert.equal(h.networks.instagram.tags[0].comptes, 6)
+  const md = mastodonMarkdown(m)
+  assert.match(md, /\| #entremets \| 0 \| 0 \| 0 \| aucune publication \|/); assert.match(md, /#boulangerie \(6 comptes\)/); assert.match(md, /pas une mesure de popularité/)
+  assert.match(mastodonMarkdown(summarizeMastodon({ tags: [] })), /indisponibles/)
+  assert.equal((await collectMastodon(['x'], { instance: 'evil.com/../x' })).ok, false, 'instance invalide refusée')
+  const md2 = toMarkdown({ target: 'https://exemple.fr', kind: 'site', input: {}, mastodon: m, hashtags: h })
+  assert.match(md2, /## Hashtags observés sur Mastodon/); assert.match(md2, /#croissant observé sur Mastodon \(6 comptes\)/)
+})
+
+test('Mastodon : fichier importé assaini (tags, instance, nombres)', async () => {
+  const { sanitizeMastodon } = await import('../engine/mastodon.js')
+  const m = sanitizeMastodon({ instance: 'javascript:alert(1)', generatedAt: 'x', tags: [
+    { tag: 'croissant', publications: '12', comptes: -3, plusRecente: 'pas une date', cooccurrents: [{ tag: 'paris', camel: '<b>x</b>', comptes: 4, publications: 5 }, { tag: '"><img>', comptes: 9 }] },
+    { tag: '<script>', publications: 1 },
+  ] })
+  assert.equal(m.instance, 'mastodon.social'); assert.equal(m.tags.length, 1); assert.equal(m.tags[0].publications, 12); assert.equal(m.tags[0].comptes, 0); assert.equal(m.tags[0].plusRecente, null)
+  assert.deepEqual(m.tags[0].cooccurrents, [{ tag: 'paris', camel: 'paris', comptes: 4, publications: 5 }])
+  assert.equal(sanitizeMastodon({ tags: 'non' }), null)
+})
+
+// ───────── Empreinte marketing : pixels pub (page + GTM), Wayback, Common Crawl ─────────
+test('empreinte : régies lues dans la page et dans le conteneur GTM, avec preuve', async () => {
+  const { scanGtm, gtmIds, adsFootprint } = await import('../engine/empreinte.js')
+  assert.deepEqual(gtmIds(['<script>(window,"GTM-ABC123")</script>', 'GTM-ABC123 GTM-ZZZZ9']), ['GTM-ABC123', 'GTM-ZZZZ9'])
+  const js = 'var x={"function":"__awct","vtp_conversionId":"123"};x="https:\\/\\/connect.facebook.net\\/en_US\\/fbevents.js";y="https://bat.bing.com/bat.js"'
+  assert.deepEqual(Object.keys(scanGtm(js)).sort(), ['google', 'meta', 'microsoft'])
+  assert.deepEqual(scanGtm('gtag("config","G-ABCDEF1234")'), {}, 'GA4 seul n’est pas une régie publicitaire')
+  const asked = []
+  const fake = async (u) => { asked.push(u); return u.includes('GTM-OK12') ? { ok: true, status: 200, text: async () => js } : { ok: false, status: 404, text: async () => '' } }
+  const a = await adsFootprint({ trackers: ['Pixel TikTok', 'Google Analytics 4'], gtm: ['GTM-OK12', 'GTM-BAD2'] }, { fetchImpl: fake })
+  assert.deepEqual(Object.keys(a.regies).sort(), ['google', 'meta', 'microsoft', 'tiktok'])
+  assert.deepEqual(a.regies.tiktok.preuves, ['page : Pixel TikTok']); assert.match(a.regies.meta.preuves[0], /^GTM-OK12 : « connect\.facebook\.net/)
+  assert.equal(a.verifie, false, 'un conteneur illisible = non vérifié'); assert.deepEqual(a.conteneurs[1], { id: 'GTM-BAD2', ok: false, erreur: 'HTTP 404' })
+  assert.ok(asked.every((u) => u.startsWith('https://www.googletagmanager.com/gtm.js?id=GTM-')))
+})
+
+test('empreinte : historique Wayback (captures, titres) et Common Crawl (pages, plafond, nouvel essai)', async () => {
+  const { parseCdx, waybackHistory, countCrawl, commonCrawl, titleRuns } = await import('../engine/empreinte.js')
+  const cdx = [['timestamp', 'statuscode', 'digest'], ['20191117003303', '200', 'A'], ['20191216014831', '200', 'B'], ['20201218051943', '200', 'B'], ['20221007082252', '200', 'C']]
+  const c = parseCdx(JSON.stringify(cdx))
+  assert.equal(c.captures, 4); assert.equal(c.premiere, '2019-11-17'); assert.equal(c.derniere, '2022-10-07'); assert.deepEqual(c.annees, ['2019', '2020', '2022']); assert.equal(c.versions, 3)
+  assert.equal(parseCdx('[]').captures, 0); assert.equal(parseCdx('pas du json'), null)
+  const titles = { '2019': 'Vitrines', '2020': 'Vitrines', '2022': 'Vitrines &amp; agencement' }
+  const fake = async (u) => {
+    if (u.includes('/cdx/')) return { ok: true, status: 200, text: async () => JSON.stringify(cdx) }
+    const y = u.match(/web\/(\d{4})/)[1]
+    return { ok: true, status: 200, text: async () => `<html><title>${titles[y]}</title></html>` }
+  }
+  const w = await waybackHistory('https://www.exemple.fr/page', { fetchImpl: fake, pause: 0 })
+  assert.equal(w.ok, true); assert.equal(w.site, 'exemple.fr')
+  assert.deepEqual(w.titres.map((t) => t.titre), ['Vitrines', 'Vitrines', 'Vitrines & agencement']); assert.deepEqual(w.changementsDeTitre, ['2022-10-07'])
+  assert.match(w.titres[0].url, /^https:\/\/web\.archive\.org\/web\/20191216014831\/https:\/\/exemple\.fr\/$/)
+  assert.deepEqual(titleRuns(w.titres).map((r) => [r.debut, r.fin, r.titre]), [['2019', '2020', 'Vitrines'], ['2022', '2022', 'Vitrines & agencement']])
+  assert.equal((await waybackHistory('x.fr', {})).ok, false, 'sans réseau : non vérifié')
+  const lines = ['{"url":"https://www.a.fr/","status":"200"}', '{"url":"https://a.fr/","status":"200"}', '{"url":"https://a.fr/b?x=1","status":"200"}', '{"url":"https://a.fr/c","status":"404"}', '{"url":"https://a.fr/logo.png","status":"200"}', 'cassé'].join('\n')
+  assert.deepEqual(countCrawl(lines), { pages: 2, lignes: 5 })
+  let calls = 0
+  const flaky = async () => { calls++; return calls === 1 ? { ok: false, status: 504, text: async () => '' } : { ok: true, status: 200, text: async () => lines } }
+  const cc = await commonCrawl('a.fr', { fetchImpl: flaky, index: { id: 'CC-MAIN-2026-47', name: 'November 2026 Index', from: '2026-11-06T12:00:00', to: '2026-11-19T07:00:00' }, retryPause: 0, limit: 5 })
+  assert.equal(calls, 2, 'une seconde tentative après un 504'); assert.equal(cc.pages, 2); assert.equal(cc.plafond, true); assert.equal(cc.periode, '2026-11-06 → 2026-11-19')
+  const none = await commonCrawl('a.fr', { fetchImpl: async () => ({ ok: false, status: 404, text: async () => '' }), index: { id: 'X' } })
+  assert.equal(none.ok, true); assert.equal(none.pages, 0)
+})
+
+test('empreinte : constats comparatifs, Markdown, fichier importé assaini', async () => {
+  const { footprintFindings, footprintMarkdown, sanitizeFootprint } = await import('../engine/empreinte.js')
+  const sites = [
+    { site: 'moi.fr', me: true, pub: { regies: {}, conteneurs: [] }, wayback: { ok: true, captures: 20, premiere: '2019-11-17', titres: [] }, commoncrawl: { ok: true, pages: 10 } },
+    { site: 'eux.fr', pub: { regies: { meta: { label: 'Meta (Facebook, Instagram)', preuves: ['page : Pixel Meta'] } }, conteneurs: [{ id: 'GTM-X1Y2', ok: false, erreur: 'HTTP 404' }] }, wayback: { ok: true, captures: 300, premiere: '1998-12-02', titres: [], changementsDeTitre: ['2023-05-01'] }, commoncrawl: { ok: true, pages: 102, plafond: false } },
+    { site: 'autre.fr', pub: { regies: {} }, wayback: { ok: false, erreur: 'HTTP 503' }, commoncrawl: { ok: false, erreur: 'HTTP 504' } },
+  ]
+  const k = footprintFindings(sites)
+  assert.ok(k.some((x) => /eux\.fr a un pixel Meta/.test(x))); assert.ok(k.some((x) => /depuis 1998, vous depuis 2019/.test(x)))
+  assert.ok(k.some((x) => /titre .*2023/.test(x))); assert.ok(k.some((x) => /102 pages chez eux\.fr contre 10/.test(x)))
+  assert.ok(!k.some((x) => /autre\.fr/.test(x)), 'rien d’affirmé sur un site non vérifié')
+  const md = footprintMarkdown({ generatedAt: '2026-11-24T10:00:00Z', sites, constats: k })
+  assert.match(md, /\| moi\.fr \(vous\) \| aucun pixel publicitaire \| depuis 2019 · 20 mois archivés \| 10 \|/)
+  assert.match(md, /GTM-X1Y2 non lu : à vérifier/); assert.match(md, /\| autre\.fr \| aucun pixel publicitaire \| non vérifié \(HTTP 503\) \| non vérifié \(HTTP 504\) \|/)
+  const s = sanitizeFootprint({ generatedAt: 'x', sites: [{ site: 'eux.fr"><script>', pub: { regies: { meta: { preuves: ['ok'] }, pirate: {} }, conteneurs: [{ id: '"><x', ok: true }] }, wayback: { ok: true, premiere: 'pas une date', titres: [{ date: '2020-01-01', titre: 'T', url: 'javascript:alert(1)' }] }, commoncrawl: { ok: true, pages: '12' } }] })
+  assert.equal(s.sites[0].site, 'eux.frscript'); assert.deepEqual(Object.keys(s.sites[0].pub.regies), ['meta']); assert.deepEqual(s.sites[0].pub.conteneurs, [])
+  assert.equal(s.sites[0].wayback.premiere, null); assert.equal(s.sites[0].wayback.titres[0].url, ''); assert.equal(s.sites[0].commoncrawl.pages, 12)
+  assert.equal(sanitizeFootprint({ sites: 'non' }), null)
+  const rep = toMarkdown({ target: 'https://moi.fr', kind: 'site', input: {}, competitors: [{ url: 'eux.fr', global: 70 }], empreinte: { generatedAt: '2026-11-24T10:00:00Z', sites, constats: k } })
+  assert.match(rep, /## Empreinte marketing : publicité, historique, taille/)
 })

@@ -5,7 +5,7 @@ import { analyze, competitorSummary, detectKind, SEVERITY, GOALS } from './engin
 import { toMarkdown, staleNote } from './engine/report.js'
 import { generateHashtags } from './engine/hashtags.js'
 import { planBudget, preSpendChecks, defaultGoal } from './engine/ads.js'
-import { keywordIdeas, googleSuggest, classify, INTENTS } from './engine/keywords.js'
+import { keywordIdeas, INTENTS } from './engine/keywords.js'
 import { actionPlan } from './engine/plan.js'
 import { CHECKLISTS, GUIDE } from './engine/checklists.js'
 import { buildFixes, suggestTitle, suggestDescription, facts, whereToApply } from './engine/fixes.js'
@@ -21,6 +21,9 @@ import { bookmarkletCode, validateBundle, bundleFetcher } from './engine/bookmar
 import { extract } from './engine/html.js'
 import { gloss, glossReset, GLOSSARY } from './engine/glossary.js'
 import { observedForHashtags } from './engine/veille.js'
+import { sanitizeFootprint, titleRuns } from './engine/empreinte.js'
+import { collectMastodon, seedTags, observedFromMastodon, sanitizeMastodon, DEFAULT_INSTANCE } from './engine/mastodon.js'
+import { collectDemand, sanitizeDemande, sanitizeTrends, googleList, SOURCES as DEMAND_SOURCES, INTENT_LABELS, BROWSER_SOURCES } from './engine/demande.js'
 import { SECTORS, sectorById } from './data/sectors.js'
 import EXEMPLE from './data/exemple.js'
 import market from './data/research/competitors.js'
@@ -371,7 +374,7 @@ async function run({ bundle } = {}) {
     if (rep.input?.sectorGuessed) form.elements.sector.value = rep.input.sector
     if (rep.input?.goal && !goalTouched) form.elements.goal.value = rep.input.goal
     st.lecture = rep.result?.global == null && rep.result?.incomplete ? 'fail' : 'done'; if (st.vitesse !== 'skip') st.vitesse = !rep.ctx?.psi || rep.ctx.psi.error ? 'fail' : 'done'; st.diagnostic = 'done'; paintSteps(st); setTimeout(() => paintSteps(null), 2500)
-    S.report = rep; S.suggestions = []; S.cat = ''; S.shared = false
+    S.report = rep; S.suggestions = []; S.demande = null; S.mastodon = null; S.cat = ''; S.shared = false
     refreshDerived()
     remember(rep)
     const psiErr = rep.ctx?.psi?.error
@@ -383,7 +386,7 @@ async function run({ bundle } = {}) {
     if (!rep.error && /429|quota/i.test(psiErr || '')) $('#progress').insertAdjacentHTML('beforeend', ' <button class="linkish" type="button" data-psi-key>Ajouter ma clé</button>')
     collapseHero(true)
     go('synthese')
-    autoSuggest()
+    autoSuggest(); autoMastodon()
   } catch (err) {
     console.error(err)
     st.lecture = st.lecture === 'run' ? 'fail' : st.lecture; st.diagnostic = st.diagnostic === 'run' ? 'fail' : st.diagnostic; paintSteps(st)
@@ -416,7 +419,8 @@ function diagnosis(r) {
 
 // Historique : chaque audit d'une même adresse est comparé au précédent.
 function remember(rep) {
-  store.set('last', slimForShare(rep))
+  // Le lien de partage reste léger ; la mémoire locale garde aussi les données réelles (demande, Mastodon, empreinte)
+  store.set('last', { ...slimForShare(rep), demande: rep.demande, tendances: rep.tendances, mastodon: rep.mastodon, empreinte: rep.empreinte })
   const R = rep.result
   if (!R || R.global == null) return
   const k = 'hist:' + targetKey(rep.target)
@@ -537,10 +541,10 @@ const slug = () => String(S.report?.target || 'rapport').replace(/^https?:\/\//,
 async function action(a) {
   const r = S.report
   if (!r) return
-  if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
+  if (a === 'md') download(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() }), 'text/markdown')
   if (a === 'json') download(`seo360-${slug()}.json`, JSON.stringify(r, null, 1), 'application/json')
-  if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() }))
-  if (a === 'md-dl') saveFile(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions }, { fixes: S.fixes, done: doneMap() })).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici : utilisez « Copier ».') })
+  if (a === 'md-copy') copy(toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() }))
+  if (a === 'md-dl') saveFile(`seo360-${slug()}.md`, toMarkdown({ ...r, suggestions: S.suggestions, demande: S.demande || r.demande }, { fixes: S.fixes, done: doneMap() })).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici : utilisez « Copier ».') })
   if (a === 'json-dl') saveFile(`seo360-${slug()}.json`, JSON.stringify(r, null, 1)).then(() => toast('Fichier enregistré'), (e) => { if (e?.code !== 'declined') toast('Téléchargement impossible ici.') })
   if (a === 'live-save') saveReport(r).then(() => toast('Rapport enregistré : il apparaît sur tous vos appareils.'), (e) => toast(e?.code === 'quota_exceeded' ? 'Espace plein : supprimez d’anciens rapports.' : 'Enregistrement impossible pour l’instant.'))
   if (a === 'json-copy') copy(JSON.stringify(r))
@@ -792,17 +796,19 @@ function visibilite() {
   const seed = v.keyword || terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
   const k = keywordIdeas({ seed, sector: v.sector, city: v.city, local: v.local })
   const extra = store.get('hkw', '')
-  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: observedForHashtags(S.veille) })
+  const h = generateHashtags({ sector: v.sector, keywords: [v.keyword, ...extra.split(',')].filter((x) => x && x.trim()), terms: terms?.phrases?.map((t) => t.term).slice(0, 5) || [], city: v.city, brand: v.brand, lang: v.lang, observed: [...observedForHashtags(S.veille), ...observedFromMastodon(currentMastodon())] })
   const nets = Object.values(h.networks).sort((a, b) => (h.priority.indexOf(a.id) + 1 || 99) - (h.priority.indexOf(b.id) + 1 || 99))
   // Sans données branchées, les épingles (hashtags) passent devant et les imports vides sont repliés en bas de page
   const hasData = !!(gscAnalysis() || S.veille)
   const head = `<div class="section-head"><div><h2>Mots-clés & réseaux</h2><p>${hasData ? 'Vos vraies requêtes d’abord, puis les idées, puis les hashtags par réseau.' : 'Vos hashtags par réseau, vos idées de mots-clés et vos temps forts. Pour vos vraies requêtes Google, branchez Search Console en bas de page.'}</p></div></div>`
-  const kwCard = `<div class="card" style="margin-top:16px"><div class="section-head"><h3>Idées de mots-clés autour de « ${esc(seed)} »</h3><button class="btn" id="suggest" type="button">${S.suggestions.length ? 'Recharger' : 'Charger'} les suggestions Google</button></div>
-    ${S.suggestions.length ? `<p><b>Suggestions Google réelles</b> (ce que les gens tapent) :</p><div class="tags">${S.suggestions.map((s) => `<span class="chip tag" title="${esc(classify(s))}">${esc(s)}</span>`).join('')}</div><button class="btn sm" data-copy="${esc(S.suggestions.join('\n'))}">Copier</button>` : ''}
-    <div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>
+  const dm = currentDemand()
+  const templates = `<div class="cols" style="margin-top:12px">${Object.entries(k.groups).map(([intent, list]) => `<div><h4>${intent[0].toUpperCase() + intent.slice(1)}</h4><p class="note">${esc(INTENTS[intent])}</p><div class="tags">${list.map((x) => `<span class="chip tag">${esc(x.keyword)}</span>`).join('')}</div></div>`).join('')}</div>`
+  const kwCard = `<div class="card" style="margin-top:16px"><div class="section-head"><h3>${dm ? `Demande réelle autour de « ${esc(dm.seed)} »` : `Idées de mots-clés autour de « ${esc(seed)} »`}</h3><button class="btn" id="suggest" type="button">${dm ? 'Relancer' : 'Chercher'} la demande réelle</button></div>
+    ${dm ? demandPanel(dm) + `<details style="margin-top:12px"><summary class="note">Gabarits par intention (sans preuve de demande : à confronter à la liste ci-dessus)</summary>${templates}</details>` : `<p class="note">Les idées ci-dessous sont des gabarits. « Chercher la demande réelle » interroge les autocomplétions de Google et YouTube sur une quarantaine de variantes.</p>${templates}`}
+    ${trendsPanel(S.report?.tendances || S.trends)}
     ${terms ? `<p class="note" style="margin-top:12px"><b>Sujets que Google lit sur votre page :</b> ${esc([...terms.phrases, ...terms.words].slice(0, 12).map((t) => t.term).join(' · '))}</p>` : ''}
     <details><summary class="note">Outils de volume et de tendances</summary><ul class="clean">${k.tools.map((t) => `<li><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></li>`).join('')}</ul></details></div>`
-  const tagsBlock = `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
+  const tagsBlock = mastodonCard(v) + `<div class="section-head" style="margin-top:22px"><div><h3>Hashtags par réseau (règles 2026)</h3><p class="note">${esc(h.sector)}${v.city ? ' · ' + esc(v.city) : ''}. Les réseaux prioritaires pour votre secteur sont en premier. Pastille verte = niche, orange = moyen, grise = large : visez 2–3 niche, 1–2 moyen, 0–1 large, et vérifiez le compteur via le lien. L’effet des hashtags est faible (Instagram : environ +2 % de portée) : la légende et la vidéo comptent davantage.</p></div>
     <label style="min-width:260px">Mots-clés en plus (séparés par des virgules)<input id="hkw" value="${esc(extra)}" placeholder="ex. vitrine pâtissière"></label></div>
   ${aiOn() && S.report ? `<div class="card"><h3>Idées de publications</h3><p class="note">Claude propose 5 publications pour vos 2 réseaux prioritaires, avec l’accroche, la légende et les hashtags de cette page.</p><div class="actions">${aiBtn('posts', 'Proposer 5 publications')}</div>${aiBox('posts')}</div>` : ''}
   <div class="masonry">${nets.map((n, idx) => { const all = n.tags.map((t) => '#' + t.camel).join(' '); return `<details class="card net" style="--net: ${NET_COLOR[n.id] || 'var(--accent)'}" ${idx < 2 ? 'open' : ''}><summary><h3><span class="mono" aria-hidden="true">${esc(n.label[0])}</span>${esc(n.label)} ${h.priority.includes(n.id) ? '<span class="prio">prioritaire</span>' : ''}</h3><span class="tags">${n.tags.map((t) => tagLink(n.id, t)).join('')}</span></summary>
@@ -821,6 +827,7 @@ after.visibilite = () => {
   $('#veille-clear')?.addEventListener('click', () => { S.veille = null; store.del('veille'); render() })
   $('#hkw')?.addEventListener('change', (e) => { store.set('hkw', e.target.value); render() })
   $('#suggest')?.addEventListener('click', autoSuggest)
+  $('#mastodon')?.addEventListener('click', autoMastodon)
   const readAll = async (list) => { const all = []; for (const f of list) all.push(...await readGscFiles(await f.arrayBuffer(), f.name)); return parseGscFiles(all) }
   const saveGsc = () => { if (S.report) store.set('gsc:' + targetKey(S.report.target), S.gsc); render() }
   $('#gsc-file')?.addEventListener('change', async (e) => {
@@ -900,13 +907,71 @@ function calendarPanel(v) {
     <div class="actions"><button class="btn sm" type="button" data-cal-csv>${ARTIFACT && !live.downloads ? 'Copier le calendrier de l’année (tableur)' : 'Télécharger le calendrier de l’année (.csv)'}</button></div>
     <ul class="clean">${list.map((m) => `<li><b>${esc(frShort(m.date))}</b> — ${esc(m.label)}${m.ferie ? ' <span class="chip tag">férié</span>' : ''}${m.pont ? ` <span class="chip tag">pont le ${esc(frShort(m.pont))}</span>` : ''}${m.approx ? ' <span class="note">(indicatif)</span>' : ''}${m.prep?.length ? `<br><span class="note">${m.prep.map((x) => `${esc(x.j)} ${esc(frShort(x.date))} : ${esc(x.action.toLowerCase())}`).join(' · ')}</span>` : m.kind === 'ferie' ? '<br><span class="note">Mettez à jour les horaires exceptionnels de votre fiche Google une semaine avant.</span>' : ''}</li>`).join('')}</ul></div>`
 }
+// Demande réelle : celle du rapport (ligne de commande : 4 sources) ou celle cherchée ici (Google et YouTube).
+const isoDay = (iso) => (/^\d{4}-\d{2}-\d{2}/.test(iso || '') ? frShort(iso.slice(0, 10)) : 'date inconnue')
+const currentDemand = () => S.demande || S.report?.demande || null
 async function autoSuggest(ev) {
-  if (ARTIFACT) { if (ev) toast('Suggestions Google indisponibles ici : utilisez la version complète ou la ligne de commande.'); return }
+  // Rapport venu de la ligne de commande avec ses 4 sources : on ne l'écrase pas sans un clic
+  if (!ev && S.report?.demande?.items?.length) return
+  if (ARTIFACT) { if (ev) toast('Demande réelle indisponible ici : utilisez la version complète ou « node seo/cli.mjs demande ».'); return }
   const v = vals(), seed = v.keyword || S.report?.result?.meta?.terms?.phrases?.[0]?.term || sectorById(v.sector).keywords[0]
-  const btn = $('#suggest'); if (btn) { btn.disabled = true; btn.textContent = 'Interrogation de Google…' }
-  S.suggestions = await googleSuggest(seed).catch(() => [])
-  if (S.report) S.report.suggestions = S.suggestions
+  const btn = $('#suggest'); if (btn) { btn.disabled = true; btn.textContent = 'Interrogation de Google et YouTube…' }
+  const d = await collectDemand(seed).catch(() => null)
+  S.demande = d?.items?.length ? d : null
+  S.suggestions = googleList(S.demande)
+  if (S.report) { S.report.suggestions = S.suggestions; if (S.demande) S.report.demande = S.demande }
+  if (!S.demande && ev) toast('Aucune réponse de Google ni de YouTube : réseau ou bloqueur de publicité ? La ligne de commande interroge aussi Amazon et DuckDuckGo.')
   if (S.tab === 'visibilite') render()
+}
+const srcBadges = (x) => x.sources.map((k) => `<abbr class="src src-${esc(k)}" title="${esc(DEMAND_SOURCES[k]?.label || k)}">${esc((DEMAND_SOURCES[k]?.label || k)[0])}</abbr>`).join('')
+const kwChip = (x) => `<span class="chip tag dm" title="${esc(x.sources.map((k) => DEMAND_SOURCES[k]?.label).join(', '))}">${esc(x.keyword)}${srcBadges(x)}</span>`
+function demandPanel(d) {
+  const core = d.items.filter((x) => !x.pays && !x.voisine)
+  const srcLine = Object.entries(d.sources).map(([, s]) => s.ok ? `<b>${esc(s.label)}</b> ${fmt(s.suggestions)}` : `${esc(s.label)} : indisponible`).join(' · ')
+  const cli = `node seo/cli.mjs demande "${d.seed}"`
+  const skipped = d.skipped?.length ? `<p class="note">${esc(d.skipped.map((k) => DEMAND_SOURCES[k].label).join(', '))} ne répondent pas à un navigateur : pour les 4 sources et les tendances du jour, lancez <code>${esc(cli)}</code> puis importez le fichier .json (bouton « Importer »).</p>` : ''
+  const only = (k) => core.filter((x) => x.sources.includes(k)).slice(0, 18)
+  return `<p class="note">${fmt(core.length)} idées tirées de ${fmt(d.queries)} variantes de recherche (${esc(isoDay(d.generatedAt))}). ${srcLine}. <b>Aucun volume</b> : une idée vue par plusieurs sources est plus sûre, pas forcément plus cherchée.</p>${skipped}
+    ${d.confirmed.length ? `<h4>Confirmées par 2 sources ou plus (${fmt(d.confirmed.length)})</h4><div class="tags">${d.confirmed.slice(0, 30).map(kwChip).join('')}</div>` : ''}
+    ${d.questions.length ? `<h4 style="margin-top:12px">Vraies questions : pour la FAQ, les guides et les vidéos</h4><ul class="clean">${d.questions.slice(0, 15).map((x) => `<li>${esc(x.keyword)} ${srcBadges(x)}</li>`).join('')}</ul>` : ''}
+    ${['youtube', 'amazon'].filter((k) => only(k).length).map((k) => `<h4 style="margin-top:12px">Sur ${esc(DEMAND_SOURCES[k].label)} : ${esc(DEMAND_SOURCES[k].why)}</h4><div class="tags">${only(k).map(kwChip).join('')}</div>`).join('')}
+    <div class="cols" style="margin-top:12px">${Object.keys(INTENT_LABELS).filter((i) => d.byIntent[i]?.length).map((i) => `<div><h4>${esc(i[0].toUpperCase() + i.slice(1))} (${fmt(d.byIntent[i].length)})</h4><p class="note">${esc(INTENT_LABELS[i])}</p><div class="tags">${d.byIntent[i].slice(0, 24).map(kwChip).join('')}</div></div>`).join('')}</div>
+    ${d.nearby?.length ? `<details><summary class="note">Recherches voisines, sans tous les mots du sujet (${fmt(d.nearby.length)}) : à trier à la main</summary><div class="tags">${d.nearby.slice(0, 40).map(kwChip).join('')}</div></details>` : ''}
+    ${d.foreign?.length ? `<p class="note">Mises de côté, recherches d’un autre pays : ${esc(d.foreign.slice(0, 8).map((x) => `${x.keyword} (${x.pays})`).join(' · '))}</p>` : ''}
+    <div class="actions"><button class="btn sm" data-copy="${esc(core.map((x) => x.keyword).join('\n'))}">Copier les ${fmt(core.length)} idées</button><button class="btn sm" data-copy="${esc(d.questions.map((x) => x.keyword).join('\n'))}">Copier les questions</button></div>`
+}
+// Hashtags réellement employés : lus sur Mastodon (API publique, lisible depuis le navigateur)
+const currentMastodon = () => S.mastodon || S.report?.mastodon || null
+const mastodonSeeds = (v) => seedTags({ keyword: v.keyword, keywords: (store.get('hkw', '') || '').split(','), sectorTags: sectorById(v.sector).hashtags?.[v.lang === 'en' ? 'en' : 'fr']?.niche || [] })
+async function autoMastodon(ev) {
+  if (!ev && S.report?.mastodon?.ok) return
+  if (ARTIFACT) { if (ev) toast('Lecture de Mastodon indisponible ici : utilisez la version complète ou « node seo/cli.mjs hashtags ».'); return }
+  const btn = $('#mastodon'); if (btn) { btn.disabled = true; btn.textContent = 'Lecture de Mastodon…' }
+  const m = await collectMastodon(mastodonSeeds(vals())).catch(() => null)
+  S.mastodon = m?.ok ? m : null
+  if (S.report && S.mastodon) S.report.mastodon = S.mastodon
+  if (!S.mastodon && ev) toast('Mastodon n’a pas répondu (réseau ou bloqueur ?). Réessayez plus tard.')
+  if (S.tab === 'visibilite') render()
+}
+function mastodonCard(v) {
+  const m = currentMastodon()
+  const head = `<div class="section-head"><h3>Hashtags réellement employés (Mastodon)</h3><button class="btn" id="mastodon" type="button">${m ? 'Relire' : 'Lire'} Mastodon</button></div>`
+  if (!m) return `<div class="card" style="margin-top:16px">${head}<p class="note">Lit les dernières publications publiques de ${esc(mastodonSeeds(v).map((t) => '#' + t).join(' '))} et relève les hashtags employés avec eux par plusieurs comptes. Sans clé ni connexion.</p></div>`
+  const row = (t) => `<tr><td>#${esc(t.tag)}</td><td class="num">${fmt(t.publications)}</td><td class="num">${fmt(t.comptes)}</td><td>${t.publications ? `${esc(isoDay(t.plusAncienne))} → ${esc(isoDay(t.plusRecente))}` : 'aucune publication'}</td></tr>`
+  return `<div class="card" style="margin-top:16px">${head}
+    <p class="note">${esc(m.instance)}, ${esc(isoDay(m.generatedAt))}. « Comptes » = comptes différents, robots exclus. Preuve d’usage réel en français, <b>pas</b> une mesure de popularité sur Instagram ou TikTok. Les hashtags « observé » sont placés en tête des réseaux ci-dessous.</p>
+    <div class="table-wrap"><table><thead><tr><th>Tag de départ</th><th class="num">Publications lues</th><th class="num">Comptes</th><th>Période</th></tr></thead><tbody>${m.tags.map(row).join('')}</tbody></table></div>
+    ${m.observes.length ? `<h4 style="margin-top:12px">Employés avec eux par 2 comptes ou plus</h4><div class="tags">${m.observes.slice(0, 30).map((x) => `<a class="htag obs" href="https://${esc(m.instance)}/tags/${esc(x.tag)}" target="_blank" rel="noopener" title="${esc(`${x.comptes} comptes, ${x.publications} publications, avec ${x.avec.map((a) => '#' + a).join(' ')}`)}">#${esc(x.camel)}<span class="lvl">${fmt(x.comptes)}</span></a>`).join('')}</div><button class="btn sm" data-copy="${esc(m.observes.slice(0, 30).map((x) => '#' + x.camel).join(' '))}">Copier</button>` : '<p class="note">Aucun hashtag ne revient chez 2 comptes différents : sujet trop rare sur Mastodon. Les hashtags ci-dessous restent des suggestions à vérifier.</p>'}
+    ${m.vides.length ? `<p class="note">Personne ne s’en sert sur Mastodon : ${esc(m.vides.map((t) => '#' + t).join(' '))}.</p>` : ''}
+    ${m.errors.length ? `<p class="note">Illisibles : ${esc(m.errors.map((e) => `#${e.tag} (${e.erreur})`).join(', '))}.</p>` : ''}</div>`
+}
+function trendsPanel(t) {
+  if (!t) return ''
+  if (!t.ok) return `<p class="note" style="margin-top:12px">Tendances Google du jour indisponibles (${esc(t.erreur)}).</p>`
+  const li = (x) => `${esc(x.title)} <span class="note">${esc(x.traffic)}</span>`
+  return `<details style="margin-top:12px"${t.related.length ? ' open' : ''}><summary><b>Tendances Google du jour en France</b> <span class="note">(${esc(isoDay(t.generatedAt))}) : ${t.related.length ? `${fmt(t.related.length)} liée(s) à votre sujet` : 'aucune liée à votre sujet'}</span></summary>
+    ${t.related.length ? `<p><b>Liées à votre sujet :</b></p><ul class="clean">${t.related.map((x) => `<li>${li(x)}${x.news[0]?.url ? ` · <a href="${esc(x.news[0].url)}" target="_blank" rel="noopener">${esc(x.news[0].source || 'article')}</a>` : ''}</li>`).join('')}</ul>` : '<p class="note">Normal pour un métier de niche : ces sujets servent à réagir vite sur les réseaux, pas au référencement.</p>'}
+    <div class="tags">${t.items.slice(0, 15).map((x) => `<span class="chip tag">${li(x)}</span>`).join('')}</div></details>`
 }
 
 // ───────── Veille sociale (Agent Reach) ─────────
@@ -948,7 +1013,7 @@ const TAG_URL = { instagram: (t) => `https://www.instagram.com/explore/tags/${t}
 // Une teinte par réseau (pas de logo de marque) : le monogramme et la pastille de couleur suffisent à s'y retrouver
 const NET_COLOR = { instagram: 'var(--c-social)', tiktok: 'var(--text)', linkedin: 'var(--c-technique)', youtube: 'var(--pop)', facebook: 'var(--c-technique)', pinterest: 'var(--pop)', x: 'var(--text)', threads: 'var(--text)', bluesky: 'var(--c-ia)', snapchat: 'var(--c-performance)' }
 const NIV = { niche: 'niche (moins de 50 000 publications)', moyen: 'moyen (50 000 à 500 000)', large: 'large (plus de 500 000)' }
-const tagLink = (net, t) => { const lv = t.niveau ? ` lvl-${t.niveau}` : '', tt = t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
+const tagLink = (net, t) => { const obs = t.src === 'mastodon', lv = obs ? ' obs' : t.niveau ? ` lvl-${t.niveau}` : '', tt = obs ? `Observé sur Mastodon : employé par ${t.comptes || '?'} comptes différents. Vérifiez aussi le compteur sur ce réseau.` : t.niveau ? `Niveau attendu : ${NIV[t.niveau]} — vérifiez le compteur sur le réseau` : 'Voir ce hashtag sur le réseau'; const lvTxt = obs ? '<span class="lvl">observé</span>' : t.niveau ? `<span class="lvl">${esc(t.niveau)}</span>` : ''; return TAG_URL[net] ? `<a class="htag${lv}" href="${esc(TAG_URL[net](t.tag))}" target="_blank" rel="noopener" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</a>` : `<span class="htag${lv}" title="${esc(tt)}">#${esc(t.camel)}${lvTxt}</span>` }
 const CH_COLORS = ['#4338ca', '#0f766e', '#b45309', '#be185d', '#0369a1', '#4d7c0f', '#7e22ce']
 // En-têtes courts et complets pour le tableau Concurrents (avant : « Mesure, » et deux colonnes « Vitesse »).
 const CAT_SHORT = { technique: 'Technique', contenu: 'Contenu', donnees: 'Données', ia: 'IA', social: 'Partage', conformite: 'Mesure et RGPD', local: 'Local', performance: 'Vitesse', decouverte: 'Découverte' }
@@ -1054,8 +1119,26 @@ function concurrents() {
     <div class="card"><h3>Ce qu’ils font mieux</h3><ul class="clean">${!comps.some((x) => x.comparable) ? '<li>Aucun concurrent n’a pu être lu : comparaison impossible. Essayez la ligne de commande ou un autre mode de collecte.</li>' : better.map((b) => `<li>• ${b}</li>`).join('') || '<li>Rien de mesurable : vous êtes devant ou à égalité sur les axes comparés.</li>'}</ul></div>
     <div class="card"><h3>Sujets qu’ils traitent et pas vous</h3>${gapTerms.length ? `<div class="tags">${gapTerms.map((t) => `<span class="chip tag">${esc(t)}</span>`).join('')}</div><p class="note">Termes fréquents chez vos concurrents, absents de votre page : pistes de contenu.</p>` : '<p class="note">Pas d’écart net détecté.</p>'}</div>
   </div>
+  ${footprintCard(r)}
   ${presenceMatrix(r)}
   ${r.presence ? `<div style="margin-top:16px">${presenceCard(r)}</div>` : ''}`
+}
+
+// Empreinte marketing (ligne de commande) : régies publicitaires, historique Wayback, pages vues par Common Crawl
+function footprintCard(r) {
+  const f = r.empreinte
+  if (!f?.sites?.length) return `<div class="card" style="margin-top:16px"><h3>Empreinte marketing : publicité, historique, taille</h3><p class="note">Qui fait de la publicité (pixels Meta, Google Ads, TikTok, LinkedIn… y compris cachés dans Google Tag Manager), depuis quand chaque site existe et comment son titre a changé (Wayback Machine), combien de pages un robot public a vues (Common Crawl). Ces sources refusent les navigateurs : lancez</p><div class="code"><pre>node seo/cli.mjs ${esc(r.target)} --concurrents ${esc((r.competitors || []).map((c) => c.url).join(',') || 'concurrent1.fr,concurrent2.fr')}</pre><button class="btn sm" data-copy="">Copier</button></div><p class="note">puis importez le rapport .json.</p></div>`
+  const pub = (x) => { const r2 = Object.values(x.pub?.regies || {}); const unread = (x.pub?.conteneurs || []).filter((c) => !c.ok); return (r2.length ? r2.map((v) => `<span class="chip tag" title="${esc(v.preuves.join(' ; '))}">${esc(v.label)}</span>`).join(' ') : '<span class="note">aucun pixel</span>') + (unread.length ? ` <span class="note">(GTM non lu : à vérifier)</span>` : '') }
+  const wb = (x) => x.wayback?.ok ? (x.wayback.captures ? `depuis <b>${esc(x.wayback.premiere?.slice(0, 4))}</b><br><span class="note">${fmt(x.wayback.captures)} mois archivés</span>` : 'jamais archivé') : `<span class="note">non vérifié (${esc(x.wayback?.erreur)})</span>`
+  const cc = (x) => x.commoncrawl?.ok ? (x.commoncrawl.pages ? `${fmt(x.commoncrawl.pages)}${x.commoncrawl.plafond ? '+' : ''}` : '<span class="note">absent de ce passage</span>') : `<span class="note">non vérifié</span>`
+  const idx = f.sites.find((x) => x.commoncrawl?.ok)?.commoncrawl
+  const titles = f.sites.filter((x) => x.wayback?.ok && x.wayback.titres?.length)
+  return `<div class="card" style="margin-top:16px"><h3>Empreinte marketing : publicité, historique, taille</h3>
+    <p class="note">Lu le ${esc(isoDay(f.generatedAt))}. Un pixel de régie = la marque fait ou prépare de la publicité (pas un budget). Pages : ${idx ? `Common Crawl, ${esc(idx.nom)}` : 'Common Crawl'}, un échantillon de ce robot public, pas le total du site.</p>
+    <div class="table-wrap"><table><thead><tr><th>Site</th><th>Régies publicitaires</th><th>Historique (Wayback)</th><th class="num">Pages vues (Common Crawl)</th></tr></thead><tbody>
+    ${f.sites.map((x) => `<tr class="${x.me ? 'us' : ''}"><td>${esc(x.site)}${x.me ? ' (vous)' : ''}</td><td>${pub(x)}</td><td>${wb(x)}</td><td class="num">${cc(x)}</td></tr>`).join('')}</tbody></table></div>
+    ${f.constats.length ? `<h4 style="margin-top:12px">Ce que ça dit</h4><ul class="clean">${f.constats.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}
+    ${titles.length ? `<details style="margin-top:8px"><summary class="note">Titre de la page d’accueil au fil des ans (Wayback Machine)</summary><ul class="clean">${titles.map((x) => `<li><b>${esc(x.site)}</b> : ${titleRuns(x.wayback.titres).map((t) => `${esc(t.debut === t.fin ? t.debut : `${t.debut}–${t.fin}`)} « ${esc(t.titre)} »`).join(' → ')}</li>`).join('')}</ul></details>` : ''}</div>`
 }
 
 // ───────── Ressources ─────────
@@ -1166,6 +1249,10 @@ function sanitizeReport(r, provenance = null) {
     candidates: (r.presence.candidates || []).slice(0, 10).map((c) => ({ platform: str(c.platform, 40), label: str(c.label, 60), url: safeUrl(c.url), search: safeUrl(c.search) })),
     sameAsSnippet: r.presence.sameAsSnippet ? str(r.presence.sameAsSnippet, 4000) : null, sirenSeen: /^\d{9}$/.test(r.presence.sirenSeen || '') ? r.presence.sirenSeen : null,
   } : undefined
+  out.demande = sanitizeDemande(r.demande) || undefined
+  out.mastodon = sanitizeMastodon(r.mastodon) || undefined
+  out.empreinte = sanitizeFootprint(r.empreinte) || undefined
+  out.tendances = sanitizeTrends(r.tendances) || undefined
   out.competitors = Array.isArray(r.competitors) ? r.competitors.slice(0, 5).map((x) => ({ url: str(x.url, 300), global: n100(x.global), scores: keyed(x.scores, n100), perf: n100(x.perf), lcp: num0(x.lcp), words: num0(x.words), social: (x.social || []).map((y) => str(y, 30)), terms: (x.terms || []).map((y) => str(y, 60)), llms: !!x.llms, error: x.error ? str(x.error, 300) : null, presence: (x.presence || []).filter((y) => PL.has(y?.platform)).slice(0, 60).map((y) => ({ platform: y.platform, url: safeUrl(y.url) })) })) : undefined
   return out
 }
@@ -1181,6 +1268,13 @@ $('#f-import').addEventListener('change', async (e) => {
   const f = e.target.files[0]; if (!f) return
   try {
     const data = JSON.parse(await f.text())
+    if (data?.type === 'seo360-demande') {
+      const d = sanitizeDemande(data); if (!d) throw new Error('format')
+      S.demande = d; S.suggestions = googleList(d)
+      if (S.report) { S.report.demande = d; S.report.suggestions = S.suggestions; const t = sanitizeTrends(data.tendances); if (t) S.report.tendances = t }
+      else if (data.tendances) S.trends = sanitizeTrends(data.tendances)
+      progress(`Demande réelle importée : « ${d.seed} » (${d.items.length} idées)`, 'ok'); go('visibilite'); return
+    }
     if (data?.type === 'seo360-veille') { S.veille = sanitizeVeille(data); store.set('veille', S.veille); progress(`Veille importée : ${S.veille.sujet} (${S.veille.total} publications)`, 'ok'); go('visibilite'); return }
     if (data?.type === 'seo360-bm') { if (!validateBundle(data)) throw new Error('format'); form.elements.url.value = data.url; updateKind(); run({ bundle: data }); return }
     const rep = sanitizeReport(data, 'import')

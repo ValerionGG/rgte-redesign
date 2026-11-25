@@ -21,7 +21,7 @@ export function competitorSummary(url, rep) {
     url, global: R?.pageGlobal ?? null, scores: R?.pageScores || {}, terms: R?.meta?.terms?.words?.map((t) => t.term) || [],
     perf: rep.ctx?.psi?.scores?.performance ?? null, lcp: rep.ctx?.psi?.field?.LCP ?? null, words: p?.wordCount ?? null,
     title: p?.title || '', schema: R?.meta?.schemaTypes?.join(', ') || (p ? 'aucune' : '—'), social: Object.keys(R?.meta?.social || {}),
-    trackers: R?.meta?.trackers || [], cms: R?.meta?.cms || [], issues: R?.issues?.length ?? null, error: rep.error || R?.incomplete || null,
+    trackers: R?.meta?.trackers || [], gtm: R?.meta?.gtm || [], cms: R?.meta?.cms || [], issues: R?.issues?.length ?? null, error: rep.error || R?.incomplete || null,
     llms: rep.ctx?.llms?.status === 200, bots: (R?.meta?.bots || []).filter((b) => !b.allowed).map((b) => b.ua),
     presence: (rep.presence?.items || []).map((i) => ({ platform: i.platform, url: i.urls[0] || '' })),
   }

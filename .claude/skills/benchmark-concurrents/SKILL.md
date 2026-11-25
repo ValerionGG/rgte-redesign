@@ -43,6 +43,8 @@ Compléter hors note : avis Google (note, nombre, date du dernier avis), offre e
 
 ## 3. Publicités actives
 
+D'abord l'**empreinte marketing** de l'audit (`report.empreinte`, faite d'office avec `--concurrents`, `--sans-empreinte` pour l'éviter) : pour chaque site, les régies dont un pixel est présent (page d'accueil **et** conteneur Google Tag Manager, avec la preuve), l'âge du site et ses titres d'accueil au fil des ans (Wayback Machine), et le nombre de pages vues par Common Crawl lors de son dernier passage (un échantillon, pas le total ; « absent de ce passage » n'est pas « site vide »). Un pixel prouve qu'une marque fait ou prépare de la publicité sur cette régie, pas qu'elle a une campagne active ni son budget : c'est la liste des bibliothèques à ouvrir ensuite. Un conteneur GTM non lu = « non vérifié ».
+
 Les bibliothèques publicitaires sont publiques :
 - Meta : https://www.facebook.com/ads/library/ (Facebook et Instagram ; filtrer sur la France) ;
 - Google : https://adstransparency.google.com/ (annonceur, région, format) ;

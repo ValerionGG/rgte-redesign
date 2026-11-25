@@ -188,6 +188,10 @@ details.fold > summary, .net > summary { cursor: pointer; }
 .sev-moyen { color: var(--mid); background: var(--mid-bg); } .sev-faible { color: var(--low); background: var(--low-bg); }
 .sev-ok { color: var(--ok); background: var(--ok-bg); } .sev-info { color: var(--info); background: var(--info-bg); }
 .chip.tag { background: var(--surface-2); color: var(--muted); font-weight: 650; }
+/* Demande réelle : une pastille par source qui a proposé l'idée (G Google, Y YouTube, A Amazon, D DuckDuckGo) */
+.chip.tag.dm { color: var(--text); gap: 4px; }
+.src { display: inline-grid; place-items: center; width: 1.25em; height: 1.25em; border-radius: 50%; font-size: .68rem; font-weight: 800; text-decoration: none; color: var(--bg); background: var(--muted); margin-left: 2px; }
+.src-google { background: var(--c-technique); } .src-youtube { background: var(--pop); } .src-amazon { background: var(--c-performance); } .src-duckduckgo { background: var(--c-social); }
 .chip.ok-soft { background: var(--ok-bg); color: var(--ok); }
 button.chip { cursor: pointer; font: inherit; font-size: .8rem; font-weight: 700; min-height: 34px; padding: 4px 12px; }
 button.chip[aria-pressed="false"] { background: transparent; border-color: var(--line); color: var(--muted); text-decoration: line-through; }
@@ -336,6 +340,10 @@ a.htag:hover { border-color: var(--text); transform: translateY(-1px); }
 .htag.res { color: var(--muted); }
 .htag.lvl-niche::before, .htag.lvl-moyen::before, .htag.lvl-large::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .htag.lvl-niche::before { background: var(--mint); } .htag.lvl-moyen::before { background: var(--c-performance); } .htag.lvl-large::before { background: var(--field-line); }
+/* Hashtag réellement employé (Mastodon) : contour plein, pastille verte « observé » */
+.htag.obs { border-color: var(--mint); }
+.htag.obs::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--mint); box-shadow: 0 0 0 2px color-mix(in srgb, var(--mint) 30%, transparent); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .htag .lvl { font-family: var(--font); font-size: .7rem; font-weight: 700; color: var(--muted); }
 .net { --net: var(--accent); }
 .net > summary { list-style: none; display: grid; gap: 10px; position: relative; padding-right: 26px; }

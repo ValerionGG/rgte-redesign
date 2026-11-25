@@ -42,6 +42,7 @@ Ensuite, ouvre **Claude Code** dans ce dossier : les 21 skills de `.claude/skill
 |---|---|
 | Dépôt (tout est là) | https://github.com/ValerionGG/rgte-redesign |
 | **Plateforme SEO 360 en ligne** | https://valeriongg.github.io/rgte-redesign/seo/ |
+| **SEO 360 sur Dokploy** (branche `recherche-enrichissement`, toutes les sources 1 à 9) | https://seo360.217-160-124-232.nip.io/seo/ — projet « SEO 360 », application « site » sur https://dokploy.m3.games (réglages : `deploy/dokploy/README.md`) |
 | Lien d'analyse direct | `https://valeriongg.github.io/rgte-redesign/seo/#analyser=rgte.eu` |
 | Page SEO 360 sur claude.ai (privée, version 10) | https://claude.ai/artifact/6qeKMCsVCp3BW6kLSDt1xk |
 | Les 10 maquettes de refonte RGTE (galerie) | https://valeriongg.github.io/rgte-redesign/ |
@@ -112,6 +113,11 @@ GitHub Pages publie la branche `main` (dossier `docs/`) en 1 à 2 minutes après
 | 17/11 | Un outil de profiling qui trouve les réseaux, les apps, absolument tout ; un benchmark et une étude concurrentielle pour faire mieux. | **Profil de présence** : 47 plateformes, SIREN croisé avec le registre, bloc sameAs, matrice « qui est où », benchmark de 12 outils (PR #8). |
 | 21/11 | Tout mettre sur GitHub avec un fichier qui contient absolument tout, pour reprendre sur un autre PC. | Ce dossier `reprise/` (PR #9). |
 | 24/11 | « Relance en ligne et en local. » | En ligne : publication du 21/11 réussie, la page répond 200. En local sur le PC Windows (`D:\Claude\SEO\rgte-redesign`) : serveur sur http://localhost:8000/seo/, audit de rgte.eu à **71/100** (15 pages). 8 tests sur 51 échouaient sous Windows (chemins `/D:/…`, fins de ligne CRLF) : corrigé par `fileURLToPath` et un `.gitattributes`. |
+| 24/11 | La plateforme est « trop faible et pauvre en propositions » : chercher skills, outils et dépôts GitHub pour l'enrichir ; installer Agent Reach. | Liste priorisée `annexes/recherches/enrichissement-plateforme-2026-11-24.md` : 9 sources gratuites testées depuis le PC (YouTube, Amazon, DuckDuckGo, Google Tendances, hashtags Mastodon, Wayback, Common Crawl…), 6 dépôts d'inspiration, 3 packs à relire. Agent Reach 1.6.1 installé depuis GitHub (programme seulement : `agent-reach setup` reste à lancer par Nadir). |
+| 24/11 | « Brancher les sources. » | Nouveau module `seo/engine/demande.js` : **demande réelle** tirée des autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur 39 variantes (questions, a…z), fusionnées avec leurs sources ; recherches d'autres pays et voisines mises à part ; tendances Google du jour (France). Sur « vitrine réfrigérée » : 275 idées, 57 confirmées par 2 sources ou plus, 3 vraies questions, en 2,4 s. Commande `node seo/cli.mjs demande "<mot>"`, intégrée à l'audit (`--sans-demande` pour l'éviter), au rapport Markdown et à l'onglet « Mots-clés & réseaux » (le navigateur n'interroge que Google et YouTube). 55 tests sur 55. |
+| 24/11 | « Continue » (source 6). | Nouveau module `seo/engine/mastodon.js` : **hashtags réellement employés**, lus sur l'API publique de Mastodon (sans clé) ; comptés en comptes distincts, robots exclus, cooccurrences limitées aux publications en français de moins de 2 ans. Ils passent en tête des réseaux (2 sur Instagram et TikTok), marqués « observé (N comptes) ». Boulangerie : #croissant 55 comptes, #painaulevain 16, avec #levain, #boulangerie, #petitdejeuner. RGTE : #surmesure 28 comptes ; #vitrinerefrigeree, #agencementmagasin, #fabricantfrancais : 0 publication. Dans l'audit, `hashtags`, le rapport et l'onglet (lecture directe depuis le navigateur). 58 tests sur 58. |
+| 24/11 | « Continue » (sources 7 à 9). | Nouveau module `seo/engine/empreinte.js` : pour vous et chaque concurrent, **régies publicitaires** (pixels dans la page et dans le conteneur Google Tag Manager, avec preuve), **historique Wayback** (âge, mois archivés, titre d’accueil au fil des ans), **pages vues par Common Crawl** (dernier index, seconde tentative si le serveur sature). Constats comparatifs uniquement à partir de faits mesurés. RGTE contre OCF et Pousstronic : RGTE a un pixel Google Ads (AW-986852039, vérifié dans le code), les deux autres aucun ; OCF archivé depuis 1998, RGTE depuis 2019, Pousstronic depuis 2025 ; Common Crawl : 102 pages OCF, RGTE et Pousstronic absents de l’index de novembre. Dans l’audit (`--sans-empreinte`), le rapport et l’onglet Concurrents ; la mémoire locale garde désormais demande, Mastodon et empreinte après un rechargement. 61 tests sur 61. |
+| 25/11 | « Remets en ligne le tout avec le Dokploy. » | Nouveau projet **SEO 360** (application « site ») sur le Dokploy partagé de M3, sans toucher aux autres projets : dépôt public, branche `recherche-enrichissement`, `deploy/dokploy/Dockerfile` (nginx sert `docs/`), domaine https://seo360.217-160-124-232.nip.io en HTTPS (Let's Encrypt). Vérifié : galerie et `/seo/` en 200, nouveaux modules servis, demande réelle et Mastodon fonctionnent en ligne. GitHub Pages (`main`) inchangé. |
 
 ### Les PR fusionnées
 
@@ -190,6 +196,8 @@ Rapports complets : `annexes/rgte/`.
 | 7 | Analyse complète d'un site par Claude avec la nouvelle méthode (rgte.eu ou le lien testé par Nadir) | Claude | proposé ; le lien testé le 08/11 n'a jamais été donné |
 | 8 | Fiabilité de lecture permanente : déployer le proxy Cloudflare (`seo/proxy/`) | Nadir | facultatif |
 | 9 | Vérifier à la main que chaque profil social renvoie bien au site | Claude dans le navigateur | les réseaux refusent la lecture automatique |
+| 10 | Lancer `agent-reach setup` (installe le skill officiel pour Claude Code) | Nadir | le contrôle de sécurité de la session l'a refusé à Claude le 24/11 |
+| 11 | Sources gratuites : **faites** le 24/11 pour les sources 1 à 9 (YouTube, Amazon, DuckDuckGo, variantes, tendances). **Faites** aussi : hashtags observés sur Mastodon (source 6) et empreinte marketing des concurrents (sources 7 à 9). **Reste** : la relecture des 3 packs de la priorité 3, seulement si Nadir le veut | Claude | voir `annexes/recherches/enrichissement-plateforme-2026-11-24.md` §5 |
 
 ---
 
@@ -209,5 +217,5 @@ Rapports complets : `annexes/rgte/`.
 | `annexes/conseil-v2/` | Conseil d'agents v1→v2 : brief, réponses des 5 experts, relectures notées, scores, verdict du critique |
 | `annexes/conseil-v3/` | Conseil v3 : briefs, réponses anonymisées, relectures, scores, rapport et verdict du critique indépendant |
 | `annexes/rgte/` | Audit SEO 360 de rgte.eu (08/11) et profil de présence RGTE contre 5 concurrents (17/11), en Markdown et JSON |
-| `annexes/recherches/` | Benchmark des outils de présence (17/11), notes et catalogue des skills GitHub étudiés |
+| `annexes/recherches/` | Benchmark des outils de présence (17/11), notes et catalogue des skills GitHub étudiés, liste priorisée pour enrichir la plateforme (24/11) |
 | `outils/export_echanges.py` | Le script qui a produit `ECHANGES.md` à partir de l'historique de Claude Code |

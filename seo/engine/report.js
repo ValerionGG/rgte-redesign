@@ -3,6 +3,9 @@ import { SEVERITY } from './audit.js'
 import { driftMarkdown } from './drift.js'
 import { recommendTools, toolsMarkdown } from './outils.js'
 import { CHANNELS } from './ads.js'
+import { demandeMarkdown } from './demande.js'
+import { mastodonMarkdown } from './mastodon.js'
+import { footprintMarkdown } from './empreinte.js'
 import research from '../data/research/benchmarks.js'
 // Données datées (prix, CPC, règles) : signalées dès que leur date de revérification est passée.
 export function staleNote(now = new Date()) {
@@ -79,14 +82,18 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
   }
   if (r.keywords) {
     L.push('## Mots-clés', '')
-    if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
+    if (r.demande?.items?.length) L.push('_La demande réelle (Google, YouTube, Amazon, DuckDuckGo) est détaillée dans la section suivante ; les idées ci-dessous sont des gabarits à confronter à cette liste._', '')
+    else if (r.suggestions?.length) L.push(`**Suggestions Google réelles** : ${r.suggestions.join(' · ')}`, '')
     else if (r.suggestionsError) L.push('_Suggestions Google indisponibles pendant cet audit : les idées ci-dessus sont des gabarits, sans preuve de demande. Vérifiez-les dans Search Console ou Keyword Planner avant d’y consacrer une page._', '')
     for (const [intent, list] of Object.entries(r.keywords.groups)) L.push(`**${intent}** : ${list.map((k) => k.keyword).join(' · ')}`, '')
   }
+  if (r.demande?.items || r.tendances) L.push(demandeMarkdown(r.demande?.items ? r.demande : null, r.tendances))
+  if (r.mastodon) L.push(mastodonMarkdown(r.mastodon))
   if (r.hashtags) {
     L.push('## Hashtags par réseau', '')
+    if (r.mastodon?.ok) L.push('_Les hashtags marqués « observé » sont réellement employés sur Mastodon (nombre de comptes distincts) ; les autres sont des suggestions à vérifier avec le compteur de chaque réseau._', '')
     for (const n of Object.values(r.hashtags.networks)) {
-      L.push(`### ${n.label} — ${n.rules?.recommended_count || n.max} hashtags`, '', n.tags.map((t) => '#' + t.camel).join(' ') || '—', '', n.tags.length ? `_Niveaux attendus : ${n.tags.map((t) => `#${t.camel} ${t.niveau || '?'}`).join(' · ')} (niche < 50 000 publications, moyen 50 000–500 000, large au-delà : à vérifier sur le réseau)._` : '', '')
+      L.push(`### ${n.label} — ${n.rules?.recommended_count || n.max} hashtags`, '', n.tags.map((t) => '#' + t.camel).join(' ') || '—', '', n.tags.length ? `_Niveaux attendus : ${n.tags.map((t) => `#${t.camel} ${t.src === 'mastodon' ? `observé sur Mastodon (${t.comptes || '?'} comptes)` : t.niveau || '?'}`).join(' · ')} (niche < 50 000 publications, moyen 50 000–500 000, large au-delà : à vérifier sur le réseau)._` : '', '')
       if (n.rules) L.push(`- Limite : ${n.rules.hashtag_limit}`, `- Placement : ${n.rules.placement}`, `- Rythme : ${n.rules.posting_frequency || '—'} · Moments : ${n.rules.best_times_fr || '—'}`)
       if (n.reserve?.length) L.push(`- Réserve à faire tourner : ${n.reserve.slice(0, 10).map((t) => '#' + t.camel).join(' ')}`)
       L.push('')
@@ -98,6 +105,7 @@ export function toMarkdown(r, { fixes, done = {} } = {}) {
     for (const c of r.competitors) L.push(`| ${c.url} | ${c.global ?? (c.error ? 'non comparable' : '—')} | ${c.perf ?? '—'} | ${c.words ?? '—'} |`)
     L.push('')
   }
+  if (r.empreinte) L.push(footprintMarkdown(r.empreinte))
   L.push('---', '_Estimations indicatives : benchmarks publics 2025–2026 (seo/data/research). À recaler sur vos données (Search Console, GA4, comptes publicitaires)._')
   return L.join('\n')
 }
