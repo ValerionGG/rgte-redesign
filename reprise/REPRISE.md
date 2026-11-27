@@ -2,9 +2,9 @@
 
 > **Pour Claude (Claude Code, Cowork ou le chat)** : lis ce fichier en entier avant de faire quoi que ce soit, puis `reprise/ECHANGES.md` si tu as besoin du détail d'une discussion. Tout ce qui a été fait, décidé et laissé en suspens est ici.
 >
-> **Pour Nadir** : ce fichier résume trois semaines de travail (3 → 21 novembre 2026). Les échanges complets sont dans [ECHANGES.md](ECHANGES.md).
+> **Pour Nadir** : ce fichier résume le travail du 3 au 27 novembre 2026. Les échanges complets sont dans [ECHANGES.md](ECHANGES.md).
 
-Dernière mise à jour : **24/11/2026**. État du code : branche `main` de `ValerionGG/rgte-redesign`, après la PR #9 (version 3.12 de SEO 360, plugin 3.4.0, dossier `reprise/`).
+Dernière mise à jour : **27/11/2026** (point hebdomadaire du vendredi). État du code : branche `main` de `ValerionGG/rgte-redesign`, après la PR #11 du 25/11 (demande réelle, hashtags Mastodon, empreinte des concurrents, déploiement Dokploy ; plugin 3.4.0). 61 tests sur 61 au 27/11.
 
 ---
 
@@ -16,7 +16,7 @@ git clone https://github.com/ValerionGG/rgte-redesign.git
 cd rgte-redesign
 
 # 2. Vérifier que tout marche (Node 18 ou plus, aucune dépendance à installer)
-NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs      # attendu : 51 tests, 0 échec
+NO_PROXY=127.0.0.1 node --test seo/test/engine.test.mjs      # attendu : 61 tests, 0 échec
 
 # 3. Lancer une analyse
 node seo/cli.mjs rgte.eu --crawl 15                           # audit SEO complet → rapports-seo/
@@ -112,12 +112,14 @@ GitHub Pages publie la branche `main` (dossier `docs/`) en 1 à 2 minutes après
 | 17/11 | « Continue. » | Onglet « À faire » allégé (PR #7). |
 | 17/11 | Un outil de profiling qui trouve les réseaux, les apps, absolument tout ; un benchmark et une étude concurrentielle pour faire mieux. | **Profil de présence** : 47 plateformes, SIREN croisé avec le registre, bloc sameAs, matrice « qui est où », benchmark de 12 outils (PR #8). |
 | 21/11 | Tout mettre sur GitHub avec un fichier qui contient absolument tout, pour reprendre sur un autre PC. | Ce dossier `reprise/` (PR #9). |
+| 23/11 | Transformer la session en projet Claude. | Projet « Plateforme SEO avec hashtags et benchmarking » : consignes (français, lire `CLAUDE.md` puis ce fichier, mettre à jour la reprise, une PR par changement) et 2 tâches planifiées : veille SEO chaque lundi à 8 h, mise à jour de ce fichier chaque vendredi à 18 h. |
 | 24/11 | « Relance en ligne et en local. » | En ligne : publication du 21/11 réussie, la page répond 200. En local sur le PC Windows (`D:\Claude\SEO\rgte-redesign`) : serveur sur http://localhost:8000/seo/, audit de rgte.eu à **71/100** (15 pages). 8 tests sur 51 échouaient sous Windows (chemins `/D:/…`, fins de ligne CRLF) : corrigé par `fileURLToPath` et un `.gitattributes`. |
 | 24/11 | La plateforme est « trop faible et pauvre en propositions » : chercher skills, outils et dépôts GitHub pour l'enrichir ; installer Agent Reach. | Liste priorisée `annexes/recherches/enrichissement-plateforme-2026-11-24.md` : 9 sources gratuites testées depuis le PC (YouTube, Amazon, DuckDuckGo, Google Tendances, hashtags Mastodon, Wayback, Common Crawl…), 6 dépôts d'inspiration, 3 packs à relire. Agent Reach 1.6.1 installé depuis GitHub (programme seulement : `agent-reach setup` reste à lancer par Nadir). |
 | 24/11 | « Brancher les sources. » | Nouveau module `seo/engine/demande.js` : **demande réelle** tirée des autocomplétions Google, YouTube, Amazon.fr et DuckDuckGo sur 39 variantes (questions, a…z), fusionnées avec leurs sources ; recherches d'autres pays et voisines mises à part ; tendances Google du jour (France). Sur « vitrine réfrigérée » : 275 idées, 57 confirmées par 2 sources ou plus, 3 vraies questions, en 2,4 s. Commande `node seo/cli.mjs demande "<mot>"`, intégrée à l'audit (`--sans-demande` pour l'éviter), au rapport Markdown et à l'onglet « Mots-clés & réseaux » (le navigateur n'interroge que Google et YouTube). 55 tests sur 55. |
 | 24/11 | « Continue » (source 6). | Nouveau module `seo/engine/mastodon.js` : **hashtags réellement employés**, lus sur l'API publique de Mastodon (sans clé) ; comptés en comptes distincts, robots exclus, cooccurrences limitées aux publications en français de moins de 2 ans. Ils passent en tête des réseaux (2 sur Instagram et TikTok), marqués « observé (N comptes) ». Boulangerie : #croissant 55 comptes, #painaulevain 16, avec #levain, #boulangerie, #petitdejeuner. RGTE : #surmesure 28 comptes ; #vitrinerefrigeree, #agencementmagasin, #fabricantfrancais : 0 publication. Dans l'audit, `hashtags`, le rapport et l'onglet (lecture directe depuis le navigateur). 58 tests sur 58. |
 | 24/11 | « Continue » (sources 7 à 9). | Nouveau module `seo/engine/empreinte.js` : pour vous et chaque concurrent, **régies publicitaires** (pixels dans la page et dans le conteneur Google Tag Manager, avec preuve), **historique Wayback** (âge, mois archivés, titre d’accueil au fil des ans), **pages vues par Common Crawl** (dernier index, seconde tentative si le serveur sature). Constats comparatifs uniquement à partir de faits mesurés. RGTE contre OCF et Pousstronic : RGTE a un pixel Google Ads (AW-986852039, vérifié dans le code), les deux autres aucun ; OCF archivé depuis 1998, RGTE depuis 2019, Pousstronic depuis 2025 ; Common Crawl : 102 pages OCF, RGTE et Pousstronic absents de l’index de novembre. Dans l’audit (`--sans-empreinte`), le rapport et l’onglet Concurrents ; la mémoire locale garde désormais demande, Mastodon et empreinte après un rechargement. 61 tests sur 61. |
-| 25/11 | « Remets en ligne le tout avec le Dokploy. » | Nouveau projet **SEO 360** (application « site ») sur le Dokploy partagé de M3, sans toucher aux autres projets : dépôt public, branche `recherche-enrichissement`, `deploy/dokploy/Dockerfile` (nginx sert `docs/`), domaine https://seo360.217-160-124-232.nip.io en HTTPS (Let's Encrypt). Vérifié : galerie et `/seo/` en 200, nouveaux modules servis, demande réelle et Mastodon fonctionnent en ligne. GitHub Pages (`main`) inchangé. |
+| 25/11 | « Remets en ligne le tout avec le Dokploy. » | Nouveau projet **SEO 360** (application « site ») sur le Dokploy partagé de M3, sans toucher aux autres projets : dépôt public, branche `recherche-enrichissement`, `deploy/dokploy/Dockerfile` (nginx sert `docs/`), domaine https://seo360.217-160-124-232.nip.io en HTTPS (Let's Encrypt). Vérifié : galerie et `/seo/` en 200, nouveaux modules servis, demande réelle et Mastodon fonctionnent en ligne. |
+| 25/11 | Fusion de la PR #11. | `main` reçoit les sources 1 à 9 et le déploiement Dokploy : GitHub Pages publie la même version que Dokploy (contenu de `main` identique à `recherche-enrichissement`, vérifié le 27/11). |
 
 ### Les PR fusionnées
 
@@ -130,6 +132,9 @@ GitHub Pages publie la branche `main` (dossier `docs/`) en 1 à 2 minutes après
 | #6 | 3.10 | Leçons du chantier RaceLink, contrôle des fiches de stores |
 | #7 | 3.11 | Onglet « À faire » allégé |
 | #8 | 3.12 | Profil de présence et benchmark |
+| #9 | — | Dossier `reprise/` (21/11) |
+| #10 | — | Tests compatibles Windows : chemins, fins de ligne, veille (24/11) |
+| #11 | — | Recherche d'enrichissement, demande réelle, hashtags Mastodon, empreinte des concurrents, Dokploy (25/11) |
 
 ---
 
@@ -197,7 +202,8 @@ Rapports complets : `annexes/rgte/`.
 | 8 | Fiabilité de lecture permanente : déployer le proxy Cloudflare (`seo/proxy/`) | Nadir | facultatif |
 | 9 | Vérifier à la main que chaque profil social renvoie bien au site | Claude dans le navigateur | les réseaux refusent la lecture automatique |
 | 10 | Lancer `agent-reach setup` (installe le skill officiel pour Claude Code) | Nadir | le contrôle de sécurité de la session l'a refusé à Claude le 24/11 |
-| 11 | Sources gratuites : **faites** le 24/11 pour les sources 1 à 9 (YouTube, Amazon, DuckDuckGo, variantes, tendances). **Faites** aussi : hashtags observés sur Mastodon (source 6) et empreinte marketing des concurrents (sources 7 à 9). **Reste** : la relecture des 3 packs de la priorité 3, seulement si Nadir le veut | Claude | voir `annexes/recherches/enrichissement-plateforme-2026-11-24.md` §5 |
+| 11 | Sources gratuites 1 à 9 : **faites** (24/11) et **fusionnées** dans `main` (PR #11, 25/11). **Reste** : la relecture des 3 packs de la priorité 3, seulement si Nadir le veut | Claude | voir `annexes/recherches/enrichissement-plateforme-2026-11-24.md` §5 |
+| 12 | Dokploy suit encore la branche `recherche-enrichissement` : la faire pointer sur `main`, sinon les prochaines fusions n'y seront pas publiées | Nadir (ou Claude avec accord) | même contenu aujourd'hui ; réglage dans `deploy/dokploy/README.md` |
 
 ---
 
